@@ -1,10 +1,13 @@
 \documentclass{naproche-library}
+\libinput{preamble}
 \begin{document}
 \begin{smodule}[title=Animal]{animal.ftl}
-  \importmodule[libraries/everyday-ontology]{classes?being.ftl}
 
-  \begin{signature}[forthel]
-    A \emph{animal} is a being.
-  \end{signature}
+\importmodule[libraries/everyday-ontology]{classes?being.ftl}
+
+\begin{signature}[forthel]
+  A \emph{animal} is a being.
+\end{signature}
+
 \end{smodule}
 \end{document}

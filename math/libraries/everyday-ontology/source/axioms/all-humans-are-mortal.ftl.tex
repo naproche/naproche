@@ -1,11 +1,14 @@
 \documentclass{naproche-library}
+\libinput{preamble}
 \begin{document}
 \begin{smodule}[title=All Humans are Mortal]{all-humans-are-mortal.ftl}
-  \importmodule[libraries/everyday-ontology]{properties?mortal.ftl}
-  \importmodule[libraries/everyday-ontology]{classes?human.ftl}
 
-  \begin{axiom}[forthel]
-    All humans are mortal.
-  \end{axiom}
+\importmodule[libraries/everyday-ontology]{properties?mortal.ftl}
+\importmodule[libraries/everyday-ontology]{classes?human.ftl}
+
+\begin{axiom}[forthel]
+  All humans are mortal.
+\end{axiom}
+
 \end{smodule}
 \end{document}

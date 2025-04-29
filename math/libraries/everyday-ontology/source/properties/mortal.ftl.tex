@@ -1,11 +1,14 @@
 \documentclass{naproche-library}
+\libinput{preamble}
 \begin{document}
 \begin{smodule}[title=Mortal]{mortal.ftl}
-  \importmodule[libraries/everyday-ontology]{classes?being.ftl}
 
-  \begin{signature}[forthel]
-    Let $B$ be a being.
-    $B$ is \emph{mortal} is a relation.
-  \end{signature}
+\importmodule[libraries/everyday-ontology]{classes?being.ftl}
+
+\begin{signature}[forthel]
+  Let $B$ be a being.
+  $B$ is \emph{mortal} is a relation.
+\end{signature}
+
 \end{smodule}
 \end{document}
