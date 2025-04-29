@@ -1,8 +1,8 @@
 \documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Length of Reversion]{length-of-reversion.ftl}
+
 \importmodule[libraries/lists]{theorems?length-of-concatenation.ftl}
 \importmodule[libraries/lists]{definitions?reversion.ftl}
 
@@ -23,12 +23,13 @@
       \length(\rev(L))
         &\eq \length(\rev(a \cons L'))\\
         &\eq \length(\rev(L') \concat \list{a})\\
-        &\eq \length(\list{a}) \NATplus \length(\rev(L'))\\
-        &\eq \NATone \NATplus \length(\rev(L'))\\
-        &\eq \NATone \NATplus \length(L')\\
+        &\eq \length(\list{a}) \plus \length(\rev(L'))\\
+        &\eq \one \plus \length(\rev(L'))\\
+        &\eq \one \plus \length(L')\\
         &\eq \length(L)
     \end{align*}.
   \end{case}
 \end{proof}
+
 \end{smodule}
 \end{document}

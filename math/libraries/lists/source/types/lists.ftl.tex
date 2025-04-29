@@ -1,9 +1,10 @@
 \documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Lists]{lists.ftl}
-\importmodule[libraries/foundations]{classes.ftl}
+
+\importmodule[libraries/meta-inf]{preliminaries.ftl}
+
 \symdef{list}[args=a]{\highlight[\argsep{#1}{\highlight,}\highlight]}
 \symdef{cons}{\mathbin{\highlight{::}}}
 
@@ -26,14 +27,15 @@
   Let $\emph{\list{a,b,c}}$ stand for $a \cons \list{b,c}$.
 \end{signature}
 
-\begin{axiom}[forthel,id=ListExhaustionAx]
+\begin{axiom}[forthel,id=ExhaustionAx]
   Let $L$ be a list.
   Then $L \eq \list{}$ or $L \eq a \cons L'$ for some object $a$ and some list $L'$.
 \end{axiom}
 
-\begin{axiom}[forthel,id=ListInductionAx]
+\begin{axiom}[forthel,id=InductionAx]
   Let $a$ be an object and $L$ be a list.
   Then $L \prec a \cons L$.
 \end{axiom}
+
 \end{smodule}
 \end{document}

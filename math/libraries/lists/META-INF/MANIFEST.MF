@@ -1,3 +1,6 @@
 id: libraries/lists
 ns: https://naproche.github.io/math/libraries/lists
 narration-base: https://naproche.github.io/math/libraries/lists
+title: Lists
+authors: Christian Schöner (2024), Marcel Schütz (2024–2025)
+license: CcByNcSa

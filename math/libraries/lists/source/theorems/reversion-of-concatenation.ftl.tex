@@ -1,8 +1,8 @@
 \documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Reversion of Concatenation]{reversion-of-concatenation.ftl}
+
 \importmodule[libraries/lists]{theorems?concatenation-is-associative.ftl}
 \importmodule[libraries/lists]{theorems?concatenation-with-nil-on-rhs.ftl}
 \importmodule[libraries/lists]{definitions?reversion.ftl}
@@ -20,6 +20,7 @@
     Take an object $a$ and a list $L''$ such that $L \eq a \cons L''$.
     Then $L'' \prec L$.
     Hence $\rev(L'' \concat L') \eq \rev(L') \concat \rev(L'')$.
+    [prover vampire]
     Thus
     \begin{align*}
       \rev(L \concat L')
@@ -48,5 +49,6 @@
       &\eq a \cons \rev(L)
   \end{align*}.
 \end{proof}
+
 \end{smodule}
 \end{document}

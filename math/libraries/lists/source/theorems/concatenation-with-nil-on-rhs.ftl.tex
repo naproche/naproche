@@ -1,8 +1,8 @@
 \documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Concatenation with Nil on the Right-Hand Side]{concatenation-with-nil-on-rhs.ftl}
+
 \importmodule[libraries/lists]{definitions?concatenation.ftl}
 
 \begin{proposition}[forthel,id=RightConcatNilProp]
@@ -27,5 +27,6 @@
     \end{align*}.
   \end{case}
 \end{proof}
+
 \end{smodule}
 \end{document}

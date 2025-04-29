@@ -1,13 +1,15 @@
 \documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Length of Concatenation]{length-of-concatenation.ftl}
+
 \importmodule[libraries/lists]{definitions?length.ftl}
 \importmodule[libraries/lists]{definitions?concatenation.ftl}
+\importmodule[libraries/natural-numbers]{theorems?zero-is-left-unit-of-addition.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-commutative.ftl}
 
 \begin{proposition}[forthel,id=LengthOfConcatProp]
-  $\length(L \concat L') \eq \length(L) \NATplus \length(L')$ for all lists $L, L'$.
+  $\length(L \concat L') \eq \length(L) \plus \length(L')$ for all lists $L, L'$.
 \end{proposition}
 \begin{proof}[forthel,method=induction on $L$]
   Let $L$ be a list.
@@ -17,20 +19,22 @@
   \begin{case}{$L \eq a \cons L''$ for some object $a$ and some list $L''$.}
     Take an object $a$ and a list $L''$ such that $L \eq a \cons L''$.
     Then $L'' \prec L$.
-    Hence $\length(L'' \concat L') \eq \length(L'') \NATplus \length(L')$ for every list $L'$.
+    Hence $\length(L'' \concat L') \eq \length(L'') \plus \length(L')$ for every list $L'$.
+    [prover vampire]
     Thus
     \begin{align*}
       \length(L \concat L')
         &\eq \length((a \cons L'') \concat L')\\
         &\eq \length(a \cons (L'' \concat L'))\\
-        &\eq \length(L'' \concat L') \NATplus \NATone\\
-        &\eq (\length(L'') \NATplus \length(L')) \NATplus \NATone\\
-        &\eq (\length(L'') \NATplus \NATone) \NATplus \length(L')\\
-        &\eq \length(a \cons L'') \NATplus \length(L')\\
-        &\eq \length(L) \NATplus \length(L')
+        &\eq \length(L'' \concat L') \plus \one\\
+        &\eq (\length(L'') \plus \length(L')) \plus \one\\
+        &\eq (\length(L'') \plus \one) \plus \length(L')\\
+        &\eq \length(a \cons L'') \plus \length(L')\\
+        &\eq \length(L) \plus \length(L')
     \end{align*}
     for every list $L'$.
   \end{case}
 \end{proof}
+
 \end{smodule}
 \end{document}

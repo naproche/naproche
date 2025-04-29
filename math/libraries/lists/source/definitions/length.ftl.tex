@@ -1,10 +1,12 @@
 \documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Length]{length.ftl}
+
 \importmodule[libraries/lists]{types?lists.ftl}
-\importmodule[libraries/arithmetics]{natural-numbers.ftl}
+\importmodule[libraries/natural-numbers]{definitions?addition.ftl}
+\importmodule[libraries/natural-numbers]{definitions?number-1.ftl}
+
 \symdef{length}{\highlight{\textsf{length}}}
 
 \begin{signature}[forthel,id=LengthSig]
@@ -13,12 +15,13 @@
 \end{signature}
 
 \begin{axiom}[forthel,id=LengthOfNilAx]
-  $\length(\list{}) \eq \NATzero$.
+  $\length(\list{}) \eq \zero$.
 \end{axiom}
 
 \begin{axiom}[forthel,id=LengthOfConsAx]
   Let $a$ be an object and $L$ be a list.
-  Then $\length(a \cons L) \eq \length(L) \NATplus \NATone$.
+  Then $\length(a \cons L) \eq \length(L) \plus \one$.
 \end{axiom}
+
 \end{smodule}
 \end{document}
