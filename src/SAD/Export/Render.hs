@@ -129,21 +129,43 @@ renderFile format context filePath = do
 
           -- Remove the generated PDF file and if there was a PDF file before
           -- the HTML build process, restore it:
-          callCommand $ "rm -f " ++ pdfFile
+          removeFile pdfFile
           when pdfFileAlreadyExisted $ renameFile pdfBackupFile pdfFile
 
       -- Clean up:
-      callCommand $ "rm -f " ++ inputFileBase ++ "-blx" <.> "bib"
-      callCommand $ "rm -f " ++ inputFileBase <.> "aux"
-      callCommand $ "rm -f " ++ inputFileBase <.> "bbl"
-      callCommand $ "rm -f " ++ inputFileBase <.> "blg"
-      callCommand $ "rm -f " ++ inputFileBase <.> "log"
-      callCommand $ "rm -f " ++ inputFileBase <.> "out"
-      callCommand $ "rm -f " ++ inputFileBase <.> "run" <.> "xml"
-      callCommand $ "rm -f " ++ inputFileBase <.> "sms"
-      callCommand $ "rm -f " ++ inputFileBase <.> "sref"
-      callCommand $ "rm -f " ++ inputFileBase <.> "upa"
-      callCommand $ "rm -f " ++ inputFileBase <.> "upb"
+      let blxBibFile = inputFileBase ++ "-blx" <.> "bib"
+      blxBibFileExists <- doesFileExist blxBibFile
+      when blxBibFileExists $ removeFile blxBibFile
+      let auxFile = inputFileBase <.> "aux"
+      blxBibFileExists <- doesFileExist auxFile
+      when blxBibFileExists $ removeFile auxFile
+      let bblFile = inputFileBase <.> "bbl"
+      blxBibFileExists <- doesFileExist bblFile
+      when blxBibFileExists $ removeFile bblFile
+      let blgFile = inputFileBase <.> "blg"
+      blxBibFileExists <- doesFileExist blgFile
+      when blxBibFileExists $ removeFile blgFile
+      let logFile = inputFileBase <.> "log"
+      blxBibFileExists <- doesFileExist logFile
+      when blxBibFileExists $ removeFile logFile
+      let outFile = inputFileBase <.> "out"
+      blxBibFileExists <- doesFileExist outFile
+      when blxBibFileExists $ removeFile outFile
+      let runXmlFile = inputFileBase <.> "run" <.> "xml"
+      blxBibFileExists <- doesFileExist runXmlFile
+      when blxBibFileExists $ removeFile runXmlFile
+      let smsFile = inputFileBase <.> "sms"
+      blxBibFileExists <- doesFileExist smsFile
+      when blxBibFileExists $ removeFile smsFile
+      let srefFile = inputFileBase <.> "sref"
+      blxBibFileExists <- doesFileExist srefFile
+      when blxBibFileExists $ removeFile srefFile
+      let upaFile = inputFileBase <.> "upa"
+      blxBibFileExists <- doesFileExist upaFile
+      when blxBibFileExists $ removeFile upaFile
+      let upbFile = inputFileBase <.> "upb"
+      blxBibFileExists <- doesFileExist upbFile
+      when blxBibFileExists $ removeFile upbFile
 
       putStrLn ""
       putStrLn $ "[Info] Generated " ++ show format ++ " file: " ++ outputFilePath
