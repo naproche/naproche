@@ -79,9 +79,11 @@ renderFile format context filePath = do
       let inputDir = takeDirectory filePath
           inputFile = takeFileName filePath
           inputFileBase = takeBaseName inputFile
+          pdfFile = inputFileBase <.> "pdf"
+          htmlFile = inputFileBase <.> "xhtml"
           outputFile = case format of
-            PDF -> inputFileBase <.> "pdf"
-            HTML -> inputFileBase <.> "xhtml"
+            PDF -> pdfFile
+            HTML -> htmlFile
           outputFilePath = inputDir </> outputFile
       setCurrentDirectory inputDir
       case format of
@@ -91,6 +93,12 @@ renderFile format context filePath = do
           callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
           callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
         HTML -> do
+          -- Check if a PDF file already exists and if so, rename it so that it
+          -- can be restored after the HTML build process:
+          pdfFileAlreadyExisted <- doesFileExist pdfFile
+          let pdfBackupFile = pdfFile ++ "~"
+          when pdfFileAlreadyExisted $ renameFile pdfFile pdfBackupFile
+
           callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile -- to generate <inputFileBase>.aux
           callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
           callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" " ++ rustexBin ++ " -i " ++ inputFile ++ " -o " ++ outputFile
@@ -114,6 +122,11 @@ renderFile format context filePath = do
           -- Replace the content of the HTML file with the altered content:
           writeFile absoluteOutputFilePath outputFileContent''
 
+          -- Remove the generated PDF file and if there was a PDF file before
+          -- the HTML build process, restore it:
+          callCommand $ "rm -f " ++ pdfFile
+          when pdfFileAlreadyExisted $ renameFile pdfBackupFile pdfFile
+
       -- Clean up:
       callCommand $ "rm -f " ++ inputFileBase ++ "-blx" <.> "bib"
       callCommand $ "rm -f " ++ inputFileBase <.> "aux"
@@ -126,7 +139,6 @@ renderFile format context filePath = do
       callCommand $ "rm -f " ++ inputFileBase <.> "sref"
       callCommand $ "rm -f " ++ inputFileBase <.> "upa"
       callCommand $ "rm -f " ++ inputFileBase <.> "upb"
-      when (format == HTML) $ callCommand $ "rm -f " ++ inputFileBase <.> "pdf"
 
       putStrLn ""
       putStrLn $ "[Info] Generated " ++ show format ++ " file: " ++ outputFilePath
