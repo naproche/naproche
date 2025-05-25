@@ -47,6 +47,7 @@ dependencies:
 - extra
 - filepath
 - directory
+- regex-tdfa
 
 default-extensions:
   - GeneralizedNewtypeDeriving
@@ -90,7 +91,7 @@ library:
     - SAD.Parser.Combinators
     - SAD.Parser.Primitives
     - SAD.Parser.Token
-    - SAD.Render.PDF
+    - SAD.Export.Render
 
 executables:
   Naproche:

@@ -35,7 +35,7 @@ import SAD.Parser.TEX.Lexer qualified as TEX
 import SAD.Parser.FTL.Token qualified as FTL
 import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.Token (renderTokens)
-import SAD.Render.PDF
+import SAD.Export.Render
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
@@ -83,6 +83,7 @@ mainTerminal initInstrs nonInstrArgs = do
       mesonCache <- MESON.init_cache
       proverCache <- Prover.init_cache
       let mode = getInstr modeParam initInstrs
+          format = getInstr formatParam initInstrs
       Program.init_console
       context <- Program.thread_context
       resultCode <- do
@@ -101,7 +102,10 @@ mainTerminal initInstrs nonInstrArgs = do
             verifyInputText dialect mesonCache proverCache proofTexts
           "render-file" -> case nonInstrArgs of
             [] -> putStrLn "Unable to render document: No file given." >> return 1
-            filePath : _ -> renderFile context filePath
+            filePath : _ -> case format of
+              "pdf" -> renderFile PDF context filePath
+              "html" -> renderFile HTML context filePath
+              formatArg -> putStrLn ("Invalid format: " ++ make_string formatArg) >> return 1
           "render-library" -> case nonInstrArgs of
             [] -> putStrLn "Unable to render library: No library ID given." >> return 1
             libraryId : _ -> renderLibrary context libraryId
@@ -390,6 +394,7 @@ options :: [GetOpt.OptDescr Instr]
 options = [
   optSwitch "h" helpParam True "",
   optArgument "M" modeParam "MODE",
+  optArgument "" formatParam "FORMAT",
   optFlag "" translationParam,
   optSwitch "" serverParam True "",
   optArgument "P" proverParam "NAME",

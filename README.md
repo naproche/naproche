@@ -195,25 +195,24 @@ Naproche [<options>] [<file>]
 
 * Make sure that up-to-date versions of `pdflatex` and `bibtex` are in your
   `PATH`.
+  (Note that, despite its name, `pdflatex` is needed to render a formalization
+  both as PDF *and* HTML.)
 
-* (Optional – only required to render the formalizations as HTML.)
+* (Optional – only required to render a formalization as HTML.)
   Make sure that an up-to-date version of [RusTeX][rustex] is in your `PATH`.
 
 
 ### Rendering as PDF
 
 ```shell
-Naproche --mode=render <filename>.ftl.tex
+Naproche --mode=render --format="pdf" <filename>.ftl.tex
 ```
 
 
 ### Rendering as HTML
 
 ```shell
-rustex -i <filename>.ftl.tex -o <filename>.ftl.xhtml
-bibtex <filename>.ftl
-
-sed -i "s|</style>|</style>\n    <link rel=\"stylesheet\" href=\"$(isabelle getenv -b NAPROCHE_FORMALIZATIONS)/latex/lib/lib.css\"/>\;|g" <filename>.ftl.xhtml
+Naproche --mode=render --format="html" <filename>.ftl.tex
 ```
 
 

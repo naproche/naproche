@@ -68,6 +68,11 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   * **Changed:** In the command line interface, the mode `render` was
     renamed to `render-file`.
 
+  * **New:** In the `render-file` mode, an additional argument
+    `--format="(pdf|html)"` can be passed to Naproche to render a formalization
+    either as PDF (via `pdflatex`) or as HTML (via `rustex`). If the
+    `--format` argument is omitted, the formalization is rendered as PDF.
+
   * **New:** In the command line interface, there is a new mode `render-library`
     in which all `.ftl.tex` files in the `source` directory of a library archive
     in the `math/libraries` directory are rendered as one PDF file.

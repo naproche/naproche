@@ -20,7 +20,7 @@ module SAD.Data.Instr (
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
   translationParam, texParam,
   helpParam, serverParam, onlytranslateParam, onlytokenizeParam,
-  modeParam, proverParam,
+  modeParam, formatParam, proverParam,
   keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument, keywordsModule,
   keywordsDropLimit, keywordsDropFlag
 ) where
@@ -147,9 +147,10 @@ textFlags@[proveParam, checkParam, checkconsistencyParam, symsignParam, infoPara
     Param.flag "tex" "parse passed file with forthel tex parser" False]
 
 textArgs :: [Param.T Bytes]
-modeParam, proverParam :: Param.T Bytes
-textArgs@[modeParam, proverParam] =
+modeParam, formatParam, proverParam :: Param.T Bytes
+textArgs@[modeParam, formatParam, proverParam] =
    [Param.bytes "mode" "run Naproche in mode MODE" "verify",
+    Param.bytes "format" "render a formalization to FORMAT" "pdf",
     Param.bytes "prover" "use prover NAME" (Prover.get_name Prover.eprover)]
 
 verboseFlags :: [Param.T Bool]

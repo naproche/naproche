@@ -1,19 +1,20 @@
 -- |
--- Module      : SAD.Render.PDF
+-- Module      : SAD.Export.Render
 -- Copyright   : (c) 2025, Marcel Schütz
 -- License     : GPL-3
 --
--- Render ForTheL Texts as PDF
+-- Render ForTheL Texts as PDF or HTML
 
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Render.PDF (
+module SAD.Export.Render (
+  Format(..),
   renderFile,
   renderLibrary
 ) where
 
-import Control.Monad (filterM)
+import Control.Monad (filterM, when)
 import Data.Text (Text)
 import Data.Text qualified as Text
 import Data.Maybe qualified as Maybe
@@ -24,6 +25,9 @@ import Data.List.Split (splitOn)
 import System.Directory
 import System.Process (callCommand)
 import System.FilePath
+import System.IO
+import Text.Regex.TDFA
+
 
 import SAD.Helpers (getFormalizationsDirectoryPath)
 
@@ -32,42 +36,100 @@ import Naproche.Program qualified as Program
 import Isabelle.Library
 import Isabelle.File qualified as File
 
+
+data Format = PDF | HTML deriving (Eq)
+
+instance Show Format where
+  show :: Format -> String
+  show PDF = "PDF"
+  show HTML = "HTML"
+
 -- | Render a TeX file to PDF.
-renderFile :: Program.Context -> FilePath -> IO Int
-renderFile context filePath = do
-  putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
+renderFile :: Format -> Program.Context -> FilePath -> IO Int
+renderFile format context filePath = do
+  putStrLn "[Warning] This is an experimental feature. Please be gentle."
   formalizationsDirectoryPath <- getFormalizationsDirectoryPath context
 
-  -- Set the paths to pdflatex and bibtex, and the MATHHUB and TEXINPUTS variable:
+  -- Set the paths to pdflatex, bibtex and rustex, and the MATHHUB and TEXINPUTS variable:
   let pdflatexBin = "pdflatex"
       bibtexBin = "bibtex"
+      rustexBin = "rustex"
       mathhubVar = formalizationsDirectoryPath
-      texinputsVar = formalizationsDirectoryPath </> "latex" </> "lib//;" 
-  putStrLn $ "[Info] pdflatex executable: " ++ pdflatexBin
-  putStrLn $ "[Info] bibtex executable:   " ++ bibtexBin
-  putStrLn $ "[Info] MATHHUB variable:    " ++ mathhubVar
-  putStrLn $ "[Info] TEXINPUTS variable:  " ++ texinputsVar
+      texinputsVar = formalizationsDirectoryPath </> "latex" </> "lib//;"
+      cssFilePath = formalizationsDirectoryPath </> "latex" </> "lib" </> "naproche" <.> "css"
 
   putStrLn ""
-  putStrLn $ "Ready to render \"" ++ filePath ++ "\" to PDF."
+  case format of
+    PDF ->  putStrLn $ "[Info] Make sure that " ++ pdflatexBin ++ " and " ++ bibtexBin ++ " are in your PATH."
+    HTML ->  putStrLn $ "[Info] Make sure that " ++ pdflatexBin ++ ", " ++ rustexBin ++ " and " ++ bibtexBin ++ " are in your PATH."
+
+  putStrLn ""
+  putStrLn $ "[Info] MATHHUB variable set to:   " ++ mathhubVar
+  putStrLn $ "[Info] TEXINPUTS variable set to: " ++ texinputsVar
+  when (format == HTML) $ putStrLn $ "[Info] Naproche CSS file:         " ++ cssFilePath
+
+  putStrLn ""
+  putStrLn $ "Ready to render \"" ++ filePath ++ "\" to " ++ show format ++ "."
   putStrLn "Do you want to continue? (Y/n)"
   answer <- getLine
 
   if answer `elem` ["Y", "y", ""]
-    -- Render the input file as PDF:
+    -- Render the input file:
     then do
       let inputDir = takeDirectory filePath
           inputFile = takeFileName filePath
           inputFileBase = takeBaseName inputFile
+          outputFile = case format of
+            PDF -> inputFileBase <.> "pdf"
+            HTML -> inputFileBase <.> "xhtml"
+          outputFilePath = inputDir </> outputFile
       setCurrentDirectory inputDir
-      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-      callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
-      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-      
-      let pdfFilePath = inputDir </> inputFileBase <.> "pdf"
+      case format of
+        PDF -> do
+          callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+          callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
+          callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+          callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+        HTML -> do
+          callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile -- to generate <inputFileBase>.aux
+          callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
+          callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" " ++ rustexBin ++ " -i " ++ inputFile ++ " -o " ++ outputFile
+          
+          -- Get the content of the HTML file:
+          absoluteOutputFilePath <- makeAbsolute outputFile
+          
+          outputFileHandle <- openFile absoluteOutputFilePath ReadMode
+          outputFileContent <- hGetContents' outputFileHandle
+          
+          -- Get the content of the Naproche CSS file:
+          absoluteCssFilePath <- makeAbsolute cssFilePath
+          cssFileHandle <- openFile absoluteCssFilePath ReadMode
+          cssFileContent <- hGetContents' cssFileHandle
+
+          -- Remove all "rustex:sourceref" attributes and add CSS:
+          let sourcerefAttributes = getAllTextMatches (outputFileContent =~ ("rustex:sourceref=\"[^\"]*\"" :: String))
+              outputFileContent' = removeAllSubstrings sourcerefAttributes outputFileContent
+              outputFileContent'' = insertBeforeFstSubstring "    </style>" cssFileContent outputFileContent'
+
+          -- Replace the content of the HTML file with the altered content:
+          writeFile absoluteOutputFilePath outputFileContent''
+
+      -- Clean up:
+      callCommand $ "rm -f " ++ inputFileBase ++ "-blx" <.> "bib"
+      callCommand $ "rm -f " ++ inputFileBase <.> "aux"
+      callCommand $ "rm -f " ++ inputFileBase <.> "bbl"
+      callCommand $ "rm -f " ++ inputFileBase <.> "blg"
+      callCommand $ "rm -f " ++ inputFileBase <.> "log"
+      callCommand $ "rm -f " ++ inputFileBase <.> "out"
+      callCommand $ "rm -f " ++ inputFileBase <.> "run" <.> "xml"
+      callCommand $ "rm -f " ++ inputFileBase <.> "sms"
+      callCommand $ "rm -f " ++ inputFileBase <.> "sref"
+      callCommand $ "rm -f " ++ inputFileBase <.> "upa"
+      callCommand $ "rm -f " ++ inputFileBase <.> "upb"
+      when (format == HTML) $ callCommand $ "rm -f " ++ inputFileBase <.> "pdf"
+
       putStrLn ""
-      putStrLn $ "[Info] Generated PDF file: " ++ pdfFilePath
+      putStrLn $ "[Info] Generated " ++ show format ++ " file: " ++ outputFilePath
       return 0
 
     -- Abort:
@@ -75,6 +137,28 @@ renderFile context filePath = do
       putStrLn ""
       putStrLn "Aborted."
       return 1
+
+-- | @removeAllSubstrings substrings string@ removes all substrings from
+-- @string@ that match any element of @substrings@.
+removeAllSubstrings :: [String] -> String -> String
+removeAllSubstrings ss string = Text.unpack $ removeAllSubstrings' (map Text.pack ss) (Text.pack string)
+  where
+    removeAllSubstrings' [] text = text
+    removeAllSubstrings' (t : ts) text =
+      removeAllSubstrings' ts $ Text.replace t "" text
+
+-- | @insertBeforeFstSubstring needle insert haystack@ inserts @insert@ before
+-- the first occurence of @needle@ in @haystack@. If @haystack@ does not contain
+-- @needle@, @haystack@ is returned unmodified.
+insertBeforeFstSubstring :: String -> String -> String -> String
+insertBeforeFstSubstring needle insert haystack =
+  Text.unpack $ insertBeforeFstSubstring' (Text.pack needle) (Text.pack insert) (Text.pack haystack)
+  where
+    insertBeforeFstSubstring' needle insert haystack =
+      let (prefix, rest) = Text.breakOn needle haystack in
+      if Text.null rest
+        then haystack
+        else prefix <> insert <> rest
 
 
 -- | Render all TeX files in the @source@ directory of an sTeX archive as one
