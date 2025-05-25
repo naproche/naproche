@@ -37,6 +37,8 @@ import Isabelle.Library
 import Isabelle.File qualified as File
 
 
+-- * Rendering Formats
+
 data Format = PDF | HTML deriving (Eq)
 
 instance Show Format where
@@ -44,7 +46,10 @@ instance Show Format where
   show PDF = "PDF"
   show HTML = "HTML"
 
--- | Render a TeX file to PDF.
+
+-- * Rendering Single TeX Files
+
+-- | Render a TeX file.
 renderFile :: Format -> Program.Context -> FilePath -> IO Int
 renderFile format context filePath = do
   putStrLn "[Warning] This is an experimental feature. Please be gentle."
@@ -173,8 +178,10 @@ insertBeforeFstSubstring needle insert haystack =
         else prefix <> insert <> rest
 
 
--- | Render all TeX files in the @source@ directory of an sTeX archive as one
--- single PDF.
+-- * Rendering Libraries
+
+-- | Render all TeX files in the @source@ directory of a library as a single
+-- document.
 renderLibrary :: Program.Context -> String -> IO Int
 renderLibrary context archiveId = do
   putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
