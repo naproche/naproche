@@ -12,6 +12,7 @@ dist-newstyle/
 .envrc
 .metals/
 .scala-build/
+.flams/
 
 # Ignore profiling output
 *.hp
