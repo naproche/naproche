@@ -1,0 +1,7 @@
+id: libraries/cardinal-numbers
+ns: https://naproche.github.io/math/libraries/cardinal-numbers
+narration-base: https://naproche.github.io/math/libraries/cardinal-numbers
+format:stex
+title: Cardinal Numbers
+authors: Marcel Schütz (2021–2025)
+license: CcByNcSa

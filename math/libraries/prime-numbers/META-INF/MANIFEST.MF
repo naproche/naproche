@@ -1,0 +1,7 @@
+id: libraries/prime-numbers
+ns: https://naproche.github.io/math/libraries/prime-numbers
+narration-base: https://naproche.github.io/math/libraries/prime-numbers
+format:stex
+title: Prime Numbers
+authors: Marcel Schütz (2021–2025)
+license: CcByNcSa

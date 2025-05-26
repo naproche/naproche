@@ -1,3 +1,4 @@
 id: latex
 ns: https://naproche.github.io/math/latex
 narration-base: https://naproche.github.io/math/latex
+format:stex
