@@ -108,7 +108,10 @@ mainTerminal initInstrs nonInstrArgs = do
               formatArg -> putStrLn ("Invalid format: " ++ make_string formatArg) >> return 1
           "render-library" -> case nonInstrArgs of
             [] -> putStrLn "Unable to render library: No library ID given." >> return 1
-            libraryId : _ -> renderLibrary context libraryId
+            libraryId : _ -> case format of
+              "pdf" -> renderLibrary PDF context libraryId
+              "html" -> renderLibrary HTML context libraryId
+              formatArg -> putStrLn ("Invalid format: " ++ make_string formatArg) >> return 1
           modeArg -> putStrLn ("Invalid mode: " ++ make_string modeArg) >> return 1)
         `catch` (\case
             Exception.UserInterrupt -> do
