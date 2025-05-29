@@ -1,6 +1,7 @@
 id: libraries/ordinal-numbers
 ns: https://naproche.github.io/math/libraries/ordinal-numbers
 narration-base: https://naproche.github.io/math/libraries/ordinal-numbers
+url-base: http://localhost
 format:stex
 title: Ordinal Numbers
 authors: Marcel Schütz (2021–2025)

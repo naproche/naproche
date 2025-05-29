@@ -1,6 +1,7 @@
 id: libraries/permutations
 ns: https://naproche.github.io/math/libraries/permutations
 narration-base: https://naproche.github.io/math/libraries/permutations
+url-base: http://localhost
 format:stex
 title: Permutations
 authors: Marcel Schütz (2025)
