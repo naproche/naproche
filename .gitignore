@@ -13,6 +13,7 @@ dist-newstyle/
 .metals/
 .scala-build/
 .flams/
+math/sTeX/
 
 # Ignore profiling output
 *.hp
