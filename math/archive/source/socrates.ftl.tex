@@ -1,0 +1,41 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput{preamble}
+
+\title{``Socrates is Mortal''}
+\author{Marcel Schütz}
+\date{2025}
+
+\begin{document}
+\begin{smodule}{socrates.ftl}
+\maketitle
+
+\importmodule[libraries/everyday-ontology]{individuals?socrates.ftl}
+\importmodule[libraries/everyday-ontology]{axioms?all-humans-are-mortal.ftl}
+
+\noindent ...
+
+\begin{theorem}[forthel,title=Mill's Syllogism,id=mill_syllogism]
+  Socrates is mortal.
+\end{theorem}
+\begin{proof}[forthel]
+  All humans are mortal.
+  Socrates is a human.
+  Therefore Socrates is mortal.
+\end{proof}
+
+\begin{theorem}[forthel,title=Sextus Empiricus' Syllogism,id=sextus_empiricus_syllogism]
+  Socrates is an animal.
+\end{theorem}
+\begin{proof}[forthel]
+  Socrates is human.
+  Every human being is an animal.
+  Therefore Socrates is an animal.
+\end{proof}
+
+\printbibliography
+\printlicense[CcByNcSa]{Marcel Schütz (2025)}
+
+% https://dwheeler.com/essays/all-men-are-mortal.html
+\end{smodule}
+\end{document}
