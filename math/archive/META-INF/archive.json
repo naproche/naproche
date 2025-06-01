@@ -1,0 +1,137 @@
+[
+  {
+    "type": "paper",
+    "title": "The Barber Paradox",
+    "authors": [
+      {"name": "Marcel Schütz (2024–2025)"}
+    ],
+    "file": "barber-paradox.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "Burali-Forti's Paradox",
+    "authors": [
+      {"name": "Marcel Schütz (2024–2025)"}
+    ],
+    "file": "burali-forti-paradox.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "Cantor's Paradoxes",
+    "authors": [
+      {"name": "Marcel Schütz (2024–2025)"}
+    ],
+    "file": "cantor-paradox.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "The Knaster-Tarski Fixed Point Theorem and the Cantor-Schröder-Bernstein Theorem",
+    "authors": [
+      {"name": "Alexander Holz (2018)"},
+      {"name": "Marcel Schütz (2018–2025)"}
+    ],
+    "file": "cantor-schroeder-bernstein.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "Cantor's Theorem",
+    "authors": [
+      {"name": "Marcel Schütz (2024–2025)"}
+    ],
+    "file": "cantor.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "Curry's Paradox",
+    "authors": [
+      {"name": "Marcel Schütz (2024–2025)"}
+    ],
+    "file": "curry-paradox.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "The Drinker Paradox",
+    "authors": [
+      {"name": "Marcel Schütz (2024–2025)"}
+    ],
+    "file": "drinker-paradox.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "Furstenberg's Proof of the Infinitude of Primes",
+    "authors": [
+      {"name": "Andrei Paskevich (2008)"},
+      {"name": "Marcel Schütz (2021–2025)"}
+    ],
+    "file": "furstenberg.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "Regularity of Successor Cardinals",
+    "authors": [
+      {"name": "Steffen Frerix (2018)"},
+      {"name": "Adrian De Lon (2021)"},
+      {"name": "Marcel Schütz (2024–2025)"}
+    ],
+    "file": "hausdorff.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "Hilbert's Paradox",
+    "authors": [
+      {"name": "Marcel Schütz (2024–2025)"}
+    ],
+    "file": "hilbert-paradox.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "Kőnig's Theorem",
+    "authors": [
+      {"name": "Steffen Frerix (2018--2019)"},
+      {"name": "Peter Koepke (2018--2021)"},
+      {"name": "Marcel Schütz (2024–2025)"}
+    ],
+    "file": "koenig.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "\"Little Gauß'\" Theorem",
+    "authors": [
+      {"name": "Christian Schöner (2024)"},
+      {"name": "Marcel Schütz (2024–2025)"}
+    ],
+    "file": "little-gauss.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "The Russell-Myhill Paradox",
+    "authors": [
+      {"name": "Marcel Schütz (2024–2025)"}
+    ],
+    "file": "russell-myhill-paradox.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "Russell's Paradox",
+    "authors": [
+      {"name": "Marcel Schütz (2024–2025)"}
+    ],
+    "file": "russell-paradox.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "The Transfinite Recursion Theorem",
+    "authors": [
+      {"name": "Marcel Schütz (2024–2025)"}
+    ],
+    "file": "transfinite-recursion.ftl"
+  },
+  {
+    "type": "paper",
+    "title": "Zermelo's Well-Ordering Theorem",
+    "authors": [
+      {"name": "Marcel Schütz (2024–2025)"}
+    ],
+    "file": "zermelo-wellordering.ftl"
+  }
+]
