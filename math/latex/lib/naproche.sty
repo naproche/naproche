@@ -11,6 +11,51 @@
 \RequirePackage{mdframed}
 
 
+% CSS
+% ===
+
+\ExplSyntaxOn
+\stex_css_literal:n{
+.rustex-paragraph {
+  display: inline;
+}
+}
+\ExplSyntaxOff
+
+
+% Workaround until \stex_style_apply: is fixed (then
+% \stexcss<environment name>{<CSS rules>}{} can be used to add CSS rules for
+% an environment <environment name> in the header of the generated HTML file):
+\ExplSyntaxOn
+\stex_css_literal:n{
+[data-forthel="forthel"]{
+  width:calc(100\%-2*15px);
+  display:block;
+  border:2px solid #e6e6e6;
+  background-color:#e6e6e6;
+  padding:15px;
+  margin-top:5px;
+  margin-bottom:5px;
+}
+
+[data-forthel="tls"]{
+  display:inline-block;
+  margin-top: 10px;
+}
+
+[data-forthel="proof"]{
+  display:inline-block;
+  margin-top: 5px;
+}
+
+[data-forthel="case"]{
+  display:inline-block;
+  margin-top: 5px;
+}
+}
+\ExplSyntaxOff
+
+
 % Predefined symbols
 % ------------------
 
@@ -105,9 +150,11 @@
   \setkeys{tlskeys}{#1}%
   \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
   \if\relax\tlsid\else\tlsidlabel\fi%
+  \ifstexhtml\begin{stex_annotate_env}{data-forthel=tls}\fi%
   \noindent\textbf{#2\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
   \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
 }{%
+  \ifstexhtml\end{stex_annotate_env}\fi%
   \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
   \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
   \renewcommand\tlstitle{}%
@@ -144,6 +191,7 @@
   \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
   \setkeys{proofkeys}{#1}%
   \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
+  \ifstexhtml\begin{stex_annotate_env}{data-forthel=proof}\fi%
   \noindent\textit{Proof\if\relax\proofmethod\else\ by \proofmethod\fi. }%
   \relax%
   % Reset the proof method so that it is not reused by subproofs:
@@ -152,18 +200,21 @@
 }
 {%
   \ifnum\value{proofdepth}>1\ensuremath\square\else\strut\hfill\ensuremath\blacksquare\fi%
+  \ifstexhtml\end{stex_annotate_env}\fi%
   \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
   \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
   % Reset the proof method so that it is not reused by following proofs:
   \def\proofmethod{}%
   \addtocounter{proofdepth}{-1}%
 }
+\ExplSyntaxOff
 
 \makeatletter
 % to prevent \list from being redefined, e.g. by a \symdef:
 \let\@latexlist\list
 \let\@endlatexlist\endlist
 \newenvironment{case}[1]{%
+  \ifstexhtml\begin{stex_annotate_env}{data-forthel=case}\fi%
   \@latexlist{}{
     \setlength\leftmargin{1em}
     \setlength\topsep{0cm}
@@ -173,6 +224,7 @@
 {%
   \ensuremath\square%
   \@endlatexlist
+  \ifstexhtml\end{stex_annotate_env}\fi
 }
 \makeatother
 
@@ -192,28 +244,27 @@
 \newbool{forthelBeforeEnv}
 \newbool{forthelInEnv}
 
-% ForTheL environment
-\newenvironment{forthel}{%
-  \par\addvspace{\baselineskip}
-  \ifstexhtml
-    \begin{stex_annotate_env}{style:class=forthel,rustex:block=true,rustex:sized=-20}
-  \else
-    \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]%
-  \fi
-  \rmfamily%
+\ExplSyntaxOn
+\stex_new_stylable_env:nnnnnnn{forthel}{}{%
+  \par\addvspace\baselineskip%
+  \ifstexhtml\begin{stex_annotate_env}{data-forthel=forthel}\else\stex_if_do_html:F\stex_style_apply:\fi%\stex_if_do_html:F\stex_style_apply:
   \setbool{forthel}{true}%
-  \setlength{\parindent}{0pt}%
-  \setlength{\parskip}{\ftlparskip}%
+  \setlength\parindent{0pt}%
+  \setlength\parskip\ftlparskip%
 }{%
-  \ifstexhtml
-    \end{stex_annotate_env}%
-  \else
-    \end{mdframed}
-  \fi
-  \rmfamily%
+  \ifstexhtml\end{stex_annotate_env}\else\stex_if_do_html:F\stex_style_apply:\fi%\stex_if_do_html:F\stex_style_apply:
+  \par\addvspace\baselineskip%
   \setbool{forthel}{false}%
-  \par\addvspace{\baselineskip}
-}
+}{%
+  \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]%
+  \rmfamily%
+}{%
+  \end{mdframed}%
+}{}
+\ExplSyntaxOff
+
+% Use \stexstyleforthel{<begin code>}{<end code>} to change the highlighting
+% of forthel environments.
 
 
 % Inline ForTheL Command
