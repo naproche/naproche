@@ -10,7 +10,7 @@
 \begin{smodule}{russell-paradox.ftl}
 \maketitle
 
-\importmodule[libraries/meta-inf]{vocabulary.ftl}
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
 
 \noindent \emph{Russell's Paradox} is a set-theoretical paradox discovered by
 Bertrand Russell around 1902 \cite[chapter XV]{Frege1980} which shows that 
@@ -24,9 +24,9 @@ Not every class is a set.
   \end{theorem}
   \begin{proof}[forthel]
     Assume the contrary.
-    Define $R = \{x \mid x \text{ is a set such that } x \notin x\}$.
+    Define $R = \{x \mid x \text{ is a set such that } x \nelem x\}$.
     Then $R$ is a set.
-    Hence $R \in R$ iff $R \notin R$.
+    Hence $R \elem R$ iff $R \nelem R$.
     Contradiction.
   \end{proof}
 \end{forthel}

@@ -1,0 +1,5 @@
+id: libraries/preliminaries
+ns: https://naproche.github.io/math/libraries/preliminaries
+narration-base: https://naproche.github.io/math/libraries/preliminaries
+url-base: http://localhost
+format:stex

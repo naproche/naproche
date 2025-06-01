@@ -10,7 +10,7 @@
 \begin{smodule}{russell-myhill-paradox.ftl}
 \maketitle
 
-\importmodule[libraries/meta-inf]{vocabulary.ftl}
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
 
 \noindent The \emph{Russell-Myhill Paradox} is a paradox discovered by 
 Bertrand Russell which states that two systems of propositions with the same 
@@ -47,10 +47,10 @@ It was discussed in Russell's 1903 \emph{Principles of Mathematics}
   \end{theorem*}
   \begin{proof}
     Assume the contrary.
-    Define $Q = \{q \mid$ there exists a system of propositions $P$ such that $q = \sqcap P$ and $q \notin P\}$.
+    Define $Q = \{q \mid$ there exists a system of propositions $P$ such that $q = \sqcap P$ and $q \nelem P\}$.
     Consider $q = \sqcap Q$.
     Then for any system of propositions $P$ such that $\sqcap P = q$ we have $P = Q$.
-    Hence $q \in Q$ iff $q \notin Q$.
+    Hence $q \elem Q$ iff $q \nelem Q$.
     Contradiction.
   \end{proof}
 \end{forthel}
