@@ -11,51 +11,6 @@
 \RequirePackage{mdframed}
 
 
-% CSS
-% ===
-
-\ExplSyntaxOn
-\stex_css_literal:n{
-.rustex-paragraph {
-  display: inline;
-}
-}
-\ExplSyntaxOff
-
-
-% Workaround until \stex_style_apply: is fixed (then
-% \stexcss<environment name>{<CSS rules>}{} can be used to add CSS rules for
-% an environment <environment name> in the header of the generated HTML file):
-\ExplSyntaxOn
-\stex_css_literal:n{
-[data-forthel="forthel"]{
-  width:calc(100px-2*15px);
-  display:block;
-  border:2px solid #e6e6e6;
-  background-color:#e6e6e6;
-  padding:15px;
-  margin-top:5px;
-  margin-bottom:5px;
-}
-
-[data-forthel="tls"]{
-  display:inline-block;
-  margin-top: 10px;
-}
-
-[data-forthel="proof"]{
-  display:inline-block;
-  margin-top: 5px;
-}
-
-[data-forthel="case"]{
-  display:inline-block;
-  margin-top: 5px;
-}
-}
-\ExplSyntaxOff
-
-
 % Predefined symbols
 % ------------------
 
@@ -173,13 +128,14 @@
   \refstepcounter{theoremcount}%
   \if\relax\tlsid\else\tlsidlabel\fi%
   \ifstexhtml\begin{stex_annotate_env}{style=
-    display:inline-block;
+    display: inline-block;
     margin-top: 10px;
     --rustex-this-width: calc(var(--rustex-this-width)-30px);
   }\fi%
   \noindent\textbf{#2\ifbool{showtlsnumber}{ \thetheoremcount}{}\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
   \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
 }{%
+  \ifstexhtml\end{stex_annotate_env}\fi%
   \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
   \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
   \renewcommand\tlstitle{}%
@@ -228,9 +184,9 @@
 \let\@endlatexlist\endlist
 \newenvironment{case}[1]{%
   \ifstexhtml\begin{stex_annotate_env}{style=
-    display:inline-block;
+    display: inline-block;
     margin-top: 5px;
-    --rustex-this-width: calc(var(--rustex-this-width)-30px);
+    --rustex-curr-width: calc(var(--rustex-curr-width)-37.5px);
   }\fi%
   \@latexlist{}{
     \setlength\leftmargin{1em}
