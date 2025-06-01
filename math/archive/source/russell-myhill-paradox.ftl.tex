@@ -12,12 +12,19 @@
 
 \importmodule[libraries/preliminaries]{preliminaries.ftl}
 
+\symdef{logprod}{\mathop{\comp\sqcap}}
+
 \noindent The \emph{Russell-Myhill Paradox} is a paradox discovered by 
 Bertrand Russell which states that two systems of propositions with the same 
 \emph{logical product} are not necessarily equal.
 It was discussed in Russell's 1903 \emph{Principles of Mathematics}
 \cite[Appendix B]{Russell1903} and rediscovered in 1958 by John Myhill
 \cite{Myhill1958}.
+
+\begin{sdefinition}[for=logprod]
+  \definame{logprod}:
+  $\logprod := \logprod$!!!
+\end{sdefinition}
 
 \begin{forthel}
   \begin{signature*}
@@ -35,21 +42,21 @@ It was discussed in Russell's 1903 \emph{Principles of Mathematics}
 
   \begin{signature*}
     Let $P$ be a system of propositions.
-    The logical product of $P$ is a proposition $p$ such that $p$ is true iff every element of $P$ is true.
+    The \emph{logical product of $P$} is a proposition $p$ such that $p$ is true iff every element of $P$ is true.
   \end{signature*}
   
-  Let $\sqcap P$ denote the logical product of $P$.
+  Let $\emph{\logprod P}$ denote the logical product of $P$.
   
   \begin{theorem*}[title=Russell-Myhill Paradox,id=russell_myhill_paradox]
     It is wrong that
-    \[ \sqcap P = \sqcap Q \implies P = Q \]
+    \[ \logprod P \eq \logprod Q \implies P \eq Q \]
     for all systems of propositions $P, Q$.
   \end{theorem*}
   \begin{proof}
     Assume the contrary.
-    Define $Q = \{q \mid$ there exists a system of propositions $P$ such that $q = \sqcap P$ and $q \nelem P\}$.
-    Consider $q = \sqcap Q$.
-    Then for any system of propositions $P$ such that $\sqcap P = q$ we have $P = Q$.
+    Define $Q = \{q \mid$ there exists a system of propositions $P$ such that $q \eq \logprod P$ and $q \nelem P\}$.
+    Consider $q = \logprod Q$.
+    Then for any system of propositions $P$ such that $\logprod P \eq q$ we have $P \eq Q$.
     Hence $q \elem Q$ iff $q \nelem Q$.
     Contradiction.
   \end{proof}
