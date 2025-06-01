@@ -5,7 +5,7 @@
     "authors": [
       {"name": "Marcel Schütz (2024–2025)"}
     ],
-    "file": "barber-paradox.ftl"
+    "file": "barber-paradox.ftl.en"
   },
   {
     "type": "paper",
@@ -13,7 +13,7 @@
     "authors": [
       {"name": "Marcel Schütz (2024–2025)"}
     ],
-    "file": "burali-forti-paradox.ftl"
+    "file": "burali-forti-paradox.ftl.en"
   },
   {
     "type": "paper",
@@ -21,7 +21,7 @@
     "authors": [
       {"name": "Marcel Schütz (2024–2025)"}
     ],
-    "file": "cantor-paradox.ftl"
+    "file": "cantor-paradox.ftl.en"
   },
   {
     "type": "paper",
@@ -30,7 +30,7 @@
       {"name": "Alexander Holz (2018)"},
       {"name": "Marcel Schütz (2018–2025)"}
     ],
-    "file": "cantor-schroeder-bernstein.ftl"
+    "file": "cantor-schroeder-bernstein.ftl.en"
   },
   {
     "type": "paper",
@@ -38,7 +38,7 @@
     "authors": [
       {"name": "Marcel Schütz (2024–2025)"}
     ],
-    "file": "cantor.ftl"
+    "file": "cantor.ftl.en"
   },
   {
     "type": "paper",
@@ -46,7 +46,7 @@
     "authors": [
       {"name": "Marcel Schütz (2024–2025)"}
     ],
-    "file": "curry-paradox.ftl"
+    "file": "curry-paradox.ftl.en"
   },
   {
     "type": "paper",
@@ -54,7 +54,7 @@
     "authors": [
       {"name": "Marcel Schütz (2024–2025)"}
     ],
-    "file": "drinker-paradox.ftl"
+    "file": "drinker-paradox.ftl.en"
   },
   {
     "type": "paper",
@@ -63,7 +63,7 @@
       {"name": "Andrei Paskevich (2008)"},
       {"name": "Marcel Schütz (2021–2025)"}
     ],
-    "file": "furstenberg.ftl"
+    "file": "furstenberg.ftl.en"
   },
   {
     "type": "paper",
@@ -73,7 +73,7 @@
       {"name": "Adrian De Lon (2021)"},
       {"name": "Marcel Schütz (2024–2025)"}
     ],
-    "file": "hausdorff.ftl"
+    "file": "hausdorff.ftl.en"
   },
   {
     "type": "paper",
@@ -81,7 +81,7 @@
     "authors": [
       {"name": "Marcel Schütz (2024–2025)"}
     ],
-    "file": "hilbert-paradox.ftl"
+    "file": "hilbert-paradox.ftl.en"
   },
   {
     "type": "paper",
@@ -91,7 +91,7 @@
       {"name": "Peter Koepke (2018--2021)"},
       {"name": "Marcel Schütz (2024–2025)"}
     ],
-    "file": "koenig.ftl"
+    "file": "koenig.ftl.en"
   },
   {
     "type": "paper",
@@ -100,7 +100,7 @@
       {"name": "Christian Schöner (2024)"},
       {"name": "Marcel Schütz (2024–2025)"}
     ],
-    "file": "little-gauss.ftl"
+    "file": "little-gauss.ftl.en"
   },
   {
     "type": "paper",
@@ -108,7 +108,7 @@
     "authors": [
       {"name": "Marcel Schütz (2024–2025)"}
     ],
-    "file": "russell-myhill-paradox.ftl"
+    "file": "russell-myhill-paradox.ftl.en"
   },
   {
     "type": "paper",
@@ -116,7 +116,7 @@
     "authors": [
       {"name": "Marcel Schütz (2024–2025)"}
     ],
-    "file": "russell-paradox.ftl"
+    "file": "russell-paradox.ftl.en"
   },
   {
     "type": "paper",
@@ -124,7 +124,7 @@
     "authors": [
       {"name": "Marcel Schütz (2024–2025)"}
     ],
-    "file": "transfinite-recursion.ftl"
+    "file": "transfinite-recursion.ftl.en"
   },
   {
     "type": "paper",
@@ -132,6 +132,6 @@
     "authors": [
       {"name": "Marcel Schütz (2024–2025)"}
     ],
-    "file": "zermelo-wellordering.ftl"
+    "file": "zermelo-wellordering.ftl.en"
   }
 ]
