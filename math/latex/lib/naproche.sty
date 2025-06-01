@@ -29,7 +29,7 @@
 \ExplSyntaxOn
 \stex_css_literal:n{
 [data-forthel="forthel"]{
-  width:calc(100\%-2*15px);
+  width:calc(100px-2*15px);
   display:block;
   border:2px solid #e6e6e6;
   background-color:#e6e6e6;
@@ -150,7 +150,11 @@
   \setkeys{tlskeys}{#1}%
   \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
   \if\relax\tlsid\else\tlsidlabel\fi%
-  \ifstexhtml\begin{stex_annotate_env}{data-forthel=tls}\fi%
+  \ifstexhtml\begin{stex_annotate_env}{style=
+    display: inline-block;
+    margin-top: 10px;
+    --rustex-this-width: calc(var(--rustex-this-width)-30px);
+  }\fi%
   \noindent\textbf{#2\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
   \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
 }{%
@@ -168,6 +172,11 @@
   \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
   \refstepcounter{theoremcount}%
   \if\relax\tlsid\else\tlsidlabel\fi%
+  \ifstexhtml\begin{stex_annotate_env}{style=
+    display:inline-block;
+    margin-top: 10px;
+    --rustex-this-width: calc(var(--rustex-this-width)-30px);
+  }\fi%
   \noindent\textbf{#2\ifbool{showtlsnumber}{ \thetheoremcount}{}\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
   \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
 }{%
@@ -191,7 +200,11 @@
   \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
   \setkeys{proofkeys}{#1}%
   \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
-  \ifstexhtml\begin{stex_annotate_env}{data-forthel=proof}\fi%
+  \ifstexhtml\begin{stex_annotate_env}{style=
+    display:inline-block;
+    margin-top: 5px;
+    --rustex-this-width: calc(var(--rustex-this-width)-30px);
+  }\fi%
   \noindent\textit{Proof\if\relax\proofmethod\else\ by \proofmethod\fi. }%
   \relax%
   % Reset the proof method so that it is not reused by subproofs:
@@ -214,7 +227,11 @@
 \let\@latexlist\list
 \let\@endlatexlist\endlist
 \newenvironment{case}[1]{%
-  \ifstexhtml\begin{stex_annotate_env}{data-forthel=case}\fi%
+  \ifstexhtml\begin{stex_annotate_env}{style=
+    display:inline-block;
+    margin-top: 5px;
+    --rustex-this-width: calc(var(--rustex-this-width)-30px);
+  }\fi%
   \@latexlist{}{
     \setlength\leftmargin{1em}
     \setlength\topsep{0cm}
@@ -247,21 +264,40 @@
 \ExplSyntaxOn
 \stex_new_stylable_env:nnnnnnn{forthel}{}{%
   \par\addvspace\baselineskip%
-  \ifstexhtml\begin{stex_annotate_env}{data-forthel=forthel}\else\stex_if_do_html:F\stex_style_apply:\fi%\stex_if_do_html:F\stex_style_apply:
+  \ifstexhtml\stex_annotate_env{style=
+    display:block;
+    border:2px solid Gainsboro;
+    background-color: Gainsboro;
+    padding:15px;
+    margin-top:5px;
+    margin-bottom:5px;
+  }\fi
+  %\stex_if_do_html:F\stex_style_apply:
   \setbool{forthel}{true}%
   \setlength\parindent{0pt}%
   \setlength\parskip\ftlparskip%
 }{%
-  \ifstexhtml\end{stex_annotate_env}\else\stex_if_do_html:F\stex_style_apply:\fi%\stex_if_do_html:F\stex_style_apply:
+  \ifstexhtml\endstex_annotate_env\fi
+  %\stex_if_do_html:F\stex_style_apply:
   \par\addvspace\baselineskip%
   \setbool{forthel}{false}%
 }{%
-  \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]%
+  \mdframed[backgroundcolor=forthelgray,linecolor=forthelgray]%
   \rmfamily%
 }{%
-  \end{mdframed}%
+  \mdframed%
 }{}
 \ExplSyntaxOff
+
+%\stexcssforthel{
+%  width:calc(100px-2*15px);
+%  display:block;
+%  border:2px solid #e6e6e6;
+%  background-color:#e6e6e6;
+%  padding:15px;
+%  margin-top:5px;
+%  margin-bottom:5px;
+%}{}
 
 % Use \stexstyleforthel{<begin code>}{<end code>} to change the highlighting
 % of forthel environments.
@@ -336,6 +372,12 @@
     {\ifbool{emph}{\color{defemphcolor}#1\color{currentcolor}}{\color{refemphcolor}#1\color{currentcolor}}}%
     {#1}%
 }
+
+% sTeX highlighting:
+\usepackage{stex-highlighting}
+\renewcommand\symrefemph[1]{\ifbool{highlight}{\textcolor{refemphcolor}{#1}}{#1}}
+\renewcommand\compemph[1]{\ifbool{highlight}{\textcolor{refemphcolor}{#1}}{#1}}
+\renewcommand\defemph[1]{\ifbool{highlight}{\textcolor{defemphcolor}{#1}}{#1}}
 
 % Disable highlighting of definienda and components of symbolic expressions by default.
 \setbool{highlight}{false}
