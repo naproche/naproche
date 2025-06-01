@@ -91,7 +91,6 @@ library:
     - SAD.Parser.Combinators
     - SAD.Parser.Primitives
     - SAD.Parser.Token
-    - SAD.Export.Render
 
 executables:
   Naproche:

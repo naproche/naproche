@@ -65,29 +65,10 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 ### Misc
 
-  * **Changed:** In the command line interface, the mode `render` was
-    renamed to `render-file`.
-
-  * **New:** In the `render-file` mode, an additional argument
-    `--format="(pdf|html)"` can be passed to Naproche to render a formalization
-    either as PDF (via `pdflatex`) or as HTML (via `rustex`). If the
-    `--format` argument is omitted, the formalization is rendered as PDF.
-
-  * **New:** In the command line interface, there is a new mode `render-library`
-    in which all `.ftl.tex` files in the `source` directory of a library archive
-    in the `math/libraries` directory are rendered as one PDF file.
-
-    For instance,
-
-    ```sh
-    Naproche --mode=render-library libraries/lists
-    ```
-
-    generates two files `math/libraries/lists/source/lists.ftl.tex` and
-    `math/libraries/lists/source/lists.ftl.pdf` which present the contents of
-    all `.ftl.tex` files in `math/libraries/lists/source` (except the file
-    `math/libraries/lists/source/lists.ftl.tex` itself) and its
-    subdirectories.
+  * **Removed:** In the command line interface, the option `--render` is no
+    longer provided. Use
+    [FLAMS](https://github.com/naproche/naproche/wiki/%F0%9D%96%A5%F0%9D%96%AB%E2%88%80%F0%9D%96%AC%E2%88%AB)
+    instead to convert Naproche formalizations to PDF or HTML.
 
   * **Removed:** The file `CONTRIBUTING.md` was removed. Its content is now
     available in the [Naproche Wiki](https://github.com/naproche/naproche/wiki).

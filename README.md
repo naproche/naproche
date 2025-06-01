@@ -189,33 +189,6 @@ Naproche [<options>] [<file>]
   text in the TEX dialect, provide the option `--tex=on`).
 
 
-## Rendering the Formalizations as PDF or HTML
-
-### Prerequisites
-
-* Make sure that up-to-date versions of `pdflatex` and `bibtex` are in your
-  `PATH`.
-  (Note that, despite its name, `pdflatex` is needed to render a formalization
-  both as PDF *and* HTML.)
-
-* (Optional – only required to render a formalization as HTML.)
-  Make sure that an up-to-date version of [RusTeX][rustex] is in your `PATH`.
-
-
-### Rendering as PDF
-
-```shell
-Naproche --mode=render --format="pdf" <filename>.ftl.tex
-```
-
-
-### Rendering as HTML
-
-```shell
-Naproche --mode=render --format="html" <filename>.ftl.tex
-```
-
-
 ## Wiki
 
 Have a look at the [Naproche Wiki](https://github.com/naproche/naproche/wiki)
