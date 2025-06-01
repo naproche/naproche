@@ -311,7 +311,7 @@ renderLibrary format context archiveId = do
           Nothing -> pure $ "\\printcopyright{" <> author <> "}"
 
       sourceFiles <- gatherFtlTexFiles sourceDirPath ""
-      let sourceFiles' = filter (/= (archiveName <.> "ftl" <.> "tex")) sourceFiles
+      let sourceFiles' = filter (\x -> x /= (archiveName <.> "ftl" <.> "tex") && x /= (archiveName <.> "ftl" <.> "en" <.> "tex")) sourceFiles
           inputrefs = map (\fileLocation -> "\\inputref[" ++ archiveId ++ "]{" ++ fileLocation ++ "}") sourceFiles'
 
       let texContent =
@@ -385,7 +385,7 @@ gatherFtlTexFiles :: FilePath -> FilePath -> IO [FilePath]
 gatherFtlTexFiles absoluteDirPath relativeDirPath = do
   dirEntries <- listDirectory absoluteDirPath
   fileNames <- filterM (\fileName -> doesFileExist (absoluteDirPath </> fileName)) dirEntries
-  let ftlTexFileNames = filter (".ftl.tex" `isExtensionOf`) fileNames
+  let ftlTexFileNames = filter (\x -> ".ftl.tex" `isExtensionOf` x || ".ftl.en.tex" `isExtensionOf` x) fileNames
       ftlTexFilePaths = if null relativeDirPath then ftlTexFileNames else map (relativeDirPath </>) ftlTexFileNames
       ftlTexFilePathComponents = map splitDirectories ftlTexFilePaths
       ftlTexFileLocations = map joinPath ftlTexFilePathComponents
