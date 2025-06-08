@@ -3,6 +3,3 @@ ns: https://naproche.github.io/math/libraries/classes
 narration-base: https://naproche.github.io/math/libraries/classes
 url-base: http://localhost
 format:stex
-title: Classes
-authors: Marcel Schütz (2021–2025)
-license: CcByNcSa
