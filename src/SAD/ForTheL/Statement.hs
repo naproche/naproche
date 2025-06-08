@@ -329,7 +329,9 @@ symbolicFormula  = label "a symbolic formula" $ biimplication
     conjunction   = nonbinary   >>= binary And (symbolicAnd >> conjunction)
     universal     = liftA2 (quantified dAll Imp) (symbolicAll >> (declared =<< symNotion)) nonbinary
     existential   = liftA2 (quantified dExi And) (symbolicExists >> (declared =<<symNotion)) nonbinary
-    nonbinary     = universal -|- existential -|- negation -|- separated -|- atomic
+    nonbinary     = truth -|- falsity -|- universal -|- existential -|- negation -|- separated -|- atomic
+    truth         = symbolicTruth >> pure Top
+    falsity       = symbolicFalsity >> pure Bot
     negation      = Not <$> (symbolicNot >> nonbinary)
     separated     = token' ":" >> symbolicFormula
 
@@ -337,13 +339,15 @@ symbolicFormula  = label "a symbolic formula" $ biimplication
 
     binary op p f = optLL1 f $ fmap (op f) p
 
-    symbolicIff = symbol "<=>" <|> texCommand "iff" <|> isabelleSymbol "Longleftrightarrow"
-    symbolicImp = symbol "=>" <|> texCommand "implies" <|> isabelleSymbol "Longrightarrow"
-    symbolicOr = symbol "\\/" <|> texCommand "vee" <|> isabelleSymbol "or"
-    symbolicAnd = symbol "/\\" <|> texCommand "wedge" <|> isabelleSymbol "and"
-    symbolicAll = token' "forall" <|> texCommand "forall" <|> isabelleSymbol "forall"
-    symbolicExists = token' "exists" <|> texCommand "exists" <|> isabelleSymbol "exists"
-    symbolicNot = token' "not" <|> texCommand "neg" <|> isabelleSymbol "not"
+    symbolicIff = symbol "<=>" <|> texCommand "iff" <|> texCommand "Iff" <|> isabelleSymbol "Longleftrightarrow"
+    symbolicImp = symbol "=>" <|> texCommand "implies" <|> texCommand "Implies" <|> isabelleSymbol "Longrightarrow"
+    symbolicOr = symbol "\\/" <|> texCommand "vee" <|> texCommand "Or" <|> isabelleSymbol "or"
+    symbolicAnd = symbol "/\\" <|> texCommand "wedge" <|> texCommand "And" <|> isabelleSymbol "and"
+    symbolicAll = token' "forall" <|> texCommand "forall" <|> texCommand "Forall" <|> isabelleSymbol "forall"
+    symbolicExists = token' "exists" <|> texCommand "exists" <|> texCommand "Exists" <|> isabelleSymbol "exists"
+    symbolicNot = token' "not" <|> texCommand "neg" <|> texCommand "Not" <|> isabelleSymbol "not"
+    symbolicTruth = token' "true" <|> texCommand "top" <|> texCommand "True" <|> isabelleSymbol "top"
+    symbolicFalsity = token' "false" <|> texCommand "bot" <|> texCommand "False" <|> isabelleSymbol "bottom"
 
     atomic = relation -|- parenthesised statement
       where

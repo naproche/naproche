@@ -1,0 +1,19 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Implication]{implication.ftl}
+
+\importmodule[libraries/ontology]{propositions?disjunction.ftl}
+\importmodule[libraries/ontology]{propositions?negation.ftl}
+
+\symdef{Implies}{\mathop{\comp\Longrightarrow}}
+
+\begin{fakeforthel}
+  \begin{definition}
+    Let $p,q$ be propositions.
+    $\emph{p \Implies q} = \Not p \Or q$.
+  \end{definition}
+\end{fakeforthel}
+
+\end{smodule}
+\end{document}

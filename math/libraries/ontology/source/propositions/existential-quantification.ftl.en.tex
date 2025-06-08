@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Existential Quantification]{existential-quantification.ftl}
+
+\importmodule[libraries/ontology]{entities?elements.ftl}
+
+\symdef{Exists}{\comp\exists}
+
+\begin{fakeforthel}
+  \begin{definition}
+    Let $A$ be a class and $p$ be a proposition.
+    $\emph{\Exists x \in A : p}$ iff $p$ is true for some $x \elem A$.
+  \end{definition}
+\end{fakeforthel}
+
+\end{smodule}
+\end{document}

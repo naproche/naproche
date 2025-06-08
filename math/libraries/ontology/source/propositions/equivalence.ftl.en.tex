@@ -1,0 +1,19 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Equivalence]{equivalence.ftl}
+
+\importmodule[libraries/ontology]{propositions?implication.ftl}
+\importmodule[libraries/ontology]{propositions?conjunction.ftl}
+
+\symdef{Iff}{\mathop{\comp\Longleftrightarrow}}
+
+\begin{fakeforthel}
+  \begin{definition}
+    Let $p,q$ be proposition.
+    $\emph{p \Iff q} = (p \Implies q) \And (q \Implies p)$.
+  \end{definition}
+\end{fakeforthel}
+
+\end{smodule}
+\end{document}

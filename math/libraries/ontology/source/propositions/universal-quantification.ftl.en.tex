@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Universal Quantification]{universal-quantification.ftl}
+
+\importmodule[libraries/ontology]{entities?elements.ftl}
+
+\symdef{Forall}{\comp\forall}
+
+\begin{fakeforthel}
+  \begin{definition}
+    Let $A$ be a class and $p$ be a proposition.
+    $\emph{\Forall x \in A : p}$ iff $p$ is true for all $x \elem A$.
+  \end{definition}
+\end{fakeforthel}
+
+\end{smodule}
+\end{document}
