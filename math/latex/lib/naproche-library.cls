@@ -16,12 +16,6 @@
 \titlespacing*{\subsection}{0pt}{30pt}{0pt}
 \titlespacing*{\subsubsection}{0pt}{30pt}{0pt}
 
-\stexstylemodule{%
-\IfInputref{}{\setsectionlevel{section}}%
-    \begin{sfragment}{\thistitle}%
-    \texttt{\footnotesize\thismoduleuri}%
-}{\end{sfragment}}
-
 
 % Rendering a Library Archive
 % ---------------------------
