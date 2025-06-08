@@ -48,6 +48,8 @@ math .................................... Naproche formalizations
 │   │
 │   ├── little-gauss .................... Sum of the first *n* positive integers
 │   │
+│   ├── peano ........................... §1 of Peano's "Principles of Arithmetics"
+│   │
 │   ├── russell-myhill-paradox .......... The Russell-Myhill paradox
 │   │
 │   └── russell-paradox ................. Russell's paradox
