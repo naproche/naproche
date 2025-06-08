@@ -3,13 +3,13 @@
 \begin{document}
 \begin{smodule}[title=Equality]{equality.ftl}
 
-\symdef{eq}{\mathrel{\highlight=}}
-\symdef{neq}{\mathrel{\highlight{\not=}}}
+\symdef{eq}{\mathrel{\comp=}}
+\symdef{neq}{\mathrel{\comp{\not=}}}
 
 \STEXinvisible{\inlineforthel{Let $x \eq y$ stand for $x = y$.}}
 
 \begin{fakeforthel}
-  \begin{signature}
+  \begin{signature}[for={eq,neq}]
     Let $x,y$ be arbitrary entities.
     \emph{$x$ is equal to $y$} is a relation.
 

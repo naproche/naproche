@@ -6,26 +6,26 @@
 \importmodule[libraries/ontology]{entities?classes.ftl}
 \importmodule[libraries/ontology]{entities?objects.ftl}
 
-\symdef{enumclass}[args=a]{\highlight\{\argsep{#1}{\highlight,}\highlight\}}
-\symdef{compclass}[args=2]{\highlight\{#1\highlight\mid#2\highlight\}}
-\symdef{sepclass}[args=3]{\highlight\{#1\highlight\in#2\highlight\mid#3\highlight\}}
+\symdef{enumclass}[args=a]{\comp\{\argsep{#1}{\comp,}\comp\}}
+\symdef{compclass}[args=2]{\comp\{#1\comp\mid#2\comp\}}
+\symdef{sepclass}[args=3]{\comp\{#1\comp\in#2\comp\mid#3\comp\}}
 
 \begin{fakeforthel}
-  \begin{signature}
+  \begin{signature}[for=enumclass]
     Let $a_1,\dots,a_n$ be objects.
     $\emph{\enumclass{a1,\dots,a_n}}$ is a class.
   \end{signature}
 \end{fakeforthel}
 
 \begin{fakeforthel}
-  \begin{signature}
+  \begin{signature}[for=compclass]
     Let $\tau$ be a term and $\varphi$ be a formula.
     $\emph{\compclass{\tau}{\varphi}}$ is a class.
   \end{signature}
 \end{fakeforthel}
 
 \begin{fakeforthel}
-  \begin{signature}
+  \begin{signature}[for=sepclass]
     Let $\tau$ be a term, $A$ be a class and $\varphi$ be a formula.
     $\emph{\sepclass{\tau}{A}{\varphi}}$ is a class.
   \end{signature}

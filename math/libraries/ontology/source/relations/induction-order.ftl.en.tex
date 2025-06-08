@@ -3,12 +3,12 @@
 \begin{document}
 \begin{smodule}[title=Induction Order]{induction-order.ftl}
 
-\symdef{iless}{\mathrel{\highlight\prec}}
+\symdef{iless}{\mathrel{\comp\prec}}
 
 \STEXinvisible{\inlineforthel{Let $x \iless y$ stand for $x \prec y$.}}
 
 \begin{fakeforthel}
-  \begin{signature}
+  \begin{signature}[for=iless]
     Let $x,y$ be terms.
     $\emph{x \iless y}$ is a relation.
   \end{signature}

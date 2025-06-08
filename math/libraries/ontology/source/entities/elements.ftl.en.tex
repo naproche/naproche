@@ -6,8 +6,8 @@
 \importmodule[libraries/ontology]{entities?classes.ftl}
 \importmodule[libraries/ontology]{entities?objects.ftl}
 
-\symdef{elem}{\mathrel{\highlight\in}}
-\symdef{nelem}{\mathrel{\highlight{\not\in}}}
+\symdef{elem}{\mathrel{\comp\in}}
+\symdef{nelem}{\mathrel{\comp{\not\in}}}
 
 \begin{fakeforthel}
   \begin{signature}
@@ -17,9 +17,9 @@
 \end{fakeforthel}
 
 \begin{forthel}
-  \begin{convention}
-    Let \emph{$a \elem A$} stand for $a$ is an element of $A$.
-    Let \emph{$a \nelem A$} stand for $a$ is not an element of $A$.
+  \begin{convention}[for={elem,nelem}]
+    Let $\emph{a \elem A}$ stand for $a$ is an element of $A$.
+    Let $\emph{a \nelem A}$ stand for $a$ is not an element of $A$.
 
     Let a \emph{member of $X$} stand for an element of $X$.
     Let $x$ \emph{belongs to $X$} stand for $x$ is an element of $X$.
