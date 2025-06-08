@@ -62,6 +62,9 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   * **New:** A new library `math/libraries/ontology` that describes the
     hard-coded object-level ontology of Naproche.
 
+  * **New:** A formalization of §1 of Peano's "Principles of Arithmetics"
+    (`math/archive/source/peano.ftl.en.tex`).
+
 
 ### Misc
 
