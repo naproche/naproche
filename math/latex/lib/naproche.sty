@@ -76,17 +76,21 @@
 \newcommand\tlsid{}
 \newcommand\tlsidname{}
 \newcommand\tlsidlabel{}
+\newcommand\tlsfor\inlinedef
+
+\def\tlsinlinedef#1{\inlinedef[for=#1]}
 
 \makeatletter
 \define@key{tlskeys}{forthel}[true]{\setbool{forthel}{\if\relax{#1}{false}\else#1\fi}}
 \define@key{tlskeys}{title}{\def\tlstitle{#1}}
 \define@key{tlskeys}{id}{\def\tlsid{#1}\def\tlsidname{\path{#1}\def\tlsidlabel{\label{#1}}}}
+\define@key{tlskeys}{for}{\def\tlsfor{\inlinedef[for={#1}]}}
 \makeatother
 
-\NewEnviron{definition}[1][]{\begin{tls}[#1]{Definition}\BODY\end{tls}}
-\NewEnviron{definition*}[1][]{\begin{tls*}[#1]{Definition}\BODY\end{tls*}}
-\NewEnviron{signature}[1][]{\begin{tls}[#1]{Signature}\BODY\end{tls}}
-\NewEnviron{signature*}[1][]{\begin{tls*}[#1]{Signature}\BODY\end{tls*}}
+\NewEnviron{definition}[1][]{\begin{tls}[#1]{Definition}\tlsfor\BODY\end{tls}}
+\NewEnviron{definition*}[1][]{\begin{tls*}[#1]{Definition}\tlsfor\BODY\end{tls*}}
+\NewEnviron{signature}[1][]{\begin{tls}[#1]{Signature}\tlsfor\BODY\end{tls}}
+\NewEnviron{signature*}[1][]{\begin{tls*}[#1]{Signature}\tlsfor\BODY\end{tls*}}
 \NewEnviron{axiom}[1][]{\begin{tls}[#1]{Axiom}\BODY\end{tls}}
 \NewEnviron{axiom*}[1][]{\begin{tls*}[#1]{Axiom}\BODY\end{tls*}}
 \NewEnviron{theorem}[1][]{\begin{tls}[#1]{Theorem}\BODY\end{tls}}
@@ -97,8 +101,8 @@
 \NewEnviron{lemma*}[1][]{\begin{tls*}[#1]{Lemma}\BODY\end{tls*}}
 \NewEnviron{corollary}[1][]{\begin{tls}[#1]{Corollary}\BODY\end{tls}}
 \NewEnviron{corollary*}[1][]{\begin{tls*}[#1]{Corollary}\BODY\end{tls*}}
-\NewEnviron{convention}[1][]{\begin{tls}[#1]{Convention}\BODY\end{tls}}
-\NewEnviron{convention*}[1][]{\begin{tls*}[#1]{Convention}\BODY\end{tls*}}
+\NewEnviron{convention}[1][]{\begin{tls}[#1]{Convention}\tlsfor\BODY\end{tls}}
+\NewEnviron{convention*}[1][]{\begin{tls*}[#1]{Convention}\tlsfor\BODY\end{tls*}}
 
 \newenvironment{tls*}[2][]{%
   \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
@@ -106,7 +110,7 @@
   \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
   \if\relax\tlsid\else\tlsidlabel\fi%
   \ifstexhtml\begin{stex_annotate_env}{style=
-    display: inline-block;
+    display: block;
     margin-top: 10px;
     --rustex-this-width: calc(var(--rustex-this-width)-30px);
   }\fi%
@@ -128,7 +132,7 @@
   \refstepcounter{theoremcount}%
   \if\relax\tlsid\else\tlsidlabel\fi%
   \ifstexhtml\begin{stex_annotate_env}{style=
-    display: inline-block;
+    display: block;
     margin-top: 10px;
     --rustex-this-width: calc(var(--rustex-this-width)-30px);
   }\fi%
@@ -220,43 +224,32 @@
 \ExplSyntaxOn
 \stex_new_stylable_env:nnnnnnn{forthel}{}{%
   \par\addvspace\baselineskip%
-  \ifstexhtml\stex_annotate_env{style=
-    display:block;
-    border:2px solid Gainsboro;
-    background-color: Gainsboro;
-    padding:15px;
-    margin-top:5px;
-    margin-bottom:5px;
-  }\fi
-  %\stex_if_do_html:F\stex_style_apply:
+  \ifstexhtml%
+    \stex_annotate_env{style=
+      display:block;
+      border:2px solid Gainsboro;
+      background-color: Gainsboro;
+      padding:15px;
+      margin-top:5px;
+      margin-bottom:5px;
+    }%
+  \else%
+    \mdframed[backgroundcolor=forthelgray,linecolor=forthelgray]%
+  \fi%
+  \rmfamily%
   \setbool{forthel}{true}%
   \setlength\parindent{0pt}%
   \setlength\parskip\ftlparskip%
 }{%
-  \ifstexhtml\endstex_annotate_env\fi
-  %\stex_if_do_html:F\stex_style_apply:
+  \ifstexhtml%
+    \endstex_annotate_env%
+  \else%
+    \endmdframed%
+  \fi
   \par\addvspace\baselineskip%
   \setbool{forthel}{false}%
-}{%
-  \mdframed[backgroundcolor=forthelgray,linecolor=forthelgray]%
-  \rmfamily%
-}{%
-  \mdframed%
-}{}
+}{}{}{}
 \ExplSyntaxOff
-
-%\stexcssforthel{
-%  width:calc(100px-2*15px);
-%  display:block;
-%  border:2px solid #e6e6e6;
-%  background-color:#e6e6e6;
-%  padding:15px;
-%  margin-top:5px;
-%  margin-bottom:5px;
-%}{}
-
-% Use \stexstyleforthel{<begin code>}{<end code>} to change the highlighting
-% of forthel environments.
 
 
 % Inline ForTheL Command
@@ -295,29 +288,34 @@
 % =======================
 
 \newbool{highlight}
+\setbool{highlight}{false}
 \newbool{emph}
 \setbool{emph}{false}
 
+\definecolor{sTeXMediumVioletRed}{RGB}{199,21,133}
 % Default colors for highhlighting definienda and components of symbolic expressions:
-\colorlet{defemphcolor}{violet}
+\ifstexhtml\colorlet{defemphcolor}{sTeXMediumVioletRed}\else\colorlet{defemphcolor}{violet}\fi
 \colorlet{refemphcolor}{teal}
+
 
 \let\oldemph\emph
 
 % In forthel environments, color the argument of \emph commands with
 % defemphcolor and set its shape to italics. Outside of forthel environments,
 % \emph behaves as usual.
+\ExplSyntaxOn
 \renewcommand\emph[1]{%
-\colorlet{currentcolor}{.}%
+  \colorlet{currentcolor}{.}%
   \setbool{emph}{true}%
   \ifbool{forthel}%
     {\ifbool{highlight}%
-      {\color{defemphcolor}{\ifmmode#1\else\itshape#1\fi}\color{currentcolor}}%
+      {\color{defemphcolor}{\ifmmode\defnotation#1\else\itshape#1\fi}\color{currentcolor}}%
       {\ifmmode#1\else\itshape#1\fi}%
     }%
     {\oldemph{#1}}%
   \setbool{emph}{false}%
 }
+\ExplSyntaxOff
 
 % Components of symbolic expressions that are wrapped in \highlight are colored
 % with refemphcolor or, if the expression occurs as the argument of an \emph
@@ -325,18 +323,26 @@
 \newcommand\highlight[1]{%
   \colorlet{currentcolor}{.}%
   \ifbool{highlight}%
+    %{\ifbool{emph}{\color{defemphcolor}#1\color{currentcolor}}{\color{refemphcolor}#1\color{currentcolor}}}%
     {\ifbool{emph}{\color{defemphcolor}#1\color{currentcolor}}{\color{refemphcolor}#1\color{currentcolor}}}%
     {#1}%
 }
 
 % sTeX highlighting:
 \usepackage{stex-highlighting}
-\renewcommand\symrefemph[1]{\ifbool{highlight}{\textcolor{refemphcolor}{#1}}{#1}}
-\renewcommand\compemph[1]{\ifbool{highlight}{\textcolor{refemphcolor}{#1}}{#1}}
-\renewcommand\defemph[1]{\ifbool{highlight}{\textcolor{defemphcolor}{#1}}{#1}}
-
-% Disable highlighting of definienda and components of symbolic expressions by default.
-\setbool{highlight}{false}
+\def\compemph#1{%
+  \ifbool{highlight}{%
+    \ifbool{forthel}{%
+        \ifbool{emph}{\textcolor{defemphcolor}{#1}%
+      }{%
+        \textcolor{refemphcolor}{#1}%
+      }%
+    }{%
+      \textcolor{refemphcolor}{#1}%
+    }%
+  }{#1}%
+}
+\def\defemph#1{\textcolor{defemphcolor}{#1}}
 
 
 % Options
