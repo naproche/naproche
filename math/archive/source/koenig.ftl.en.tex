@@ -7,11 +7,6 @@
 \author{Steffen Frerix (2018--2019) and Peter Koepke (2018--2021), Marcel Schütz (2024--2025)}
 \date{}
 
-\newcommand{\SumSet}[2]{\bigsqcup_{i \in #2} #1_{i}}
-\newcommand{\Sum}[2]{\sum_{i \in #2} #1_{i}}
-\newcommand{\ProdSet}[2]{\bigtimes_{i \in #2} #1_{i}}
-\newcommand{\Prod}[2]{\prod_{i \in #2} #1_{i}}
-
 
 \begin{document}
 \begin{smodule}{koenig.ftl}
@@ -19,6 +14,11 @@
 
 \importmodule[libraries/set-theory]{cardinals-and-maps.ftl}
 \importmodule[libraries/set-theory]{two.ftl}
+
+\symdef{SumSet}[args=2]{\comp\bigsqcup_{\svar i\comp\in#2}#1_{\svar i}}
+\symdef{Sum}[args=2]{\comp\sum_{\svar i\comp\in#2}#1_{\svar i}}
+\symdef{ProdSet}[args=2]{\comp\bigtimes_{\svar i\comp\in#2}#1_{\svar i}}
+\symdef{Prod}[args=2]{\comp\prod_{\svar i\comp\in#2}#1_{\svar i}}
 
 \noindent Kőnig's Theorem is an important set-theoretical result about the
 arithmetic of cardinals.
@@ -30,17 +30,17 @@ $\kappa \ORDless \ORDtwo^\kappa$.
 \section*{Sums and Products of cardinals}
 
 \begin{forthel}
-  Let $f_{i}$ stand for $f(i)$.
+  Let $\emph{f_{i}}$ stand for $f(i)$.
   Let $D$ denote a set.
 
   \begin{definition*}
-    A sequence of cardinals on $D$ is a function $\kappa$ such that
+    A \emph{sequence of cardinals on $D$} is a function $\kappa$ such that
     $\dom(\kappa) = D$ and $\kappa_{i}$ is a cardinal for every element $i$ of $D$.
   \end{definition*}
 
-  \begin{definition*}
+  \begin{definition*}[for=SumSet]
     Let $\kappa$ be a sequence of cardinals on $D$.
-    \[ \SumSet{\kappa}{D} = \class{(n,i) | \text{$i$ is an element of $D$ and $n$ is an element of $\kappa_{i}$}}. \]
+    \[ \emph{\SumSet{\kappa}{D}} = \class{(n,i) | \text{$i$ is an element of $D$ and $n$ is an element of $\kappa_{i}$}}. \]
   \end{definition*}
 
   \begin{axiom*}
@@ -48,14 +48,14 @@ $\kappa \ORDless \ORDtwo^\kappa$.
     Then $\SumSet{\kappa}{D}$ is a set.
   \end{axiom*}
 
-  \begin{definition*}
+  \begin{definition*}[for=Sum]
     Let $\kappa$ be a sequence of cardinals on $D$.
-    \[ \Sum{\kappa}{D} = \SETcard{ \SumSet{\kappa}{D} }. \]
+    \[ \emph{\Sum{\kappa}{D}} = \SETcard{ \SumSet{\kappa}{D} }. \]
   \end{definition*}
 
-  \begin{definition*}
+  \begin{definition*}[for=ProdSet]
     Let $\kappa$ be a sequence of cardinals on $D$.
-    \[ \ProdSet{\kappa}{D} = \class{f | \classtext{$f$ is a function and $\dom(f) = D$ and $f(i)$ is an element of $\kappa_{i}$ for every element $i$ of $D$}}. \]
+    \[ \emph{\ProdSet{\kappa}{D}} = \class{f | \classtext{$f$ is a function and $\dom(f) = D$ and $f(i)$ is an element of $\kappa_{i}$ for every element $i$ of $D$}}. \]
   \end{definition*}
 
   \begin{axiom*}
@@ -63,9 +63,9 @@ $\kappa \ORDless \ORDtwo^\kappa$.
     Then $\ProdSet{\kappa}{D}$ is a set.
   \end{axiom*}
 
-  \begin{definition*}
+  \begin{definition*}[for=Prod]
     Let $\kappa$ be a sequence of cardinals on $D$.
-    \[ \Prod{\kappa}{D} = \SETcard{ \ProdSet{\kappa}{D} }. \]
+    \[ \emph{\Prod{\kappa}{D}} = \SETcard{ \ProdSet{\kappa}{D} }. \]
   \end{definition*}
 \end{forthel}
 

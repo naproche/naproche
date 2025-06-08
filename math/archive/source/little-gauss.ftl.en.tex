@@ -2,8 +2,6 @@
 \usepackage{naproche}
 \libinput{preamble}
 
-\newcommand{\gauss}{\mathcal{G}}
-
 \title{``Little Gauß''' Theorem}
 \author{Christian Schöner (2024), Marcel Schütz (2024--2025)}
 \date{}
@@ -13,6 +11,8 @@
 \maketitle
 
 \importmodule[libraries/arithmetics]{multiplication.ftl}
+
+\symdef{gauss}{\comp{\mathcal G}}
 
 \noindent This is a formalization of ``Little Gauß''' Theorem, i.e. of
 the assertion that
@@ -25,8 +25,8 @@ $\gauss(n \NATplus \NATone) = \gauss(n) \NATplus (n \NATplus \NATone)$:
 \begin{forthel}
   Let $n$ denote a natural number.
 
-  \begin{signature*}
-    $\gauss(n)$ is a natural number.
+  \begin{signature*}[for=gauss]
+    $\emph{\gauss(n)}$ is a natural number.
   \end{signature*}
 
   \begin{axiom*}

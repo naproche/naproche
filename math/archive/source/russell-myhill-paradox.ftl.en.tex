@@ -23,24 +23,24 @@ It was discussed in Russell's 1903 \emph{Principles of Mathematics}
 
 \begin{forthel}
   \begin{signature*}
-    A proposition is an object.
+    A \emph{proposition} is an object.
   \end{signature*}
 
   \begin{signature*}
     Let $p$ be a proposition.
-    $p$ is true is an atom.
+    $p$ is \emph{true} is an atom.
   \end{signature*}
 
   \begin{definition*}
-    A system of propositions is a class $P$ such that every element of $P$ is a proposition.
+    A \emph{system of propositions} is a class $P$ such that every element of $P$ is a proposition.
   \end{definition*}
 
-  \begin{signature*}
+  \begin{signature*}[for=logprod]
     Let $P$ be a system of propositions.
     The \emph{logical product of $P$} is a proposition $p$ such that $p$ is true iff every element of $P$ is true.
-  \end{signature*}
   
   Let $\emph{\logprod P}$ denote the logical product of $P$.
+  \end{signature*}
   
   \begin{theorem*}[title=Russell-Myhill Paradox,id=russell_myhill_paradox]
     It is wrong that

@@ -2,10 +2,6 @@
 \usepackage{naproche}
 \libinput{preamble}
 
-\newcommand{\N}{\mathrm{N}}
-\newcommand{\Int}{\mathbb{Z}}
-\newcommand{\Ps}{\mathrm{P}}
-
 \title{Furstenberg's Proof of the Infinitude of Primes}
 \author{Andrei Paskevich (2008), Marcel Schütz (2021--2025)}
 \date{}
@@ -18,6 +14,11 @@
 \importmodule[libraries/arithmetics]{nat-is-a-set.ftl}
 \importmodule[libraries/set-theory]{zfc.ftl}
 \importmodule[libraries/foundations]{closure-under-finite-unions.ftl}
+
+\symdef{compl}[args=1]{#1^{\comp\complement}}
+\symdef{arseq}[args=2]{\comp{\mathrm N}_{#1\comp,#2}}
+\symdef{Int}{\comp{\matbbb Z}}
+\symdef{Ps}{\comp{\mathrm P}}
 
 \noindent This is a formalization of Furstenberg's topological proof of the
 infinitude of primes \cite[p. 353]{Furstenberg1955}.
@@ -32,12 +33,12 @@ $\Nat$ without substantially changing the proof.}
   Let $n, m, k$ denote natural numbers.
   Let $p, q$ denote nonzero natural numbers.
 
-  \begin{definition}
+  \begin{definition}[for=complement]
     Let $A$ be a subset of $\Nat$.
-    $A^\complement = \Nat \SETdiff A$.
+    $\emph{\compl{A}} = \Nat \SETdiff A$.
   \end{definition}
 
-  Let the complement of $A$ stand for $A^\complement$.
+  Let the complement of $A$ stand for $\compl{A}$.
 
   \begin{lemma}
     The complement of any subset of $\Nat$ is a subset of $\Nat$.
@@ -45,11 +46,11 @@ $\Nat$ without substantially changing the proof.}
 \end{forthel}
 
 Towards a suitable topology on $\Nat$ let us define \textit{arithmetic
-sequences} $\N_{n, q}$ on $\Nat$.
+sequences} $\arseq{n}{q}$ on $\Nat$.
 
 \begin{forthel}
-  \begin{definition}
-    $\N_{n, q} = \{ m \in \Nat \mid \NATcong{m}{n}{q} \}$.
+  \begin{definition}[for=arseq]
+    $\emph{\arseq{n}{q}} = \{ m \in \Nat \mid \NATcong{m}{n}{q} \}$.
   \end{definition}
 \end{forthel}
 
@@ -59,12 +60,12 @@ topology} on $\Nat$, whose open sets are defined as follows.
 \begin{forthel}
   \begin{definition}
     Let $U$ be a subset of $\Nat$.
-    $U$ is open iff for any $n \in U$ there exists a $q$ such that
-    $\N_{n, q} \SETinclude U$.
+    $U$ is \emph{open} iff for any $n \in U$ there exists a $q$ such that
+    $\arseq{n}{q} \SETinclude U$.
   \end{definition}
 
   \begin{definition}
-    A system of open sets is a system of sets $S$ such that every element of
+    A \emph{system of open sets} is a system of sets $S$ such that every element of
     $S$ is an open subset of $\Nat$.
   \end{definition}
 
@@ -91,15 +92,15 @@ We can show that the open sets indeed form a topology on $\Nat$.
   \end{lemma}
   \begin{proof}
     Let $n \in U \SETintersect V$.
-    Take a $q$ such that $\N_{n, q} \SETinclude U$.
-    Take a $p$ such that $\N_{n, p} \SETinclude V$.
+    Take a $q$ such that $\arseq{n}{q} \SETinclude U$.
+    Take a $p$ such that $\arseq{n}{p} \SETinclude V$.
     Then $p \NATmul q \neq \NATzero$.
 
-    Let us show that $\N_{n, p \NATmul q} \SETinclude U \SETintersect V$.
-      Let $m \in \N_{n, p \NATmul q}$.
+    Let us show that $\arseq{n}{p \NATmul q} \SETinclude U \SETintersect V$.
+      Let $m \in \arseq{n}{p \NATmul q}$.
       We have $\NATcong{m}{n}{p \NATmul q}$.
       Hence $\NATcong{m}{n}{p}$ and $\NATcong{m}{n}{q}$.
-      Thus $m \in \N_{n, p}$ and $m \in \N_{n, q}$.
+      Thus $m \in \arseq{n}{p}$ and $m \in \arseq{n}{q}$.
       Therefore $m \in U$ and $m \in V$.
       Consequently $m \in U \SETintersect V$.
     End.
@@ -112,8 +113,8 @@ We can show that the open sets indeed form a topology on $\Nat$.
   \begin{proof}
     Let $n \in \SETunionover S$.
     Take a set $M$ such that $n \in M \in S$.
-    Consider a $q$ such that $\N_{n, q} \SETinclude M$.
-    Then $\N_{n, q} \SETinclude \SETunionover S$.
+    Consider a $q$ such that $\arseq{n}{q} \SETinclude M$.
+    Then $\arseq{n}{q} \SETinclude \SETunionover S$.
   \end{proof}
 \end{forthel}
 
@@ -124,11 +125,11 @@ closed under finite unions.
 \begin{forthel}
   \begin{definition}
     Let $A$ be a subset of $\Nat$.
-    $A$ is closed iff $A^\complement$ is open.
+    $A$ is \emph{closed} iff $\compl{A}$ is open.
   \end{definition}
 
   \begin{definition}
-    A system of closed sets is a system of sets $S$ such that every element of
+    A \emph{system of closed sets} is a system of sets $S$ such that every element of
     $S$ is a closed subset of $\Nat$.
   \end{definition}
 
@@ -152,9 +153,9 @@ closed under finite unions.
     Let us show that $A \SETunion B \in C$ for any $A, B \in C$.
       Let $A, B \in C$.
       Then $A, B$ are closed subsets of $\Nat$.
-      We have $((A \SETunion B)^\complement) = A^\complement \SETintersect B^\complement$. %!
-      $A^\complement$ and $B^\complement$ are open.
-      Hence $A^\complement \SETintersect B^\complement$ is open.
+      We have $(\compl{A \SETunion B} = \compl{A} \SETintersect \compl{B}$. %!
+      $\compl{A}$ and $\compl{B}$ are open.
+      Hence $\compl{A} \SETintersect \compl{B}$ is open.
       Thus $A \SETunion B$ is a closed subset of $\Nat$.
     End.
 
@@ -169,38 +170,38 @@ sequences are closed.
 
 \begin{forthel}
   \begin{lemma}
-    $\N_{n, q}$ is closed.
+    $\arseq{n}{q}$ is closed.
   \end{lemma}
   \begin{proof}
-    Let $m \in (\N_{n, q})^\complement$.
+    Let $m \in \compl{\arseq{n}{q}}$.
 
-    Let us show that $\N_{m, q} \SETinclude (\N_{n, q})^\complement$.
-      Let $k \in \N_{m, q}$.
-      Assume $k \notin (\N_{n, q})^\complement$.
+    Let us show that $\arseq{m}{q} \SETinclude \compl{\arseq{n}{q}}$.
+      Let $k \in \arseq{m}{q}$.
+      Assume $k \notin \compl{\arseq{n}{q}}$.
       Then $\NATcong{k}{m}{q}$ and $\NATcong{n}{k}{q}$.
       Hence $\NATcong{m}{n}{q}$.
-      Therefore $m \in \N_{n, q}$.
+      Therefore $m \in \arseq{n}{q}$.
       Contradiction.
     End.
   \end{proof}
 \end{forthel}
 
-Identifying each prime number $p$ with the arithmetic sequence $\N_{0, p}$
+Identifying each prime number $p$ with the arithmetic sequence $\arseq{0}{p}$
 yields a bijection between the set $\Prime$ of all prime numbers and the set
-$\Ps$ of all such sequences $\N_{0, p}$.
+$\Ps$ of all such sequences $\arseq{0}{p}$.
 Thus to show that there are infinitely many primes it suffices to show that
 $\Ps$ is infinite.
 
 \begin{forthel}
   \begin{definition}
-    $\Ps = \{ \N_{\NATzero, p} \mid p \in \Prime \}$.
+    $\emph{\Ps} = \{ \arseq{\NATzero}{p} \mid p \in \Prime \}$.
   \end{definition}
 
   \begin{lemma}
     $\Ps$ is a system of closed sets.
   \end{lemma}
   \begin{proof}
-    $\N_{\NATzero, p}$ is a closed subset of $\Nat$ for every $p \in \Prime$.
+    $\arseq{\NATzero}{p}$ is a closed subset of $\Nat$ for every $p \in \Prime$.
   \end{proof}
 
   \begin{lemma}
@@ -212,14 +213,14 @@ $\Ps$ is infinite.
 
     (2) $\Ps$ is equinumerous to $\Prime$.
     \begin{proof}
-      Define $f(p) = \N_{\NATzero,p}$ for $p \in \Prime$.
+      Define $f(p) = \arseq{\NATzero}{p}$ for $p \in \Prime$.
 
       Let us show that $f$ is injective.
         Let $p, q \in \Prime$.
         Assume $f(p) = f(q)$.
-        Then $\N_{\NATzero, p} = \N_{\NATzero, q}$.
-        We have $\N_{\NATzero, p} = \{ m \in \Nat \mid \NATcong{m}{\NATzero}{p} \}$ and
-        $\N_{\NATzero, q} = \{ m \in \Nat \mid \NATcong{m}{\NATzero}{q} \}$.
+        Then $\arseq{\NATzero}{p} = \arseq{\NATzero}{q}$.
+        We have $\arseq{\NATzero}{p} = \{ m \in \Nat \mid \NATcong{m}{\NATzero}{p} \}$ and
+        $\arseq{\NATzero}{q} = \{ m \in \Nat \mid \NATcong{m}{\NATzero}{q} \}$.
 
         We can show that for all $m \in \Nat$ we have $p \NATmid m$ iff $q \NATmid m$.
           Let $m \in \Nat$.
@@ -252,38 +253,38 @@ $\Ps$ is infinite.
       \begin{proof}
         Assume $n$ has a prime divisor.
         Take a prime divisor $p$ of $n$.
-        We have $\N_{\NATzero, p} \in \Ps$.
-        Hence $n \in \N_{\NATzero, p}$.
+        We have $\arseq{\NATzero}{p} \in \Ps$.
+        Hence $n \in \arseq{\NATzero}{p}$.
       \end{proof}
 
       If $n$ belongs to $\SETunionover \Ps$ then $n$ has a prime divisor.
       \begin{proof}
         Assume that $n$ belongs to $\SETunionover \Ps$.
-        Take a prime number $r$ such that $n \in \N_{\NATzero, r}$.
+        Take a prime number $r$ such that $n \in \arseq{\NATzero}{r}$.
         Hence $\NATcong{n}{\NATzero}{r}$.
         Thus $n \NATmod r = \NATzero \NATmod r = \NATzero$.
         Therefore $r$ is a prime divisor of $n$.
       \end{proof}
     End.
 
-    Hence For all $n \in \Nat$ we have $n \in (\SETunionover \Ps)^\complement$ iff
+    Hence For all $n \in \Nat$ we have $n \in \compl{\SETunionover \Ps}$ iff
     $n$ has no prime divisor.
     $\NATone$ has no prime divisor and any natural number having no prime
     divisor is equal to $\NATone$.
-    Therefore $(\SETunionover \Ps)^\complement = \SETsingleton{\NATone}$.
-    Indeed $((\SETunionover \Ps)^\complement) \SETinclude \SETsingleton{\NATone}$ and $\SETsingleton{\NATone}
-    \SETinclude (\SETunionover \Ps)^\complement$. %!
+    Therefore $\compl{\SETunionover \Ps} = \SETsingleton{\NATone}$.
+    Indeed $\compl{\SETunionover \Ps} \SETinclude \SETsingleton{\NATone}$ and $\SETsingleton{\NATone}
+    \SETinclude \compl{\SETunionover \Ps}$. %!
 
     $\Ps$ is infinite.
     \begin{proof}[method=contradiction]
       Assume that $\Ps$ is finite.
-      Then $\SETunionover \Ps$ is closed and $(\SETunionover \Ps)^\complement$ is open.
-      Take a $p$ such that $\N_{\NATone, p} \SETinclude (\SETunionover \Ps)^\complement$.
-      $\NATone \NATplus p$ is an element of $\N_{\NATone, p}$.
+      Then $\SETunionover \Ps$ is closed and $\compl{\SETunionover \Ps}$ is open.
+      Take a $p$ such that $\arseq{\NATone}{p} \SETinclude \compl{\SETunionover \Ps}$.
+      $\NATone \NATplus p$ is an element of $\arseq{\NATone}{p}$.
       Indeed $\NATcong{\NATone \NATplus p}{\NATone}{p}$
       (by \printref{ARITHMETIC_08_5984712287846400}).
       $\NATone \NATplus p$ is not equal to $\NATone$.
-      Hence $\NATone \NATplus p \notin (\SETunionover \Ps)^\complement$.
+      Hence $\NATone \NATplus p \notin \compl{\SETunionover \Ps}$.
       Contradiction.
     \end{proof}
   \end{proof}

@@ -2,11 +2,6 @@
 \usepackage{naproche}
 \libinput{preamble}
 
-\newcommand{\varzero}{x_0}
-\newcommand{\abs}[2]{\lambda#1.\ #2}
-\newcommand{\app}[2]{(#1)(#2)}
-\newcommand{\fix}{\texttt{fix}}
-
 \title{Curry's Paradox}
 \author{Marcel Schütz}
 \date{2024--2025}
@@ -16,6 +11,12 @@
 \maketitle
 
 \importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\symdef{varzero}{\comp{x_0}}
+\symdef{abs}[args=2]{\comp\lambda#1\comp.\,#2}
+\symdef{app}[args=2]{\dobrackets{#1}\cobrackets{#2}}
+\symdef{fix}{\texttt{fix}}
+\symdef{impl}{\mathop{\comp\rightarrow}}
 
 \noindent \emph{Curry's Paradox} is a paradox described by Haskell Curry in 
 1942 \cite{Curry1942}.
@@ -29,30 +30,30 @@ untyped $\lambda$-calculus:
 
 \begin{forthel}
   \begin{signature*}
-    An expression is a notion.
-  \end{signature*}
+    An \emph{expression} is a notion.
 
-  Let $E, E'$ denote expressions.
-
-  \begin{signature*}
-    A variable is an expression.
+    Let $E, E'$ denote expressions.
   \end{signature*}
 
   \begin{signature*}
-    $\varzero$ is a variable.
+    A \emph{variable} is an expression.
   \end{signature*}
 
-  \begin{signature*}[title=Abstraction,id=abstraction]
+  \begin{signature*}[for=varzero]
+    $\emph{\varzero}$ is a variable.
+  \end{signature*}
+
+  \begin{signature*}[title=Abstraction,id=abstraction,for=abs]
     Let $x$ be a variable.
-    $\abs{x}{E}$ is an expression.
+    $\emph{\abs{x}{E}}$ is an expression.
   \end{signature*}
 
-  \begin{signature*}[title=Application,id=application]
-    $\app{E}{E'}$ is an expression.
+  \begin{signature*}[title=Application,id=application,for=app]
+    $\emph{\app{E}{E'}}$ is an expression.
   \end{signature*}
 
-  \begin{signature*}[title=Fixed-point combinator,id=fixed_point_combinator]
-    $\fix$ is an expression such that
+  \begin{signature*}[title=Fixed-point combinator,id=fixed_point_combinator,for=fix]
+    $\emph{\fix}$ is an expression such that
     \[\app{\fix}{E} = \app{E}{\app{\fix}{E}}\]
     for every expression $E$.
   \end{signature*}
@@ -68,28 +69,28 @@ logic:
   Let $E, E'$ denote expressions.
   Let $x$ denote a variable.
 
-  \begin{signature*}[title=Implication,id=implication]
-    $E \rightarrow E'$ is an expression.
+  \begin{signature*}[title=Implication,id=implication,for=impl]
+    $\emph{E \impl E'}$ is an expression.
   \end{signature*}
 
   \begin{signature*}[title=Truth,id=truth]
-    $E$ is true is a relation.
+    $E$ is \emph{true} is a relation.
   \end{signature*}
 
   \begin{axiom*}[title=$\beta$-reduction,id=beta_reduction]
-    $\app{\abs{x}{x \rightarrow E'}}{E} = E \rightarrow E'$.
+    $\app{\abs{x}{x \impl E'}}{E} = E \impl E'$.
   \end{axiom*}
 
   \begin{axiom*}[title=Reflexivity,id=reflexivity]
-    $E \rightarrow E$ is true.
+    $E \impl E$ is true.
   \end{axiom*}
 
   \begin{axiom*}[title=Modus Ponens,id=modus_ponens]
-    If $E$ is true and $E \rightarrow E'$ is true then $E'$ is true.
+    If $E$ is true and $E \impl E'$ is true then $E'$ is true.
   \end{axiom*}
 
   \begin{axiom*}[title=Strengthening,id=strengthening]
-    If $E \rightarrow (E \rightarrow E')$ is true then $E \rightarrow E'$ is true.
+    If $E \impl (E \impl E')$ is true then $E \impl E'$ is true.
   \end{axiom*}
 \end{forthel}
 
@@ -99,7 +100,7 @@ logic:
 \noindent Using the fixpoint combinator from above we can formulate a 
 self-referential expression $X$ of the form ``If $X$ is true then $E$ is
 true'' for any arbitrary expression $E$ by defining
-$X = \app{\fix}{\abs{\varzero}{\varzero \rightarrow E}}$.
+$X = \app{\fix}{\abs{\varzero}{\varzero \impl E}}$.
 From the existence of such an expression $X$ together with the above axioms 
 we can then derive that any expression $E$ is true.
 
@@ -109,13 +110,13 @@ we can then derive that any expression $E$ is true.
   \end{theorem*}
   \begin{proof}
     Let $E$ be an expression.
-    Take $N = \abs{\varzero}{\varzero \rightarrow E}$ and $X = \app{\fix}{N}.$
+    Take $N = \abs{\varzero}{\varzero \impl E}$ and $X = \app{\fix}{N}.$
 
-    (1) Then $X = \app{N}{X} = X \rightarrow E$ (by \nameref{beta_reduction}).
+    (1) Then $X = \app{N}{X} = X \impl E$ (by \nameref{beta_reduction}).
 
-    Hence $X \rightarrow (X \rightarrow E)$ is true (by 1, \nameref{reflexivity}).
+    Hence $X \impl (X \impl E)$ is true (by 1, \nameref{reflexivity}).
 
-    (2) Thus $X \rightarrow E$ is true (by \nameref{strengthening}).
+    (2) Thus $X \impl E$ is true (by \nameref{strengthening}).
 
     (3) Therefore $X$ is true (by 1, 2).
 
