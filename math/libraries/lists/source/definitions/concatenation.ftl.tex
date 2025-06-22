@@ -3,11 +3,11 @@
 \begin{document}
 \begin{smodule}[title=Concatenation]{concatenation.ftl}
 
-\importmodule[libraries/lists]{types?lists.ftl}
+\importmodule[libraries/lists]{signatures?lists.ftl}
 
 \symdef{concat}[op=+\mkern-10mu+]{\mathbin{\comp{+\mkern-10mu+}}}
 
-\begin{signature}[forthel,id=ConcatSig]
+\begin{signature}[forthel,id=ConcatSig,for=concat]
   Let $L, L'$ be lists.
   $\emph{L \concat L'}$ is a list.
 \end{signature}

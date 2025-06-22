@@ -3,13 +3,13 @@
 \begin{document}
 \begin{smodule}[title=Length]{length.ftl}
 
-\importmodule[libraries/lists]{types?lists.ftl}
+\importmodule[libraries/lists]{signatures?lists.ftl}
 \importmodule[libraries/natural-numbers]{definitions?addition.ftl}
 \importmodule[libraries/natural-numbers]{definitions?number-1.ftl}
 
 \symdef{length}{\comp{\textsf{length}}}
 
-\begin{signature}[forthel,id=LengthSig]
+\begin{signature}[forthel,id=LengthSig,for=length]
   Let $L$ be a list.
   $\emph{\length(L)}$ is a natural number.
 \end{signature}
