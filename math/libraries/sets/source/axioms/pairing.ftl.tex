@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Pairing Axiom]{pairing.ftl}
+
+\importmodule[libraries/classes]{definitions?unordered-pair.ftl}
+\importmodule[libraries/classes]{definitions?singleton-class.ftl}
+
+\begin{axiom}[forthel,title=Pairing Axiom,id=PairingAx]
+  Let $a, b$ be objects.
+  Then $\pair{a}{b}$ is a set.
+\end{axiom}
+
+\begin{convention}[forthel]
+  Let the singleton set of $a$ stand for the singleton class of $a$.
+  Let a singleton set stand for a singleton class.
+\end{convention}
+
+\end{smodule}
+\end{document}

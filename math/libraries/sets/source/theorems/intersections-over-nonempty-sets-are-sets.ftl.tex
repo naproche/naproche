@@ -1,0 +1,23 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Intersections Over Non-Empty Sets are Sets]{intersections-over-nonempty-sets-are-sets.ftl}
+
+\importmodule[libraries/classes]{definitions?empty-classes.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/systems-of-sets]{definitions?systems-of-sets.ftl}
+\importmodule[libraries/systems-of-sets]{definitions?intersection-over-systems-of-sets.ftl}
+\importmodule[libraries/sets]{axioms?separation.ftl}
+
+\begin{proposition}[forthel,id=IntersectsOverNonEmptySetsAreSetsProp]
+  Let $X$ be a nonempty system of sets.
+  Then $\intersectover X$ is a set.
+\end{proposition}
+\begin{proof}[forthel]
+  Take an element $x$ of $X$.
+  Then $\intersectover X \subclass x$.
+  Hence $\intersectover X$ is a set.
+\end{proof}
+
+\end{smodule}
+\end{document}

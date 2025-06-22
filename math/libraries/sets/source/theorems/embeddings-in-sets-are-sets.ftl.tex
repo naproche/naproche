@@ -1,0 +1,29 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Embeddings in Sets are Sets]{embeddings-in-sets-are-sets.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?bijections.ftl}
+\importmodule[libraries/maps]{definitions?inverse-map.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/maps]{theorems?inverse-is-bijection.ftl}
+\importmodule[libraries/maps]{theorems?invertibility-equals-injectivity.ftl}
+\importmodule[libraries/sets]{axioms?separation.ftl}
+\importmodule[libraries/sets]{axioms?replacement.ftl}
+
+\begin{proposition}[forthel,id=EmbeddingsInSetsAreSetsProp]
+  Let $A$ be a class and $x$ be a set.
+  Assume that there exists an injective map from $A$ to $x$.
+  Then $A$ is a set.
+\end{proposition}
+\begin{proof}[forthel]
+  Consider an injective map $f$ from $A$ to $x$.
+  $f$ is an invertible surjective map from $A$ onto $\range(f)$.
+  Hence $\inv{f}$ is a bijection between $\range(f)$ and $A$.
+  $\range(f)$ is a set and $A$ is the image of $\range(f)$ under $\inv{f}$.
+  Thus $A$ is a set.
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Intersections of Sets are Sets]{intersections-of-sets-are-sets.ftl}
+
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/sets]{axioms?separation.ftl}
+
+\begin{proposition}[forthel,id=IntersectsOfSetsAreSetsProp]
+  Let $x, y$ be sets.
+  Then $x \intersect y$ is a set.
+\end{proposition}
+\begin{proof}[forthel]
+  We have $x \intersect y \subclass x$.
+  Hence $x \intersect y$ is a set .
+\end{proof}
+
+\end{smodule}
+\end{document}

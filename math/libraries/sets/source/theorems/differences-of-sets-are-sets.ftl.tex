@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Differences of Sets are Sets]{differences-of-sets-are-sets.ftl}
+
+\importmodule[libraries/classes]{definitions?difference.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/sets]{axioms?separation.ftl}
+
+\begin{proposition}[forthel,id=DiffsOfSetsAreSetsProp]
+  Let $x, y$ be sets.
+  Then $x \diff y$ is a set.
+\end{proposition}
+\begin{proof}[forthel]
+  We have $x \diff y \subclass x$.
+  Hence $x \diff y$ is a set.
+\end{proof}
+
+\end{smodule}
+\end{document}

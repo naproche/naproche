@@ -1,0 +1,19 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Ranges of Functions are Sets]{ranges-of-functions-are-sets.ftl}
+
+\importmodule[libraries/sets]{axioms?replacement.ftl}
+\importmodule[libraries/maps]{theorems?im-of-dom-is-range.ftl}
+
+\begin{proposition}[forthel,id=RangesOfFunsAreSetsProp]
+  Let $f$ be a function.
+  Then $\range(f)$ is a set.
+\end{proposition}
+\begin{proof}[forthel]
+  $\range(f) \eq \im{f}{\dom(f)}$ and $\im{f}{\dom(f)}$ is a set.
+  Hence $\range(f)$ is a set.
+\end{proof}
+
+\end{smodule}
+\end{document}

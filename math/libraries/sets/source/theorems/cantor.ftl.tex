@@ -1,0 +1,23 @@
+\documentclass{naproche-library}
+\begin{document}
+\begin{smodule}[title=Cantor's Theorem]{cantor.ftl}
+
+\importmodule[libraries/classes]{definitions?powerclass.ftl}
+\importmodule[libraries/maps]{definitions?surjections-between-classes.ftl}
+
+\begin{theorem}[forthel,title=Cantor's Theorem,id=CantorProp]
+  Let $x$ be a set.
+  There exists no surjective map from $x$ onto $\pow(x)$.
+\end{theorem}
+\begin{proof}[forthel]
+  Assume the contrary.
+  Take a surjective map $f$ from $x$ onto $\pow(x)$.
+  Define $C = \{ u \in x \mid u \nelem f(u) \}$.
+  Then $C \elem \pow(x)$.
+  Hence we can take a $u \elem x$ such that $f(u) \eq C$.
+  Then $u \elem C$ iff $u \elem f(u)$ iff $u \nelem C$.
+  Contradiction.
+\end{proof}
+
+\end{smodule}
+\end{document}

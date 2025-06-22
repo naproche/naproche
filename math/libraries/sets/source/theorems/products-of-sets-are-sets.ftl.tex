@@ -1,0 +1,122 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Products of Sets are Sets]{products-of-sets-are-sets.ftl}
+
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+\importmodule[libraries/classes]{definitions?singleton-class.ftl}
+\importmodule[libraries/classes]{definitions?unordered-pair.ftl}
+\importmodule[libraries/classes]{definitions?powerclass.ftl}
+\importmodule[libraries/classes]{definitions?union.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/sets]{axioms?powerset.ftl}
+\importmodule[libraries/sets]{axioms?small-union.ftl}
+\importmodule[libraries/sets]{axioms?separation.ftl}
+\importmodule[libraries/sets]{axioms?replacement.ftl}
+\importmodule[libraries/sets]{theorems?singletons-are-sets.ftl}
+
+\begin{proposition}[forthel,id=ProdsOfSetsAreSetsProp]
+  Let $x, y$ be sets.
+  Then $x \prod y$ is a set.
+\end{proposition}
+\begin{proof}[forthel]
+  $\singleton{a}$ and $\pair{a}{b}$ are sets for each $a \elem x$ and each $b \elem y$.
+  Define $P = \{ \pair{\singleton{a}}{\pair{a}{b}} \mid a \elem x\text{ and }b \elem y \}$.
+
+  (1) $P$ is a set.
+  \begin{proof}
+    Let us show that $P \subclass \pow(\pow(x \union y))$.
+      Let $p \elem P$.
+      Consider $a \elem x$ and $b \elem y$ such that $p \eq \pair{\singleton{a}}{\pair{a}{b}}$.
+      Then $a, b \elem x \union y$.
+      Hence $\singleton{a}, \pair{a}{b} \elem \pow(x \union y)$.
+      Thus $\pair{\singleton{a}}{\pair{a}{b}} \elem \pow(\pow(x \union y))$.
+    End.
+
+    $x \union y$ is a set.
+    Consequently $\pow(\pow(x \union y))$ is a set.
+    Therefore $P$ is a set.
+  \end{proof}
+
+  Define $l(p) =\text{ choose }a \elem x,\text{ choose }b \elem y\text{ such that }p \eq \pair{\singleton{a}}{\pair{a}{b}}\text{ in }a$ for $p \in P$.
+  Define $r(p) =\text{ choose }a \elem x,\text{ choose }b \elem y\text{ such that }p \eq \pair{\singleton{a}}{\pair{a}{b}}\text{ in }b$ for $p \in P$.
+
+  Define $f(p) = (l(p), r(p))$ for $p \in P$.
+
+  Let us show that for any objects $u, u', v, v'$ if
+  $\pair{\singleton{u}}{\pair{u}{v}} \eq \pair{\singleton{u'}}{\pair{u'}{v'}}$ then $u \eq u'$ and $v \eq v'$.
+    Let $u, u', v, v'$ be objects.
+    Assume $\pair{\singleton{u}}{\pair{u}{v}} \eq \pair{\singleton{u'}}{\pair{u'}{v'}}$.
+    Then ($\singleton{u} \eq \singleton{u'}$ or $\singleton{u} \eq \pair{u'}{v'}$) and ($\pair{u}{v} \eq \singleton{u'}$ or $\pair{u}{v} \eq \pair{u'}{v'}$).
+    Thus ($\singleton{u} \eq \singleton{u'}$ and ($\pair{u}{v} \eq \singleton{u'}$ or $\pair{u}{v} \eq \pair{u'}{v'}$)) or ($\singleton{u} \eq \pair{u'}{v'}$ and ($\pair{u}{v} \eq \singleton{u'}$ or $\pair{u}{v} \eq \pair{u'}{v'}$)).
+
+    \begin{case}{$\singleton{u} \eq \singleton{u'}$ and ($\pair{u}{v} \eq \singleton{u'}$ or $\pair{u}{v} \eq \pair{u'}{v'}$).}
+      We have $\singleton{u} \eq \singleton{u'}$.
+      Hence $u \eq u'$.
+
+      \begin{case}{$\pair{u}{v} \eq \singleton{u'}$.}
+        Then $u \eq u'\eq v$.
+        Hence $\pair{\singleton{u}}{\pair{u}{u}} \eq \pair{\singleton{u}}{\pair{u}{v'}}$ (by 1).
+        Thus $\singleton{\singleton{u}} \eq \pair{\singleton{u}}{\pair{u}{v'}}$.
+        Therefore $\singleton{u} \eq \pair{u}{v'}$.
+        Consequently $v' \eq u \eq v$.
+      \end{case}
+
+      \begin{case}{$\pair{u}{v} \eq \pair{u'}{v'}$.}
+        Then $\pair{u}{v} \eq \pair{u}{v'}$.
+        Hence $v \eq v'$.
+      \end{case}
+    \end{case}
+
+    \begin{case}{$\singleton{u} \eq \pair{u'}{v'}$ and ($\pair{u}{v} \eq \singleton{u'}$ or $\pair{u}{v} \eq \pair{u'}{v'}$).}
+      We have $\singleton{u} \eq \pair{u'}{v'}$.
+      Hence $u \eq u'$.
+
+      \begin{case}{$\pair{u}{v} \eq \singleton{u'}$.}
+        Then $u \eq v \eq u'$.
+        Hence $v \eq v'$.
+      \end{case}
+
+      \begin{case}{$\pair{u}{v} \eq \pair{u'}{v'}$.}
+        Then $\pair{u}{v} \eq \pair{u}{v'}$.
+        Hence $v \eq v'$.
+      \end{case}
+    \end{case}
+  End.
+
+  Let us show that for any $a \elem x$ and any $b \elem y$ we have $f(\pair{\singleton{a}}{\pair{a}{b}}) \eq (a,b)$.
+    Let $a \elem x$ and $b \elem y$.
+    Take $p = \pair{\singleton{a}}{\pair{a}{b}}$.
+    Then $p$ is a set.
+    Then we can choose $a' \elem x$ and $b' \elem y$ such that $p \eq \pair{\singleton{a'}}{\pair{a'}{b'}}$ and $l(p) \eq a'$.
+    Then $a \eq a'$ and $b \eq b'$.
+    Hence $l(p) \eq a$.
+    Choose $a'' \elem x$ and $b'' \elem y$ such that $p \eq \pair{\singleton{a''}}{\pair{a''}{b''}}$ and $r(p) \eq b''$.
+    Then $a \eq a''$ and $b \eq b''$.
+    Thus $r(p) \eq b$.
+    Therefore $f(p) \eq (a,b)$.
+  End.
+
+  (2) $x \prod y \eq \im{f}{P}$.
+  \begin{proof}
+    For all $p \elem P$ we have $l(p) \elem x$ and $r(p) \elem y$.
+    Hence $f(p) \elem x \prod y$ for all $p \elem P$.
+    Therefore $\im{f}{P} \subclass x \prod y$.
+
+    Let us show that $x \prod y \subclass \im{f}{P}$.
+      Let $z \elem x \prod y$.
+      Take $a \elem x$ and $b \elem y$ such that $z \eq (a,b)$.
+      Then $(a,b) \eq f(\pair{\singleton{a}}{\pair{a}{b}})$.
+      Hence there exists a $p \elem P$ such that $(a,b) \eq f(p)$.
+      Thus $(a,b) \elem \im{f}{P}$.
+    End.
+
+    Consequently $x \prod y \eq \im{f}{P}$.
+  \end{proof}
+
+  Thus $x \prod y$ is the image of some set under some map.
+  Therefore $x \prod y$ is a set.
+\end{proof}
+
+\end{smodule}
+\end{document}

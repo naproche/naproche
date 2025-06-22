@@ -1,0 +1,51 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Function Spaces are Sets]{function-spaces-are-sest.ftl}
+
+\importmodule[libraries/maps]{definitions?function-spaces.ftl}
+\importmodule[libraries/maps]{definitions?range.ftl}
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+\importmodule[libraries/classes]{definitions?powerclass.ftl}
+\importmodule[libraries/sets]{axioms?powerset.ftl}
+\importmodule[libraries/sets]{axioms?separation.ftl}
+\importmodule[libraries/sets]{theorems?products-of-sets-are-sets.ftl}
+\importmodule[libraries/sets]{theorems?ranges-of-functions-are-sets.ftl}
+
+\begin{proposition}[forthel,id=FunctionSpacesAreSetsProp]
+  Let $x, y$ be sets.
+  Then $\funspace{x}{y}$ is a set.
+\end{proposition}
+\begin{proof}[forthel]
+  Define $R = \{ F \in \pow(x \prod y) \mid\text{ (for all }a \elem x\text{ there exists a }b \elem y\text{ such that }(a,b) \elem F\text{) and for all }a \elem x\text{ and all }b, b' \elem y\text{ such that }(a,b), (a,b') \elem F\text{ we have }b \eq b' \}$.
+  Define $h(F) = \fun a \in x.\text{ choose }b \elem y\text{ such that }(a,b) \elem F\text{ in }b$ for $F \in R$.
+
+  Let us show that $\funspace{x}{y} \subclass \range(h)$.
+    Let $f \elem \funspace{x}{y}$.
+    Define $F = \{ (a,f(a)) \mid a \elem x \}$.
+
+    Then $F \elem R$.
+    \begin{proof}
+      Define $g(a) = (a,f(a))$ for $a \in x$.
+      Then $F \eq \range(g)$.
+      Hence $F$ is a set.
+      Thus $F \elem \pow(x \prod y)$.
+      Indeed $F \subclass x \prod y$.
+
+      (1) For all $a \elem x$ there exists a $b \elem y$ such that $(a,b) \elem F$.
+
+      (2) For all $a \elem x$ and all $b, b' \elem y$ such that $(a,b),
+      (a,b') \elem F$ we have $b \eq b'$.
+    \end{proof}
+
+    $\dom(f) \eq \dom(h(F))$ and for each $a \elem \dom(f)$ we have $h(F)(a) \eq f(a)$.
+    Hence $f \eq h(F)$.
+    Thus $f \elem \range(h)$.
+  End.
+
+  Therefore $\funspace{x}{y}$ is a set.
+  Indeed $R$ is a set.
+\end{proof}
+
+\end{smodule}
+\end{document}

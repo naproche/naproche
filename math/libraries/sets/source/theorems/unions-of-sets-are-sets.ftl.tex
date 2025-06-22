@@ -1,0 +1,26 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Unions of Sets are Sets]{unions-of-sets-are-sets.ftl}
+
+\importmodule[libraries/classes]{definitions?union.ftl}
+\importmodule[libraries/classes]{definitions?unordered-pair.ftl}
+\importmodule[libraries/systems-of-sets]{definitions?union-over-systems-of-sets.ftl}
+\importmodule[libraries/systems-of-sets]{axioms?big-union.ftl}
+\importmodule[libraries/sets]{axioms?pairing.ftl}
+
+\begin{proposition}[forthel,id=UnionsOfSetsAreSetsProp]
+  Let $x, y$ be sets.
+  Then $x \union y$ is a set.
+\end{proposition}
+\begin{proof}[forthel]
+  Take $X = \pair{x}{y}$.
+  Then $X$ is a set.
+  Hence $\unionover X$ is a set.
+  Indeed $X$ is a system of sets.
+  We have $x \union y \eq \unionover X$.
+  Thus $x \union y$ is a set.
+\end{proof}
+
+\end{smodule}
+\end{document}
