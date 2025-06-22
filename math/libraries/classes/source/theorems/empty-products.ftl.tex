@@ -1,0 +1,31 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Empty Products]{empty-products.ftl}
+
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+\importmodule[libraries/classes]{definitions?empty-classes.ftl}
+
+\begin{proposition}[forthel,id=EmptyProductProp]
+  Let $A, B$ be classes.
+  Then $A \prod B$ is empty iff $A$ is empty or $B$ is empty.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$A \prod B$ is empty.}
+    Assume that $A$ and $B$ are nonempty.
+    Then we can take an element $a$ of $A$ and an element $b$ of $B$.
+    Then $(a, b) \elem A \prod B$.
+    Contradiction.
+  \end{case}
+
+  \begin{case}{$A$ is empty or $B$ is empty.}
+    Assume that $A \prod B$ is nonempty.
+    Then we can take an element $c$ of $A \prod B$.
+    Then $c \eq (a, b)$ for some $a \elem A$ and some $b \elem B$.
+    Hence $A$ and $B$ are nonempty.
+    Contradiction.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

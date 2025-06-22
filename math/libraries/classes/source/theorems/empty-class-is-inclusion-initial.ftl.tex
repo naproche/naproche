@@ -1,0 +1,19 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Empty Class is Initial wrt. Inclusion]{empty-class-is-inclusion-initial.ftl}
+
+\importmodule[libraries/classes]{definitions?empty-class.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=EveryClassIncludesEmptyClassProp]
+  Let $A$ be a class.
+  Then $\empty \subclass A$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\empty$ has no elements.
+  Hence every element of $\empty$ is contained in $A$.
+\end{proof}
+
+\end{smodule}
+\end{document}

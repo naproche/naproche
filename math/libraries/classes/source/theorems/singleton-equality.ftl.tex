@@ -1,0 +1,14 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Equality of Singleton Classes]{singleton-equality.ftl}
+
+\importmodule[libraries/classes]{definitions?singleton-class.ftl}
+
+\begin{proposition}[forthel,id=SingletonEqualityProp]
+  Let $a, a'$ be objects.
+  If $\singleton{a} \eq \singleton{a'}$ then $a \eq a'$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

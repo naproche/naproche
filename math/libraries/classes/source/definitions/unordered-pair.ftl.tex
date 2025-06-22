@@ -1,0 +1,19 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Unordered Pair]{unordered-pair.ftl}
+
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\symdef{pair}[args=2]{\highlight{\{}#1\highlight,#2\highlight{\}}}
+
+\begin{definition}[forthel,id=UnorderedPairDef]
+  Let $a, b$ be objects.
+  $\emph{\pair{a}{b}} = \{ x \mid x \eq a\text{ or }x \eq b \}$.
+
+  Let the \emph{unordered pair of $a$ and $b$} stand for $\pair{a}{b}$.
+  Let an \emph{unordered pair} stand for an entity $x$ such that $x \eq \pair{a}{b}$ for some objects $a, b$.
+\end{definition}
+
+\end{smodule}
+\end{document}

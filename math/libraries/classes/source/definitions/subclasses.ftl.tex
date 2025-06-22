@@ -1,0 +1,22 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Subclasses]{subclasses.ftl}
+
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\symdef{subclass}{\mathrel{\highlight\subseteq}}
+
+\begin{definition}[forthel,id=SubclassDef]
+  Let $A$ be a class.
+  A \emph{subclass of $A$} is a class $B$ such that every element of $B$ is an
+  element of $A$.
+
+  Let $\emph{B \subclass A}$ stand for $B$ is a subclass of $A$.
+
+  Let \emph{$A$ includes $B$} stand for $B \subclass A$.
+  Let $B$ is \emph{included in $A$} stand for $B \subclass A$.
+\end{definition}
+
+\end{smodule}
+\end{document}

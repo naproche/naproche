@@ -1,0 +1,37 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Symmetric Difference is the Union of Differences]{symdiff-is-union-of-differences.ftl}
+
+\importmodule[libraries/classes]{definitions?symdiff.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=SymDiffIsUnionOfDifferencesProp]
+  Let $A, B$ be classes.
+  Then $A \symdiff B \eq (A \diff B) \union (B \diff A)$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $A \symdiff B \subclass (A \diff B) \union (B \diff A)$.
+    Let $u \elem A \symdiff B$.
+    Then $u \elem A \union B$ and $u \nelem A \intersect B$.
+    Hence ($u \elem A$ or $u \elem B$) and not ($u \elem A$ and $u \elem B$).
+    Thus ($u \elem A$ or $u \elem B$) and ($u \nelem A$ or $u \nelem B$).
+    Therefore if $u \elem A$ then $u \nelem B$.
+    If $u \elem B$ then $u \nelem A$.
+    Then we have ($u \elem A$ and $u \nelem B$) or ($u \elem B$ and $u \nelem A$).
+    Hence $u \elem A \diff B$ or $u \elem B \diff A$.
+    Thus $u \elem (A \diff B) \union (B \diff A)$.
+  End.
+
+  Let us show that $((A \diff B) \union (B \diff A)) \subclass A \symdiff B$. %!
+    Let $u \elem (A \diff B) \union (B \diff A)$.
+    Then ($u \elem A$ and $u \nelem B$) or ($u \elem B$ and $u \nelem A$).
+    If $u \elem A$ and $u \nelem B$ then $u \elem A \union B$ and $u \nelem A \intersect B$.
+    If $u \elem B$ and $u \nelem A$ then $u \elem A \union B$ and $u \nelem A \intersect B$.
+    Hence $u \elem A \union B$ and $u \nelem A \intersect B$.
+    Thus $u \elem (A \union B) \diff (A \intersect B) \eq A \symdiff B$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

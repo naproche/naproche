@@ -1,0 +1,52 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Difference of Products]{difference-of-products.ftl}
+
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+\importmodule[libraries/classes]{definitions?difference.ftl}
+\importmodule[libraries/classes]{definitions?union.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=DifferenceOfProductsProp]
+  Let $A, A', B, B'$ be classes.
+  Then $(A \prod B) \diff (A' \prod B') \eq (A \prod (B \diff B')) \union ((A \diff A') \prod B)$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $((A \prod B) \diff (A' \prod B')) \subclass (A \prod (B \diff B')) \union ((A \diff A') \prod B)$.
+    Let $x \elem (A \prod B) \diff (A' \prod B')$.
+    Then $x \elem A \prod B$ and $x \nelem A' \prod B'$.
+    Take $a \elem A$ and $b \elem B$ such that $x \eq (a, b)$.
+    Then it is wrong that $a \elem A'$ and $b \elem B'$.
+    Hence $a \nelem A'$ or $b \nelem B'$.
+    Thus $a \elem A \diff A'$ or $b \elem B \diff B'$.
+    Therefore $x \elem A \prod (B \diff B')$ or $x \elem (A \diff A') \prod B$.
+    Hence we have $x \elem (A \prod (B \diff B')) \union ((A \diff A') \prod B)$.
+  End.
+
+  Let us show that $(A \prod (B \diff B')) \union ((A \diff A') \prod B) \subclass (A \prod B) \diff (A' \prod B')$.
+    Let $x \elem (A \prod (B \diff B')) \union ((A \diff A') \prod B)$.
+    Then $x \elem (A \prod (B \diff B'))$ or $x \elem ((A \diff A') \prod B)$.
+    Take elements $a,b$ such that $x \eq (a, b)$.
+    Then ($a \elem A$ and $b \elem B \diff B'$) or ($a \elem A \diff A'$ and $b \elem B$).
+
+    \begin{case}{$a \elem A$ and $b \elem B \diff B'$.}
+      Then $a \elem A$ and $b \elem B$.
+      Hence $x \elem A \prod B$.
+      We have $b \nelem B'$.
+      Thus $x \nelem A' \prod B'$.
+      Therefore $x \elem (A \prod B) \diff (A' \prod B')$.
+    \end{case}
+
+    \begin{case}{$a \elem A \diff A'$ and $b \elem B$.}
+      Then $a \elem A$ and $b \elem B$.
+      Hence $x \elem A \prod B$.
+      We have $a \nelem A'$.
+      Thus $x \nelem A' \prod B'$.
+      Therefore $x \elem (A \prod B) \diff (A' \prod B')$.
+    \end{case}
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

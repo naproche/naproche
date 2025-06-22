@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Proper Superclasses]{proper-superclasses.ftl}
+
+\importmodule[libraries/classes]{definitions?superclasses.ftl}
+
+\symdef{propsupclass}{\mathrel{\highlight\supsetneq}}
+
+\begin{definition}[forthel,id=ProperSuperclassDef]
+  Let $A$ be a class.
+  A \emph{proper superclass of $A$} is a superclass $B$ of $A$ such that $A \neq B$.
+
+  Let $\emph{B \propsupclass A}$ stand for $B$ is a proper superclass of $A$.
+\end{definition}
+
+\end{smodule}
+\end{document}

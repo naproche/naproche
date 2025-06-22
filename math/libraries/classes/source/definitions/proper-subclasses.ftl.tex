@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Proper Subclasses]{proper-subclasses.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\symdef{propsubclass}{\mathrel{\highlight\subsetneq}}
+
+\begin{definition}[forthel,id=ProperSubclassDef]
+  Let $A$ be a class.
+  A \emph{proper subclass of $A$} is a subclass $B$ of $A$ such that $B \neq A$.
+
+  Let $\emph{B \propsubclass A}$ stand for $B$ is a proper subclass of $A$.
+\end{definition}
+
+\end{smodule}
+\end{document}

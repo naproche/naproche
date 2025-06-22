@@ -1,0 +1,34 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Subclasses of Products]{subclasses-of-products.ftl}
+
+\importmodule[libraries/classes]{definitions?empty-classes.ftl}
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=SubclassOfProductProp]
+  Let $A, A', B, B'$ be classes.
+  Assume that $A$ and $A'$ are nonempty.
+  Then $(A \prod A') \subclass (B \prod B')$ iff $A \subclass B$ and $A' \subclass B'$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$(A \prod A') \subclass (B \prod B')$.}
+    Let us show that for all $a \elem A$ and all $a' \elem A'$ we have $a \elem B$ and $a' \elem B'$.
+      Let $a \elem A$ and $a' \elem A'$.
+      Then $(a, a') \elem A \prod A'$.
+      Hence $(a, a') \elem B \prod B'$.
+      Thus $a \elem B$ and $a' \elem B'$.
+    End.
+  \end{case}
+
+  \begin{case}{$A \subclass B$ and $A' \subclass B'$.}
+    Let $x \elem A \prod A'$.
+    Take $a \elem A$ and $a' \elem A'$ such that $x \eq (a, a')$.
+    Then $a \elem B$ and $a' \elem B'$.
+    Hence $(a, a') \elem B \prod B'$.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,24 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Complement of Complements with Subclasses]{complement-of-complements-with-subclasses.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/classes]{definitions?difference.ftl}
+
+\begin{proposition}[forthel,id=DoubleDifferenceWithSubclassProp]
+  Let $A, B$ be classes.
+  Then $B \subclass A$ iff $A \diff (A \diff B) \eq B$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$B \subclass A$.} \end{case}
+
+  \begin{case}{$A \diff (A \diff B) \eq B$.}
+    Then every element of $B$ is an element of $A \diff (A \diff B)$.
+    Thus every element of $B$ is an element of $A$.
+    Then we have the thesis.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

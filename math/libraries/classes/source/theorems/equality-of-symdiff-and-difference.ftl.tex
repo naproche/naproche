@@ -1,0 +1,32 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Equality of Symmetric Difference and Difference]{equality-of-symdiff-and-difference.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/classes]{definitions?symdiff.ftl}
+
+\begin{proposition}[forthel,id=EqualityOfSymdiffAndDifferenceProp]
+  Let $A, B$ be classes.
+  Then $A \subclass B \iff A \symdiff B \eq B \diff A$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$A \subclass B$.}
+    Then $A \union B \eq B$ and $A \intersect B \eq A$.
+    Hence the thesis.
+  \end{case}
+
+  \begin{case}{$A \symdiff B \eq B \diff A$.}
+    Let $a \elem A$.
+    Then $a \nelem B \diff A$.
+    Hence $a \nelem A \symdiff B$.
+    Thus $a \nelem A \union B$ or $a \elem A \intersect B$.
+    Indeed $A \symdiff B \eq (A \union B) \diff (A \intersect B)$.
+    If $a \nelem A \union B$ then we have a contradiction.
+    Therefore $a \elem A \intersect B$.
+    Then we have the thesis.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

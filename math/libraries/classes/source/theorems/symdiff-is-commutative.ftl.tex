@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Symmetric Difference is Commutative]{symdiff-is-commutative.ftl}
+
+\importmodule[libraries/classes]{definitions?symdiff.ftl}
+
+\begin{proposition}[forthel,id=SymdiffIsCommutativeProp]
+  Let $A, B$ be classes.
+  Then $A \symdiff B \eq B \symdiff A$.
+\end{proposition}
+\begin{proof}[forthel]
+  $A \symdiff B
+    \eq (A \union B) \diff (A \intersect B)
+    \eq (B \union A) \diff (B \intersect A)
+    \eq B \symdiff A$.
+\end{proof}
+
+\end{smodule}
+\end{document}

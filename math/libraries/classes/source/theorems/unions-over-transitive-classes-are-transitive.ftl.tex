@@ -1,0 +1,27 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Unions Over Transitive Classes are Transitive]{unions-over-transitive-classes-are-transitive.ftl}
+
+\importmodule[libraries/classes]{definitions?transitive-classes.ftl}
+\importmodule[libraries/systems-of-sets]{definitions?union-over-systems-of-sets.ftl}
+
+\begin{proposition}[forthel,id=UnionOverTransClassIsTransProp]
+  Let $A$ be a transitive class.
+  Then $\unionover A$ is transitive.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $x \elem \unionover A$.
+
+  Let us show that $x \subclass \unionover A$.
+    Let $y \elem x$.
+    Take a member $z$ of $A$ such that $x \elem z$.
+    Then $z \subclass A$.
+    Hence $x \elem A$.
+    Thus $y$ is an element of some member of $A$.
+    Therefore $y \elem \unionover A$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,35 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Equality of Products]{product-equality.ftl}
+
+\importmodule[libraries/classes]{definitions?empty-classes.ftl}
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=ProductEqualityProp]
+  Let $A, A', B, B'$ be nonempty classes.
+  If $A \prod B \eq A' \prod B'$ then $A \eq A'$ and $B \eq B'$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $A \prod B \eq A' \prod B'$.
+
+  (1) $A \subclass A'$ and $B \subclass B'$.
+  \begin{proof}
+    Let $a \elem A$ and $b \elem B$.
+    Then $(a,b) \elem A \prod B$.
+    Hence $(a,b) \elem A' \prod B'$.
+    Thus $a \elem A'$ and $b \elem B'$.
+  \end{proof}
+
+  (2) $A' \subclass A$ and $B' \subclass B$.
+  \begin{proof}
+    Let $a \elem A'$ and $b \elem B'$.
+    Then $(a,b) \elem A' \prod B'$.
+    Hence $(a,b) \elem A \prod B$.
+    Thus $a \elem A$ and $b \elem B$.
+  \end{proof}
+\end{proof}
+
+\end{smodule}
+\end{document}

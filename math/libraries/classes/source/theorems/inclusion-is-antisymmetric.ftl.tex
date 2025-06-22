@@ -1,0 +1,19 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Inclusion is Antisymmetric]{inclusion-is-antisymmetric.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=InclusionIsAntisymProp]
+  Let $A, B$ be classes.
+  If $A \subclass B$ and $B \subclass A$ then $A \eq B$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $A \subclass B$ and $B \subclass A$.
+  Then every element of $A$ is contained in $B$ and every element of $B$ is contained in $A$.
+  Hence $A \eq B$.
+\end{proof}
+
+\end{smodule}
+\end{document}

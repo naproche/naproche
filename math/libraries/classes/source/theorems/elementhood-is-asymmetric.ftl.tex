@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The $\in$-Relation is Asymmetric]{elementhood-is-asymmetric.ftl}
+
+\importmodule[libraries/sets]{axioms?set-induction.ftl}
+
+\begin{proposition}[forthel,id=ElementhoodIsAsymmetricProp]
+  There exist no classes $A, B$ such that $A \elem B$ and $B \elem A$.
+\end{proposition}
+\begin{proof}[forthel]
+  We can show by induction on $X$ that for any class $X$ there exists no class $Y$ such that
+  $X \elem Y$ and $Y \elem X$. Obvious.
+\end{proof}
+
+\end{smodule}
+\end{document}

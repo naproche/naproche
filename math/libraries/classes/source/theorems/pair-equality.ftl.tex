@@ -1,0 +1,21 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Equality of Unordered Pairs]{pair-equality.ftl}
+
+\importmodule[libraries/classes]{definitions?unordered-pair.ftl}
+
+\begin{proposition}[forthel,id=UnorderedPairEqualityProp]
+  Let $a, a', b, b'$ be objects.
+  Assume $\pair{a}{b} \eq \pair{a'}{b'}$.
+  Then ($a \eq a'$ and $b \eq b'$) or ($a \eq b'$ and $b \eq a'$).
+\end{proposition}
+\begin{proof}[forthel]
+  We have $a \eq a'$ or $a \eq b'$.
+  If $a \eq a'$ then $b \eq b'$.
+  If $a \eq b'$ then $b \eq a'$.
+  Hence ($a \eq a'$ and $b \eq b'$) or ($a \eq b'$ and $b \eq a'$).
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,27 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Characterization of the Elements of Products]{elements-of-products.ftl}
+
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+
+\begin{proposition}[forthel,id=PairInProductProp]
+  Let $A, B$ be classes and $a, b$ be objects.
+  Then $(a, b) \elem A \prod B$ iff $a \elem A$ and $b \elem B$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$(a, b) \elem A \prod B$.}
+    We can take $a' \elem A$ and $b' \elem B$ such that $(a, b) \eq (a', b')$.
+    Then $a \eq a'$ and $b \eq b'$.
+    Hence $a \elem A$ and $b \elem B$.
+  \end{case}
+
+  \begin{case}{$a \elem A$ and $b \elem B$.}
+    $a$ and $a$ are objects.
+    Hence $(a, b)$ is an object.
+    Therefore $(a, b) \elem A \prod B$.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

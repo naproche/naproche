@@ -1,0 +1,19 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Superclasses]{superclasses.ftl}
+
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\symdef{supclass}{\mathrel{\highlight\supseteq}}
+
+\begin{definition}[forthel,id=SuperclassDef]
+  Let $A$ be a class.
+  A \emph{superclass of $A$} is a class $B$ such that every element of $A$ is an
+  element of $B$.
+
+  Let $\emph{B \supclass A}$ stand for $B$ is a superclass of $A$.
+\end{definition}
+
+\end{smodule}
+\end{document}

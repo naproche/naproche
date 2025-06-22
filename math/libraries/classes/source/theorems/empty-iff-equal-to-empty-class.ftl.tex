@@ -1,0 +1,24 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=A Class is Empty Iff it is the Empty Class]{empty-iff-equal-to-empty-class.ftl}
+
+\importmodule[libraries/classes]{definitions?empty-class.ftl}
+\importmodule[libraries/classes]{definitions?empty-classes.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=EmptyIffEqualToEmptyClassProp]
+  Let $A$ be a class.
+  $A$ is empty iff $A \eq \empty$.
+\end{proposition}
+\begin{proof}[forthel]
+  We can show that $\empty$ is empty.
+  Indeed any element $x$ of $\empty$ is nonequal to $x$.
+  Hence if $A \eq \empty$ then $A$ is empty.
+  If $A$ is empty then $A$ and $\empty$ have no elements.
+  Hence if $A$ is empty then $A \subclass \empty$ and $\empty \subclass A$.
+  Thus if $A$ is empty then $A \eq \empty$.
+\end{proof}
+
+\end{smodule}
+\end{document}

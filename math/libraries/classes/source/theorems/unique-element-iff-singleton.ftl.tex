@@ -1,0 +1,15 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=A Class has a Unique Element Iff if is a Singleton]{unique-element-iff-singleton.ftl}
+
+\importmodule[libraries/classes]{definitions?singleton-class.ftl}
+\importmodule[libraries/classes]{definitions?unique-elements.ftl}
+
+\begin{proposition}[forthel,id=HasUniqueElementIffIsSingletonClassProp]
+  Let $A$ be a class.
+  Then $A$ has a unique element iff $A \eq \singleton{a}$ for some object $a$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,34 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Empty Symmetric Differences]{empty-symdiffs.ftl}
+
+\importmodule[libraries/classes]{definitions?symdiff.ftl}
+\importmodule[libraries/classes]{definitions?empty-class.ftl}
+\importmodule[libraries/classes]{definitions?empty-classes.ftl}
+
+\begin{proposition}[forthel,id=EmptySymdiffProp]
+  Let $A, B$ be classes.
+  Then $A \eq B \iff A \symdiff B \eq \empty$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$A \eq B$.}
+    Then $A \symdiff B
+      \eq (A \union A) \diff (A \intersect A)
+      \eq A \diff A
+      \eq \empty.$
+    Hence the thesis.
+  \end{case}
+
+  \begin{case}{$A \symdiff B \eq \empty$.}
+    Then $(A \union B) \diff (A \intersect B)$ is empty.
+    Hence every element of $A \union B$ is an element of $A \intersect B$.
+    Thus for all objects $u$ if $u \elem A$ or $u \elem B$ then $u \elem A$ and $u \elem B$.
+    Therefore every element of $A$ is an element of $B$.
+    Every element of $B$ is an element of $A$.
+    Then we have the thesis.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

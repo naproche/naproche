@@ -1,0 +1,61 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Symmetric Difference Preserves Equality]{symdiff-preserves-equality.ftl}
+
+\importmodule[libraries/classes]{definitions?symdiff.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=SymdiffPreservesEqualityProp]
+  Let $A, B, C$ be classes.
+  Then $A \symdiff B \eq A \symdiff C \iff B \eq C$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$A \symdiff B \eq A \symdiff C$.}
+
+    Let us show that $B \subclass C$.
+      Let $b \elem B$.
+
+      \begin{case}{$b \elem A$.}
+        Then $b \nelem A \symdiff B$.
+        Hence $b \nelem A \symdiff C$.
+        Therefore $b \elem A \intersect C$.
+        Indeed $A \symdiff C \eq (A \union C) \diff (A \intersect C)$.
+        Hence $b \elem C$.
+      \end{case}
+
+      \begin{case}{$b \nelem A$.}
+        Then $b \elem A \symdiff B$.
+        Indeed $b \elem A \union B$ and $b \nelem A \intersect B$.
+        Hence $b \elem A \symdiff C$.
+        Thus $b \elem A \union C$ and $b \nelem A \intersect C$.
+        Therefore $b \elem A$ or $b \elem C$.
+        Then we have the thesis.
+      \end{case}
+    End.
+
+    Let us show that $C \subclass B$.
+      Let $c \elem C$.
+
+      \begin{case}{$c \elem A$.}
+        Then $c \nelem A \symdiff C$.
+        Hence $c \nelem A \symdiff B$.
+        Therefore $c \elem A \intersect B$.
+        Indeed $c \nelem A \union B$ or $c \elem A \intersect B$.
+        Hence $c \elem B$.
+      \end{case}
+
+      \begin{case}{$c \nelem A$.}
+        Then $c \elem A \symdiff C$.
+        Indeed $c \elem A \union C$ and $c \nelem A \intersect C$.
+        Hence $c \elem A \symdiff B$.
+        Thus $c \elem A \union B$ and $c \nelem A \intersect B$.
+        Therefore $c \elem A$ or $c \elem B$.
+        Then we have the thesis.
+      \end{case}
+    End.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

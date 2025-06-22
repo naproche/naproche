@@ -1,0 +1,38 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Union with Superclasses]{union-with-superclasses.ftl}
+
+\importmodule[libraries/classes]{definitions?union.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=UnionWithSuperclassProp]
+  Let $A, B$ be classes.
+  Then $A \subclass B$ iff $A \union B \eq B$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$A \subclass B$.}
+
+    Let us show that $A \union B \subclass B$.
+      Let $x \elem A \union B$.
+      Then $x \elem A$ or $x \elem B$.
+      If $x \elem A$ then $x \elem B$.
+      Hence $x \elem B$.
+    End.
+
+    Let us show that $B \subclass A \union B$.
+      Let $x \elem B$.
+      Then $x \elem A$ or $x \elem B$.
+      Hence $x \elem A \union B$.
+    End.
+  \end{case}
+
+  \begin{case}{$A \union B \eq B$.}
+    Let $x \elem A$.
+    Then $x \elem A$ or $x \elem B$.
+    Hence $x \elem A \union B \eq B$.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

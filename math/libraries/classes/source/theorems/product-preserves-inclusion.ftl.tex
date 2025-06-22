@@ -1,0 +1,22 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Product Preserves Inclusion]{product-preserves-inclusion.ftl}
+
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=ProductPreservesInclusionProp]
+  Let $A, B, C$ be classes.
+  IF $A \subclass B$ then $A \prod C \subclass B \prod C$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $A \subclass B$.
+  Let $x \elem A \prod C$.
+  Take $a \elem A$ and $c \elem C$ such that $x \eq (a, c)$.
+  Then $a \elem B$.
+  Hence $(a, c) \elem B \prod C$.
+\end{proof}
+
+\end{smodule}
+\end{document}

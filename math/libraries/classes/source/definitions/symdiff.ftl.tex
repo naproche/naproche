@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Symmetric Difference]{symdiff.ftl}
+
+\importmodule[libraries/classes]{definitions?union.ftl}
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+\importmodule[libraries/classes]{definitions?difference.ftl}
+
+\symdef{symdiff}{\mathbin{\highlight\triangle}}
+
+\begin{definition}[forthel,id=SymDiffDef]
+  Let $A, B$ be classes.
+  $\emph{A \symdiff B} = (A \union B) \diff (A \intersect B)$.
+
+  Let the \emph{symmetric difference of $A$ and $B$} stand for $A \symdiff B$.
+\end{definition}
+
+\end{smodule}
+\end{document}

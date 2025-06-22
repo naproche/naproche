@@ -1,0 +1,35 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Product with Difference on the LHS]{product-with-difference-on-lhs.ftl}
+
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+\importmodule[libraries/classes]{definitions?difference.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=ProductWithDifferenceOnLhsProp]
+  Let $A, B, C$ be classes.
+  Then $(A \diff B) \prod C \eq (A \prod C) \diff (B \prod C)$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $((A \diff B) \prod C) \subclass (A \prod C) \diff (B \prod C).$ %!
+    Let $x \elem (A \diff B) \prod C$.
+    Take $a \elem A \diff B$ and $c \elem C$ such that $x \eq (a, c)$.
+    Then $a \elem A$ and $a \nelem B$.
+    Hence $x \elem A \prod C$ and $x \nelem B \prod C$.
+    Thus $x \elem (A \prod C) \diff (B \prod C)$.
+  End.
+
+  Let us show that $((A \prod C) \diff (B \prod C)) \subclass (A \diff B) \prod C$. %!
+    Let $x \elem (A \prod C) \diff (B \prod C)$.
+    Then $x \elem A \prod C$ and $x \nelem B \prod C$.
+    Take $a \elem A$ and $c \elem C$ such that $x \eq (a, c)$.
+    Then $a \nelem B$.
+    Indeed if $a \elem B$ then $x \elem B \prod C$.
+    Hence $a \elem A \diff B$.
+    Thus $x \elem (A \diff B) \prod C$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

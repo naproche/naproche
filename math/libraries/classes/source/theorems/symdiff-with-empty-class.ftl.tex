@@ -1,0 +1,21 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Symmetric Difference with the Empty Class]{symdiff-with-empty-class.ftl}
+
+\importmodule[libraries/classes]{definitions?symdiff.ftl}
+\importmodule[libraries/classes]{definitions?empty-class.ftl}
+
+\begin{proposition}[forthel,id=SymdiffWithEmptyClassProp]
+  Let $A$ be a class.
+  Then $A \symdiff \empty \eq A$.
+\end{proposition}
+\begin{proof}[forthel]
+  $A \symdiff \empty
+    \eq (A \union \empty) \diff (A \intersect \empty)
+    \eq A \diff \empty
+    \eq A$.
+\end{proof}
+
+\end{smodule}
+\end{document}

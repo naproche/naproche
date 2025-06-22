@@ -1,0 +1,33 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Complement of Complements]{complement-of-complements.ftl}
+
+\importmodule[libraries/classes]{definitions?difference.ftl}
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=DifferenceWithDifferenceProp]
+  Let $A, B$ be classes.
+  Then $A \diff (A \diff B) \eq A \intersect B$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $A \diff (A \diff B) \subclass A \intersect B$.
+    Let $x \elem A \diff (A \diff B)$.
+    Then $x \elem A$ and $x \nelem A \diff B$.
+    Hence $x \nelem A$ or $x \elem B$.
+    Thus $x \elem B$.
+    Therefore $x \elem A \intersect B$.
+  End.
+
+  Let us show that $A \intersect B \subclass A \diff (A \diff B)$.
+    Let $x \elem A \intersect B$.
+    Then $x \elem A$ and $x \elem B$.
+    Hence $x \nelem A$ or $x \elem B$.
+    Thus $x \nelem A \diff B$.
+    Therefore $x \elem A \diff (A \diff B)$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

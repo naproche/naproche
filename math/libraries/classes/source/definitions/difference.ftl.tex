@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Difference]{difference.ftl}
+
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\symdef{diff}{\mathbin{\highlight\setminus}}
+
+\begin{definition}[forthel,id=DifferenceDef]
+  Let $A, B$ be classes.
+  $\emph{A \diff B} = \{ x \mid x \elem A\text{ and }x \nelem B \}$.
+
+  Let the \emph{complement of $B$ in $A$} stand for $A \diff B$.
+\end{definition}
+
+\end{smodule}
+\end{document}

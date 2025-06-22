@@ -1,0 +1,32 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Union is Associative]{union-is-associative.ftl}
+
+\importmodule[libraries/classes]{definitions?union.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=UnionIsAssociativeProp]
+  Let $A, B, C$ be classes.
+  Then $(A \union B) \union C \eq A \union (B \union C)$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $((A \union B) \union C) \subclass A \union (B \union C)$. %!
+    Let $x \elem (A \union B) \union C$.
+    Then $x \elem A \union B$ or $x \elem C$.
+    Hence $x \elem A$ or $x \elem B$ or $x \elem C$.
+    Thus $x \elem A$ or $x \elem (B \union C)$.
+    Therefore $x \elem A \union (B \union C)$.
+  End.
+
+  Let us show that $A \union (B \union C) \subclass (A \union B) \union C$.
+    Let $x \elem A \union (B \union C)$.
+    Then $x \elem A$ or $x \elem B \union C$.
+    Hence $x \elem A$ or $x \elem B$ or $x \elem C$.
+    Thus $x \elem A \union B$ or $x \elem C$.
+    Therefore $x \elem (A \union B) \union C$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

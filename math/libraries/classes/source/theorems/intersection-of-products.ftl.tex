@@ -1,0 +1,35 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Intersection of Products]{intersection-of-products.ftl}
+
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=IntersectOfProductsProp]
+  Let $A, A', B, B'$ be classes.
+  Then $(A \prod B) \intersect (A' \prod B') \eq (A \intersect A') \prod (B \intersect B')$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $((A \prod B) \intersect (A' \prod B')) \subclass (A \intersect A') \prod (B \intersect B')$. %!
+    Let $x \elem (A \prod B) \intersect (A' \prod B')$.
+    Then $x \elem A \prod B$ and $x \elem A' \prod B'$.
+    Take objects $a, b$ such that $x \eq (a, b)$.
+    Then $a \elem A, A'$ and $b \elem B, B'$.
+    Hence $a \elem A \intersect A'$ and $b \elem B \intersect B'$.
+    Thus $x \elem (A \intersect A') \prod (B \intersect B')$.
+  End.
+
+  Let us show that $(A \intersect A') \prod (B \intersect B') \subclass (A \prod B) \intersect (A' \prod B')$.
+    Let $x \elem (A \intersect A') \prod (B \intersect B')$.
+    Take elements $a, b$ such that $x \eq (a, b)$.
+    Then $a \elem A \intersect A'$ and $b \elem B \intersect B'$.
+    Hence $a \elem A, A'$ and $b \elem B, B'$.
+    Thus $x \elem A \prod B$ and $x \elem A' \prod B'$.
+    Therefore $x \elem (A \prod B) \intersect (A' \prod B')$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

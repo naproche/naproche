@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The $\in$-Relation is Irreflexive]{elementhood-is-irreflexive.ftl}
+
+\importmodule[libraries/sets]{axioms?set-induction.ftl}
+
+\begin{proposition}[forthel,id=ElementhoodIsIrreflexiveProp]
+  Let $A$ be a class.
+  Then $A \nelem A$.
+\end{proposition}
+\begin{proof}[forthel]
+  We can show by induction on $X$ that for no class $X$ we have $X \elem X$. Obvious.
+\end{proof}
+
+\end{smodule}
+\end{document}

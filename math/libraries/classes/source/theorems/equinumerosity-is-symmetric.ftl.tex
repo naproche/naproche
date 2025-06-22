@@ -1,0 +1,21 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Equinumerosity is Symmetric]{equinumerosity-is-symmetric.ftl}
+
+\importmodule[libraries/classes]{definitions?equinumerosity.ftl}
+\importmodule[libraries/maps]{theorems?invertibility-equals-injectivity.ftl}
+
+\begin{proposition}[forthel,id=EquinumerosityIsSymmetricProp]
+  Let $A, B$ be classes.
+  If $A$ and $B$ are equinumerous then $B$ and $A$ are equinumerous.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume that $A$ and $B$ are equinumerous.
+  Take a bijection $f$ between $A$ and $B$.
+  Then $\inv{f}$ is a bijection between $B$ and $A$.
+  Hence $B$ and $A$ are equinumerous.
+\end{proof}
+
+\end{smodule}
+\end{document}

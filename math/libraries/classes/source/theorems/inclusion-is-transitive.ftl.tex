@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Inclusion is Transitive]{inclusion-is-transitive.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=InclusionIsTransProp]
+  Let $A, B, C$ be classes.
+  If $A \subclass B$ and $B \subclass C$ then $A \subclass C$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $A \subclass B$ and $B \subclass C$.
+  Then every element of $A$ is contained in $B$ and every element of $B$ is contained in $C$.
+  Hence every element of $A$ is contained in $C$.
+  Thus $A \subclass C$.
+\end{proof}
+
+\end{smodule}
+\end{document}

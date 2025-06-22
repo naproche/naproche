@@ -1,0 +1,30 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Intersection is Commutative]{intersection-is-commutative.ftl}
+
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=IntersectIsCommutativeProp]
+  Let $A, B$ be classes.
+  Then $A \intersect B \eq B \intersect A$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $A \intersect B \subclass B \intersect A$.
+    Let $x \elem A \intersect B$.
+    Then $x \elem A$ and $x \elem B$.
+    Hence $x \elem B$ and $x \elem A$.
+    Thus $x \elem B \intersect A$.
+  End.
+
+  Let us show that $B \intersect A \subclass A \intersect B$.
+    Let $x \elem B \intersect A$.
+    Then $x \elem B$ and $x \elem A$.
+    Hence $x \elem A$ and $x \elem B$.
+    Thus $x \elem A \intersect B$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

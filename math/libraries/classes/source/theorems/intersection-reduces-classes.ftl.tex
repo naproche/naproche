@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Intersection Reduces Classes]{intersection-reduces-classes.ftl}
+
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=SuperclassOfIntersectProp]
+  Let $A, B$ be classes.
+  Then $A \intersect B \subclass A$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $x \elem A \intersect B$.
+  Then $x \elem A$ and $x \elem B$.
+  Hence $x \elem A$.
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,116 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Symmetric Difference is Associative]{symdiff-is-associative.ftl}
+
+\importmodule[libraries/classes]{definitions?symdiff.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=SymdiffIsAssociativeProp]
+  Let $A, B, C$ be classes.
+  Then $(A \symdiff B) \symdiff C \eq A \symdiff (B \symdiff C)$.
+\end{proposition}
+\begin{proof}[forthel]
+  Take a class $X$ such that $X \eq (((A \diff B) \union (B \diff A)) \diff C) \union (C \diff ((A \diff B) \union (B \diff A)))$.
+
+  Take a class $Y$ such that $Y \eq (A \diff ((B \diff C) \union (C \diff B))) \union (((B \diff C) \union (C \diff B)) \diff A)$.
+
+  We have $A \symdiff B \eq (A \diff B) \union (B \diff A)$ and $B \symdiff C \eq (B \diff C) \union (C \diff B)$.
+  Hence $(A \symdiff B) \symdiff C \eq X$ and $A \symdiff (B \symdiff C) \eq Y$.
+
+  Let us show that (I) $X \subclass Y$.
+    Let $x \elem X$.
+
+    \begin{case}{$x \elem ((A \diff B) \union (B \diff A)) \diff C$.}
+      Then $x \nelem C$.
+
+      \begin{case}{$x \elem A \diff B$.}
+        Then $x \nelem B \diff C$ and $x \nelem C \diff B$.
+        $x \elem A$.
+        Hence $x \elem A \diff ((B \diff C) \union (C \diff B))$.
+        Thus $x \elem Y$.
+      \end{case}
+
+      \begin{case}{$x \elem B \diff A$.}
+        Then $x \elem B \diff C$.
+        Hence $x \elem (B \diff C) \union (C \diff B)$.
+        $x \nelem A$.
+        Thus $x \elem ((B \diff C) \union (C \diff B)) \diff A$.
+        Therefore $x \elem Y$.
+      \end{case}
+    \end{case}
+
+    \begin{case}{$x \elem C \diff ((A \diff B) \union (B \diff A))$.}
+      Then $x \elem C$.
+      $x \nelem A \diff B$ and $x \nelem B \diff A$.
+      Hence not ($x \elem A \diff B$ or $x \elem B \diff A$).
+      Thus not (($x \elem A$ and $x \nelem B$) or ($x \elem B$ and $x \nelem A$)).
+      Therefore ($x \nelem A$ or $x \elem B$) and ($x \nelem B$ or $x \elem A$).
+
+      \begin{case}{$x \elem A$.}
+        Then $x \elem B$.
+        Hence $x \nelem (B \diff C) \union (C \diff B)$.
+        Thus $x \elem A \diff ((B \diff C) \union (C \diff B))$.
+        Therefore $x \elem Y$.
+      \end{case}
+
+      \begin{case}{$x \nelem A$.}
+        Then $x \nelem B$.
+        Hence $x \elem C \diff B$.
+        Thus $x \elem (B \diff C) \union (C \diff B)$.
+        Therefore $x \elem ((B \diff C) \union (C \diff B)) \diff A$.
+        Then we have $x \elem Y$.
+      \end{case}
+    \end{case}
+  End.
+
+  Let us show that (II) $Y \subclass X$.
+    Let $y \elem Y$.
+
+    \begin{case}{$y \elem A \diff ((B \diff C) \union (C \diff B))$.}
+      Then $y \elem A$.
+      $y \nelem B \diff C$ and $y \nelem C \diff B$.
+      Hence not ($y \elem B \diff C$ or $y \elem C \diff B$).
+      Thus not (($y \elem B$ and $y \nelem C$) or ($y \elem C$ and $y \nelem B$)).
+      Therefore ($y \nelem B$ or $y \elem C$) and ($y \nelem C$ or $y \elem B$).
+
+      \begin{case}{$y \elem B$.}
+        Then $y \elem C$.
+        $y \nelem A \diff B$ and $y \nelem B \diff A$.
+        Hence $y \nelem (A \diff B) \union (B \diff A)$.
+        Thus $y \elem C \diff ((A \diff B) \union (B \diff A))$.
+        Therefore $y \elem X$.
+      \end{case}
+
+      \begin{case}{$y \nelem B$.}
+        Then $y \nelem C$.
+        $y \elem A \diff B$.
+        Hence $y \elem (A \diff B) \union (B \diff A)$.
+        Thus $y \elem ((A \diff B) \union (B \diff A)) \diff C$.
+        Therefore $y \elem X$.
+      \end{case}
+    \end{case}
+
+    \begin{case}{$y \elem ((B \diff C) \union (C \diff B)) \diff A$.}
+      Then $y \nelem A$.
+
+      \begin{case}{$y \elem B \diff C$.}
+        Then $y \elem B \diff A$.
+        Hence $y \elem (A \diff B) \union (B \diff A)$.
+        Thus $y \elem ((A \diff B) \union (B \diff A)) \diff C$.
+        Therefore $y \elem X$.
+      \end{case}
+
+      \begin{case}{$y \elem C \diff B$.}
+        Then $y \elem C$.
+        $y \nelem A \diff B$ and $y \nelem B \diff A$.
+        Hence $y \nelem (A \diff B) \union (B \diff A)$.
+        Thus $y \elem C \diff ((A \diff B) \union (B \diff A))$.
+        Therefore $y \elem X$.
+      \end{case}
+    \end{case}
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,39 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Complements of Unions]{complements-of-unions.ftl}
+
+\importmodule[libraries/classes]{definitions?difference.ftl}
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+\importmodule[libraries/classes]{definitions?union.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=DifferenceWithUnionProp]
+  Let $A, B, C$ be classes.
+  Then $A \diff (B \union C) \eq (A \diff B) \intersect (A \diff C)$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $A \diff (B \union C) \subclass (A \diff B) \intersect (A \diff C)$.
+    Let $x \elem A \diff (B \union C)$.
+    Then $x \elem A$ and $x \nelem B \union C$.
+    Hence it is wrong that ($x \elem B$ or $x \elem C$).
+    Thus $x \nelem B$ and $x \nelem C$.
+    Therefore $x \elem A$ and ($x \nelem B$ and $x \nelem C$).
+    Then ($x \elem A$ and $x \nelem B$) and ($x \elem A$ and $x \nelem C$).
+    Hence $x \elem A \diff B$ and $x \elem A \diff C$.
+    Thus $x \elem (A \diff B) \intersect (A \diff C)$.
+  End.
+
+  Let us show that $((A \diff B) \intersect (A \diff C)) \subclass A \diff (B \union C)$. %!
+    Let $x \elem (A \diff B) \intersect (A \diff C)$.
+    Then $x \elem A \diff B$ and $x \elem A \diff C$.
+    Hence ($x \elem A$ and $x \nelem B$) and ($x \elem A$ and $x \nelem C$).
+    Thus $x \elem A$ and ($x \nelem B$ and $x \nelem C$).
+    Therefore $x \elem A$ and not ($x \elem B$ or $x \elem C$).
+    Then $x \elem A$ and not $x \elem B \union C$.
+    Hence $x \elem A \diff (B \union C)$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

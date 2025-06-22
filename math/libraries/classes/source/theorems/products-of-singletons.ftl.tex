@@ -1,0 +1,32 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Products of Singleton Classes]{products-of-singletons.ftl}
+
+\importmodule[libraries/classes]{definitions?singleton-class.ftl}
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=ProductOfSingletonsProp]
+  Let $a, b$ be objects.
+  Then $\singleton{a} \prod \singleton{b} \eq \singleton{(a, b)}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $\singleton{a} \prod \singleton{b} \subclass \singleton{(a, b)}$.
+    Let $c \elem \singleton{a} \prod \singleton{b}$.
+    Take $a' \elem \singleton{a}$ and $b' \elem \singleton{b}$ such that $c \eq (a', b')$.
+    We have $a' \eq a$ and $b' \eq b$.
+    Hence $c \eq (a, b)$.
+    Thus $c \elem \singleton{(a, b)}$.
+  End.
+
+  Let us show that $\singleton{(a, b)} \subclass \singleton{a} \prod \singleton{b}$.
+    Let $c \elem \singleton{(a, b)}$.
+    Then $c \eq (a, b)$.
+    We have $a \elem \singleton{a}$ and $b \elem \singleton{b}$.
+    Hence $c \elem \singleton{a} \prod \singleton{b}$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

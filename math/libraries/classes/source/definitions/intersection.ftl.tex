@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Intersection]{intersection.ftl}
+
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\symdef{intersect}{\mathbin{\highlight\cap}}
+
+\begin{definition}[forthel,id=IntersectDef]
+  Let $A, B$ be classes.
+  $\emph{A \intersect B} = \{ x \mid x \elem A\text{ and }x \elem B \}$.
+
+  Let the \emph{intersection of $A$ and $B$} stand for $A \intersect B$.
+\end{definition}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,35 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Intersection Distributes over Union]{intersection-distributes-over-union.ftl}
+
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+\importmodule[libraries/classes]{definitions?union.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=IntersectDistributesOverUnionProp]
+  Let $A, B, C$ be classes.
+  Then $A \intersect (B \union C) \eq (A \intersect B) \union (A \intersect C)$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $A \intersect (B \union C) \subclass (A \intersect B) \union (A \intersect C)$.
+    Let $x \elem A \intersect (B \union C)$.
+    Then $x \elem A$ and $x \elem B \union C$.
+    Hence $x \elem A$ and ($x \elem B$ or $x \elem C$).
+    Thus ($x \elem A$ and $x \elem B$) or ($x \elem A$ and $x \elem C$).
+    Therefore $x \elem A \intersect B$ or $x \elem A \intersect C$.
+    Hence $x \elem (A \intersect B) \union (A \intersect C)$.
+  End.
+
+  Let us show that $((A \intersect B) \union (A \intersect C)) \subclass A \intersect (B \union C)$. %!
+    Let $x \elem (A \intersect B) \union (A \intersect C)$.
+    Then $x \elem A \intersect B$ or $x \elem A \intersect C$.
+    Hence ($x \elem A$ and $x \elem B$) or ($x \elem A$ and $x \elem C$).
+    Thus $x \elem A$ and ($x \elem B$ or $x \elem C$).
+    Therefore $x \elem A$ and $x \elem B \union C$.
+    Hence$ x \elem A \intersect (B \union C)$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

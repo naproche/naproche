@@ -1,0 +1,19 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Singleton Class]{singleton-class.ftl}
+
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\symdef{singleton}[args=1]{\highlight{\{}#1\highlight{\}}}
+
+\begin{definition}[forthel,id=SingletonClassDef]
+  Let $a$ be an object.
+  $\emph{\singleton{a}} = \{ x \mid x \eq a \}$.
+
+  Let the \emph{singleton class of $a$} stand for $\singleton{a}$.
+  Let a \emph{singleton class} stand for an entity $x$ such that $x \eq \singleton{a}$ for some object $a$.
+\end{definition}
+
+\end{smodule}
+\end{document}

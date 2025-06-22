@@ -1,0 +1,35 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Intersection with Differences]{intersection-with-differences.ftl}
+
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+\importmodule[libraries/classes]{definitions?difference.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=IntersectWithDifferenceProp]
+  Let $A, B, C$ be classes.
+  Then $A \intersect (B \diff C) \eq (A \intersect B) \diff (A \intersect C)$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $A \intersect (B \diff C) \subclass (A \intersect B) \diff (A \intersect C)$.
+    Let $x \elem A \intersect (B \diff C)$.
+    Then $x \elem A$ and $x \elem B \diff C$.
+    Hence $x \elem A$ and $x \elem B$.
+    Thus $x \elem A \intersect B$ and $x \nelem C$.
+    Therefore $x \nelem A \intersect C$.
+    Then we have $x \elem (A \intersect B) \diff (A \intersect C)$.
+  End.
+
+  Let us show that $((A \intersect B) \diff (A \intersect C)) \subclass A \intersect (B \diff C)$. %!
+    Let $x \elem (A \intersect B) \diff (A \intersect C)$.
+    Then $x \elem A$ and $x \elem B$.
+    $x \nelem A \intersect C$.
+    Hence $x \nelem C$.
+    Thus $x \elem B \diff C$.
+    Therefore $x \elem A \intersect (B \diff C)$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

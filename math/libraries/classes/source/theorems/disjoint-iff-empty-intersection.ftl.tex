@@ -1,0 +1,16 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Two Classes are Disjoint Iff their Intersection is Empty]{disjoint-iff-empty-intersection.ftl}
+
+\importmodule[libraries/classes]{definitions?disjoint.ftl}
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+\importmodule[libraries/classes]{definitions?empty-classes.ftl}
+
+\begin{proposition}[forthel,id=DisjointIffEmptyIntersectProp]
+  Let $A, B$ be classes.
+  Then $A$ and $B$ are disjoint iff $A \intersect B$ is empty.
+\end{proposition}
+
+\end{smodule}
+\end{document}

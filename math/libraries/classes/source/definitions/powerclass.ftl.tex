@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Powerclass]{powerclass.ftl}
+
+\importmodule[libraries/sets]{definitions?subsets.ftl}
+
+\symdef{pow}{\highlight{\mathcal{P}}}
+
+\begin{definition}[forthel,id=PowerclassDef]
+  Let $A$ be a class.
+  $\emph{\pow(A)}$ is $\{ x \mid x\text{ is a subset of }A \}$.
+
+  Let the \emph{powerclass of $A$} stand for $\pow(A)$.
+\end{definition}
+
+\end{smodule}
+\end{document}

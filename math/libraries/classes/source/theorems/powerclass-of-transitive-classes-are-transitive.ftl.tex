@@ -1,0 +1,26 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Powerclasses of Transitive Classes are Transitive]{powerclasses-of-transitive-classes-are-transitive.ftl}
+
+\importmodule[libraries/classes]{definitions?transitive-classes.ftl}
+\importmodule[libraries/classes]{definitions?powerclass.ftl}
+
+\begin{proposition}[forthel,id=PowerclassOfTransClassIsTransProp]
+  Let $A$ be a transitive class.
+  Then $\pow(A)$ is transitive.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $x \elem \pow(A)$.
+  Then $x \subclass A$.
+
+  Let us show that $x \subclass \pow(A)$.
+    Let $y \elem x$.
+    Then $y \elem A$.
+    Hence $y \subclass A$.
+    Thus $y \elem \pow(A)$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

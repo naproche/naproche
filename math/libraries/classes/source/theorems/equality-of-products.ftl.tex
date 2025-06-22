@@ -1,0 +1,44 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Equality of Products]{equality-of-products.ftl}
+
+\importmodule[libraries/classes]{definitions?empty-classes.ftl}
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=ProductEqualityProp]
+  Let $A, A', B, B'$ be classes.
+  Assume that $A$ and $A'$ are nonempty or $B$ and $B'$ are nonempty.
+  Then $(A \prod A') \eq (B \prod B')$ iff $A \eq B$ and $A' \eq B'$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$A \prod A' \eq B \prod B'$.}
+    Then $A$ and $A'$ are nonempty iff $B$ and $B'$ are nonempty.
+
+    Let us show that for all $a \elem A$ and all $a' \elem A'$ we have $a \elem B$ and $a' \elem B'$.
+      Let $a \elem A$ and $a' \elem A'$.
+      Then $(a, a') \elem A \prod A'$.
+      Hence we can take $x \elem B \prod B'$ such that $x \eq (a, a')$.
+      Thus $a \elem B$ and $a' \elem B'$.
+    End.
+
+    Therefore $A \subclass B$ and $A' \subclass B'$.
+    Indeed $A$ and $A'$ are nonempty.
+
+    Let us show that for all $b \elem B$ and all $b' \elem B'$ we have $b \elem A$ and $b' \elem A'$.
+      Let $b \elem B$ and $b' \elem B'$.
+      Then $(b, b') \elem B \prod B'$.
+      Hence we can take $x \elem A \prod A'$ such that $x \eq (b, b')$.
+      Thus $(b, b') \elem A \prod A'$.
+    End.
+
+    Therefore $B \subclass A$ and $B' \subclass A'$.
+    Indeed $B$ and $B'$ are nonempty.
+  \end{case}
+
+  \begin{case}{$A \eq B$ and $A' \eq B'$.} \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

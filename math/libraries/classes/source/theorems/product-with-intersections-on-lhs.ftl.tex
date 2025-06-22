@@ -1,0 +1,34 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Product with Intersections on the LHS]{product-with-intersections-on-lhs.ftl}
+
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=ProductWithIntersectOnLhsProp]
+  Let $A, B, C$ be classes.
+  Then $(A \intersect B) \prod C \eq (A \prod C) \intersect (B \prod C)$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $((A \intersect B) \prod C) \subclass (A \prod C) \intersect (B \prod C)$. %!
+    Let $x \elem (A \intersect B) \prod C$.
+    Take $y \elem A \intersect B$ and $c \elem C$ such that $x \eq (y, c)$.
+    Then $y \elem A$ and $y \elem B$.
+    Hence $x \elem A \prod C$ and $x \elem B \prod C$.
+    Thus $x \elem (A \prod C) \intersect (B \prod C)$.
+  End.
+
+  Let us show that $((A \prod C) \intersect (B \prod C)) \subclass (A \intersect B) \prod C$. %!
+    Let $x \elem (A \prod C) \intersect (B \prod C)$.
+    Then $x \elem A \prod C$ and $x \elem B \prod C$.
+    Take objects $y, z$ such that $x \eq (y, z)$.
+    Then ($y \elem A$ and $y \elem B$) and $z \elem C$.
+    Hence $y \elem A \intersect B$.
+    Thus $x \elem (A \intersect B) \prod C$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

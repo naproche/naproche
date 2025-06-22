@@ -1,0 +1,34 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Product with Unions on the RHS]{product-with-unions-on-rhs.ftl}
+
+\importmodule[libraries/classes]{definitions?union.ftl}
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=ProductWithUnionOnRhsProp]
+  Let $A, B, C$ be classes.
+  Then $A \prod (B \union C) \eq (A \prod B) \union (A \prod C)$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $A \prod (B \union C) \subclass (A \prod B) \union (A \prod C)$.
+    Let $x \elem A \prod (B \union C)$.
+    Take $a \elem A$ and $y \elem B \union C$ such that $x \eq (a, y)$.
+    Then $y \elem B$ or $y \elem C$.
+    Hence $x \elem A \prod B$ or $x \elem A \prod C$.
+    Indeed if $y \elem B$ then $x \elem A \prod B$ and if $y \elem C$ then $x \elem A \prod C$.
+    Thus $x \elem (A \prod B) \union (A \prod C)$.
+  End.
+
+  Let us show that $((A \prod B) \union (A \prod C)) \subclass A \prod (B \union C)$.
+    Let $x \elem (A \prod B) \union (A \prod C)$.
+    Then $x \elem A \prod B$ or $x \elem A \prod C$.
+    Take objects $a, y$ such that $x \eq (a, y)$.
+    Then $a \elem A$ and ($y \elem B$ or $y \elem C$).
+    Hence $x \elem A \prod (B \union C)$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

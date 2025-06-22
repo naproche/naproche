@@ -1,0 +1,24 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Union of Products]{union-of-products.ftl}
+
+\importmodule[libraries/classes]{definitions?cartesian-product.ftl}
+\importmodule[libraries/classes]{definitions?union.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=UnionOfProductsProp]
+  Let $A, A', B, B'$ be classes.
+  Then $(A \prod B) \union (A' \prod B') \subclass (A \union A') \prod (B \union B')$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $x \elem (A \prod B) \union (A' \prod B')$.
+  Then $x \elem A \prod B$ or $x \elem A' \prod B'$.
+  Take objects $a, b$ such that $x \eq (a, b)$.
+  Then ($a \elem A$ or $a \elem A'$) and ($b \elem B$ or $b \elem B'$).
+  Hence $a \elem A \union A'$ and $b \elem B \union B'$.
+  Thus $x \elem (A \union A') \prod (B \union B')$.
+\end{proof}
+
+\end{smodule}
+\end{document}

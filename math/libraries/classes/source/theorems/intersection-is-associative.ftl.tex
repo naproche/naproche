@@ -1,0 +1,32 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Intersection is Associative]{intersection-is-associative.ftl}
+
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=IntersectIsAssociativeProp]
+  Let $A, B, C$ be classes.
+  Then $(A \intersect B) \intersect C \eq A \intersect (B \intersect C)$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $((A \intersect B) \intersect C) \subclass A \intersect (B \intersect C)$. %!
+    Let $x \elem (A \intersect B) \intersect C$.
+    Then $x \elem A \intersect B$ and $x \elem C$.
+    Hence $x \elem A$ and $x \elem B$ and $x \elem C$.
+    Thus $x \elem A$ and $x \elem (B \intersect C)$.
+    Therefore$ x \elem A \intersect (B \intersect C)$.
+  End.
+
+  Let us show that $A \intersect (B \intersect C) \subclass (A \intersect B) \intersect C$.
+    Let $x \elem A \intersect (B \intersect C)$.
+    Then $x \elem A$ and $x \elem B \intersect C$.
+    Hence $x \elem A$ and $x \elem B$ and $x \elem C$.
+    Thus $x \elem A \intersect B$ and $x \elem C$.
+    Therefore $x \elem (A \intersect B) \intersect C$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

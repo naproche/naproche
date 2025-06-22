@@ -1,0 +1,22 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Equinumerosity is Transitive]{equinumerosity-is-transitive.ftl}
+
+\importmodule[libraries/classes]{definitions?equinumerosity.ftl}
+\importmodule[libraries/maps]{definitions?comp.ftl}
+\importmodule[libraries/maps]{theorems?comp-of-bijections-are-bijective.ftl}
+
+\begin{proposition}[forthel,id=EquinumerosityIsTransitiveProp]
+  Let $A, B, C$ be classes.
+  If $A$ and $B$ are equinumerous and $B$ and $C$ are equinumerous then $A$ and $C$ are equinumerous.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume that $A$ and $B$ are equinumerous and $B$ and $C$ are equinumerous.
+  Take a bijection $f$ between $A$ and $B$ and a bijection $g$ between $B$ and $C$.
+  Then $g \comp f$ is a bijection between $A$ and $C$.
+  Hence $A$ and $C$ are equinumerous.
+\end{proof}
+
+\end{smodule}
+\end{document}

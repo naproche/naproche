@@ -1,0 +1,19 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Cartesian Product]{cartesian-product.ftl}
+
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\symdef{prod}{\mathbin{\highlight\times}}
+
+\begin{definition}[forthel,id=ProductDef]
+  Let $A, B$ be classes.
+  $\emph{A \prod B} = \{ (a, b) \mid a \elem A\text{ and }b \elem B \}$.
+
+  Let the \emph{Cartesian product of $A$ and $B$} stand for $A \prod B$.
+  Let the \emph{direct product of $A$ and $B$} stand for $A \prod B$.
+\end{definition}
+
+\end{smodule}
+\end{document}

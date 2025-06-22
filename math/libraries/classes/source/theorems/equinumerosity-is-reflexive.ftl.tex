@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Equinumerosity is Reflexive]{equinumerosity-is-reflexive.ftl}
+
+\importmodule[libraries/classes]{definitions?equinumerosity.ftl}
+\importmodule[libraries/maps]{definitions?id.ftl}
+
+\begin{proposition}[forthel,id=EquinumerosityIsReflexiveProp]
+  Let $A$ be a class.
+  Then $A$ is equinumerous to $A$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\id{A}$ is a bijection between $A$ and $A$.
+\end{proof}
+
+\end{smodule}
+\end{document}

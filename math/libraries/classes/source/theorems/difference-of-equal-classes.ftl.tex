@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Difference of Equal Classes]{difference-of-equal-classes.ftl}
+
+\importmodule[libraries/classes]{definitions?difference.ftl}
+\importmodule[libraries/classes]{definitions?empty-class.ftl}
+
+\begin{proposition}[forthel,id=DifferenceOfEqualClassesProp]
+  Let $A$ be a class.
+  Then $A \diff A \eq \empty$.
+\end{proposition}
+\begin{proof}[forthel]
+  $A \diff A$ has no elements.
+  Indeed $A \diff A = \{ x \mid x \elem A\text{ and }x \nelem A \}$.
+  Hence the thesis.
+\end{proof}
+
+\end{smodule}
+\end{document}

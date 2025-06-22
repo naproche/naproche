@@ -1,0 +1,19 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Intersection is Idempotent]{intersection-is-idempotent.ftl}
+
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+
+\begin{proposition}[forthel,id=IntersectIsIdempotent]
+  Let $A$ be a class.
+  Then $A \intersect A \eq A$.
+\end{proposition}
+\begin{proof}[forthel]
+  $A \intersect A = \{ x \mid x \elem A\text{ and }x \elem A \}$.
+  Hence $A \intersect A = \{ x \mid x \elem A \}$.
+  Thus $A \intersect A \eq A$.
+\end{proof}
+
+\end{smodule}
+\end{document}

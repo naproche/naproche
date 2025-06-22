@@ -1,0 +1,26 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Intersection with Symmetric Differences]{intersection-with-symdiffs.ftl}
+
+\importmodule[libraries/classes]{definitions?symdiff.ftl}
+
+\begin{proposition}[forthel,id=IntersectWithSymdiffProp]
+  Let $A, B, C$ be classes.
+  Then $A \intersect (B \symdiff C) \eq (A \intersect B) \symdiff (A \intersect C)$.
+\end{proposition}
+\begin{proof}[forthel]
+  $A \intersect (B \symdiff C)
+    \eq A \intersect ((B \diff C) \union (C \diff B))
+    \eq (A \intersect (B \diff C)) \union (A \intersect (C \diff B))$.
+
+  $A \intersect (B \diff C) \eq (A \intersect B) \diff (A \intersect C)$.
+  $A \intersect (C \diff B) \eq (A \intersect C) \diff (A \intersect B)$.
+
+  Hence $A \intersect (B \symdiff C)
+    \eq ((A \intersect B) \diff (A \intersect C)) \union ((A \intersect C) \diff (A \intersect B))
+    \eq (A \intersect B) \symdiff (A \intersect C)$.
+\end{proof}
+
+\end{smodule}
+\end{document}

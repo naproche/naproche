@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Union extends Classes]{union-extends-classes.ftl}
+
+\importmodule[libraries/classes]{definitions?union.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=SubclassOfUnionProp]
+  Let $A, B$ be classes.
+  Then $A \subclass A \union B$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $x \elem A$.
+  Then $x \elem A$ or $x \elem B$.
+  Hence $x \elem A \union B$.
+\end{proof}
+
+\end{smodule}
+\end{document}

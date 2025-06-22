@@ -1,0 +1,30 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Union is Commutative]{union-is-commutative.ftl}
+
+\importmodule[libraries/classes]{definitions?union.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=UnionIsCommutativeProp]
+  Let $A, B$ be classes.
+  Then $A \union B \eq B \union A$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $A \union B \subclass B \union A$.
+    Let $x \elem A \union B$.
+    Then $x \elem A$ or $x \elem B$.
+    Hence $x \elem B$ or $x \elem A$.
+    Thus $x \elem B \union A$.
+  End.
+
+  Let us show that $B \union A \subclass A \union B$.
+    Let $x \elem B \union A$.
+    Then $x \elem B$ or $x \elem A$.
+    Hence $x \elem A$ or $x \elem B$.
+    Thus $x \elem A \union B$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

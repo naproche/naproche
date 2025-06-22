@@ -1,0 +1,39 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Intersection with Subclasses]{intersection-with-subclasses.ftl}
+
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\begin{proposition}[forthel,id=IntersectWithSubclassProp]
+  Let $A, B$ be classes.
+  Then $A \subclass B$ iff $A \intersect B \eq A$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$A \subclass B$.}
+
+    Let us show that $A \intersect B \subclass A$.
+      Let $x \elem A \intersect B$.
+      Then $x \elem A$ and $x \elem B$.
+      Hence $x \elem A$.
+    End.
+
+    Let us show that $A \subclass A \intersect B$.
+      Let $x \elem A$.
+      Then $x \elem B$.
+      Hence $x \elem A$ and $x \elem B$.
+      Thus $x \elem A \intersect B$.
+    End.
+  \end{case}
+
+  \begin{case}{$A \intersect B \eq A$.}
+    Let $x \elem A$.
+    Then $x \elem A \intersect B$.
+    Hence $x \elem A$ and $x \elem B$.
+    Thus $x \elem B$.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

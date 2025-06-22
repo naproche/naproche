@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Union]{union.ftl}
+
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\symdef{union}{\mathbin{\highlight\cup}}
+
+\begin{definition}[forthel,id=UnionDef]
+  Let $A, B$ be classes.
+  $\emph{A \union B} = \{ x \mid x \elem A\text{ or }x \elem B \}$.
+
+  Let the \emph{union of $A$ and $B$} stand for $A \union B$.
+\end{definition}
+
+\end{smodule}
+\end{document}
