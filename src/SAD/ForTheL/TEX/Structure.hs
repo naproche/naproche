@@ -353,6 +353,7 @@ data TlsOption =
     TlsForthel      -- @forthel@
   | TlsTitle Text   -- @title=<title>@
   | TlsId Text      -- @id=<label>@
+  | TlsFor [Text]   -- @for=<symbol names>@
   | TLsUnknown
 
 -- | Parse an environment label (TEX), i.e. a list of key-value pairs that
@@ -383,9 +384,13 @@ tlsOption = do
       symbol "="
       label <- identifier
       return (key, TlsId label)
+    "for" -> do
+      symbol "="
+      symbolNames <- map (Text.fromStrict . tokensText) <$> optBraced (sepBy (chainLL1 notReservedChar) (symbol ","))
+      return (key, TlsFor symbolNames)
     _ -> return ("", TLsUnknown)
   where
-    notReservedChar = tokenPrim $ \t -> guard (showToken t `notElem` [",", "]", "="]) >> return t
+    notReservedChar = tokenPrim $ \t -> guard (showToken t `notElem` [",", "]", "=", "{", "}"]) >> return t
 
 
 -- | Parse an optional top-leve section environment label (TEX).
