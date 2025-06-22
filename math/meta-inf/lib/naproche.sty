@@ -1,0 +1,350 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{naproche}[2025/03/08 package naproche]
+
+\RequirePackage{stex}
+\RequirePackage{amsmath,amssymb,amsfonts}
+\RequirePackage{etoolbox}
+\RequirePackage{xcolor}
+\RequirePackage{keyval}
+\RequirePackage{environ}
+\RequirePackage{marginnote}
+\RequirePackage{mdframed}
+\RequirePackage{nameref}
+
+
+% Predefined symbols
+% ------------------
+
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\fun}{\mathrm{\lambda}}
+
+
+% Naproche & ForTheL logos
+% ------------------------
+
+\RequirePackage{xspace}
+\newcommand{\Naproche}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
+
+\newcommand{\ForTheL}{\mbox{ForTheL}\xspace}
+
+
+% Comprehension terms
+% -------------------
+
+\RequirePackage{linegoal}
+
+% Gets the left-hand and right-hand side, resp., of an expression of the form
+% "foo|bar"
+\def\getfirst#1|#2\relax{#1}
+\def\getsecond#1|#2\relax{#2}
+
+% Comprehension term: "\class{... | ...}".
+% Naproche allows to enclose the RHS within "\text{...}", e.g.
+% "\class{x | \text{$x$ is greater than $y$}}".
+% Use "\classtext{...}" instead of "\text{...}" to enable automatic line breaks
+% in the RHS.
+\newcommand{\class}[1]{%
+  \left\{%
+  \getfirst#1\relax%
+  ~\middle\vert~%
+  \linebreak[1]%
+  \getsecond#1\relax%
+  \right\}%
+}
+
+\newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
+
+
+% Printing labels
+% ---------------
+
+\newcommand{\printref}[1]{\path{#1}}
+
+
+% Top-level sections
+% ------------------
+
+\newcounter{theoremcount}
+
+\newbool{printid}
+\setbool{printid}{false} % Set to true in naproche-library.cls
+\newbool{showtlsnumber}
+\setbool{showtlsnumber}{true}
+
+% Show/hide TLS numbers:
+\newcommand\showtlsnumbers{\setbool{showtlsnumber}{true}}
+\newcommand\hidetlsnumbers{\setbool{showtlsnumber}{false}}
+
+\newcommand\tlstitle{}
+\newcommand\tlsid{}
+\newcommand\tlsidname{}
+\newcommand\tlsidlabel{}
+\newcommand\tlsfor\inlinedef
+
+\def\tlsinlinedef#1{\inlinedef[for=#1]}
+
+\makeatletter
+\define@key{tlskeys}{forthel}[true]{\setbool{forthel}{\if\relax{#1}{false}\else#1\fi}}
+\define@key{tlskeys}{title}{\def\tlstitle{#1}}
+\define@key{tlskeys}{id}{\def\tlsid{#1}\def\tlsidname{\path{#1}\def\tlsidlabel{\label{#1}}}}
+\define@key{tlskeys}{for}{\def\tlsfor{\inlinedef[for={#1}]}}
+\makeatother
+
+\NewEnviron{definition}[1][]{\begin{tls}[#1]{Definition}\tlsfor\BODY\end{tls}}
+\NewEnviron{definition*}[1][]{\begin{tls*}[#1]{Definition}\tlsfor\BODY\end{tls*}}
+\NewEnviron{signature}[1][]{\begin{tls}[#1]{Signature}\tlsfor\BODY\end{tls}}
+\NewEnviron{signature*}[1][]{\begin{tls*}[#1]{Signature}\tlsfor\BODY\end{tls*}}
+\NewEnviron{axiom}[1][]{\begin{tls}[#1]{Axiom}\BODY\end{tls}}
+\NewEnviron{axiom*}[1][]{\begin{tls*}[#1]{Axiom}\BODY\end{tls*}}
+\NewEnviron{theorem}[1][]{\begin{tls}[#1]{Theorem}\BODY\end{tls}}
+\NewEnviron{theorem*}[1][]{\begin{tls*}[#1]{Theorem}\BODY\end{tls*}}
+\NewEnviron{proposition}[1][]{\begin{tls}[#1]{Proposition}\BODY\end{tls}}
+\NewEnviron{proposition*}[1][]{\begin{tls*}[#1]{Proposition}\BODY\end{tls*}}
+\NewEnviron{lemma}[1][]{\begin{tls}[#1]{Lemma}\BODY\end{tls}}
+\NewEnviron{lemma*}[1][]{\begin{tls*}[#1]{Lemma}\BODY\end{tls*}}
+\NewEnviron{corollary}[1][]{\begin{tls}[#1]{Corollary}\BODY\end{tls}}
+\NewEnviron{corollary*}[1][]{\begin{tls*}[#1]{Corollary}\BODY\end{tls*}}
+\NewEnviron{convention}[1][]{\begin{tls}[#1]{Convention}\tlsfor\BODY\end{tls}}
+\NewEnviron{convention*}[1][]{\begin{tls*}[#1]{Convention}\tlsfor\BODY\end{tls*}}
+
+\newenvironment{tls*}[2][]{%
+  \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
+  \setkeys{tlskeys}{#1}%
+  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
+  \if\relax\tlsid\else\tlsidlabel\fi%
+  \ifstexhtml\begin{stex_annotate_env}{style=
+    display: block;
+    margin-top: 10px;
+    --rustex-this-width: calc(var(--rustex-this-width)-30px);
+  }\fi%
+  \noindent\textbf{#2\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
+  \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
+}{%
+  \ifstexhtml\end{stex_annotate_env}\fi%
+  \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
+  \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
+  \renewcommand\tlstitle{}%
+  \renewcommand\tlsidname{}%
+  \renewcommand\tlsidlabel{}%
+}
+
+\newenvironment{tls}[2][]{%
+  \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
+  \setkeys{tlskeys}{#1}%
+  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
+  \refstepcounter{theoremcount}%
+  \if\relax\tlsid\else\tlsidlabel\fi%
+  \ifstexhtml\begin{stex_annotate_env}{style=
+    display: block;
+    margin-top: 10px;
+    --rustex-this-width: calc(var(--rustex-this-width)-30px);
+  }\fi%
+  \noindent\textbf{#2\ifbool{showtlsnumber}{ \thetheoremcount}{}\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
+  \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
+}{%
+  \ifstexhtml\end{stex_annotate_env}\fi%
+  \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
+  \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
+  \renewcommand\tlstitle{}%
+  \renewcommand\tlsidname{}%
+  \renewcommand\tlsidlabel{}%
+}
+
+\newcommand\proofmethod{}
+
+\makeatletter
+\define@key{proofkeys}{forthel}[true]{\setbool{forthel}{\if\relax{#1}{false}\else#1\fi}}
+\define@key{proofkeys}{method}{\def\proofmethod{#1}}
+\makeatother
+
+\newcounter{proofdepth}
+
+\newenvironment{proof}[1][]{%
+  \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
+  \setkeys{proofkeys}{#1}%
+  \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
+  \ifstexhtml\begin{stex_annotate_env}{style=
+    display:inline-block;
+    margin-top: 5px;
+    --rustex-this-width: calc(var(--rustex-this-width)-30px);
+  }\fi%
+  \noindent\textit{Proof\if\relax\proofmethod\else\ by \proofmethod\fi. }%
+  \relax%
+  % Reset the proof method so that it is not reused by subproofs:
+  \def\proofmethod{}%
+  \stepcounter{proofdepth}%
+}
+{%
+  \ifnum\value{proofdepth}>1\ensuremath\square\else\strut\hfill\ensuremath\blacksquare\fi%
+  \ifstexhtml\end{stex_annotate_env}\fi%
+  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
+  \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
+  % Reset the proof method so that it is not reused by following proofs:
+  \def\proofmethod{}%
+  \addtocounter{proofdepth}{-1}%
+}
+\ExplSyntaxOff
+
+\makeatletter
+% to prevent \list from being redefined, e.g. by a \symdef:
+\let\@latexlist\list
+\let\@endlatexlist\endlist
+\newenvironment{case}[1]{%
+  \ifstexhtml\begin{stex_annotate_env}{style=
+    display: inline-block;
+    margin-top: 5px;
+    --rustex-curr-width: calc(var(--rustex-curr-width)-37.5px);
+  }\fi%
+  \@latexlist{}{
+    \setlength\leftmargin{1em}
+    \setlength\topsep{0cm}
+  }
+  \item\textit{Case #1}%
+}
+{%
+  \ensuremath\square%
+  \@endlatexlist
+  \ifstexhtml\end{stex_annotate_env}\fi
+}
+\makeatother
+
+
+% ForTheL Environment
+% -------------------
+
+\colorlet{forthelgray}{lightgray!30}
+
+% Space between paragraphs in forthel environments
+\newlength{\ftlparskip}
+\setlength{\ftlparskip}{0.5em}
+
+\newbool{forthel}
+\setbool{forthel}{false}
+
+\newbool{forthelBeforeEnv}
+\newbool{forthelInEnv}
+
+\ExplSyntaxOn
+\stex_new_stylable_env:nnnnnnn{forthel}{}{%
+  \par\addvspace\baselineskip%
+  \ifstexhtml%
+    \stex_annotate_env{style=
+      display:block;
+      border:2px solid Gainsboro;
+      background-color: Gainsboro;
+      padding:15px;
+      margin-top:5px;
+      margin-bottom:5px;
+    }%
+  \else%
+    \mdframed[backgroundcolor=forthelgray,linecolor=forthelgray]%
+  \fi%
+  \rmfamily%
+  \setbool{forthel}{true}%
+  \setlength\parindent{0pt}%
+  \setlength\parskip\ftlparskip%
+}{%
+  \ifstexhtml%
+    \endstex_annotate_env%
+  \else%
+    \endmdframed%
+  \fi
+  \par\addvspace\baselineskip%
+  \setbool{forthel}{false}%
+}{}{}{}
+\ExplSyntaxOff
+
+
+% Inline ForTheL Command
+% ----------------------
+
+\RequirePackage{tcolorbox}
+\RequirePackage{soulpos}
+
+\newtcbox\ftlbox{
+  on line,
+  arc=0pt,
+  outer arc=0pt,
+  colback=forthelgray,
+  colframe=forthelgray,
+  boxsep=0pt,
+  left=.2em,
+  right=.2em,
+  top=.2em,
+  bottom=.4em,
+  boxrule=0pt,
+  height=1.4em    
+}
+
+\ulposdef\inlineforthelbox[xoffset-start=.2em]{%
+  \ftlbox{\rule\ulwidth{0pt}}%
+}
+
+\newcommand\inlineforthel[1]{%
+  \setbool{forthel}{true}%
+  \inlineforthelbox{#1}%
+  \setbool{forthel}{false}%
+}
+
+
+% Highlighting Components
+% =======================
+
+\newbool{highlight}
+\setbool{highlight}{false}
+\newbool{emph}
+\setbool{emph}{false}
+
+\definecolor{sTeXMediumVioletRed}{RGB}{199,21,133}
+% Default colors for highhlighting definienda and components of symbolic expressions:
+\ifstexhtml\colorlet{defemphcolor}{sTeXMediumVioletRed}\else\colorlet{defemphcolor}{violet}\fi
+\colorlet{refemphcolor}{teal}
+
+
+\let\oldemph\emph
+
+% In forthel environments, color the argument of \emph commands with
+% defemphcolor and set its shape to italics. Outside of forthel environments,
+% \emph behaves as usual.
+\ExplSyntaxOn
+\renewcommand\emph[1]{%
+  \colorlet{currentcolor}{.}%
+  \setbool{emph}{true}%
+  \ifbool{forthel}%
+    {\ifbool{highlight}%
+      {\color{defemphcolor}{\ifmmode\defnotation#1\else\itshape#1\fi}\color{currentcolor}}%
+      {\ifmmode#1\else\itshape#1\fi}%
+    }%
+    {\oldemph{#1}}%
+  \setbool{emph}{false}%
+}
+\ExplSyntaxOff
+
+% sTeX highlighting:
+\usepackage{stex-highlighting}
+\def\compemph#1{%
+  \ifbool{highlight}{%
+    \ifbool{forthel}{%
+        \ifbool{emph}{\textcolor{defemphcolor}{#1}%
+      }{%
+        \textcolor{refemphcolor}{#1}%
+      }%
+    }{%
+      \textcolor{refemphcolor}{#1}%
+    }%
+  }{#1}%
+}
+\def\defemph#1{\textcolor{defemphcolor}{#1}}
+
+
+% Options
+% -------
+
+\DeclareOption{numberswithinsection}{%
+  \counterwithin{theoremcount}{section}
+}
+\DeclareOption{numberswithinsubsection}{%
+  \counterwithin{theoremcount}{subsection}
+}
+\DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
+\ProcessOptions\relax

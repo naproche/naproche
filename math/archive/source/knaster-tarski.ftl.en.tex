@@ -1,0 +1,58 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+
+\title{The Knaster-Tarski Fixed Point Theorem}
+\author{Alexander Holz (2018), Marcel Schütz (2018--2025)}
+\date{}
+
+\begin{document}
+\begin{smodule}{knaster-tarski.ftl}
+\maketitle
+
+\importmodule[libraries/classes]{definitions?powerclass.ftl}
+\importmodule[libraries/sets]{axioms?powerset.ftl}
+\importmodule[libraries/maps]{definitions?fixed-points.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/systems-of-sets]{definitions?subset-preserving-maps.ftl}
+\importmodule[libraries/systems-of-sets]{definitions?union-over-systems-of-sets.ftl}
+\importmodule[libraries/systems-of-sets]{axioms?big-union.ftl}
+
+\noindent This is a formalization of the \textit{Knaster-Tarski Fixed Point
+Theorem}, i.e. of the assertion that every subset-preserving map has a fixed
+point \cite{Schroeder2012}.
+
+\begin{theorem}[forthel,title=Knaster-Tarski,id=knaster_tarski]
+  Let $x$ be a set.
+  Let $h$ be a map from $\pow(x)$ to $\pow(x)$ that preserves subsets.
+  Then $h$ has a fixed point.
+\end{theorem}
+\begin{proof}[forthel]
+  (1) Define $A = \{y \in \pow(x) \mid y \subclass h(y)\}$.
+  Then $A$ is a subset of $\pow(x)$.
+  We have $\unionover A \elem \pow(x)$.
+
+  Let us show that (2) $\unionover A \subclass h(\unionover A)$.
+  \begin{proof}
+    Let $u \elem \unionover A$.
+    Take $y \elem A$ such that $u \elem y$.
+    Then $u \elem h(y)$.
+    We have $y \subclass \unionover A$.
+    Hence $h(y) \subclass h(\unionover A)$.
+    Indeed $h$ is a subset preserving map between systems of sets and $y, \unionover A \elem \dom(h)$.
+    Thus $h(y) \subclass h(\unionover A)$.
+    Therefore $u \elem h(\unionover A)$.
+  \end{proof}
+
+  Then $h(\unionover A) \elem A$ (by 1).
+  Indeed $h(\unionover A) \subclass x$.
+  (3) Hence $h(\unionover A) \subclass \unionover A$.
+  Indeed every element of $h(\unionover A)$ is an element of some element of $A$.
+
+  Thus $h(\unionover A) \eq \unionover A$ (by 2, 3).
+\end{proof}
+
+\printbibliography
+\printlicense[CcByNcSa]{Alexander Holz (2018), Marcel Schütz (2018--2025)}
+\end{smodule}
+\end{document}
