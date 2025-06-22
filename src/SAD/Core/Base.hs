@@ -419,7 +419,7 @@ functionDefinition = makeInitDefinition $
 
 functionCondition :: Context
 functionCondition = makeInitAxiom $
-  mkAll (VarHole "0") ((mkMap v0 `And` mkSet (mkDom v0)) `Imp` mkFunction v0)
+  mkAll (VarHole "0") (mkMap v0 `Imp` (mkSet (mkDom v0) `Iff` mkFunction v0))
 
 classExtensionality :: Context
 classExtensionality = makeInitAxiom $
@@ -440,10 +440,9 @@ mapExtensionality = makeInitAxiom $
 pairExtensionality :: Context
 pairExtensionality = makeInitAxiom $
   mkAll (VarHole "0") (mkAll (VarHole "1") (mkAll (VarHole "2") (mkAll (VarHole "3")
-    (((mkObject v0 `And` mkObject v1 `And` mkObject v2 `And` mkObject v3)
-    `And` mkEquality v0 v2
-    `And` mkEquality v1 v3)
-    `Imp` mkEquality (mkPair v0 v1) (mkPair v2 v3)))))
+    ((mkObject v0 `And` mkObject v1 `And` mkObject v2 `And` mkObject v3) `Imp`
+    (mkEquality (mkPair v0 v1) (mkPair v2 v3) `Imp`
+    (mkEquality v0 v2 `And` mkEquality v1 v3))))))
 
 
 -- retrieve definitional formula of a term
