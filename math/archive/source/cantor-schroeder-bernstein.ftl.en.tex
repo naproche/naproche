@@ -10,9 +10,19 @@
 \begin{smodule}{cantor-schroeder-bernstein.ftl}
 \maketitle
 
-\importmodule[libraries/foundations]{equinumerosity.ftl}
-\importmodule[libraries/foundations]{maps-and-systems-of-sets.ftl}
-\importmodule[libraries/set-theory]{zfc.ftl}
+\importmodule[libraries/classes]{definitions?equinumerosity.ftl}
+\importmodule[libraries/classes]{definitions?powerclass.ftl}
+\importmodule[libraries/classes]{definitions?difference.ftl}
+\importmodule[libraries/maps]{definitions?fixed-points.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/maps]{definitions?inverse-map.ftl}
+\importmodule[libraries/maps]{definitions?values.ftl}
+\importmodule[libraries/maps]{definitions?maps-to-classes.ftl}
+\importmodule[libraries/maps]{theorems?invertibility-equals-injectivity.ftl}
+\importmodule[libraries/systems-of-sets]{definitions?subset-preserving-maps.ftl}
+\importmodule[libraries/systems-of-sets]{definitions?union-over-systems-of-sets.ftl}
+\importmodule[libraries/systems-of-sets]{axioms?big-union.ftl}
+\importmodule[libraries/sets]{axioms?powerset.ftl}
 
 \noindent This is a formalization of the \textit{Knaster-Tarski Fixed Point
 Theorem} (i.e. of the assertion that every subset-preserving map has a fixed
@@ -25,32 +35,32 @@ where the proof of the latter theorem is based on the former one, as in
 
 \begin{theorem}[forthel,title=Knaster-Tarski,id=knaster_tarski]
   Let $x$ be a set.
-  Let $h$ be a map from $\SETpow(x)$ to $\SETpow(x)$ that preserves subsets.
+  Let $h$ be a map from $\pow(x)$ to $\pow(x)$ that preserves subsets.
   Then $h$ has a fixed point.
 \end{theorem}
 \begin{proof}[forthel]
-  (1) Define $A = \{y \in \SETpow(x) \mid y \SETinclude h(y)\}$.
-  Then $A$ is a subset of $\SETpow(x)$.
-  We have $\SETunionover A \SETin \SETpow(x)$.
+  (1) Define $A = \{y \in \pow(x) \mid y \subclass h(y)\}$.
+  Then $A$ is a subset of $\pow(x)$.
+  We have $\unionover A \elem \pow(x)$.
 
-  Let us show that (2) $\SETunionover A \SETinclude h(\SETunionover A)$.
-    Let $u \SETin \SETunionover A$.
-    Take $y \SETin A$ such that $u \SETin y$.
-    Then $u \SETin h(y)$.
-    We have $y \SETinclude \SETunionover A$.
-    Hence $h(y) \SETinclude h(\SETunionover A)$.
-    Indeed $h$ is a subset preserving map between systems of sets and $y, \SETunionover A \SETin \FUNdom(h)$.
-    Thus $h(y) \SETinclude h(\SETunionover A)$.
-    Therefore $u \SETin h(\SETunionover A)$.
-  End.
+  Let us show that (2) $\unionover A \subclass h(\unionover A)$.
+  \begin{proof}
+    Let $u \elem \unionover A$.
+    Take $y \elem A$ such that $u \elem y$.
+    Then $u \elem h(y)$.
+    We have $y \subclass \unionover A$.
+    Hence $h(y) \subclass h(\unionover A)$.
+    Indeed $h$ is a subset preserving map between systems of sets and $y, \unionover A \elem \dom(h)$.
+    Thus $h(y) \subclass h(\unionover A)$.
+    Therefore $u \elem h(\unionover A)$.
+  \end{proof}
 
-  Then $h(\SETunionover A) \SETin A$ (by 1).
-  Indeed $h(\SETunionover A) \SETinclude x$.
-  (3) Hence $h(\SETunionover A) \SETinclude \SETunionover A$.
-  Indeed every element of $h(\SETunionover A)$ is an element of some element of
-  $A$.
+  Then $h(\unionover A) \elem A$ (by 1).
+  Indeed $h(\unionover A) \subclass x$.
+  (3) Hence $h(\unionover A) \subclass \unionover A$.
+  Indeed every element of $h(\unionover A)$ is an element of some element of $A$.
 
-  Thus $h(\SETunionover A) \eq \SETunionover A$ (by 2, 3).
+  Thus $h(\unionover A) \eq \unionover A$ (by 2, 3).
 \end{proof}
 
 
@@ -63,117 +73,122 @@ where the proof of the latter theorem is based on the former one, as in
 \begin{proof}[forthel]
   \begin{case}{$x$ and $y$ are equinumerous.}
     Take a bijection $f$ between $x$ and $y$.
-    Then $\FUNinv{f}$ is a bijection between $y$ and $x$.
-    Hence $f$ is an injective map from $x$ to $y$ and $\FUNinv{f}$ is an
+    Then $\inv{f}$ is a bijection between $y$ and $x$.
+    Hence $f$ is an injective map from $x$ to $y$ and $\inv{f}$ is an
     injective map from $y$ to $x$.
   \end{case}
 
   \begin{case}{there exists an injective map from $x$ to $y$ and there exists an injective map from $y$ to $x$.}
     Take an injective map $f$ from $x$ to $y$.
     Take an injective map $g$ from $y$ to $x$.
-    We have $y \SETdiff \FUNim{f}{a} \SETinclude y$ for any $a \SETin \SETpow(x)$.
+    We have $y \diff \im{f}{a} \subclass y$ for any $a \elem \pow(x)$.
 
-    (1) Define $h(a) = x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{a}}$ for $a \in \SETpow(x)$.
+    (1) Define $h(a) = x \diff \im{g}{y \diff \im{f}{a}}$ for $a \in \pow(x)$. % goal failed
 
-    $h$ is a map from $\SETpow(x)$ to $\SETpow(x)$.
+    $h$ is a map from $\pow(x)$ to $\pow(x)$.
     Indeed $h(a)$ is a subset of $x$ for each subset $a$ of $x$.
 
     Let us show that $h$ preserves subsets.
+    \begin{proof}
       Let $u, v$ be subsets of $x$.
-      Assume $u \SETinclude v$.
-      Then $\FUNim{f}{u} \SETinclude \FUNim{f}{v}$.
-      Hence $y \SETdiff \FUNim{f}{v} \SETinclude y \SETdiff \FUNim{f}{u}$.
-      Thus $\FUNim{g}{y \SETdiff \FUNim{f}{v}} \SETinclude \FUNim{g}{y \SETdiff \FUNim{f}{u}}$.
-      Indeed $y \SETdiff \FUNim{f}{v}$ and $y \SETdiff \FUNim{f}{u}$ are subsets of $y$.
-      Therefore $x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{u}} \SETinclude x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{v}}$.
-      Consequently $\FUNim{h}{u} \SETinclude \FUNim{h}{v}$.
-    End.
+      Assume $u \subclass v$.
+      Then $\im{f}{u} \subclass \im{f}{v}$.
+      Hence $y \diff \im{f}{v} \subclass y \diff \im{f}{u}$.
+      Thus $\im{g}{y \diff \im{f}{v}} \subclass \im{g}{y \diff \im{f}{u}}$.
+      Indeed $y \diff \im{f}{v}$ and $y \diff \im{f}{u}$ are subsets of $y$. % goal failed
+      Therefore $x \diff \im{g}{y \diff \im{f}{u}} \subclass x \diff \im{g}{y \diff \im{f}{v}}$.
+      Consequently $\im{h}{u} \subclass \im{h}{v}$.
+    \end{proof}
 
     Hence we can take a fixed point $c$ of $h$ (by \nameref{knaster_tarski}).
 
     (2) Define $F(u) = f(u)$ for $u \in c$.
 
-    We have $c \eq h(c)$ iff $x \SETdiff c \eq \FUNim{g}{y \SETdiff \FUNim{f}{c}}$.
-    $\FUNinv{g}$ is a bijection between $\FUNrange(g)$ and $y$.
-    Thus $x \SETdiff c \eq \FUNim{g}{y \SETdiff \FUNim{f}{c}} \SETinclude \FUNrange(g)$.
-    Therefore $x \SETdiff c$ is a subset of $\FUNdom(\FUNinv{g})$.
+    We have $c \eq h(c)$ iff $x \diff c \eq \im{g}{y \diff \im{f}{c}}$.
+    $\inv{g}$ is a bijection between $\range(g)$ and $y$.
+    Thus $x \diff c \eq \im{g}{y \diff \im{f}{c}} \subclass \range(g)$.
+    Therefore $x \diff c$ is a subset of $\dom(\inv{g})$. % goal failed
 
-    (3) Define $G(u) = \FUNinv{g}(u)$ for $u \in x \SETdiff c$.
+    (3) Define $G(u) = \inv{g}(u)$ for $u \in x \diff c$.
 
-    $F$ is a bijection between $c$ and $\FUNrange(F)$.
-    $G$ is a bijection between $x \SETdiff c$ and $\FUNrange(G)$.
+    $F$ is a bijection between $c$ and $\range(F)$.
+    $G$ is a bijection between $x \diff c$ and $\range(G)$.
 
     Define \[ H(u) =
       \begin{cases}
-        F(u) & : u \SETin c \\
-        G(u) & : u \SETnotin c
+        F(u) & : u \elem c \\
+        G(u) & : u \notin c
       \end{cases} \]
     for $u \in x$.
 
     Let us show that $H$ is a map to $y$.
-      $\FUNdom(H)$ is a set and every value of $H$ is an object.
+    \begin{proof}
+      $\dom(H)$ is a set and every value of $H$ is an object.
       Hence $H$ is a map.
 
       Let us show that every value of $H$ lies in $y$.
+      \begin{proof}
         Let $v$ be a value of $H$.
-        Take $u \SETin x$ such that $H(u) \eq v$.
-        If $u \SETin c$ then $v \eq H(u) \eq F(u) \eq f(u) \SETin y$.
-        If $u \SETnotin c$ then $v \eq H(u) \eq G(u) \eq \FUNinv{g}(u) \SETin y$.
-      End.
-    End.
+        Take $u \elem x$ such that $H(u) \eq v$.
+        If $u \elem c$ then $v \eq H(u) \eq F(u) \eq f(u) \elem y$.
+        If $u \notin c$ then $v \eq H(u) \eq G(u) \eq \inv{g}(u) \elem y$.
+      \end{proof}
+    \end{proof}
 
     (4) $H$ is surjective onto $y$.
     Indeed we can show that every element of $y$ is a value of $H$.
-      Let $v \SETin y$.
+    \begin{proof}
+      Let $v \elem y$.
 
-      \begin{case}{$v \SETin \FUNim{f}{c}$.}
-        Take $u \SETin c$ such that $f(u) \eq v$.
+      \begin{case}{$v \elem \im{f}{c}$.}
+        Take $u \elem c$ such that $f(u) \eq v$.
         Then $F(u) \eq v$.
       \end{case}
 
-      \begin{case}{$v \SETnotin \FUNim{f}{c}$.}
-        Then $v \SETin y \SETdiff \FUNim{f}{c}$.
-        Hence $g(v) \SETin \FUNim{g}{y \SETdiff \FUNim{f}{c}}$.
-        Thus $g(v) \SETin x \SETdiff h(c)$.
-        We have $g(v) \SETin x \SETdiff c$.
-        Therefore we can take $u \SETin x \SETdiff c$ such that $G(u) \eq v$.
+      \begin{case}{$v \notin \im{f}{c}$.}
+        Then $v \elem y \diff \im{f}{c}$.
+        Hence $g(v) \elem \im{g}{y \diff \im{f}{c}}$.
+        Thus $g(v) \elem x \diff h(c)$.
+        We have $g(v) \elem x \diff c$.
+        Therefore we can take $u \elem x \diff c$ such that $G(u) \eq v$.
         Then $v \eq H(u)$.
       \end{case}
-    End.
+    \end{proof}
 
     (5) $H$ is injective.
-    Indeed we can show that for all $u, v \SETin x$ if $u \neq v$ then $H(u) \neq H(v)$.
-      Let $u,v \SETin x$.
+    Indeed we can show that for all $u, v \elem x$ if $u \neq v$ then $H(u) \neq H(v)$.
+    \begin{proof}
+      Let $u,v \elem x$.
       Assume $u \neq v$.
 
-      \begin{case}{$u,v \SETin c$.}
+      \begin{case}{$u,v \elem c$.}
         Then $H(u) \eq F(u)$ and $H(v) \eq F(v)$.
         We have $F(u) \neq F(v)$.
         Hence $H(u) \neq H(v)$.
       \end{case}
 
-      \begin{case}{$u,v \SETnotin c$.}
+      \begin{case}{$u,v \notin c$.}
         Then $H(u) \eq G(u)$ and $H(v) \eq G(v)$.
         We have $G(u) \neq G(v)$.
         Hence $H(u) \neq H(v)$.
       \end{case}
 
-      \begin{case}{$u \SETin c$ and $v \SETnotin c$.}
+      \begin{case}{$u \elem c$ and $v \notin c$.}
         Then $H(u) \eq F(u)$ and $H(v) \eq G(v)$.
-        Hence $v \SETin \FUNim{g}{y \SETdiff \FUNim{F}{c}}$.
-        We have $G(v) \eq \FUNinv{g}(v) \SETin y \SETdiff \FUNim{F}{c}$.
-        Indeed $v \eq g(v')$ for some $v' \SETin y \SETdiff \FUNim{F}{c}$.
+        Hence $v \elem \im{g}{y \diff \im{F}{c}}$.
+        We have $G(v) \eq \inv{g}(v) \elem y \diff \im{F}{c}$.
+        Indeed $v \eq g(v')$ for some $v' \elem y \diff \im{F}{c}$.
         Thus $G(v) \neq F(u)$.
       \end{case}
 
-      \begin{case}{$u \SETnotin c$ and $v \SETin c$.}
+      \begin{case}{$u \notin c$ and $v \elem c$.}
         Then $H(u) \eq G(u)$ and $H(v) \eq F(v)$.
-        Hence $u \SETin \FUNim{g}{y \SETdiff \FUNim{F}{c}}$.
-        We have $G(u) \eq \FUNinv{g}(u) \SETin y \SETdiff \FUNim{F}{c}$.
-        Indeed $u \eq g(u')$ for some $u' \SETin y \SETdiff \FUNim{F}{c}$.
+        Hence $u \elem \im{g}{y \diff \im{F}{c}}$.
+        We have $G(u) \eq \inv{g}(u) \elem y \diff \im{F}{c}$.
+        Indeed $u \eq g(u')$ for some $u' \elem y \diff \im{F}{c}$.
         Thus $G(u) \neq F(v)$.
       \end{case}
-    End.
+    \end{proof}
 
     Consequently $H$ is a bijection between $x$ and $y$ (by 4, 5).
     Therefore $x$ and $y$ are equinumerous.
