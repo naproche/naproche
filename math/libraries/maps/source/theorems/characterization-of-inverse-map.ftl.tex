@@ -10,34 +10,34 @@
 
 \begin{proposition}[forthel,id=CharacterizationOfInvProp]
   Let $A, B$ be classes and $f \fromonto{A}{B}$ and $g \fromonto{B}{A}$.
-  Then $g$ is the inverse of $f$ iff $g \comp f \eq \id{A}$ and $f \comp g \eq \id{B}$.
+  Then $g$ is the inverse of $f$ iff $g \compo f \eq \id{A}$ and $f \compo g \eq \id{B}$.
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$g$ is the inverse of $f$.}
     We have
-    $\dom(g \comp f)
+    $\dom(g \compo f)
       \eq \dom(f)
       \eq A
       \eq \dom(\id{A})$.
     For all $a \elem A$ we have
-    $(g \comp f)(a)
+    $(g \compo f)(a)
       \eq g(f(a))
       \eq a$.
-    Hence $g \comp f \eq \id{A}$.
+    Hence $g \compo f \eq \id{A}$.
 
     We have
-    $\dom(f \comp g)
+    $\dom(f \compo g)
       \eq \dom(g)
       \eq B
       \eq \dom(\id{B})$.
     For all $b \elem B$ we have
-    $(f \comp g)(b)
+    $(f \compo g)(b)
       \eq f(g(b))
       \eq b$.
-    Hence $f \comp g \eq \id{B}$.
+    Hence $f \compo g \eq \id{B}$.
   \end{case}
 
-  \begin{case}{$g \comp f \eq \id{A}$ and $f \comp g \eq \id{B}$.}
+  \begin{case}{$g \compo f \eq \id{A}$ and $f \compo g \eq \id{B}$.}
     Then $\dom(g)
       \eq B
       \eq \range(f)$
@@ -48,13 +48,13 @@
     If $f(a) \eq b$ then
     $g(b)
       \eq g(f(a))
-      \eq (g \comp f)(a)
+      \eq (g \compo f)(a)
       \eq \id{A}(a)
       \eq a$.
     If $g(b) \eq a$ then
     $f(a)
       \eq f(g(b))
-      \eq (f \comp g)(b)
+      \eq (f \compo g)(b)
       \eq \id{B}(b)
       \eq b$.
     Hence $f(a) \eq b$ iff $g(b) \eq a$.

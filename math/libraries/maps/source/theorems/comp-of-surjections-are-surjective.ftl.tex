@@ -8,16 +8,16 @@
 
 \begin{proposition}[forthel,id=CompOfSurjectMapsIsSurjectProp]
   Let $A, B, C$ be classes and $f \fromonto{A}{B}$ and $g \fromonto{B}{C}$.
-  Then $g \comp f$ is a surjective map from $A$ onto $C$.
+  Then $g \compo f$ is a surjective map from $A$ onto $C$.
 \end{proposition}
 \begin{proof}[forthel]
-  $g \comp f$ is a map of $A$.
+  $g \compo f$ is a map of $A$.
 
-  Let us show that $g \comp f$ is surjective onto $C$.
+  Let us show that $g \compo f$ is surjective onto $C$.
     Let $c \elem C$.
     Take $b \elem B$ such that $c \eq g(b)$.
     Take $a \elem A$ such that $b \eq f(a)$.
-    Then $c \eq g(f(a)) \eq (g \comp f)(a)$.
+    Then $c \eq g(f(a)) \eq (g \compo f)(a)$.
   End.
 \end{proof}
 

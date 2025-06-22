@@ -9,19 +9,19 @@
 
 \begin{proposition}[forthel,id=IdIsUnitOfCompProp]
   Let $A, B$ be classes and $f \fromto{A}{B}$.
-  Then $f \comp \id{A} \eq f \eq \id{B} \comp f$.
+  Then $f \compo \id{A} \eq f \eq \id{B} \compo f$.
 \end{proposition}
 \begin{proof}[forthel]
-  $A$ is the domain of $f \comp \id{A}$ and the domain of $f$ and the domain of $\id{B} \comp f$.
-  We have $(f \comp \id{A})(a)
+  $A$ is the domain of $f \compo \id{A}$ and the domain of $f$ and the domain of $\id{B} \compo f$.
+  We have $(f \compo \id{A})(a)
     \eq f(\id{A}(a))
     \eq f(a)
     \eq \id{B}(f(a))
-    \eq (\id{B} \comp f)(a)$
+    \eq (\id{B} \compo f)(a)$
   for all $a \elem A$.
-  Hence $f \comp \id{A}
+  Hence $f \compo \id{A}
     \eq f
-    \eq \id{B} \comp f$.
+    \eq \id{B} \compo f$.
 \end{proof}
 
 \end{smodule}

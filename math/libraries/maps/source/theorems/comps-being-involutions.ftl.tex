@@ -10,27 +10,27 @@
 
 \begin{proposition}[forthel,id=CompInvolProp]
   Let $A$ be a class and $f, g$ be involutions on $A$.
-  Then $g \comp f$ is an involution on $A$ iff $g \comp f \eq f \comp g$.
+  Then $g \compo f$ is an involution on $A$ iff $g \compo f \eq f \compo g$.
 \end{proposition}
 \begin{proof}[forthel]
-  \begin{case}{$g \comp f$ is an involution on $A$.}
-    Then $\inv{g \comp f}
-      \eq \inv{f} \comp \inv{g}
-      \eq f \comp g$.
+  \begin{case}{$g \compo f$ is an involution on $A$.}
+    Then $\inv{g \compo f}
+      \eq \inv{f} \compo \inv{g}
+      \eq f \compo g$.
     Indeed $f$ and $g$ are invertible and surjective onto $A$.
   \end{case}
 
-  \begin{case}{$g \comp f \eq f \comp g$.}
-    $f \comp f$, $f \comp g$ and $f \comp g$ are maps on $A$.
+  \begin{case}{$g \compo f \eq f \compo g$.}
+    $f \compo f$, $f \compo g$ and $f \compo g$ are maps on $A$.
     Hence
-    \[  (g \comp f) \comp (g \comp f)       \]
-    \[    \eq (g \comp f) \comp (f \comp g)   \]
-    \[    \eq ((g \comp f) \comp f) \comp g   \]
-    \[    \eq (g \comp (f \comp f)) \comp g   \]
-    \[    \eq (g \comp \id{A}) \comp g       \]
-    \[    \eq g \comp g                       \]
+    \[  (g \compo f) \compo (g \compo f)       \]
+    \[    \eq (g \compo f) \compo (f \compo g)   \]
+    \[    \eq ((g \compo f) \compo f) \compo g   \]
+    \[    \eq (g \compo (f \compo f)) \compo g   \]
+    \[    \eq (g \compo \id{A}) \compo g       \]
+    \[    \eq g \compo g                       \]
     \[    \eq \id{A}.                        \]
-    Thus $g \comp f$ is selfinverse.
+    Thus $g \compo f$ is selfinverse.
   \end{case}
 \end{proof}
 

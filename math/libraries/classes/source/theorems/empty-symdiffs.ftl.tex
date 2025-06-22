@@ -9,18 +9,18 @@
 
 \begin{proposition}[forthel,id=EmptySymdiffProp]
   Let $A, B$ be classes.
-  Then $A \eq B \iff A \symdiff B \eq \empty$.
+  Then $A \eq B \iff A \symdiff B \eq \emptyclass$.
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$A \eq B$.}
     Then $A \symdiff B
       \eq (A \union A) \diff (A \intersect A)
       \eq A \diff A
-      \eq \empty.$
+      \eq \emptyclass.$
     Hence the thesis.
   \end{case}
 
-  \begin{case}{$A \symdiff B \eq \empty$.}
+  \begin{case}{$A \symdiff B \eq \emptyclass$.}
     Then $(A \union B) \diff (A \intersect B)$ is empty.
     Hence every element of $A \union B$ is an element of $A \intersect B$.
     Thus for all objects $u$ if $u \elem A$ or $u \elem B$ then $u \elem A$ and $u \elem B$.

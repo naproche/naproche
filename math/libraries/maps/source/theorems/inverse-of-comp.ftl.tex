@@ -11,44 +11,44 @@
 \begin{proposition}[forthel,id=InvertibilityOfCompProp]
   Let $A, B, C$ be classes and $f \fromonto{A}{B}$ and $g \fromonto{B}{C}$.
   Assume that $f$ and $g$ are invertible.
-  Then $g \comp f$ is invertible and $\inv{g \comp f} \eq \inv{f} \comp \inv{g}$.
+  Then $g \compo f$ is invertible and $\inv{g \compo f} \eq \inv{f} \compo \inv{g}$.
 \end{proposition}
 \begin{proof}[forthel]
   $\inv{f}$ is a surjective map from $B$ onto $A$.
   $\inv{g}$ is a surjective map from $C$ onto $B$.
-  Take $h = \inv{f} \comp \inv{g}$.
+  Take $h = \inv{f} \compo \inv{g}$.
   Then $h$ is a surjective map from $C$ onto $A$.
-  $g \comp f$ is a map from $A$ to $C$.
+  $g \compo f$ is a map from $A$ to $C$.
 
-  Let us show that $((g \comp f) \comp h) \eq \id{C}$.
-    We have $f \comp (\inv{f} \comp \inv{g}) \eq (f \comp \inv{f}) \comp \inv{g}$.
-    Indeed $f \comp (\inv{f} \comp \inv{g})$ and $(f \comp \inv{f}) \comp \inv{g}$ are maps of $C$.
-    $f \comp h$ is a map from $C$ to $B$.
+  Let us show that $((g \compo f) \compo h) \eq \id{C}$.
+    We have $f \compo (\inv{f} \compo \inv{g}) \eq (f \compo \inv{f}) \compo \inv{g}$.
+    Indeed $f \compo (\inv{f} \compo \inv{g})$ and $(f \compo \inv{f}) \compo \inv{g}$ are maps of $C$.
+    $f \compo h$ is a map from $C$ to $B$.
     Hence
-    \[  (g \comp f) \comp h                           \]
-    \[    \eq g \comp (f \comp h)                       \]
-    \[    \eq g \comp (f \comp (\inv{f} \comp \inv{g}))   \]
-    \[    \eq g \comp ((f \comp \inv{f}) \comp \inv{g})   \]
-    \[    \eq g \comp (\id{B} \comp \inv{g})            \]
-    \[    \eq g \comp \inv{g}                            \]
+    \[  (g \compo f) \compo h                           \]
+    \[    \eq g \compo (f \compo h)                       \]
+    \[    \eq g \compo (f \compo (\inv{f} \compo \inv{g}))   \]
+    \[    \eq g \compo ((f \compo \inv{f}) \compo \inv{g})   \]
+    \[    \eq g \compo (\id{B} \compo \inv{g})            \]
+    \[    \eq g \compo \inv{g}                            \]
     \[    \eq \id{C}.                                  \]
   End.
 
-  Let us show that $h \comp (g \comp f) \eq \id{A}$.
-    We have $(\inv{f} \comp \inv{g}) \comp g \eq \inv{f} \comp (\inv{g} \comp g)$.
-    $g \comp f$ is a map from $A$ to $C$.
+  Let us show that $h \compo (g \compo f) \eq \id{A}$.
+    We have $(\inv{f} \compo \inv{g}) \compo g \eq \inv{f} \compo (\inv{g} \compo g)$.
+    $g \compo f$ is a map from $A$ to $C$.
     Hence
-    \[  h \comp (g \comp f)                           \]
-    \[    \eq (h \comp g) \comp f                       \]
-    \[    \eq ((\inv{f} \comp \inv{g}) \comp g) \comp f   \]
-    \[    \eq (\inv{f} \comp (\inv{g} \comp g)) \comp f   \]
-    \[    \eq (\inv{f} \comp \id{B}) \comp f            \]
-    \[    \eq \inv{f} \comp f                            \]
+    \[  h \compo (g \compo f)                           \]
+    \[    \eq (h \compo g) \compo f                       \]
+    \[    \eq ((\inv{f} \compo \inv{g}) \compo g) \compo f   \]
+    \[    \eq (\inv{f} \compo (\inv{g} \compo g)) \compo f   \]
+    \[    \eq (\inv{f} \compo \id{B}) \compo f            \]
+    \[    \eq \inv{f} \compo f                            \]
     \[    \eq \id{A}.                                  \]
   End.
 
-  Thus $h$ is the inverse of $g \comp f$.
-  Indeed $g \comp f$ is a surjective map from $A$ onto $C$ and $h$ is a surjective map from $C$ onto $A$.
+  Thus $h$ is the inverse of $g \compo f$.
+  Indeed $g \compo f$ is a surjective map from $A$ onto $C$ and $h$ is a surjective map from $C$ onto $A$.
 \end{proof}
 
 \end{smodule}

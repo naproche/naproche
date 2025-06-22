@@ -8,21 +8,21 @@
 
 \begin{proposition}[forthel,id=CompIsAssociativeProp]
   Let $A, B, C, D$ be classes and $f \fromto{A}{B}$ and $g \fromto{B}{C}$ and $h \fromto{C}{D}$.
-  Then $h \comp (g \comp f) \eq (h \comp g) \comp f$.
+  Then $h \compo (g \compo f) \eq (h \compo g) \compo f$.
 \end{proposition}
 \begin{proof}[forthel]
-  $h \comp (g \comp f)$ and $(h \comp g) \comp f$ are maps from $A$ to $D$.
+  $h \compo (g \compo f)$ and $(h \compo g) \compo f$ are maps from $A$ to $D$.
 
-  Let us show that $(h \comp (g \comp f))(a) \eq ((h \comp g) \comp f)(a)$ for all $a \elem A$.
+  Let us show that $(h \compo (g \compo f))(a) \eq ((h \compo g) \compo f)(a)$ for all $a \elem A$.
     Let $a \elem A$.
-    Then $(h \comp (g \comp f))(a)
-      \eq h((g \comp f)(a))
+    Then $(h \compo (g \compo f))(a)
+      \eq h((g \compo f)(a))
       \eq h(g(f(a)))
-      \eq (h \comp g)(f(a))
-      \eq ((h \comp g) \comp f)(a)$.
+      \eq (h \compo g)(f(a))
+      \eq ((h \compo g) \compo f)(a)$.
   End.
 
-  Hence $h \comp (g \comp f) \eq (h \comp g) \comp f$.
+  Hence $h \compo (g \compo f) \eq (h \compo g) \compo f$.
 \end{proof}
 
 \end{smodule}
