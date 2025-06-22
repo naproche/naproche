@@ -1,0 +1,23 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Inverse is a Bijection]{inverse-is-bijection.ftl}
+
+\importmodule[libraries/maps]{definitions?surjections-between-classes.ftl}
+\importmodule[libraries/maps]{definitions?inverse-map.ftl}
+\importmodule[libraries/maps]{definitions?bijections.ftl}
+
+\begin{proposition}[forthel,id=InvIsBijectProp]
+  Let $A, B$ be classes and $f \fromonto{A}{B}$.
+  Assume that $f$ is invertible.
+  Then $\inv{f}$ is a bijection between $B$ and $A$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\inv{f}$ is a surjective map from $B$ onto $A$.
+  $\inv{f}$ is invertible.
+  Hence $\inv{f}$ is injective.
+  Therefore $\inv{f}$ is a bijection between $B$ and $A$.
+\end{proof}
+
+\end{smodule}
+\end{document}

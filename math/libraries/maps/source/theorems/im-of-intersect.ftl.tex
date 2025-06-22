@@ -1,0 +1,24 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Images of Intersections]{im-of-intersect.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+
+\begin{proposition}[forthel,id=ImOfIntersectProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $X, X' \subclass A$.
+  Then $\im{f}{X \intersect X'} \subclass \im{f}{X} \intersect \im{f}{X'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $b \elem \im{f}{X \intersect X'}$.
+  Take $a \elem X \intersect X'$ such that $b \eq f(a)$.
+  Then $a \elem X$ and $a \elem X'$.
+  Hence $f(a) \elem \im{f}{X}$ and $f(a) \elem \im{f}{X'}$.
+  Thus $b \elem \im{f}{X} \intersect \im{f}{X}$.
+\end{proof}
+
+\end{smodule}
+\end{document}

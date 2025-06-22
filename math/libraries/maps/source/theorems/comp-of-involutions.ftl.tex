@@ -1,0 +1,15 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Composition of Involutions]{comp-of-involutions.ftl}
+
+\importmodule[libraries/maps]{definitions?comp.ftl}
+\importmodule[libraries/maps]{definitions?involutions.ftl}
+
+\begin{proposition}[forthel,id=CompOfEqualInvolsIsInvolProp]
+  Let $A$ be a class and $f$ be an involutions on $A$.
+  Then $f \comp f$ is an involution on $A$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,22 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Composition with the Inverse Map]{comp-with-inverse.ftl}
+
+\importmodule[libraries/maps]{definitions?surjections-between-classes.ftl}
+\importmodule[libraries/maps]{definitions?inverse-map.ftl}
+\importmodule[libraries/maps]{definitions?comp.ftl}
+\importmodule[libraries/maps]{definitions?id.ftl}
+
+\begin{proposition}[forthel,id=InvIsInvOfComp]
+  Let $A, B$ be classes and $f \fromonto{A}{B}$.
+  Assume that $f$ is invertible.
+  Then $f \comp \inv{f} \eq \id{B}$ and $\inv{f} \comp f \eq \id{A}$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\inv{f}$ is a surjective map from $B$ onto $A$ .
+  $\inv{f}$ is the inverse of $f$.
+\end{proof}
+
+\end{smodule}
+\end{document}

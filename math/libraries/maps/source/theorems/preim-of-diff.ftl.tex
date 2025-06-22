@@ -1,0 +1,34 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Preimages of Differences]{preim-of-diff.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/classes]{definitions?difference.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+
+\begin{proposition}[forthel,id=PreimOfDifferenceProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $Y, Y' \subclass B$.
+  Then $\preim{f}{Y \diff Y'} \eq \preim{f}{Y} \diff \preim{f}{Y'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $\preim{f}{Y \diff Y'} \subclass \preim{f}{Y} \diff \preim{f}{Y'}$.
+    Let $a \elem \preim{f}{Y \diff Y'}$.
+    Then $f(a) \elem Y \diff Y'$.
+    Hence $f(a) \elem Y$ and $f(a) \notin Y'$.
+    Thus $a \elem \preim{f}{Y}$ and $a \notin \preim{f}{Y'}$.
+    Therefore $a \elem \preim{f}{Y} \diff \preim{f}{Y'}$.
+  End.
+
+  Let us show that $\preim{f}{Y} \diff \preim{f}{Y'} \subclass \preim{f}{Y \diff Y'}$.
+    Let $a \elem \preim{f}{Y} \diff \preim{f}{Y'}$.
+    Then $a \elem \preim{f}{Y}$ and $a \notin \preim{f}{Y'}$.
+    Hence $f(a) \elem Y$ and $f(a) \notin Y'$.
+    Thus $f(a) \elem Y \diff Y'$.
+    Therefore $a \elem \preim{f}{Y \diff Y'}$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

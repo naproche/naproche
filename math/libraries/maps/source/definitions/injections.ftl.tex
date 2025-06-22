@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Injections]{injections.ftl}
+
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+
+\symdef{frominto}[args=2]{\mathbin{\highlight:}#1\mathbin{\highlight\hookrightarrow}#2}
+
+\begin{definition}[forthel,id=InjectDef]
+  Let $f$ be a map.
+  $f$ is \emph{injective} iff for all $a, a' \elem \dom(f)$ if $f(a) \eq f(a')$ then $a \eq a'$.
+
+  Let $\emph{f \frominto{A}{B}}$ stand for $f$ is an injective map from $A$ to $B$.
+\end{definition}
+
+\end{smodule}
+\end{document}

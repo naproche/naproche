@@ -1,0 +1,75 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Inverse of a Restriction]{inverse-of-restr.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?surjections-between-classes.ftl}
+\importmodule[libraries/maps]{definitions?inverse-map.ftl}
+\importmodule[libraries/maps]{definitions?restr.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/maps]{definitions?values.ftl}
+\importmodule[libraries/maps]{definitions?comp.ftl}
+\importmodule[libraries/maps]{definitions?id.ftl}
+
+\begin{proposition}[forthel,id=InvertibilityOfRestrProp]
+  Let $A, B$ be classes and $f \fromonto{A}{B}$ and $X \subclass A$.
+  Assume that $f$ is invertible.
+  Then $f \rest X$ is invertible and $\inv{f\rest X} \eq \inv{f} \rest (\im{f}{X})$.
+\end{proposition}
+\begin{proof}[forthel]
+  $f \rest X$ is a surjective map from $X$ onto $\im{f}{X}$.
+  Take $g = \inv{f} \rest (\im{f}{X})$.
+  Then $g$ is a map of $\im{f}{X}$.
+
+  Let us show that $X \subclass \range(g)$.
+    Let $a \elem X$.
+    Then $f(a) \elem \im{f}{X}$.
+    Hence $g(f(a)) \eq \inv{f}(f(a)) \eq a$.
+    Thus $a$ is a value of $g$.
+  End.
+
+  Let us show that $\range(g) \subclass X$.
+    Let $a \elem \range(g)$.
+    Take $b \elem \im{f}{X}$ such that $a \eq g(b)$.
+    Take $c \elem X$ such that $b \eq f(c)$.
+    Then $a
+      \eq (\inv{f} \rest (\im{f}{X}))(b)
+      \eq \inv{f}(b)
+      \eq \inv{f}(f(c))
+      \eq c$.
+    Hence $a \elem X$.
+  End.
+
+  Hence $\range(g) \eq X$.
+  Thus $g$ is a surjective map onto $X$.
+
+  Let us show that $g((f \rest X)(a)) \eq a$ for all $a \elem X$.
+    Let $a \elem X$.
+    Then $g((f \rest X)(a))
+      \eq g(f(a))
+      \eq (\inv{f} \rest (\im{f}{X}))(f(a))
+      \eq \inv{f}(f(a))
+      \eq a$.
+  End.
+
+  Let us show that $((f \rest X)(g(b))) \eq b$ for all $b \elem \im{f}{X}$.
+    Let $b \elem \im{f}{X}$.
+    Take $a \elem X$ such that $b \eq f(a)$.
+    We have $g(b)
+      \eq g(f(a))
+      \eq (\inv{f} \rest (\im{f}{X}))(f(a))
+      \eq \inv{f}(f(a))
+      \eq a$.
+    Hence $(f \rest X)(g(b))
+      \eq (f \rest X)(a)
+      \eq f(a)
+      \eq b$.
+  End.
+
+  Thus $g \comp (f \rest X) \eq \id{X}$ and $(f \rest X) \comp g \eq \id{\im{f}{X}}$.
+  Therefore $g$ is the inverse of $f \rest X$.
+\end{proof}
+
+\end{smodule}
+\end{document}

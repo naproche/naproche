@@ -1,0 +1,24 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Preimages Under Inverse Maps]{preim-under-inverse.ftl}
+
+\importmodule[libraries/classes]{definitions?singleton-class.ftl}
+\importmodule[libraries/maps]{definitions?surjections-between-classes.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/maps]{definitions?inverse-map.ftl}
+
+\begin{proposition}[forthel,id=SingletonOfInvProp]
+  Let $A, B$ be classes and $f \fromonto{A}{B}$ and $b \elem B$.
+  Assume that $f$ is invertible.
+  Then \[ \preim{f}{\singleton{b}} \eq \singleton{\inv{f}(b)}. \]
+\end{proposition}
+\begin{proof}[forthel]
+  $\preim{f}{\singleton{b}} \eq \im{\inv{f}}{\singleton{b}}$.
+  We have $\im{\inv{f}}{\singleton{b}} = \{ \inv{f}(c) \mid c \elem \singleton{b} \}$.
+  Hence $\im{\inv{f}}{\singleton{b}} \eq \singleton{\inv{f}(b)}$.
+\end{proof}
+
+\end{smodule}
+\end{document}

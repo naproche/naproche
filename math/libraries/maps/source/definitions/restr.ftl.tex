@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Restriction]{restr.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\symdef{rest}{\mathbin{\highlight\restriction}}
+
+\begin{definition}[forthel,id=RestrDef]
+  Let $f$ be a map and $X \subclass \dom(f)$.
+  $\emph{f \rest X}$ is the map defined on $X$ such that $(f \rest X)(a) \eq f(a)$ for all $a \elem X$.
+
+  Let the \emph{restriction of $f$ to $X$} stand for $f \rest X$.
+\end{definition}
+
+\end{smodule}
+\end{document}

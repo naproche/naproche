@@ -1,0 +1,15 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Inverse Maps]{inverse-maps.ftl}
+
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?range.ftl}
+
+\begin{definition}[forthel,id=AnInvDef]
+  Let $f$ be a map.
+  An \emph{inverse of $f$} is a map $g$ from $\range(f)$ to $\dom(f)$ such that $f(a) \eq b \iff g(b) \eq a$ for all $a \elem \dom(f)$ and all $b \elem \dom(g)$.
+\end{definition}
+
+\end{smodule}
+\end{document}

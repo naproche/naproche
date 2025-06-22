@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Bijections]{bijections.ftl}
+
+\importmodule[libraries/maps]{definitions?injections.ftl}
+\importmodule[libraries/maps]{definitions?surjections.ftl}
+
+\begin{definition}[forthel,id=BijectDef]
+  Let $A, B$ be classes.
+  A \emph{bijection between $A$ and $B$} is an injective map from $A$ to $B$ that is surjective onto $B$.
+
+  Let a \emph{bijection from $A$ to $B$} stand for a bijection between $A$ and $B$.
+\end{definition}
+
+\end{smodule}
+\end{document}

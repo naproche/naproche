@@ -1,0 +1,22 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Restrictions of Injections are Injective]{restr-of-injections-are-injective.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?injections.ftl}
+\importmodule[libraries/maps]{definitions?restr.ftl}
+
+\begin{proposition}[forthel,id=RestrOfInjectMapIsInjectProp]
+  Let $A, B$ be classes and $f \frominto{A}{B}$ and $X \subclass A$.
+  Then $f \rest X$ is injective.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $a, a' \elem X$.
+  Assume $(f \rest X)(a) \eq (f \rest X)(a')$.
+  Then $f(a) \eq f(a')$.
+  Hence $a \eq a'$.
+\end{proof}
+
+\end{smodule}
+\end{document}

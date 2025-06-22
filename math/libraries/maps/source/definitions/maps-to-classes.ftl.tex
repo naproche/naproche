@@ -1,0 +1,16 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Maps to Classes]{maps-to-classes.ftl}
+
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\begin{definition}[forthel,id=MapToDef]
+  Let $B$ be a class.
+  A \emph{map to $B$} is a map $f$ such that $f(a) \elem B$ for each $a \elem \dom(f)$.
+
+  Let a \emph{function to $B$} stand for a map to $B$ that is a function.
+\end{definition}
+
+\end{smodule}
+\end{document}

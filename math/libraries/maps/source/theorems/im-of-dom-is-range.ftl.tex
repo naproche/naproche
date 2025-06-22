@@ -1,0 +1,16 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Image of the Domain is the Range]{im-of-dom-is-range.ftl}
+
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/maps]{definitions?range.ftl}
+
+\begin{proposition}[forthel,id=ImOfDomProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$.
+  Then $\im{f}{A} \eq \range(f)$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

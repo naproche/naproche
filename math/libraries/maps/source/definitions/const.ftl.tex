@@ -1,0 +1,16 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Constant Map]{const.ftl}
+
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\symdef{const}[args=2]{\highlight{\textrm{const}}_{#1}^{#2}}
+
+\begin{definition}[forthel,id=ConstDef]
+  Let $A$ be a class and $a$ be an object.
+  $\emph{\const{A}{a}}$ is the map $f$ such that $\dom(f) \eq A$ and $f(x) \eq a$ for all $x \elem A$.
+\end{definition}
+
+\end{smodule}
+\end{document}

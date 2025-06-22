@@ -1,0 +1,15 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Domain and Codomain of Composition]{dom-and-codom-of-composition.ftl}
+
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?comp.ftl}
+
+\begin{proposition}[forthel,id=CompFromToProp]
+  Let $A, B, C$ be classes and $f \fromto{A}{B}$ and $g \fromto{B}{C}$.
+  Then $g \comp f \fromto{A}{C}$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

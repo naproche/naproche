@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Image is the Range of a Restriction]{im-is-range-of-restr.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/maps]{definitions?restr.ftl}
+\importmodule[libraries/maps]{definitions?range.ftl}
+
+\begin{proposition}[forthel,id=ImOfSubclassOfDomIsRangeOfRestrProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $X \subclass A$.
+  Then $\im{f}{X} \eq \range(f \rest X)$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,24 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Image under Compositions]{im-under-comp.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?comp.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+
+\begin{proposition}[forthel,id=ImOfCompProp]
+  Let $A, B, C$ be classes and $f \fromto{A}{B}$ and $g \fromto{B}{C}$ and $X \subclass A$.
+  Then $\im{g \comp f}{X} \eq \im{g}{\im{f}{X}}$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\im{g \comp f}{X} = \{ g(f(a)) \mid a \elem X \}$.
+  $\im{f}{X}$ is a subclass of $B$.
+  We have $\im{g}{\im{f}{X}} = \{ g(b) \mid b \elem \im{f}{X} \}\text{ and }\im{f}{X} = \{ f(a) \mid a \elem X \}$.
+  Thus $\im{g}{\im{f}{X}} = \{ g(f(a)) \mid a \elem X \}$.
+  Therefore $\im{g \comp f}{X} \eq \im{g}{\im{f}{X}}$.
+\end{proof}
+
+\end{smodule}
+\end{document}

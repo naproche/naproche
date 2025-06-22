@@ -1,0 +1,22 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Preimage of the Image of the Domain]{preim-of-im-of-dom.ftl}
+
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+
+\begin{proposition}[forthel,id=PreimOfImOfDomProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$.
+  Then $\preim{f}{\im{f}{A}} \eq A$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\preim{f}{\im{f}{A}} = \{ a \in A \mid f(a) \elem \im{f}{A} \}$.
+  For all $a \elem A$ we have $f(a) \elem \im{f}{A}$.
+  Hence every element of $\preim{f}{\im{f}{A}}$ is contained in $A$ and every element of $A$ is contained in $\preim{f}{\im{f}{A}}$.
+  Thus $\preim{f}{\im{f}{A}} \eq A$.
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,23 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Image is a Subclass of the Codomain]{im-is-subclass-of-codom.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/maps]{definitions?range.ftl}
+
+\begin{proposition}[forthel,id=ImIsSubclassOfCodomProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$.
+  Then $\im{f}{A} \subclass B$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\im{f}{A}
+    \eq \im{f}{\dom(f)}
+    \eq \range(f)
+    \subclass B$.
+\end{proof}
+
+\end{smodule}
+\end{document}

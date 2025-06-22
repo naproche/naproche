@@ -1,0 +1,23 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Preimage Preserves Subclasses]{preim-preserves-subclasses.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+
+\begin{proposition}[forthel,id=PreimPreservesInclusionProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $Y, Y' \subclass B$.
+  If $Y \subclass Y'$ then $\preim{f}{Y} \subclass \preim{f}{Y'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $Y \subclass Y'$.
+  Let $a \elem \preim{f}{Y}$.
+  Then $f(a) \elem Y$.
+  Hence $f(a) \elem Y'$.
+  Thus $a \elem \preim{f}{Y'}$.
+\end{proof}
+
+\end{smodule}
+\end{document}

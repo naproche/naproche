@@ -1,0 +1,19 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Inverse of a Map]{inverse-map.ftl}
+
+\importmodule[libraries/maps]{definitions?invertible-maps.ftl}
+
+\symdef{inv}[args=1]{#1^{\highlight{-1}}}
+
+\begin{definition}[forthel,id=TheInvDef]
+  Let $f$ be an invertible map.
+  $\emph{\inv{f}}$ is the inverse of $f$.
+
+  Let $f$ is \emph{involutory} stand for $f$ is the inverse of $f$.
+  Let $f$ is \emph{selfinverse} stand for $f$ is the inverse of $f$.
+\end{definition}
+
+\end{smodule}
+\end{document}

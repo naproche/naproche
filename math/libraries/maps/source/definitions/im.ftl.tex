@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Image]{im.ftl}
+
+\importmodule[libraries/classes]{definitions?intersection.ftl}
+
+\symdef{im}[args=2]{#1\highlight[#2\highlight]}
+
+\begin{definition}[forthel,id=ImDef]
+  Let $f$ be a map and $A$ be a class.
+  $\emph{\im{f}{A}} = \{ f(a) \mid a \elem \dom(f) \intersect A \}$.
+
+  Let the \emph{image of $A$ under $f$} stand for $\im{f}{A}$.
+\end{definition}
+
+\end{smodule}
+\end{document}

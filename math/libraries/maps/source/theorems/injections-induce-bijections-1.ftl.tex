@@ -1,0 +1,19 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Injections Induce Bijections I]{injections-induce-bijections-1.ftl}
+
+\importmodule[libraries/maps]{definitions?bijections.ftl}
+\importmodule[libraries/maps]{definitions?range.ftl}
+
+\begin{proposition}[forthel,id=InjectIsBijectToRangeProp]
+  Let $A, B$ be classes and $f \frominto{A}{B}$.
+  Then $f$ is a bijection between $A$ and $\range(f)$.
+\end{proposition}
+\begin{proof}[forthel]
+  $f$ is injective and surjects onto $\range(f)$.
+  Hence $f$ is a bijection between $A$ and $\range(f)$.
+\end{proof}
+
+\end{smodule}
+\end{document}

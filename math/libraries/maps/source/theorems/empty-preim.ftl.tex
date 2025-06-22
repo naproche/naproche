@@ -1,0 +1,45 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Empty Preimages]{empty-preim.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/classes]{definitions?empty-class.ftl}
+\importmodule[libraries/classes]{definitions?empty-classes.ftl}
+\importmodule[libraries/classes]{definitions?difference.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+
+\begin{proposition}[forthel,id=EmptyPreimProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $Y \subclass B$.
+  Then $\preim{f}{Y} \eq \empty$ iff $Y \subclass B \diff \im{f}{A}$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$\preim{f}{Y}$ is empty.}
+    Let $b \elem Y$.
+    Then $b \elem B$.
+
+    There is no $a \elem A$ such that $b \eq f(a)$.
+    \begin{proof}
+      Assume the contrary.
+      Take $a \elem A$ such that $b \eq f(a)$.
+      Then $a \elem \preim{f}{Y}$.
+      Contradiction.
+    \end{proof}
+
+    Hence $b \notin \im{f}{A}$.
+    Therefore $b \elem B \diff \im{f}{A}$.
+  \end{case}
+
+  \begin{case}{$Y \subclass B \diff \im{f}{A}$.}
+    Then no element of $Y$ is an element of $\im{f}{A}$.
+    Assume that $\preim{f}{Y}$ is nonempty.
+    Take $a \elem \preim{f}{Y}$.
+    Then $f(a) \elem Y$ and $f(a) \elem \im{f}{A}$.
+    Contradiction.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

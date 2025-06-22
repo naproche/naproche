@@ -1,0 +1,21 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Involutions Are Permutations]{involutions-are-permutations.ftl}
+
+\importmodule[libraries/maps]{definitions?involutions.ftl}
+\importmodule[libraries/maps]{definitions?permutations.ftl}
+\importmodule[libraries/maps]{definitions?maps-of-classes.ftl}
+
+\begin{proposition}[forthel,id=InvolIsPermProp]
+  Let $A$ be a class and $f$ be an involution on $A$.
+  Then $f$ is a permutation of $A$.
+\end{proposition}
+\begin{proof}[forthel]
+  $f$ is an invertible map of $A$ that surjects onto $A$.
+  Hence $f$ is a bijection between $A$ and $A$.
+  Thus $f$ is a permutation of $A$.
+\end{proof}
+
+\end{smodule}
+\end{document}

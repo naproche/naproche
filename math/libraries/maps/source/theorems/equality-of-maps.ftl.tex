@@ -1,0 +1,15 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Equality of Maps]{equality-of-maps.ftl}
+
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+
+\begin{proposition}[forthel,id=MapEqualityProp]
+  Let $A, B$ be classes and $f, g \fromto{A}{B}$.
+  Assume that $f(a) \eq g(a)$ for all $a \elem A$.
+  Then $f \eq g$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

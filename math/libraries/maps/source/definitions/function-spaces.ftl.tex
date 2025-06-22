@@ -1,0 +1,16 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Function Spaces]{function-spaces.ftl}
+
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+
+\symdef{funspace}[args=2]{\highlight[#1\mathbin{\highlight\rightarrow}#2\highlight]}
+
+\begin{definition}[forthel,id=FunspaceDef]
+  Let $A, B$ be classes.
+  $\emph{\funspace{A}{B}}$ is the class of all functions from $A$ to $B$.
+\end{definition}
+
+\end{smodule}
+\end{document}

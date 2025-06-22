@@ -1,0 +1,38 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Compositions Being Involutions]{comps-being-involutions.ftl}
+
+\importmodule[libraries/maps]{definitions?comp.ftl}
+\importmodule[libraries/maps]{definitions?id.ftl}
+\importmodule[libraries/maps]{definitions?involutions.ftl}
+\importmodule[libraries/maps]{definitions?surjections.ftl}
+
+\begin{proposition}[forthel,id=CompInvolProp]
+  Let $A$ be a class and $f, g$ be involutions on $A$.
+  Then $g \comp f$ is an involution on $A$ iff $g \comp f \eq f \comp g$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$g \comp f$ is an involution on $A$.}
+    Then $\inv{g \comp f}
+      \eq \inv{f} \comp \inv{g}
+      \eq f \comp g$.
+    Indeed $f$ and $g$ are invertible and surjective onto $A$.
+  \end{case}
+
+  \begin{case}{$g \comp f \eq f \comp g$.}
+    $f \comp f$, $f \comp g$ and $f \comp g$ are maps on $A$.
+    Hence
+    \[  (g \comp f) \comp (g \comp f)       \]
+    \[    \eq (g \comp f) \comp (f \comp g)   \]
+    \[    \eq ((g \comp f) \comp f) \comp g   \]
+    \[    \eq (g \comp (f \comp f)) \comp g   \]
+    \[    \eq (g \comp \id{A}) \comp g       \]
+    \[    \eq g \comp g                       \]
+    \[    \eq \id{A}.                        \]
+    Thus $g \comp f$ is selfinverse.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,16 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Image of a Subclass of the Domain]{im-of-subclass-of-dom.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+
+\begin{proposition}[forthel,id=ImOfSubclassOfDomProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $X \subclass A$.
+  Then $\im{f}{X} = \{ f(x) \mid x \elem X \}$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

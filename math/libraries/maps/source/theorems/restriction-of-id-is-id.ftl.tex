@@ -1,0 +1,27 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Restriction of Identity Map is Identity Map]{restriction-of-id-is-id.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?id.ftl}
+\importmodule[libraries/maps]{definitions?restr.ftl}
+
+\begin{proposition}[forthel,id=RestrOfIdIsIdProp]
+  Let $A$ be a class and $X \subclass A$.
+  Then $\id{A} \rest X \eq \id{X}$.
+\end{proposition}
+\begin{proof}[forthel]
+  We have $\dom(\id{A} \rest X)
+    \eq X
+    \eq \dom(\id{X})$.
+  $(\id{A} \rest X)(a)
+    \eq \id{A}(a)
+    \eq a
+    \eq \id{X}(a)$
+  for all $a \elem X$.
+  Hence $\id{A} \rest X \eq \id{X}$.
+\end{proof}
+
+\end{smodule}
+\end{document}

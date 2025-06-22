@@ -1,0 +1,21 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Elements of the Preimage]{elements-of-preim.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+
+\begin{proposition}[forthel,id=ElemOfPreimProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $Y \subclass B$ and $a \elem A$.
+  Then $f(a) \elem Y$ iff $a \elem \preim{f}{Y}$.
+\end{proposition}
+\begin{proof}[forthel]
+  We have $\preim{f}{Y} = \{ x \in A \mid f(x) \elem Y \}$.
+  Hence $a \elem \preim{f}{Y}$ iff $a \elem A$ and $f(a) \elem Y$.
+  Then we have the thesis.
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Maps From Classes to Classes]{maps-from-classes-to-classes.ftl}
+
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\symdef{fromto}[args=2]{\mathbin{\highlight:}#1\mathbin{\highlight\rightarrow}#2}
+
+\begin{definition}[forthel,id=MapFromToDef]
+  Let $A, B$ be classes.
+  A \emph{map from $A$ to $B$} is a map $f$ such that $\dom(f) \eq A$ and $f(a) \elem B$ for each $a \elem A$.
+
+  Let $\emph{f \fromto{A}{B}}$ stand for $f$ is a map from $A$ to $B$.
+
+  Let a \emph{function from $A$ to $B$} stand for a map from $A$ to $B$ that is a function.
+\end{definition}
+
+\end{smodule}
+\end{document}

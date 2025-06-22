@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Restrictions of Injections Induce Bijections]{restr-of-injections-induce-bijections.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?bijections.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/maps]{definitions?restr.ftl}
+
+\begin{proposition}[forthel,id=RestOfInjectMapIsBijecToImProp]
+  Let $A, B$ be classes and $f \frominto{A}{B}$ and $X \subclass A$.
+  Then $f \rest X$ is a bijection between $X$ and $\im{f}{X}$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

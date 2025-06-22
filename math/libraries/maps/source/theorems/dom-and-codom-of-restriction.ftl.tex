@@ -1,0 +1,16 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Domain and Codomain of Restriction]{dom-and-codom-of-restriction.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?restr.ftl}
+
+\begin{proposition}[forthel,id=RestrFromToProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $X \subclass A$.
+  Then $f \rest X \fromto{X}{B}$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Identity Maps are Involutions]{id-is-involution.ftl}
+
+\importmodule[libraries/maps]{definitions?comp.ftl}
+\importmodule[libraries/maps]{definitions?id.ftl}
+\importmodule[libraries/maps]{definitions?involutions.ftl}
+
+\begin{proposition}[forthel,id=IdIsInvolProp]
+  Let $A$ be a class.
+  $\id{A}$ is an involution on $A$.
+\end{proposition}
+\begin{proof}[forthel]
+  We have $\id{A} \comp \id{A} \eq \id{A}$.
+  Hence $\id{A}$ is selfinverse.
+\end{proof}
+
+\end{smodule}
+\end{document}

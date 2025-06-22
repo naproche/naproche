@@ -1,0 +1,29 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Composition is Associative]{composition-is-associative.ftl}
+
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?comp.ftl}
+
+\begin{proposition}[forthel,id=CompIsAssociativeProp]
+  Let $A, B, C, D$ be classes and $f \fromto{A}{B}$ and $g \fromto{B}{C}$ and $h \fromto{C}{D}$.
+  Then $h \comp (g \comp f) \eq (h \comp g) \comp f$.
+\end{proposition}
+\begin{proof}[forthel]
+  $h \comp (g \comp f)$ and $(h \comp g) \comp f$ are maps from $A$ to $D$.
+
+  Let us show that $(h \comp (g \comp f))(a) \eq ((h \comp g) \comp f)(a)$ for all $a \elem A$.
+    Let $a \elem A$.
+    Then $(h \comp (g \comp f))(a)
+      \eq h((g \comp f)(a))
+      \eq h(g(f(a)))
+      \eq (h \comp g)(f(a))
+      \eq ((h \comp g) \comp f)(a)$.
+  End.
+
+  Hence $h \comp (g \comp f) \eq (h \comp g) \comp f$.
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,33 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Identity Maps are Permutations]{id-is-permutation.ftl}
+
+\importmodule[libraries/maps]{definitions?id.ftl}
+\importmodule[libraries/maps]{definitions?permutations.ftl}
+\importmodule[libraries/maps]{definitions?maps-on-classes.ftl}
+
+\begin{proposition}[forthel,id=IdIsPermProp]
+  Let $A$ be a class.
+  Then $\id{A}$ is a permutation of $A$.
+\end{proposition}
+\begin{proof}[forthel]
+  (1) $\id{A}$ is a map on $A$.
+
+  (2) $\id{A}$ is surjective onto $A$.
+  \begin{proof}
+    Let $a \elem A$.
+    Then $a \eq \id{A}(a)$.
+    Hence $a \elem \range(\id{A})$.
+  \end{proof}
+
+  (3) $\id{A}$ is injective.
+  \begin{proof}
+    Let $a, a' \elem A$.
+    Assume $\id{A}(a) \eq \id{A}(a')$.
+    Then $a \eq a'$.
+  \end{proof}
+\end{proof}
+
+\end{smodule}
+\end{document}

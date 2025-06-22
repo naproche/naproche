@@ -1,0 +1,25 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Inverse Maps are Unique]{inverses-are-unique.ftl}
+
+\importmodule[libraries/maps]{definitions?inverse-maps.ftl}
+
+\begin{proposition}[forthel,id=InvIsUniqueProp]
+  Let $f$ be a map and $g, g'$ be inverses of $f$.
+  Then $g \eq g'$.
+\end{proposition}
+\begin{proof}[forthel]
+  We have $\dom(g) \eq \range(f) \eq \dom(g')$.
+
+  Let us show that $g(b) \eq g'(b)$ for all $b \elem \range(f)$.
+    Let $b \elem \range(f)$.
+    Take $a = g'(b)$.
+    Then $g(b) \eq a$ iff $f(a) \eq b$.
+    We have $f(a) \eq b$ iff $g'(b) \eq a$.
+    Thus $g(b) \eq g'(b)$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

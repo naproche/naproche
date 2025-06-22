@@ -1,0 +1,28 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Compositions of Injections are Injective]{comp-of-injections-are-injective.ftl}
+
+\importmodule[libraries/maps]{definitions?injections.ftl}
+\importmodule[libraries/maps]{definitions?comp.ftl}
+\importmodule[libraries/maps]{definitions?maps-of-classes.ftl}
+
+\begin{proposition}[forthel,id=CompOfInjectMapsIsInjectProp]
+  Let $A, B, C$ be classes and $f \frominto{A}{B}$ and $g \frominto{B}{C}$.
+  Then $g \comp f$ is an injective map from $A$ to $C$.
+\end{proposition}
+\begin{proof}[forthel]
+  $g \comp f$ is a map of $A$.
+
+  Let us show that $g \comp f$ is injective.
+    Let $a, a' \elem A$.
+    Assume $(g \comp f)(a) \eq (g \comp f)(a')$.
+    Then $g(f(a)) \eq g(f(a'))$.
+    Hence $f(a) \eq f(a')$.
+    Indeed $f(a), f(a') \elem B$.
+    Thus $a \eq a'$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

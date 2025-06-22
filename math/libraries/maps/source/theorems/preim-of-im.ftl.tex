@@ -1,0 +1,24 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Preimage of an Image]{preim-of-im.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/classes]{definitions?superclasses.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+
+\begin{proposition}[forthel,id=PreimOfImOfSubclassSuperclassProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $X \subclass A$.
+  Then $\preim{f}{\im{f}{X}} \supclass X$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $a \elem X$.
+  Then $f(a) \elem \im{f}{X}$.
+  Hence $a \elem \preim{f}{\im{f}{X}}$.
+  Indeed $\im{f}{X} \subclass B$.
+\end{proof}
+
+\end{smodule}
+\end{document}

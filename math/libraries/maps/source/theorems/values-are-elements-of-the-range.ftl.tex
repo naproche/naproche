@@ -1,0 +1,27 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Values are Elements of the Range]{values-are-elements-of-the-range.ftl}
+
+\importmodule[libraries/maps]{definitions?values.ftl}
+\importmodule[libraries/maps]{definitions?range.ftl}
+
+\begin{proposition}[forthel,id=ValueIffElementOfRangeProp]
+  Let $f$ be a map and $b$ be an object.
+  $b$ is a value of $f$ iff $b \elem \range(f)$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$b$ is a value of $f$.}
+    Take $a \elem \dom(f)$ such that $b \eq f(a)$.
+    $b$ is an object.
+    Hence $b \elem \range(f)$.
+  \end{case}
+
+  \begin{case}{$b \elem \range(f)$.}
+    Then $b$ is an object such that $b \eq f(a)$ for some $a \elem \dom(f)$.
+    Hence $b$ is a value of $f$.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

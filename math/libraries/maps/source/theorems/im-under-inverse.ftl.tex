@@ -1,0 +1,36 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Images Under Inverse Maps]{im-under-inverse.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?surjections-between-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+\importmodule[libraries/maps]{definitions?inverse-map.ftl}
+
+\begin{proposition}[forthel,id=ImOfInvProp]
+  Let $A, B$ be classes and $f \fromonto{A}{B}$ and $Y \subclass B$.
+  Assume that $f$ is invertible.
+  Then \[ \preim{f}{Y} \eq \im{\inv{f}}{Y}. \]
+\end{proposition}
+\begin{proof}[forthel]
+  We have $\im{\inv{f}}{Y} = \{ \inv{f}(b) \mid b \elem Y \}$ and $\preim{f}{Y} = \{ a \in A \mid f(a) \elem Y \}$.
+
+  Let us show that $\preim{f}{Y} \subclass \im{\inv{f}}{Y}$.
+    Let $a \elem \preim{f}{Y}$.
+    Take $b \elem Y$ such that $b \eq f(a)$.
+    Then $\inv{f}(b) \eq \inv{f}(f(a)) \eq a$.
+    Hence $a \elem \im{\inv{f}}{Y}$.
+  End.
+
+  Let us show that $\im{\inv{f}}{Y} \subclass \preim{f}{Y}$.
+    Let $a \elem \im{\inv{f}}{Y}$.
+    Take $b \elem Y$ such that $a \eq \inv{f}(b)$.
+    Then $f(a) \eq f(\inv{f}(b)) \eq b$.
+    Hence $a \elem \preim{f}{Y}$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,42 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Images of Unions]{im-of-union.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/classes]{definitions?union.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+
+\begin{proposition}[forthel,id=ImOfUnionProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $X, X' \subclass A$.
+  Then $\im{f}{X \union X'} \eq \im{f}{X} \union \im{f}{X'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $\im{f}{X \union X'} \subclass \im{f}{X} \union \im{f}{X'}$.
+    Let $b \elem \im{f}{X \union X'}$.
+    Take $a \elem X \union X'$ such that $b \eq f(a)$.
+    Then $a \elem X$ or $a \elem X'$.
+    Hence $f(a) \elem \im{f}{X}$ or $f(a) \elem \im{f}{X'}$.
+    Thus $b \eq f(a) \elem \im{f}{X} \union \im{f}{X'}$.
+  End.
+
+  Let us show that $\im{f}{X} \union \im{f}{X'} \subclass \im{f}{X \union X'}$.
+    Let $b \elem \im{f}{X} \union \im{f}{X'}$.
+
+    \begin{case}{$b \elem \im{f}{X}$.}
+      Take $a \elem X$ such that $b \eq f(a)$.
+      Then $a \elem X \union X'$.
+      Hence $b \elem \im{f}{X \union X'}$.
+    \end{case}
+
+    \begin{case}{$b \elem \im{f}{X'}$.}
+      Take $a \elem X'$ such that $b \eq f(a)$.
+      Then $a \elem X \union X'$.
+      Hence $b \elem \im{f}{X \union X'}$.
+    \end{case}
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,16 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Values]{values.ftl}
+
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\symdef{range}{\highlight{\textrm{range}}}
+
+\begin{definition}[forthel,id=ValueDef]
+  Let $f$ be a map.
+  A \emph{value of $f$} is an object $b$ such that $b \eq f(a)$ for some $a \elem \dom(f)$.
+\end{definition}
+
+\end{smodule}
+\end{document}

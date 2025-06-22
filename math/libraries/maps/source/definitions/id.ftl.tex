@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Identity Map]{id.ftl}
+
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\symdef{id}[args=1]{\highlight{\textrm{id}}_{#1}}
+
+\begin{definition}[forthel,id=IdDef]
+  Let $A$ be a class.
+  $\emph{\id{A}}$ is the map defined on $A$ such that $\id{A}(a) \eq a$ for all $a \elem A$.
+
+  Let the \emph{identity map on $A$} stand for $\id{A}$.
+\end{definition}
+
+\end{smodule}
+\end{document}

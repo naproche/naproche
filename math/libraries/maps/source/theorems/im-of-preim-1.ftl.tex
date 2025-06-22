@@ -1,0 +1,32 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Image of a Preimage I]{im-of-preim-1.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+
+\begin{proposition}[forthel,id=ImOfPreimOfSubclassEqProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $Y \subclass B$.
+  Then $\im{f}{\preim{f}{Y}} \eq Y \intersect \im{f}{A}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $\im{f}{\preim{f}{Y}} \subclass Y \intersect \im{f}{A}$.
+    Let $b \elem \im{f}{\preim{f}{Y}}$.
+    Take $a \elem \preim{f}{Y}$ such that $b \eq f(a)$.
+    Then $f(a) \elem Y \intersect \im{f}{A}$.
+    Hence we have $b \elem Y \intersect \im{f}{A}$.
+  End.
+
+  Let us show that $Y \intersect \im{f}{A} \subclass \im{f}{\preim{f}{Y}}$.
+    Let $b \elem Y \intersect \im{f}{A}$.
+    Take $a \elem A$ such that $b \eq f(a)$.
+    Then $a \elem \preim{f}{Y}$.
+    Hence $f(a) \elem \im{f}{\preim{f}{Y}}$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

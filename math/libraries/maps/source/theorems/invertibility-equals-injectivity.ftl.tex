@@ -1,0 +1,34 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Invertibility Equals Injectivity]{invertibility-equals-injectivity.ftl}
+
+\importmodule[libraries/maps]{definitions?surjections-between-classes.ftl}
+\importmodule[libraries/maps]{definitions?inverse-map.ftl}
+\importmodule[libraries/maps]{definitions?injections.ftl}
+
+\begin{proposition}[forthel,id=InvertibleIffInjectProp]
+  Let $A, B$ be classes and $f \fromonto{A}{B}$.
+  Then $f$ is invertible iff $f$ is injective.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$f$ is invertible.}
+    Let $a, b \elem A$.
+    Assume $f(a) \eq f(b)$.
+    Then $a \eq \inv{f}(f(a)) \eq \inv{f}(f(b)) \eq b$.
+  \end{case}
+
+  \begin{case}{$f$ is injective.}
+    Define $g(b) = \text{ choose }a \elem A\text{ such that }f(a) \eq b\text{ in }a$ for
+    $b \in B$.
+    Then $g$ is a map from $B$ to $A$.
+    For all $a \elem A$ we have $a \eq g(f(a))$.
+    Hence $g$ is a surjective map from $B$ onto $A$.
+    For all $a \elem A$ we have $g(f(a)) \eq a$.
+    For all $b \elem B$ we have $f(g(b)) \eq b$.
+    Hence $g$ is the inverse of $f$.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,31 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Empty Images]{empty-im.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/classes]{definitions?empty-class.ftl}
+\importmodule[libraries/classes]{definitions?empty-classes.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+
+\begin{proposition}[forthel,id=EmptyImProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $X \subclass A$.
+  Then $\im{f}{X} \eq \empty$ iff $X \eq \empty$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$\im{f}{X}$ is empty.}
+    Then there is no $a \elem X$ such that $f(a) \elem \im{f}{X}$.
+    For all $a \elem X$ we have $f(a) \elem \im{f}{X}$.
+    Hence $X$ is empty.
+  \end{case}
+
+  \begin{case}{$X$ is empty.}
+    For all $b \elem \im{f}{X}$ we have $b \eq f(a)$ for some $a \elem X$.
+    There is no $a \elem X$.
+    Hence $\im{f}{X}$ is empty.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

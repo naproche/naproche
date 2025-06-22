@@ -1,0 +1,23 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Preimages under Compositions]{preim-under-comp.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+\importmodule[libraries/maps]{definitions?comp.ftl}
+
+\begin{proposition}[forthel,id=PreimOfCompProp]
+  Let $A, B, C$ be classes and $f \fromto{A}{B}$ and $g \fromto{B}{C}$ and $Z \subclass C$.
+  Then $\preim{g \comp f}{Z} \eq \preim{f}{\preim{g}{Z}}$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\preim{g \comp f}{Z} = \{ a \in A \mid g(f(a)) \elem Z \}$.
+  We have $\preim{g}{Z} = \{ b \in B \mid g(b) \elem Z \}$ and $\preim{f}{\preim{g}{Z}} = \{ a \in A \mid f(a) \elem \preim{g}{Z} \}$.
+  Hence $\preim{f}{\preim{g}{Z}} = \{ a \in A \mid g(f(a)) \elem Z \}$.
+  Thus $\preim{g \comp f}{Z} \eq \preim{f}{\preim{g}{Z}}$.
+\end{proof}
+
+\end{smodule}
+\end{document}

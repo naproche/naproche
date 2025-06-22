@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Preimage of the Codomain]{preim-of-codom.ftl}
+
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+
+\begin{proposition}[forthel,id=PreimOfCodomProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$.
+  Then $\preim{f}{B} \eq A$.
+\end{proposition}
+\begin{proof}[forthel]
+  We have $\preim{f}{B} = \{ a \in A \mid f(a) \elem B \}$.
+  $f(a) \elem B$ for all $a \elem A$.
+  Hence the thesis.
+\end{proof}
+
+\end{smodule}
+\end{document}

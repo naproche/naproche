@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Composition]{comp.ftl}
+
+\importmodule[libraries/maps]{definitions?range.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+
+\symdef{comp}{\mathbin{\highlight\circ}}
+
+\begin{definition}[forthel,id=CompDef]
+  Let $f, g$ be maps.
+  Assume $\range(f) \subclass \dom(g)$.
+  $\emph{g \comp f}$ is the map defined on $\dom(f)$ such that $(g \comp f)(a) \eq g(f(a))$ for all $a \elem \dom(f)$.
+
+  Let the \emph{composition of $g$ and $f$} stand for $g \comp f$.
+\end{definition}
+
+\end{smodule}
+\end{document}

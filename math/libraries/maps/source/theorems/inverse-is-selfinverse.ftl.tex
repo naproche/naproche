@@ -1,0 +1,27 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Inverse is selfinverse]{inverse-is-selfinverse.ftl}
+
+\importmodule[libraries/maps]{definitions?surjections-between-classes.ftl}
+\importmodule[libraries/maps]{definitions?inverse-map.ftl}
+\importmodule[libraries/maps]{definitions?comp.ftl}
+\importmodule[libraries/maps]{definitions?id.ftl}
+
+\begin{proposition}[forthel,id=InvIsSelfinverse]
+  Let $A, B$ be classes and $f \fromonto{A}{B}$.
+  Assume that $f$ is invertible.
+  Then $\inv{f}$ is an invertible surjective map from $B$ onto $A$ such that $\inv{(\inv{f})} \eq f$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\inv{f}$ is a map from $B$ to $A$.
+  Indeed $\range(f) \eq B$ and $\dom(f) \eq A$.
+  $\inv{f}$ is surjective onto $A$.
+  Indeed for any $a \elem A$ we have $\inv{f}(f(a)) \eq a$.
+  $\inv{f}$ is the inverse of $f$.
+  Thus $f \comp \inv{f} \eq \id{B}$ and $\inv{f} \comp f \eq \id{A}$.
+  Therefore $f$ is the inverse of $\inv{f}$.
+\end{proof}
+
+\end{smodule}
+\end{document}

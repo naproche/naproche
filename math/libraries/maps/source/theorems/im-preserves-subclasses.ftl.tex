@@ -1,0 +1,23 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Image Perserves Subclasses]{im-preserves-subclasses.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+
+\begin{proposition}[forthel,id=ImPreservesInclusionProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $X, X' \subclass A$.
+  If $X \subclass X'$ then $\im{f}{X} \subclass \im{f}{X'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $X \subclass X'$.
+  Let $b \elem \im{f}{X}$.
+  Take $a \elem X$ such that $f(a) \eq b$.
+  Then $a \elem X'$.
+  Hence $b \eq f(a) \elem \im{f}{X'}$.
+\end{proof}
+
+\end{smodule}
+\end{document}

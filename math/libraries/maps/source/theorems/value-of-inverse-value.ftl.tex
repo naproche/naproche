@@ -1,0 +1,25 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Value of an Inverse Value]{value-of-inverse-value.ftl}
+
+\importmodule[libraries/maps]{definitions?surjections-between-classes.ftl}
+\importmodule[libraries/maps]{definitions?inverse-map.ftl}
+\importmodule[libraries/maps]{definitions?comp.ftl}
+\importmodule[libraries/maps]{definitions?id.ftl}
+
+\begin{proposition}[forthel,id=ValueOfInvProp]
+  Let $A, B$ be classes and $f \fromonto{A}{B}$ and $b \elem B$.
+  Assume that $f$ is invertible.
+  Then $f(\inv{f}(b)) \eq b$.
+\end{proposition}
+\begin{proof}[forthel]
+  We have
+  $f(\inv{f}(b))
+    \eq (f \comp \inv{f})(b)
+    \eq \id{B}(b)
+    \eq b$.
+\end{proof}
+
+\end{smodule}
+\end{document}

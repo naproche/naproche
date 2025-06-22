@@ -1,0 +1,27 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Images of Differences]{im-of-diff.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/classes]{definitions?superclasses.ftl}
+\importmodule[libraries/classes]{definitions?difference.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+
+\begin{proposition}[forthel,id=ImOfDifferenceProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $X, X' \subclass A$.
+  Then $\im{f}{X \diff X'} \supclass \im{f}{X} \diff \im{f}{X'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $b \elem \im{f}{X} \diff \im{f}{X'}$.
+  Then $b \elem \im{f}{X}$ and $b \notin \im{f}{X'}$.
+  Take $a \elem X$ such that $b \eq f(a)$.
+  If $a \elem X'$ then $b \elem \im{f}{X'}$.
+  Hence $a \notin X'$.
+  Thus $a \elem X \diff X'$.
+  Therefore $b \eq f(a) \elem \im{f}{X \diff X'}$.
+\end{proof}
+
+\end{smodule}
+\end{document}

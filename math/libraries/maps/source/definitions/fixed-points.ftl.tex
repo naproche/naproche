@@ -1,0 +1,16 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Fixed Points]{fixed-points.ftl}
+
+\importmodule[libraries/preliminaries]{preliminaries.ftl}
+
+\begin{definition}[forthel,id=FixedPointDef]
+  Let $f$ be a map.
+  A \emph{fixed point of $f$} is an element $x$ of $\dom(f)$ such that $f(x) \eq x$.
+
+  Let $f$ \emph{fixes $x$} stand for $x$ is a fixed point of $f$.
+\end{definition}
+
+\end{smodule}
+\end{document}

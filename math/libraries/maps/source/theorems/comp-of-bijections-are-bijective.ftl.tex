@@ -1,0 +1,21 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Compositions of Bijections are Bijective]{comp-of-bijections-are-bijective.ftl}
+
+\importmodule[libraries/maps]{definitions?bijections.ftl}
+\importmodule[libraries/maps]{definitions?comp.ftl}
+\importmodule[libraries/maps]{definitions?surjections-between-classes.ftl}
+
+\begin{proposition}[forthel,id=CompOfBijectMapsIsBijectProp]
+  Let $A, B, C$ be classes.
+  Let $f$ be a bijection between $A$ and $B$ and $g$ be a bijection between $B$ and $C$.
+  Then $g \comp f$ is a bijection between $A$ and $C$.
+\end{proposition}
+\begin{proof}[forthel]
+  $g \comp f$ is an injective map from $A$ to $C$.
+  $g \comp f$ is a surjective map from $A$ onto $C$.
+\end{proof}
+
+\end{smodule}
+\end{document}

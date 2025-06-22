@@ -1,0 +1,36 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Preimages of Unions]{preim-of-union.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/classes]{definitions?union.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+
+\begin{proposition}[forthel,id=PreimOfUnionProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $Y, Y' \subclass B$.
+  Then $\preim{f}{Y \union Y'} \eq \preim{f}{Y} \union \preim{f}{Y'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $\preim{f}{Y \union Y'} \subclass \preim{f}{Y} \union \preim{f}{Y'}$.
+    Let $a \elem \preim{f}{Y \union Y'}$.
+    Then $f(a) \elem Y \union Y'$.
+    Hence $f(a) \elem Y$ or $f(a) \elem Y'$.
+    If $f(a) \elem Y$ then $a \elem \preim{f}{Y}$.
+    If $f(a) \elem Y'$ then $a \elem \preim{f}{Y'}$.
+    Thus $a \elem \preim{f}{Y} \union \preim{f}{Y'}$.
+  End.
+
+  Let us show that $\preim{f}{Y} \union \preim{f}{Y'} \subclass \preim{f}{Y \union Y'}$.
+    Let $a \elem \preim{f}{Y} \union \preim{f}{Y'}$.
+    Then $a \elem \preim{f}{Y}$ or $a \elem \preim{f}{Y'}$.
+    If $a \elem \preim{f}{Y}$ then $f(a) \elem Y$.
+    If $a \elem \preim{f}{Y'}$ then $f(a) \elem Y'$.
+    Hence $f(a) \elem Y \union Y'$.
+    Thus $a \elem \preim{f}{Y \union Y'}$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

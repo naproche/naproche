@@ -1,0 +1,16 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Restriction of the Identity Map]{restriction-of-identity.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?id.ftl}
+\importmodule[libraries/maps]{definitions?restr.ftl}
+
+\begin{proposition}[forthel,id=RestrOfIdProp]
+  Let $A$ be a class and $X \subclass A$.
+  Then $\id{A} \rest X \eq \id{X}$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

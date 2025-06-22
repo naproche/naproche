@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Image of a Preimage II]{im-of-preim-2.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+
+\begin{proposition}[forthel,id=ImOfPreimOfSubclassSubclassProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$ and $Y \subclass B$.
+  Then $\im{f}{\preim{f}{Y}} \subclass Y$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

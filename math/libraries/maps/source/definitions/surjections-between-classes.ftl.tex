@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Surjections Between Classes]{surjections-between-classes.ftl}
+
+\importmodule[libraries/maps]{definitions?surjections.ftl}
+\importmodule[libraries/maps]{definitions?maps-of-classes.ftl}
+
+\symdef{fromonto}[args=2]{\mathbin{\highlight:}#1\mathbin{\highlight\twoheadrightarrow}#2}
+
+\begin{definition}[forthel,id=SurjectFromToDef]
+  Let $A, B$ be classes.
+  A \emph{surjective map from $A$ to $B$} is a map of $A$ that is surjective onto $B$.
+
+  Let a \emph{surjective map from $A$ onto $B$} stand for a surjective map from $A$ to $B$.
+  Let $\emph{f \fromonto{A}{B}}$ stand for $f$ is a surjective map from $A$ onto $B$.
+\end{definition}
+
+\end{smodule}
+\end{document}

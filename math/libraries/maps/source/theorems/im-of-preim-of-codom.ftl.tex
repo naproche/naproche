@@ -1,0 +1,35 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Image of the Preimage of the Codomain]{im-of-preim-of-codom.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?maps-from-classes-to-classes.ftl}
+\importmodule[libraries/maps]{definitions?im.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+
+\begin{proposition}[forthel,id=ImOfPreimOfCodomProp]
+  Let $A, B$ be classes and $f \fromto{A}{B}$.
+  Then $\im{f}{\preim{f}{B}} \eq \im{f}{A}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $\im{f}{\preim{f}{B}} \subclass \im{f}{A}$.
+    Let $b \elem \im{f}{\preim{f}{B}}$.
+    Take $a \elem \preim{f}{B} \intersect A$ such that $b \eq f(a)$.
+    Then $a \elem A$.
+    Hence $b \elem \im{f}{A}$.
+  End.
+
+  Let us show that $\im{f}{A} \subclass \im{f}{\preim{f}{B}}$.
+    Let $b \elem \im{f}{A}$.
+    Take $a \elem A$ such that $b \eq f(a)$.
+    We have $b \elem B$.
+    Hence $a \elem \preim{f}{B}$.
+    Thus $f(a) \elem \im{f}{\preim{f}{B}}$.
+    Indeed $\preim{f}{B} \subclass A$.
+    Therefore $b \elem \im{f}{\preim{f}{B}}$.
+  End.
+\end{proof}
+
+\end{smodule}
+\end{document}

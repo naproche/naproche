@@ -1,0 +1,16 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Preimage of a Subclass of the Codomain]{im-of-subclass-of-codomain.ftl}
+
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/maps]{definitions?preim.ftl}
+\importmodule[libraries/maps]{definitions?id.ftl}
+
+\begin{proposition}[forthel,id=PreimOfSubclassUnderIdProp]
+  Let $B$ be a class and $Y \subclass B$.
+  Then $\preim{\id{B}}{Y} \eq Y$.
+\end{proposition}
+
+\end{smodule}
+\end{document}
