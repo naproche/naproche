@@ -1,0 +1,17 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{natgeq.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?leq.ftl}
+
+\symdef{Natgeq}[args=1]{\comp{\mathbb{N}}_{\comp\natgeq#1}}
+
+\begin{definition}[forthel,id=NatgeqDef,for=Natgeq]
+  Let $n$ be a natural number.
+  $\emph{\Natgeq{n}} = \{ k \in \Nat \mid k \geq n \}$.
+\end{definition}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,18 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{right-addition-preserves-less.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?positive.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-associative.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-commutative.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-left-cancellative.ftl}
+
+\begin{proposition}[forthel,id=RightAdditionPreservesLessProp]
+  Let $n, m, k$ be natural numbers.
+  Then $n \less m$ iff $n \plus k \less m \plus k$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

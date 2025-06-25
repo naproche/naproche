@@ -1,0 +1,22 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{less-implies-neq.ftl}
+
+\importmodule[libraries/natural-numbers]{theorems?positive-iff-nonzero.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-left-cancellative.ftl}
+
+\begin{proposition}[forthel,id=LessImpliesUnequalProp]
+  Let $n, m$ be natural numbers.
+  Then $n \less m$ implies $n \neq m$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $n \less m$.
+  Take a positive natural number $k$ such that $m \eq n \plus k$.
+  If $n \eq m$ then $k \eq \zero$.
+  Hence $n \neq m$.
+\end{proof}
+
+\end{smodule}
+\end{document}

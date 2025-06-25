@@ -1,0 +1,29 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{leq-is-antisymmetric.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?leq.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-associative.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-left-cancellative.ftl}
+\importmodule[libraries/natural-numbers]{theorems?zero-sum-implies-zero-summands.ftl}
+
+\begin{proposition}[forthel,id=LeqIsAntisymmetricProp]
+  Let $n, m$ be natural numbers.
+  If $n \leq m$ and $m \leq n$ then $n \eq m$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $n \leq m$ and $m \leq n$.
+  Take natural numbers $k, l$ such that $m \eq n \plus k$ and $n \eq m \plus l$.
+  Then $m
+    \eq n \plus k
+    \eq (m \plus l) \plus k
+    \eq m \plus (l \plus k)$.
+  Hence $l \plus k \eq \zero$.
+  Thus $l \eq \zero \eq k$.
+  Therefore $m \eq n$.
+\end{proof}
+
+\end{smodule}
+\end{document}

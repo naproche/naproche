@@ -1,0 +1,23 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{less-less-succ.ftl}
+
+\importmodule[libraries/natural-numbers]{theorems?less-leq-succ.ftl}
+
+\begin{proposition}[forthel,id=LessLessSuccProp]
+  Let $n$ be a natural number.
+  There is no natural number $m$ such that $n \less m \less n \plus \one$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume the contrary.
+  Take a natural number $m$ such that $n \less m \less n \plus \one$.
+  Then $n \less m \leq n \plus \one$ and $n \leq m \less n \plus \one$.
+  Hence $m \eq n \plus \one$ and $m \eq n$.
+  Hence $n \eq n \plus \one$.
+  Contradiction.
+\end{proof}
+
+\end{smodule}
+\end{document}

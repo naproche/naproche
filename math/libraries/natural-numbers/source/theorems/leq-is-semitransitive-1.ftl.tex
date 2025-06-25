@@ -1,0 +1,20 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{leq-is-semitransitive-1.ftl}
+
+\importmodule[libraries/natural-numbers]{theorems?less-leq-succ.ftl}
+
+\begin{proposition}[forthel,id=LeqIsSemitransitiveIProp]
+  Let $n, m, k$ be natural numbers.
+  If $n \leq m \less k$ then $n \less k$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $n \leq m \less k$.
+  If $n \eq m$ then $n \less k$.
+  If $n \less m$ then $n \less k$.
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,25 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{leq-less-succ.ftl}
+
+\importmodule[libraries/natural-numbers]{theorems?less-leq-succ.ftl}
+
+\begin{proposition}[forthel,id=LeqLessSuccProp]
+  Let $n, m$ be natural numbers.
+  If $n \leq m \less n \plus \one$ then $n \eq m$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $n \leq m \less n \plus \one$.
+
+  \begin{case}{$n \eq m$.} \end{case}
+
+  \begin{case}{$n \less m$.}
+    Then $n \less m \leq n \plus \one$.
+    Hence $n \eq m$.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

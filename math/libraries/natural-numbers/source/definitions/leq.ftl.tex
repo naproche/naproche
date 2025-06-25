@@ -1,0 +1,26 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{leq.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?addition.ftl}
+
+\symdef{leq}{\mathrel{\comp\le}}
+\symdef{nleq}{\mathrel{\comp{\not\le}}}
+\symdef{geq}{\mathrel{\comp\ge}}
+\symdef{ngeq}{\mathrel{\comp{\not\ge}}}
+
+\begin{definition}[forthel,id=OrderDef,for={leq,nleq,geq,ngeq}]
+  Let $n, m$ be natural numbers.
+  $\emph{n \leq m}$ iff there exists a natural number $k$ such that $m \eq n \plus k$.
+
+  Let $n$ is \emph{less than or equal to $m$} stand for $n \leq m$.
+  Let $\emph{n \geq m}$ stand for $m \leq n$.
+  Let $n$ is \emph{greater than or equal to $m$} stand for $n \geq m$.
+  Let $\emph{n \nleq m}$ stand for $n$ is not less than or equal to $m$.
+  Let $\emph{n \ngeq m}$ stand for $n$ is not greater than or equal to $m$.
+\end{definition}
+
+\end{smodule}
+\end{document}

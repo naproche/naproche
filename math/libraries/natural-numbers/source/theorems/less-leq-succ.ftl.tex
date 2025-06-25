@@ -1,0 +1,73 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{less-leq-succ.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?leq.ftl}
+\importmodule[libraries/natural-numbers]{definitions?positive.ftl}
+\importmodule[libraries/natural-numbers]{definitions?number-2.ftl}
+\importmodule[libraries/natural-numbers]{theorems?positive-iff-nonzero.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-left-cancellative.ftl}
+\importmodule[libraries/natural-numbers]{theorems?less-implies-neq.ftl}
+\importmodule[libraries/natural-numbers]{theorems?zero-sum-implies-zero-summands.ftl}
+
+\begin{proposition}[forthel,id=LessLeqSuccProp]
+  Let $n, m$ be natural numbers.
+  If $n \less m \leq n \plus \one$ then $m \eq n \plus \one$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $n \less m \leq n \plus \one$.
+  Take a positive natural number $k$ such that $m \eq n \plus k$.
+  Take a natural number $l$ such that $n \plus \one \eq m \plus l$.
+  Then $n \plus \one
+    \eq m \plus l
+    \eq (n \plus k) \plus l
+    \eq n \plus (k \plus l)$.
+  Hence $k \plus l \eq \one$.
+
+  We have $l \eq \zero$.
+  \begin{proof}
+    Assume the contrary.
+    Then $k,l \gtr \zero$.
+
+    \begin{case}{$k,l \eq \one$.}
+      Then $k \plus l
+        \eq \two
+        \neq \one$.
+      Contradiction.
+    \end{case}
+
+    \begin{case}{$k \eq \one and l \neq \one$.}
+      Then $l \gtr \one$.
+      Hence $k \plus l
+        \gtr \one \plus l
+        \gtr \one$.
+      Contradiction.
+    \end{case}
+
+    \begin{case}{$k \neq \one and l \eq \one$.}
+      Then $k \gtr \one$.
+      Hence $k \plus l
+        \gtr k \plus \one
+        \gtr \one$.
+      Contradiction.
+    \end{case}
+
+    \begin{case}{$k, l \neq \one$.}
+      Take natural numbers $a, b$ such that $k \eq a \plus \one$ and $l \eq b \plus \one$.
+      Indeed $k, l \neq \zero$.
+      Hence $k \eq a \plus \one$ and $l \eq b \plus \one$.
+      Thus $k, l \gtr \one$.
+      Indeed $a, b$ are positive.
+    \end{case}
+  \end{proof}
+
+  Then we have $n \plus \one
+    \eq m \plus l
+    \eq m \plus \zero
+    \eq m$.
+\end{proof}
+
+\end{smodule}
+\end{document}

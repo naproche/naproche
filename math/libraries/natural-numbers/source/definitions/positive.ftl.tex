@@ -1,0 +1,15 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{positive.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?less.ftl}
+
+\begin{definition}[forthel,id=PositiveDef]
+  Let $n$ be a natural number.
+  $n$ is \emph{positive} iff $n \gtr \zero$.
+\end{definition}
+
+\end{smodule}
+\end{document}

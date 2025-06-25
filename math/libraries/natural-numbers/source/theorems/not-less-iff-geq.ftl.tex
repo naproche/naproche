@@ -1,0 +1,31 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{not-less-iff-geq.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?leq.ftl}
+\importmodule[libraries/natural-numbers]{definitions?less.ftl}
+\importmodule[libraries/natural-numbers]{theorems?less-is-connected.ftl}
+\importmodule[libraries/natural-numbers]{theorems?leq-is-antisymmetric.ftl}
+
+\begin{proposition}[forthel,id=NlessIffGeqProp]
+  Let $n, m$ be natural numbers.
+  Then $n \nless m$ iff $n \geq m$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$n \nless m$.}
+    Then $n \eq m$ or $n \gtr m$.
+    Hence $n \geq m$.
+  \end{case}
+
+  \begin{case}{$n \geq m$.}
+    Assume $n \less m$.
+    Then $n \leq m$.
+    Hence $n \eq m$.
+    Contradiction.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

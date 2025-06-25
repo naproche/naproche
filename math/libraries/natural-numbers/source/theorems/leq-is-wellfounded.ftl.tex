@@ -1,0 +1,27 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{leq-is-wellfounded.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?leq.ftl}
+\importmodule[libraries/natural-numbers]{definitions?less.ftl}
+\importmodule[libraries/natural-numbers]{definitions?number-1.ftl}
+\importmodule[libraries/classes]{definitions?empty-classes.ftl}
+\importmodule[libraries/classes]{definitions?subclasses.ftl}
+\importmodule[libraries/natural-numbers]{theorems?less-is-connected.ftl}
+\importmodule[libraries/natural-numbers]{theorems?less-implies-succ-leq.ftl}
+\importmodule[libraries/natural-numbers]{theorems?not-less-iff-geq.ftl}
+
+\begin{proposition}[forthel,id=LeqIsWellfoundedProp]
+  Let $A$ be a nonempty subclass of $\Nat$.
+  Then there exists a $m \elem A$ such that $m \leq n$ for all $n \elem A$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume the contrary.
+  Then for each $n \elem A$ there exists a $m \elem A$ such that $m \less n$.
+  We can show by induction on $n$ that every $n \elem \Nat$ is less than any element of $A$. Obvious.
+\end{proof}
+
+\end{smodule}
+\end{document}

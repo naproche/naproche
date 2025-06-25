@@ -1,0 +1,24 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{less-implies-succ-leq.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?leq.ftl}
+\importmodule[libraries/natural-numbers]{theorems?positive-iff-nonzero.ftl}
+
+\begin{proposition}[forthel,id=LessImpliesSuccLeqProp]
+  Let $n, m$ be natural numbers.
+  If $n \less m$ then $n \plus \one \leq m$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $n \less m$.
+  Take a positive natural number $k$ such that $m \eq n \plus k$.
+
+  \begin{case}{$k \eq \one$.} \end{case}
+
+  \begin{case}{$k \neq \one$.} \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

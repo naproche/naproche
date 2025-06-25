@@ -1,0 +1,28 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{leq-iff-less-or-eq.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?leq.ftl}
+\importmodule[libraries/natural-numbers]{definitions?positive.ftl}
+
+\begin{proposition}[forthel,id=LeqCharacterizationProp]
+  Let $n, m$ be natural numbers.
+  $n \leq m$ iff $n \less m$ or $n \eq m$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$n \leq m$.}
+    Take a natural number $k$ such that $m \eq n \plus k$.
+    If $k \eq \zero$ then $n \eq m$. If $k \neq \zero$ then $n \less m$.
+  \end{case}
+
+  \begin{case}{$n \less m$ or $n \eq m$.}
+    If $n \less m$ then there is a positive natural number $k$ such that $m \eq n \plus k$.
+    If $n \eq m$ then $m \eq n \plus \zero$.
+    Thus if $n \less m$ then there is a natural number $k$ such that $m \eq n \plus k$.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

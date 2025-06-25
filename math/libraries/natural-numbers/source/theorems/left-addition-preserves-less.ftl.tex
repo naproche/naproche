@@ -1,0 +1,21 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{left-addition-preserves-less.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?less.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-commutative.ftl}
+\importmodule[libraries/natural-numbers]{theorems?left-addition-preserves-leq.ftl}
+
+\begin{proposition}[forthel,id=LeftAdditionPreservesLessProp]
+  Let $n, m, k$ be natural numbers.
+  Then $n \less m$ iff $k \plus n \less k \plus m$.
+\end{proposition}
+\begin{proof}[forthel]
+  We have $k \plus n \eq n \plus k$ and $k \plus m \eq m \plus k$.
+  Hence $k \plus n \less k \plus m$ iff $n \plus k \less m \plus k$.
+\end{proof}
+
+\end{smodule}
+\end{document}

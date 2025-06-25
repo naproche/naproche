@@ -1,0 +1,27 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{less-is-transitive.ftl}
+
+\importmodule[libraries/natural-numbers]{theorems?positive-iff-nonzero.ftl}
+\importmodule[libraries/natural-numbers]{theorems?zero-sum-implies-zero-summands.ftl}
+
+\begin{proposition}[forthel,id=LessIsTransitiveProp]
+  Let $n, m, k$ be natural numbers.
+  If $n \less m \less k$ then $n \less k$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $n \less m \less k$.
+  Take a positive natural number $a$ such that $m \eq n \plus a$.
+  Take a positive natural number $b$ such that $k \eq m \plus b$.
+  Then $k
+    \eq m \plus b
+    \eq (n \plus a) \plus b
+    \eq n \plus (a \plus b)$.
+  $a \plus b$ is positive.
+  Hence $n \less k$.
+\end{proof}
+
+\end{smodule}
+\end{document}

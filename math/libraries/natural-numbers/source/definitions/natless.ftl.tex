@@ -1,0 +1,17 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{natless.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?less.ftl}
+
+\symdef{Natless}[args=1]{\comp{\mathbb{N}}_{\comp<#1}}
+
+\begin{definition}[forthel,id=NatlessDef,for=Natless]
+  Let $n$ be a natural number.
+  $\emph{\Natless{n}} = \{ k \in \Nat \mid k \less n \}$.
+\end{definition}
+
+\end{smodule}
+\end{document}

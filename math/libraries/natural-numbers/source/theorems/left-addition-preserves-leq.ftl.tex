@@ -1,0 +1,18 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{left-addition-preserves-leq.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?leq.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-associative.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-commutative.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-left-cancellative.ftl}
+
+\begin{proposition}[forthel,id=LeftAdditionPreservesLeqProp]
+  Let $n, m, k$ be natural numbers.
+  Then $n \leq m$ iff $k \plus n \leq k \plus m$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

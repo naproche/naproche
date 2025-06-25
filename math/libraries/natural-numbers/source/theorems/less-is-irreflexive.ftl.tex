@@ -1,0 +1,22 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{less-is-irreflexive.ftl}
+
+\importmodule[libraries/natural-numbers]{theorems?positive-iff-nonzero.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-left-cancellative.ftl}
+
+\begin{proposition}[forthel,id=LessIsIrreflexiveProp]
+  Let $n$ be a natural number.
+  Then $n \nless n$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume the contrary.
+  Then we can take a positive natural number $k$ such that $n \eq n \plus k$.
+  Then we have $\zero \eq k$.
+  Contradiction.
+\end{proof}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,17 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{natgtr.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?less.ftl}
+
+\symdef{Natgtr}[args=1]{\comp{\mathbb{N}}_{\comp>#1}}
+
+\begin{definition}[forthel,id=NatgtrDef,for=Natgtr]
+  Let $n$ be a natural number.
+  $\emph{\Natgtr{n}} = \{ k \in \Nat \mid k \gtr n \}$.
+\end{definition}
+
+\end{smodule}
+\end{document}

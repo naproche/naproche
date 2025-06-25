@@ -1,0 +1,26 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{succ-geq-one.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?leq.ftl}
+\importmodule[libraries/natural-numbers]{definitions?less.ftl}
+\importmodule[libraries/natural-numbers]{definitions?number-1.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-left-cancellative.ftl}
+
+\begin{proposition}[forthel,id=SuccGeqOneProp]
+  Let $n$ be a natural number.
+  Then $n \plus \one \geq \one$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$n \eq \zero$.} \end{case}
+
+  \begin{case}{$n \neq \zero$.}
+    Then $n \gtr \zero$.
+    Hence $n \plus \one \gtr \zero \plus \one \eq \one$.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

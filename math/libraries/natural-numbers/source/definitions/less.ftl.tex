@@ -1,0 +1,26 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{less.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?addition.ftl}
+
+\symdef{less}{\mathrel{\comp<}}
+\symdef{nless}{\mathrel{\comp{\not<}}}
+\symdef{gtr}{\mathrel{\comp>}}
+\symdef{ngtr}{\mathrel{\comp{\not>}}}
+
+\begin{definition}[forthel,id=StrictOrderDef,for={less,nless,gtr,ngtr}]
+  Let $n, m$ be natural numbers.
+  $\emph{n \less m}$ iff there exists a nonzero natural number $k$ such that $m \eq n \plus k$.
+
+  Let $n$ is \emph{less than $m$} stand for $n \less m$.
+  Let $\emph{n \gtr m}$ stand for $m \less n$.
+  Let $n$ is \emph{greater than $m$} stand for $n \gtr m$.
+  Let $\emph{n \nless m}$ stand for $n$ is not less than $m$.
+  Let $\emph{n \ngtr m}$ stand for $n$ is not greater than $m$.
+\end{definition}
+
+\end{smodule}
+\end{document}

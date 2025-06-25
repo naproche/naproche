@@ -1,0 +1,38 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{less-is-connected.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?leq.ftl}
+\importmodule[libraries/natural-numbers]{definitions?positive.ftl}
+\importmodule[libraries/natural-numbers]{definitions?number-1.ftl}
+\importmodule[libraries/natural-numbers]{theorems?positive-iff-nonzero.ftl}
+
+\begin{proposition}[forthel,id=LessIsConnectedProp]
+  Let $n, m$ be natural numbers.
+  Then $n \less m$ or $n \eq m$ or $n \gtr m$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show by induction on $m'$ that for all $m' \in \Nat$ we have $n \less m'$ or $n \eq m'$ or $n \gtr m'$.
+  \begin{proof}
+    Let $m' \in \Nat$.
+
+    \begin{case}{$m' \eq \zero$.} \end{case}
+
+    \begin{case}{$m' \neq \zero$.}
+      Take $m'' \in \Nat$ such that $m' \eq m'' \plus \one$.
+      Then $m'' \iless m'$.
+      Hence $n \less m''$ or $n \eq m''$ or $n \gtr m''$.
+
+      \begin{case}{$n \less m''$.} \end{case}
+
+      \begin{case}{$n \eq m''$.} \end{case}
+
+      \begin{case}{$n \gtr m''$.} \end{case}
+    \end{case}
+  \end{proof}
+\end{proof}
+
+\end{smodule}
+\end{document}
