@@ -1,0 +1,18 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{identity-permutations.ftl}
+
+\importmodule[libraries/maps]{definitions?id.ftl}
+\importmodule[libraries/permutations]{definitions?classes-of-finite-permutations.ftl}
+
+\symdef{permid}[args=1]{\comp{\textrm{id}}_{#1}}
+
+\begin{definition}[forthel,id=IdPermDef]
+  Let $n$ be a natural number.
+  $\emph{\permid{n}} = \id{\natsegment{\one}{n}}$.
+\end{definition}
+
+\end{smodule}
+\end{document}

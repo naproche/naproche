@@ -1,0 +1,19 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{classes-of-finite-permutations.ftl}
+
+\importmodule[libraries/cardinalities]{definitions?natural-number-segments.ftl}
+\importmodule[libraries/maps]{definitions?permutations.ftl}
+\importmodule[libraries/natural-numbers]{definitions?number-1.ftl}
+
+\symdef{Sym}[args=1]{\comp{\mathfrak{S}}_{#1}}
+
+\begin{definition}[forthel,id=ClassOfPermsDef]
+  Let $n$ be a natural number.
+  $\emph{\Sym{n}}$ is the class of all permutations of $\natsegment{\one}{n}$.
+\end{definition}
+
+\end{smodule}
+\end{document}

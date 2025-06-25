@@ -1,0 +1,16 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{countable.ftl}
+
+\importmodule[libraries/cardinalities]{definitions?finite.ftl}
+\importmodule[libraries/cardinalities]{definitions?countably-infinite.ftl}
+
+\begin{definition}[forthel,id=CountDef]
+  Let $X$ be a class.
+  $X$ is \emph{countable} iff $X$ is finite or $X$ is countably infinite.
+\end{definition}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,16 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{countably-infinite.ftl}
+
+\importmodule[libraries/classes]{definitions?equinumerosity.ftl}
+\importmodule[libraries/natural-numbers]{signatures?natural-numbers.ftl}
+
+\begin{definition}[forthel,id=CountInfDef]
+  Let $X$ be a class.
+  $X$ is \emph{countably infinite} iff $X$ is equinumerous to $\Nat$.
+\end{definition}
+
+\end{smodule}
+\end{document}

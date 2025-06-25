@@ -1,0 +1,34 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{order.ftl}
+
+\importmodule[libraries/cardinalities]{definitions?infinity.ftl}
+\importmodule[libraries/cardinalities]{definitions?infinite.ftl}
+
+\symdef{order}{\mathop{\comp{\#}}}
+
+\begin{signature}[forthel,id=OrderSig]
+  Let $X$ be a class.
+  $\emph{\order X}$ is an object.
+
+  Let the \emph{order of $X$} stand for $\order X$.
+\end{signature}
+
+\begin{axiom}[forthel,id=OrderOfFiniteClassAx]
+  Let $X$ be a finite class.
+  Then $\order X$ is the natural number $n$ such that $X$ is equinumerous to $\natsegment{\one}{n}$.
+
+  Let $X$ has $n$ elements stand for $\order X \eq n$.
+\end{axiom}
+
+\begin{axiom}[forthel,id=OrderOfInfiniteClassAx]
+  Let $X$ be an infinite class.
+  Then $\order X \eq \infinity$.
+
+  Let $X$ has infinitely many elements stand for $\order X \eq \infinity$.
+\end{axiom}
+
+\end{smodule}
+\end{document}

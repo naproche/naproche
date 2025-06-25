@@ -1,0 +1,17 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{natural-number-segments.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?leq.ftl}
+
+\symdef{natsegment}[args=2]{\comp{\{}#1\comp{,\dots,}#2\comp{\}}}
+
+\begin{definition}[forthel,id=NatSegDef]
+  Let $n,m$ be natural numbers.
+  $\emph{\natsegment{n}{m}} = \{ k \in \Nat \mid n \leq k \leq m \}$.
+\end{definition}
+
+\end{smodule}
+\end{document}

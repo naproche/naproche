@@ -1,0 +1,17 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{finite.ftl}
+
+\importmodule[libraries/cardinalities]{definitions?natural-number-segments.ftl}
+\importmodule[libraries/classes]{definitions?equinumerosity.ftl}
+\importmodule[libraries/natural-numbers]{definitions?number-1.ftl}
+
+\begin{definition}[forthel,id=FiniteDef]
+  Let $X$ be a class.
+  $X$ is \emph{finite} iff there exists a natural number $n$ such that $X$ is equinumerous to $\natsegment{\one}{n}$.
+\end{definition}
+
+\end{smodule}
+\end{document}
