@@ -2,14 +2,14 @@
 \libusepackage{naproche}
 \libinput{preamble}
 \begin{document}
-\begin{smodule}[title=Induction Schema]{induction.ftl}
+\begin{smodule}{induction.ftl}
 
 \importmodule[libraries/ontology]{entities?elements.ftl}
 \importmodule[libraries/ontology]{relations?equality.ftl}
 \importmodule[libraries/ontology]{relations?induction-order.ftl}
 
 \begin{fakeforthel}
-  \begin{axiom}[title=Induction Schema]
+  \begin{axiom}
     Let $\tau$ be a term.
     Let $\nu_1,\dots,\nu_n$ denote the free variables of $\tau$.
     Let $\psi_1,\dots,\psi_n$ and $\varphi$ be formulas.

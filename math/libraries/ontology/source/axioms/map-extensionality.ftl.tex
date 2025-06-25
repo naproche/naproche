@@ -2,7 +2,7 @@
 \libusepackage{naproche}
 \libinput{preamble}
 \begin{document}
-\begin{smodule}[title=Map Extensionality]{map-extensionality.ftl}
+\begin{smodule}{map-extensionality.ftl}
 
 \importmodule[libraries/ontology]{entities?maps.ftl}
 \importmodule[libraries/ontology]{entities?domain.ftl}
@@ -10,7 +10,7 @@
 \importmodule[libraries/ontology]{relations?equality.ftl}
 
 \begin{fakeforthel}
-  \begin{axiom}[title=Map Extensionality]
+  \begin{axiom}
     Let $f,g$ be maps.
     If $\dom(f) \eq \dom(g)$ and $f(a) \eq g(a)$ for all $a \elem \dom(f)$ then $g \eq g$.
   \end{axiom}

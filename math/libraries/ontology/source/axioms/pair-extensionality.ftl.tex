@@ -2,12 +2,12 @@
 \libusepackage{naproche}
 \libinput{preamble}
 \begin{document}
-\begin{smodule}[title=Pair Extensionality]{pair-extensionality.ftl}
+\begin{smodule}{pair-extensionality.ftl}
 
 \importmodule[libraries/ontology]{entities?pairs.ftl}
 
 \begin{fakeforthel}
-  \begin{axiom}[title=Pair Extensionality]
+  \begin{axiom}
     Let $a,a',b,b'$ be objects.
     If $(a, b) \eq (a', b')$ then $a \eq a'$ and $b \eq b'$.
   \end{axiom}
