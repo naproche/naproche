@@ -7,9 +7,8 @@ for [Isabelle Prover IDE (Isabelle/PIDE – Isabelle/jEdit)][isabelle-jedit].
 ## For End-Users
 
 You can get a fully integrated version of Naproche for Linux, macOS and Windows
-that is bundled with [Isabelle][isabelle]: Download and run the application from
-<https://isabelle.in.tum.de> and open the file `$ISABELLE_NAPROCHE/Intro.thy` in
-its `Documentation` panel.
+that is bundled with [Isabelle][isabelle].
+See <https://naproche.github.io/download.html> for more information.
 
 
 ## For Developers
