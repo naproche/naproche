@@ -2,8 +2,7 @@
 \ProvidesPackage{naproche}[2025/03/08 package naproche]
 
 \RequirePackage[english]{babel}
-\RequirePackage{amsmath,amssymb,amsthm,amsfonts}
-\RequirePackage{etoolbox}
+\RequirePackage{amsmath,amssymb,amsfonts}
 \RequirePackage{xspace}
 \RequirePackage{xcolor}
 \RequirePackage{mdframed}
@@ -20,15 +19,14 @@
 % Predefined symbols
 % ------------------
 
-\newcommand{\dom}{\operatorname{dom}}
-\newcommand{\fun}{\mathrm{\lambda}}
+\NewDocumentCommand{\dom}{}{\operatorname{dom}}
+\NewDocumentCommand{\fun}{}{\mathrm{\lambda}}
 
 
 % Naproche logo
 % -------------
 
-\RequirePackage{xspace}
-\newcommand{\Naproche}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
+\NewDocumentCommand{\Naproche}{}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
 
 
 % Comprehension terms
@@ -36,129 +34,103 @@
 
 \RequirePackage{linegoal}
 
-% Gets the left-hand and right-hand side, resp., of an expression of the form
-% "foo|bar"
-\def\getfirst#1|#2\relax{#1}
-\def\getsecond#1|#2\relax{#2}
+\NewDocumentCommand{\lproj}{m m}{#1}
+\NewDocumentCommand{\rproj}{m m}{#2}
 
-% Comprehension term: "\class{... | ...}".
-% Naproche allows to enclose the RHS within "\text{...}", e.g.
-% "\class{x | \text{$x$ is greater than $y$}}".
-% Use "\classtext{...}" instead of "\text{...}" to enable automatic line breaks
-% in the RHS.
-\newcommand{\class}[1]{%
-  \left\{%
-  \getfirst#1\relax%
-  ~\middle\vert~%
-  \linebreak[1]%
-  \getsecond#1\relax%
-  \right\}%
+\NewDocumentCommand{\class}{>{\SplitArgument{1}{|}} m}{
+  \left\{\lproj#1~\middle\vert~\rproj#1\right\}
 }
 
-\newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
+\NewDocumentCommand{\classtext}{m}{\parbox{\linegoal}{#1}}
 
 
 % Printing labels
 % ---------------
 
-\newcommand{\printref}[1]{\path{#1}}
+\NewDocumentCommand{\printref}{m}{\path{#1}}
 
 
 % Top-level sections
 % ------------------
 
-% Numbered environments for top-level sections
-\newtheoremstyle{formalized}% name of the style to be used
-    {4pt}% measure of space to leave above the theorem. E.g.: 3pt
-    {4pt}% measure of space to leave below the theorem. E.g.: 3pt
-    {\normalfont} % name of font to use in the body of the theorem
-    {0pt}% measure of space to indent
-    {\bfseries}% name of head font
-    {}% punctuation between head and body
-    { }% space after theorem head; " " = normal inter-word space
-    {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}.}
+\newcounter{tlscounter}
 
-% Unnumbered environments for top-level sections
-\newtheoremstyle{unnumbered}% name of the style to be used
-  {4pt}% measure of space to leave above the theorem. E.g.: 3pt
-  {4pt}% measure of space to leave below the theorem. E.g.: 3pt
-  {\normalfont} % name of font to use in the body of the theorem
-  {0pt}% measure of space to indent
-  {\bfseries}% name of head font
-  {}% punctuation between head and body
-  { }% space after theorem head; " " = normal inter-word space
-  {\thmname{#1}\thmnote{ (#3)}.}
+\NewDocumentCommand{\NewTopLevelSection}{s m m}{
+  \NewDocumentEnvironment{#2\IfBooleanT{#1}{*}}{o}{
+    \IfBooleanF{#1}{\refstepcounter{tlscounter}}
+    \par
+    \ifbool{forthel}{}{\vspace{0.5em}}
+    \noindent\textbf{#3\IfBooleanF{#1}{~\thetlscounter}\IfValueT{##1}{~(##1)}.}%
+    \normalfont%
+  }{
+    \par
+    \ifbool{forthel}{}{\vspace{0.5em}}
+  }
+}
 
-\theoremstyle{formalized}
-\newcounter{theoremcount}
+\NewTopLevelSection{signature}{Signature}
+\NewTopLevelSection*{signature}{Signature}
 
-\newtheorem{axiom}[theoremcount]{Axiom}
-\newtheorem{corollary}[theoremcount]{Corollary}
-\newtheorem{definition}[theoremcount]{Definition}
-\newtheorem{fact}[theoremcount]{Fact}
-\newtheorem{lemma}[theoremcount]{Lemma}
-\newtheorem{proposition}[theoremcount]{Proposition}
-\newtheorem{remark}[theoremcount]{Remark}
-\newtheorem{signature}[theoremcount]{Signature}
-\newtheorem{theorem}[theoremcount]{Theorem}
+\NewTopLevelSection{definition}{Definition}
+\NewTopLevelSection*{definition}{Definition}
 
-\newtheorem*{definition*}{Definition}
-\newtheorem*{signature*}{Signature}
-\newtheorem*{axiom*}{Axiom}
-\newtheorem*{theorem*}{Theorem}
-\newtheorem*{proposition*}{Proposition}
-\newtheorem*{lemma*}{Lemma}
-\newtheorem*{corollary*}{Corollary}
+\NewTopLevelSection{axiom}{Axiom}
+\NewTopLevelSection*{axiom}{Axiom}
+
+\NewTopLevelSection{theorem}{Theorem}
+\NewTopLevelSection*{theorem}{Theorem}
+
+\NewTopLevelSection{lemma}{Lemma}
+\NewTopLevelSection*{lemma}{Lemma}
+
+\NewTopLevelSection{proposition}{Proposition}
+\NewTopLevelSection*{proposition}{Proposition}
+
+\NewTopLevelSection{corollary}{Corollary}
+\NewTopLevelSection*{corollary}{Corollary}
+
+\NewTopLevelSection{convention}{Convention}
+\NewTopLevelSection*{convention}{Convention}
 
 
 % ForTheL environment
 % -------------------
 
-% Space between paragraphs in forthel environments
-\newlength{\ftlparskip}
-\setlength{\ftlparskip}{0.5em}
-
-% ForTheL environment
-\newenvironment{forthel}{%
-  \begin{mdframed}[backgroundcolor=lightgray!30, linecolor=lightgray!30]%
-  \rmfamily%
-  \setbool{forthel}{true}%
-  \setlength{\parindent}{0pt}%
-  \setlength{\parskip}{\ftlparskip}%
-}{%
-  \end{mdframed}%
-  \rmfamily%
-  \setbool{forthel}{false}%
-}
-
-
-% More visible line breaks in proofs
-% ----------------------------------
-
 \newbool{forthel}
 
-% Set length of \parskip to \ftlparskip in proofs in ForTheL environments.
-%
-% NOTE: "\vspace*{-\parskip}" is necessary to avoid additional space between
-% theorem and proof
-\renewenvironment{proof}[1][\unskip]{%
-  \ifbool{forthel}{\setlength{\parskip}{\ftlparskip}\vspace*{-\parskip}}%
-  \noindent\textit{Proof\xspace#1. }%
-  \relax%
-}
-{%
-  \hfill\qed
+\NewDocumentEnvironment{forthel}{}{
+  \begin{mdframed}[backgroundcolor=lightgray!30, linecolor=lightgray!30]
+  \setbool{forthel}{true}
+  \setlength{\parindent}{0pt}
+  \setlength{\parskip}{0.5em}
+}{
+  \end{mdframed}
+  \setbool{forthel}{false}
 }
 
 
-% Options
-% -------
+% Proof Environment
+% -----------------
+
+\NewDocumentEnvironment{proof}{o}{
+  \par
+  \ifbool{forthel}{}{\vspace{0.5em}}
+  \noindent\textit{Proof\IfValueT{#1}{~#1}.}%
+}
+{
+  \hfill\ensuremath{\square}
+  \par
+}
+
+
+% Package Options
+% ---------------
 
 \DeclareOption{numberswithinsection}{%
-    \counterwithin{theoremcount}{section}
+  \counterwithin{tlscount}{section}
 }
 \DeclareOption{numberswithinsubsection}{%
-    \counterwithin{theoremcount}{subsection}
+  \counterwithin{tlscount}{subsection}
 }
 \DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
 \ProcessOptions\relax
