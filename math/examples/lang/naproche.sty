@@ -50,6 +50,22 @@
 \NewDocumentCommand{\printref}{m}{\path{#1}}
 
 
+% ForTheL environment
+% -------------------
+
+\newbool{forthel}
+
+\NewDocumentEnvironment{forthel}{}{
+  \begin{mdframed}[backgroundcolor=lightgray!30, linecolor=lightgray!30]
+  \setbool{forthel}{true}
+  \setlength{\parindent}{0pt}
+  \setlength{\parskip}{0.5em}
+}{
+  \end{mdframed}
+  \setbool{forthel}{false}
+}
+
+
 % Top-level sections
 % ------------------
 
@@ -91,22 +107,6 @@
 
 \NewTopLevelSection{convention}{Convention}
 \NewTopLevelSection*{convention}{Convention}
-
-
-% ForTheL environment
-% -------------------
-
-\newbool{forthel}
-
-\NewDocumentEnvironment{forthel}{}{
-  \begin{mdframed}[backgroundcolor=lightgray!30, linecolor=lightgray!30]
-  \setbool{forthel}{true}
-  \setlength{\parindent}{0pt}
-  \setlength{\parskip}{0.5em}
-}{
-  \end{mdframed}
-  \setbool{forthel}{false}
-}
 
 
 % Proof Environment
