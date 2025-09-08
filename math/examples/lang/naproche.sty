@@ -21,6 +21,10 @@
 % "forthel" environment.
 \newbool{forthel}
 
+% Declare a Boolean variable "puzzle". When set to "true", the puzzle
+% typesetting is used instead of the standard Naproche typesetting.
+\newbool{puzzle}
+
 % Declare a new counter "tlscounter" which is increased at every (numbered)
 % top-level section environment (see below) and printed in the head of that
 % top-level section.
@@ -29,6 +33,12 @@
 
 % Package Options
 % ===============
+
+% Declare a package option "puzzle" which, when given, triggers the puzzle
+% typesetting
+\DeclareOption{puzzle}{
+  \setbool{puzzle}{true}
+}
 
 % Declare a package option "numberswithinsection" which, when given, resets the
 % top-level section counter at every new section.
@@ -117,6 +127,27 @@
 % ForTheL Environment
 % ===================
 
+% Define a new color "forthelgray" that is used as the background color of
+% "forthel" environments.
+\colorlet{forthelgray}{lightgray!30}
+
+\ifpuzzle
+
+% Define a new environment "forthel" (without any arguments) whith the following
+% properties:
+% - It is highlighted with a gray background.
+% - In this envoronment, paragraphs are not indented.
+\NewDocumentEnvironment{forthel}{}{
+  \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]
+  \setbool{forthel}{true}
+  \setlength{\parindent}{0pt}
+}{
+  \end{mdframed}
+  \setbool{forthel}{false}
+}
+
+\else
+
 % Define a new environment "forthel" (without any arguments) whith the following
 % properties:
 % - It is highlighted with a gray background.
@@ -126,7 +157,7 @@
 % - In this envoronment, the vertical spacing between two paragraphs is set to
 % - 0.5 em.
 \NewDocumentEnvironment{forthel}{}{
-  \begin{mdframed}[backgroundcolor=lightgray!30, linecolor=lightgray!30]
+  \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]
   \setbool{forthel}{true}
   \setlength{\parindent}{0pt}
   \setlength{\parskip}{0.5em}
@@ -134,6 +165,8 @@
   \end{mdframed}
   \setbool{forthel}{false}
 }
+
+\fi
 
 
 % Top-level Section Environments
@@ -207,6 +240,43 @@
   }
 }
 
+\ifpuzzle
+
+% Define new environments
+% - "signature"
+% - "axiom"
+% - "definition"
+% - "theorem"
+% - "lemma"
+% - "proposition"
+% - "corollary"
+% - "convention"
+% (which do not take any arguments) and starred versions of them which just
+% print their bodies. In case of the "theorem", "lemma", "proposition" and
+% "corollary" environments (and their starred variants), the text "Therefore:"
+% is prepended to their bodies.
+%
+% Note: The "\unskip" commands are used to avoid additional whitespace before
+%       and after the environments.
+\NewDocumentEnvironment{signature}{}{\unskip}{\unskip}
+\NewDocumentEnvironment{signature*}{}{\unskip}{\unskip}
+\NewDocumentEnvironment{axiom}{}{\unskip}{\unskip}
+\NewDocumentEnvironment{axiom*}{}{\unskip}{\unskip}
+\NewDocumentEnvironment{definition}{}{\unskip}{\unskip}
+\NewDocumentEnvironment{definition*}{}{\unskip}{\unskip}
+\NewDocumentEnvironment{theorem}{}{\unskip Therefore:}{\unskip}
+\NewDocumentEnvironment{theorem*}{}{\unskip Therefore:}{\unskip}
+\NewDocumentEnvironment{lemma}{}{\unskip Therefore:}{\unskip}
+\NewDocumentEnvironment{lemma*}{}{\unskip Therefore:}{\unskip}
+\NewDocumentEnvironment{proposition}{}{\unskip Therefore:}{\unskip}
+\NewDocumentEnvironment{proposition*}{}{\unskip Therefore:}{\unskip}
+\NewDocumentEnvironment{corollary}{}{\unskip Therefore:}{\unskip}
+\NewDocumentEnvironment{corollary*}{}{\unskip Therefore:}{\unskip}
+\NewDocumentEnvironment{convention}{}{\unskip}{\unskip}
+\NewDocumentEnvironment{convention*}{}{\unskip}{\unskip}
+
+\else
+
 % Define two top-level environment "signature" and "signature*".
 \NewTopLevelSection{signature}{Signature}
 \NewTopLevelSection*{signature}{Signature}
@@ -238,6 +308,8 @@
 % Define two top-level environment "convention" and "convention*".
 \NewTopLevelSection{convention}{Convention}
 \NewTopLevelSection*{convention}{Convention}
+
+\fi
 
 
 % Proof Environment
