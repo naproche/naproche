@@ -1,58 +1,130 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{naproche}[2025/03/08 package naproche]
+\ProvidesPackage{naproche}[2025-09-05 v1.0.0 Basic LaTeX package for Naproche formalization]
 
-\RequirePackage[english]{babel}
-\RequirePackage{amsmath,amssymb,amsfonts}
-\RequirePackage{xspace}
-\RequirePackage{xcolor}
-\RequirePackage{mdframed}
-\RequirePackage{xurl}
+% Packages required by this package:
+\RequirePackage{amsfonts}         % For the Naproche logo
+\RequirePackage{xspace}           % For the Naproche logo
+\RequirePackage{xcolor}           % For the "forthel" environment
+\RequirePackage{mdframed}         % For the "forthel" environment
+\RequirePackage{linegoal}         % For the "\classtext" command
 
-%\usepackage{hyperref}
-%\hypersetup{
-%  colorlinks=true
-%}
+% Additiona packages required for certain ForTheL keywords:
+\RequirePackage{amsmath}  % For "\text", "\implies", "\iff", etc.
+\RequirePackage{url}      % For "\path"
 
 
-% Predefined symbols
-% ------------------
+% Preliminary Setup
+% =================
 
-\NewDocumentCommand{\dom}{}{\operatorname{dom}}
+% Declara a Boolean variable "forthel" (not the be confused with the
+% *environment* "forthel", see below) which is "true" iff we are currently in a
+% "forthel" environment.
+\newbool{forthel}
+
+% Declare a new counter "tlscounter" which is increased at every (numbered)
+% top-level section environment (see below) and printed in the head of that
+% top-level section.
+\newcounter{tlscounter}
+
+
+% Package Options
+% ===============
+
+% Declara a package option "numberswithinsection" which, when given, resets the
+% top-level section counter at every new section.
+\DeclareOption{numberswithinsection}{
+  \counterwithin{tlscount}{section}
+}
+
+% Declara a package option "numberswithinsection" which, when given, resets the
+% top-level section counter at every new ssubection.
+\DeclareOption{numberswithinsubsection}{
+  \counterwithin{tlscount}{subsection}
+}
+
+% Throw a warning when an unknown option is passed to this package.
+\DeclareOption*{
+  \PackageWarning{naproche}{Unknown option `\CurrentOption'}
+}
+
+% Process the package options.
+\ProcessOptions\relax
+
+
+% Commands Required by ForTheL
+% ============================
+
+% Define a command "\dom" (without any arguments) for Naproche's hard-coded
+% "\dom" operator.
+\NewDocumentCommand{\dom}{}{\textrm{dom}}
+
+% Define a command "\fun" (without any arguments) for Naproche's "\fun" keyword.
 \NewDocumentCommand{\fun}{}{\mathrm{\lambda}}
 
 
-% Naproche logo
-% -------------
+% Naproche Logo
+% =============
 
+% Define a command (without any arguments) that prints the Naproche logo.
 \NewDocumentCommand{\Naproche}{}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
 
 
-% Comprehension terms
-% -------------------
+% Comprehension Terms
+% ===================
 
-\RequirePackage{linegoal}
+% Define left and right projection commands "\@lproj" and "\@rproj" (with two
+% mandatory arguments) that return the first and second argument, resp.
+\NewDocumentCommand{\@lproj}{m m}{#1}
+\NewDocumentCommand{\@rproj}{m m}{#2}
 
-\NewDocumentCommand{\lproj}{m m}{#1}
-\NewDocumentCommand{\rproj}{m m}{#2}
-
+% Define a command "\class" (with one mandatory argument of the form
+% "<arg1> | <arg2>") that prints a comprehension term with <arg1> as first and
+% <arg2> as second argument, i.e. <arg1> and <arg2> are wrapped in curly
+% braces and separated by a vertical bar.
+%
+% Example: \class{x | x \notin x}
 \NewDocumentCommand{\class}{>{\SplitArgument{1}{|}} m}{
-  \left\{\lproj#1~\middle\vert~\rproj#1\right\}
+  \left\{\@lproj#1~\middle\vert~\@rproj#1\right\}
 }
 
+
+% Define a new command "\classtext" (with one mandatory argument) which
+% behaves much like the "\text" command from the "amstext" package. In
+% contrary to the "\text" command, "\classtext" automatically breaks its
+% argument into multiple lines if its length would exceed the remaining free
+% space in the current line.
+% This command is useful to wrap the second argument of a "\class" command in
+% in case that argument does not fit in the current line.
+%
+% Example: \class{z | \classtext{$z$ is a complex number such that $z$ is a
+%          negative even integer or the real part of $z$ is equal to
+%          $\frac{1}{2}$}}
 \NewDocumentCommand{\classtext}{m}{\parbox{\linegoal}{#1}}
 
 
-% Printing labels
-% ---------------
+% Printing Labels
+% ===============
 
+% Define a new command "\printref" (with one mandaroty argument) that prints its
+% argument verbatimly in a monospace font. Usefull to print labels of top-level
+% sections that are defined in an imported file (and therefore not accessible
+% for LaTeX).
+%
+% Example: "Therefore $1 + 1 = 2$ (by \printref{my_favourite_lemma})."
 \NewDocumentCommand{\printref}{m}{\path{#1}}
 
 
-% ForTheL environment
-% -------------------
+% ForTheL Environment
+% ===================
 
-\newbool{forthel}
-
+% Define a new environment "forthel" (without any arguments) whith the following
+% properties:
+% - It is highlighted with a gray background.
+% - The Boolean variable "forthel" (not to be confused with the *environment*
+%   "forthel" is set to "true").
+% - In this envoronment, paragraphs are not indented.
+% - In this envoronment, the vertical spacing between two paragraphs is set to
+% - 0.5 em.
 \NewDocumentEnvironment{forthel}{}{
   \begin{mdframed}[backgroundcolor=lightgray!30, linecolor=lightgray!30]
   \setbool{forthel}{true}
@@ -64,52 +136,126 @@
 }
 
 
-% Top-level sections
-% ------------------
+% Top-level Section Environments
+% ==============================
 
-\newcounter{tlscounter}
+% Define a command "\SetCurrentLabelName" (with one mandatory argument) that
+% sets "\@currentlabelname" to its argument.
+% See <https://ctan.net/macros/latex/contrib/hyperref/doc/nameref.pdf> for
+% details about "\@currentlabelname".
+\NewDocumentCommand{\SetCurrentLabelName}{m}{
+  \makeatletter
+  \protected@edef\@currentlabelname{#1}\@currentlabelname
+  \makeatother
+}
 
+% Define a command "\NewTopLevelSection" (followed by an optional "*" and with
+% two mandatory arguments <env> and <name>) which defines an environment
+% "<env>" or "<env>*" (with an optional argument <title>), depending on whether
+% \NewTopLevelSection" is followed by a "*" is or not, which do the following:
+% 1. Only applies to the environment "<env>": The counter "tlscounter"
+%    (referred to as <tls> in the following) is increased.
+% 2. A new paragraph is entered and if the Boolean variable "forthel" is "false"
+%    (i.e. if we are currently not in a "forthel" environment), a horizontal
+%    space of 0.5 em is inserted. (Inside a "forthel" environment this is not
+%    necessary since there all paragraphs are separated by 0.5 em anyway.)
+% 4. In case of "<env>" the text "<name> <tls>." or "<name> <tls> (<title>)."
+%    (depending on whether <title> is given or not) is printed in boldface
+%    and without indentation.
+%    In case of "<env>*" the text "<name>." or "<name> (<title>)."
+%    (depending on whether <title> is given or not) is printed in boldface
+%    and without indentation.
+% 5. The body of the environment is printed.
+% 6. A new paragraph is entered and if the Boolean variable "forthel" is "false"
+%    (i.e. if we are currently not in a "forthel" environment), a horizontal
+%    space of 0.5 em is inserted. (Cf. point 2.)
+%
+% Example: "\NewTopLevelSection{theorem}{Theorem}" creates a new 'numbered'
+%          top-level section environment "theorem" (with one optional argument
+%          for its title) which will be printed as "Theorem ...". Similarly,
+%          "\NewTopLevelSection*{theorem}{Theorem}" creates a new 'unnumbered'
+%          top-level section environment "theorem*" (with an optional argument
+%          for its title) which will be printed as "Theorem ...".
+%
+%          These new environments can the be used, e.g., as:
+%
+%          \begin{theorem}[Cantor's Theorem]\label{cantor}
+%            There is no surjection from $X$ to the powerset of $X$.
+%          \end{theorem}
+%
+%          or
+%
+%          \begin{theorem*}[Hausdorff's Theorem]\label{hausdorff}
+%            Every successor cardinal is regular.
+%          \end{theorem*}
+%
+% Note: When assigning a label to a 'numbered' top-level section, it can
+%       later be referenced via "\ref{...}", e.g. "\ref{cantor}".
+%       When assigning a label to a 'named' top-level section, i.e. one with an
+%       optional argument, it can later be referenced via "\nameref{...}", e.g.
+%       "\nameref{hausdorff}", provided the "hyperref" package was loaded.
 \NewDocumentCommand{\NewTopLevelSection}{s m m}{
   \NewDocumentEnvironment{#2\IfBooleanT{#1}{*}}{o}{
     \IfBooleanF{#1}{\refstepcounter{tlscounter}}
     \par
     \ifbool{forthel}{}{\vspace{0.5em}}
     \noindent\textbf{#3\IfBooleanF{#1}{~\thetlscounter}\IfValueT{##1}{~(##1)}.}%
-    \normalfont%
+    \IfValueT{##1}{\SetCurrentLabelName{##1}}%
   }{
     \par
     \ifbool{forthel}{}{\vspace{0.5em}}
   }
 }
 
+% Define two top-level environment "signature" and "signature*".
 \NewTopLevelSection{signature}{Signature}
 \NewTopLevelSection*{signature}{Signature}
 
+% Define two top-level environment "definition" and "definition*".
 \NewTopLevelSection{definition}{Definition}
 \NewTopLevelSection*{definition}{Definition}
 
+% Define two top-level environment "axiom" and "axiom*".
 \NewTopLevelSection{axiom}{Axiom}
 \NewTopLevelSection*{axiom}{Axiom}
 
+% Define two top-level environment "theorem" and "theorem*".
 \NewTopLevelSection{theorem}{Theorem}
 \NewTopLevelSection*{theorem}{Theorem}
 
+% Define two top-level environment "lemma" and "lemma*".
 \NewTopLevelSection{lemma}{Lemma}
 \NewTopLevelSection*{lemma}{Lemma}
 
+% Define two top-level environment "proposition" and "proposition*".
 \NewTopLevelSection{proposition}{Proposition}
 \NewTopLevelSection*{proposition}{Proposition}
 
+% Define two top-level environment "corollary" and "corollary*".
 \NewTopLevelSection{corollary}{Corollary}
 \NewTopLevelSection*{corollary}{Corollary}
 
+% Define two top-level environment "convention" and "convention*".
 \NewTopLevelSection{convention}{Convention}
 \NewTopLevelSection*{convention}{Convention}
 
 
 % Proof Environment
-% -----------------
+% =================
 
+% Define an environment "proof" (with one optional argument <arg>) which prints
+% the following in a new paragraph:
+% 1. It prints the text "Proof." or "Proof <arg>." (if an argument is given) in
+%    italics and without indentation.
+% 2. It prints its body.
+% 3. It prints an (unfilled) square symbol at the right margin of the last line
+%    of its body.
+%
+% Example: \begin{proof}[by contradiction]
+%            Define $R = \class{x | x \notin x}$.
+%            Then $R \in R$ iff $R \notin R$.
+%            Contradiction.
+%          \end{proof}
 \NewDocumentEnvironment{proof}{o}{
   \par
   \ifbool{forthel}{}{\vspace{0.5em}}
@@ -119,16 +265,3 @@
   \hfill\ensuremath{\square}
   \par
 }
-
-
-% Package Options
-% ---------------
-
-\DeclareOption{numberswithinsection}{%
-  \counterwithin{tlscount}{section}
-}
-\DeclareOption{numberswithinsubsection}{%
-  \counterwithin{tlscount}{subsection}
-}
-\DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
-\ProcessOptions\relax
