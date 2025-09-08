@@ -16,7 +16,7 @@
 % Preliminary Setup
 % =================
 
-% Declara a Boolean variable "forthel" (not the be confused with the
+% Declare a Boolean variable "forthel" (not the be confused with the
 % *environment* "forthel", see below) which is "true" iff we are currently in a
 % "forthel" environment.
 \newbool{forthel}
@@ -30,13 +30,13 @@
 % Package Options
 % ===============
 
-% Declara a package option "numberswithinsection" which, when given, resets the
+% Declare a package option "numberswithinsection" which, when given, resets the
 % top-level section counter at every new section.
 \DeclareOption{numberswithinsection}{
   \counterwithin{tlscount}{section}
 }
 
-% Declara a package option "numberswithinsection" which, when given, resets the
+% Declare a package option "numberswithinsection" which, when given, resets the
 % top-level section counter at every new ssubection.
 \DeclareOption{numberswithinsubsection}{
   \counterwithin{tlscount}{subsection}
