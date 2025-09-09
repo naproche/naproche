@@ -16,19 +16,18 @@
 % Preliminary Setup
 % =================
 
-% Declare a Boolean variable "forthel" (not the be confused with the
-% *environment* "forthel", see below) which is "true" iff we are currently in a
-% "forthel" environment.
-\newbool{forthel}
+% Declare a Boolean variable "naproche@forthel" which is "true" iff we are
+% currently in a "forthel" environment.
+\newbool{naproche@forthel}
 
-% Declare a Boolean variable "puzzle". When set to "true", the puzzle
+% Declare a Boolean variable "naproche@puzzle". When set to "true", the puzzle
 % typesetting is used instead of the standard Naproche typesetting.
-\newbool{puzzle}
+\newbool{naproche@puzzle}
 
-% Declare a new counter "tlscounter" which is increased at every (numbered)
-% top-level section environment (see below) and printed in the head of that
-% top-level section.
-\newcounter{tlscounter}
+% Declare a new counter "naproche@tlscounter" which is increased at every
+% (numbered) top-level section environment (see below) and printed in the head
+% of that top-level section.
+\newcounter{naproche@tlscounter}
 
 
 % Package Options
@@ -37,19 +36,19 @@
 % Declare a package option "puzzle" which, when given, triggers the puzzle
 % typesetting
 \DeclareOption{puzzle}{
-  \setbool{puzzle}{true}
+  \setbool{naproche@puzzle}{true}
 }
 
 % Declare a package option "numberswithinsection" which, when given, resets the
 % top-level section counter at every new section.
 \DeclareOption{numberswithinsection}{
-  \counterwithin{tlscount}{section}
+  \counterwithin{naproche@tlscounter}{section}
 }
 
 % Declare a package option "numberswithinsection" which, when given, resets the
-% top-level section counter at every new ssubection.
+% top-level section counter at every new subection.
 \DeclareOption{numberswithinsubsection}{
-  \counterwithin{tlscount}{subsection}
+  \counterwithin{naproche@tlscounter}{subsection}
 }
 
 % Throw a warning when an unknown option is passed to this package.
@@ -82,10 +81,11 @@
 % Comprehension Terms
 % ===================
 
-% Define left and right projection commands "\@lproj" and "\@rproj" (with two
-% mandatory arguments) that return the first and second argument, resp.
-\NewDocumentCommand{\@lproj}{m m}{#1}
-\NewDocumentCommand{\@rproj}{m m}{#2}
+% Define left and right projection commands "\naproche@lproj" and
+% "\naproche@rproj" (with two mandatory arguments) that return the first and
+% second argument, resp.
+\NewDocumentCommand{\naproche@lproj}{m m}{#1}
+\NewDocumentCommand{\naproche@rproj}{m m}{#2}
 
 % Define a command "\class" (with one mandatory argument of the form
 % "<arg1> | <arg2>") that prints a comprehension term with <arg1> as first and
@@ -94,7 +94,7 @@
 %
 % Example: \class{x | x \notin x}
 \NewDocumentCommand{\class}{>{\SplitArgument{1}{|}} m}{
-  \left\{\@lproj#1~\middle\vert~\@rproj#1\right\}
+  \left\{\naproche@lproj#1~\middle\vert~\naproche@rproj#1\right\}
 }
 
 
@@ -127,71 +127,69 @@
 % ForTheL Environment
 % ===================
 
-% Define a new color "forthelgray" that is used as the background color of
-% "forthel" environments.
-\colorlet{forthelgray}{lightgray!30}
+% Define a new color "naproche@forthelgray" that is used as the background color
+% of "forthel" environments.
+\colorlet{naproche@forthelgray}{lightgray!30}
 
-\ifpuzzle
-
-% Define a new environment "forthel" (without any arguments) whith the following
-% properties:
-% - It is highlighted with a gray background.
-% - In this envoronment, paragraphs are not indented.
-\NewDocumentEnvironment{forthel}{}{
-  \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]
-  \setbool{forthel}{true}
-  \setlength{\parindent}{0pt}
+\ifbool{naproche@puzzle}{
+  % Define a new environment "forthel" (without any arguments) whith the following
+  % properties:
+  % - It is highlighted with a "naproche@forthelgray" background.
+  % - In this envoronment, paragraphs are not indented.
+  \NewDocumentEnvironment{forthel}{}{
+    \begin{mdframed}[backgroundcolor=naproche@forthelgray,linecolor=naproche@forthelgray]
+    \setbool{naproche@forthel}{true}
+    \setlength{\parindent}{0pt}
+  }{
+    \end{mdframed}
+    \setbool{naproche@forthel}{false}
+  }
 }{
-  \end{mdframed}
-  \setbool{forthel}{false}
+  % Define a new environment "forthel" (without any arguments) whith the following
+  % properties:
+  % - It is highlighted with a "naproche@forthelgray" background.
+  % - The Boolean variable "naproche@forthel" (not to be confused with the *environment*
+  %   "forthel" is set to "true").
+  % - In this envoronment, paragraphs are not indented.
+  % - In this envoronment, the vertical spacing between two paragraphs is set to
+  % - 0.5 em.
+  \NewDocumentEnvironment{forthel}{}{
+    \begin{mdframed}[backgroundcolor=naproche@forthelgray,linecolor=naproche@forthelgray]
+    \setbool{naproche@forthel}{true}
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{0.5em}
+  }{
+    \end{mdframed}
+    \setbool{naproche@forthel}{false}
+  }
 }
-
-\else
-
-% Define a new environment "forthel" (without any arguments) whith the following
-% properties:
-% - It is highlighted with a gray background.
-% - The Boolean variable "forthel" (not to be confused with the *environment*
-%   "forthel" is set to "true").
-% - In this envoronment, paragraphs are not indented.
-% - In this envoronment, the vertical spacing between two paragraphs is set to
-% - 0.5 em.
-\NewDocumentEnvironment{forthel}{}{
-  \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]
-  \setbool{forthel}{true}
-  \setlength{\parindent}{0pt}
-  \setlength{\parskip}{0.5em}
-}{
-  \end{mdframed}
-  \setbool{forthel}{false}
-}
-
-\fi
 
 
 % Top-level Section Environments
 % ==============================
 
-% Define a command "\SetCurrentLabelName" (with one mandatory argument) that
-% sets "\@currentlabelname" to its argument.
+% Define a command "\naproche@SetCurrentLabelName" (with one mandatory argument)
+% that  sets "\@currentlabelname" to its argument.
 % See <https://ctan.net/macros/latex/contrib/hyperref/doc/nameref.pdf> for
 % details about "\@currentlabelname".
-\NewDocumentCommand{\SetCurrentLabelName}{m}{
+\NewDocumentCommand{\naproche@SetCurrentLabelName}{m}{
   \makeatletter
   \protected@edef\@currentlabelname{#1}\@currentlabelname
   \makeatother
 }
 
-% Define a command "\NewTopLevelSection" (followed by an optional "*" and with
-% two mandatory arguments <env> and <name>) which defines an environment
-% "<env>" or "<env>*" (with an optional argument <title>), depending on whether
-% \NewTopLevelSection" is followed by a "*" is or not, which do the following:
-% 1. Only applies to the environment "<env>": The counter "tlscounter"
+% Define a command "\naproche@NewTopLevelSection" (followed by an optional "*"
+% and with two mandatory arguments <env> and <name>) which defines an
+% environment "<env>" or "<env>*" (with an optional argument <title>), depending
+% on whether \naproche@NewTopLevelSection" is followed by a "*" is or not, which
+% do the following:
+% 1. Only applies to the environment "<env>": The counter "naproche@tlscounter"
 %    (referred to as <tls> in the following) is increased.
-% 2. A new paragraph is entered and if the Boolean variable "forthel" is "false"
-%    (i.e. if we are currently not in a "forthel" environment), a horizontal
-%    space of 0.5 em is inserted. (Inside a "forthel" environment this is not
-%    necessary since there all paragraphs are separated by 0.5 em anyway.)
+% 2. A new paragraph is entered and if the Boolean variable "naproche@forthel"
+%    is "false" (i.e. if we are currently not in a "forthel" environment), a
+%    horizontal space of 0.5 em is inserted. (Inside a "forthel" environment
+%    this is not necessary since there all paragraphs are separated by 0.5 em
+%    anyway.)
 % 4. In case of "<env>" the text "<name> <tls>." or "<name> <tls> (<title>)."
 %    (depending on whether <title> is given or not) is printed in boldface
 %    and without indentation.
@@ -199,16 +197,17 @@
 %    (depending on whether <title> is given or not) is printed in boldface
 %    and without indentation.
 % 5. The body of the environment is printed.
-% 6. A new paragraph is entered and if the Boolean variable "forthel" is "false"
-%    (i.e. if we are currently not in a "forthel" environment), a horizontal
-%    space of 0.5 em is inserted. (Cf. point 2.)
+% 6. A new paragraph is entered and if the Boolean variable "naproche@forthel"
+%    is "false" (i.e. if we are currently not in a "forthel" environment), a
+%    horizontal space of 0.5 em is inserted. (Cf. point 2.)
 %
-% Example: "\NewTopLevelSection{theorem}{Theorem}" creates a new 'numbered'
-%          top-level section environment "theorem" (with one optional argument
-%          for its title) which will be printed as "Theorem ...". Similarly,
-%          "\NewTopLevelSection*{theorem}{Theorem}" creates a new 'unnumbered'
-%          top-level section environment "theorem*" (with an optional argument
-%          for its title) which will be printed as "Theorem ...".
+% Example: "\naproche@NewTopLevelSection{theorem}{Theorem}" creates a new
+%          'numbered' top-level section environment "theorem" (with one optional
+%          argument for its title) which will be printed as "Theorem ...".
+%          Similarly, "\naproche@NewTopLevelSection*{theorem}{Theorem}" creates
+%          a new 'unnumbered' top-level section environment "theorem*" (with an
+%          optional argument for its title) which will be printed as
+%          "Theorem ...".
 %
 %          These new environments can the be used, e.g., as:
 %
@@ -227,89 +226,85 @@
 %       When assigning a label to a 'named' top-level section, i.e. one with an
 %       optional argument, it can later be referenced via "\nameref{...}", e.g.
 %       "\nameref{hausdorff}", provided the "hyperref" package was loaded.
-\NewDocumentCommand{\NewTopLevelSection}{s m m}{
+\NewDocumentCommand{\naproche@NewTopLevelSection}{s m m}{
   \NewDocumentEnvironment{#2\IfBooleanT{#1}{*}}{o}{
     \IfBooleanF{#1}{\refstepcounter{tlscounter}}
     \par
-    \ifbool{forthel}{}{\vspace{0.5em}}
+    \ifbool{naproche@forthel}{}{\vspace{0.5em}}
     \noindent\textbf{#3\IfBooleanF{#1}{~\thetlscounter}\IfValueT{##1}{~(##1)}.}%
-    \IfValueT{##1}{\SetCurrentLabelName{##1}}%
+    \IfValueT{##1}{\naproche@SetCurrentLabelName{##1}}%
   }{
     \par
-    \ifbool{forthel}{}{\vspace{0.5em}}
+    \ifbool{naproche@forthel}{}{\vspace{0.5em}}
   }
 }
 
-\ifpuzzle
+\ifbool{naproche@puzzle}{
+  % Define new environments
+  % - "signature"
+  % - "axiom"
+  % - "definition"
+  % - "theorem"
+  % - "lemma"
+  % - "proposition"
+  % - "corollary"
+  % - "convention"
+  % (which do not take any arguments) and starred versions of them which just
+  % print their bodies. In case of the "theorem", "lemma", "proposition" and
+  % "corollary" environments (and their starred variants), the text "Therefore:"
+  % is prepended to their bodies.
+  %
+  % Note: The "\unskip" commands are used to avoid additional whitespace before
+  %       and after the environments.
+  \NewDocumentEnvironment{signature}{}{\unskip}{\unskip}
+  \NewDocumentEnvironment{signature*}{}{\unskip}{\unskip}
+  \NewDocumentEnvironment{axiom}{}{\unskip}{\unskip}
+  \NewDocumentEnvironment{axiom*}{}{\unskip}{\unskip}
+  \NewDocumentEnvironment{definition}{}{\unskip}{\unskip}
+  \NewDocumentEnvironment{definition*}{}{\unskip}{\unskip}
+  \NewDocumentEnvironment{theorem}{}{\unskip Therefore:}{\unskip}
+  \NewDocumentEnvironment{theorem*}{}{\unskip Therefore:}{\unskip}
+  \NewDocumentEnvironment{lemma}{}{\unskip Therefore:}{\unskip}
+  \NewDocumentEnvironment{lemma*}{}{\unskip Therefore:}{\unskip}
+  \NewDocumentEnvironment{proposition}{}{\unskip Therefore:}{\unskip}
+  \NewDocumentEnvironment{proposition*}{}{\unskip Therefore:}{\unskip}
+  \NewDocumentEnvironment{corollary}{}{\unskip Therefore:}{\unskip}
+  \NewDocumentEnvironment{corollary*}{}{\unskip Therefore:}{\unskip}
+  \NewDocumentEnvironment{convention}{}{\unskip}{\unskip}
+  \NewDocumentEnvironment{convention*}{}{\unskip}{\unskip}
+}{
+  % Define two top-level environment "signature" and "signature*".
+  \naproche@NewTopLevelSection{signature}{Signature}
+  \naproche@NewTopLevelSection*{signature}{Signature}
 
-% Define new environments
-% - "signature"
-% - "axiom"
-% - "definition"
-% - "theorem"
-% - "lemma"
-% - "proposition"
-% - "corollary"
-% - "convention"
-% (which do not take any arguments) and starred versions of them which just
-% print their bodies. In case of the "theorem", "lemma", "proposition" and
-% "corollary" environments (and their starred variants), the text "Therefore:"
-% is prepended to their bodies.
-%
-% Note: The "\unskip" commands are used to avoid additional whitespace before
-%       and after the environments.
-\NewDocumentEnvironment{signature}{}{\unskip}{\unskip}
-\NewDocumentEnvironment{signature*}{}{\unskip}{\unskip}
-\NewDocumentEnvironment{axiom}{}{\unskip}{\unskip}
-\NewDocumentEnvironment{axiom*}{}{\unskip}{\unskip}
-\NewDocumentEnvironment{definition}{}{\unskip}{\unskip}
-\NewDocumentEnvironment{definition*}{}{\unskip}{\unskip}
-\NewDocumentEnvironment{theorem}{}{\unskip Therefore:}{\unskip}
-\NewDocumentEnvironment{theorem*}{}{\unskip Therefore:}{\unskip}
-\NewDocumentEnvironment{lemma}{}{\unskip Therefore:}{\unskip}
-\NewDocumentEnvironment{lemma*}{}{\unskip Therefore:}{\unskip}
-\NewDocumentEnvironment{proposition}{}{\unskip Therefore:}{\unskip}
-\NewDocumentEnvironment{proposition*}{}{\unskip Therefore:}{\unskip}
-\NewDocumentEnvironment{corollary}{}{\unskip Therefore:}{\unskip}
-\NewDocumentEnvironment{corollary*}{}{\unskip Therefore:}{\unskip}
-\NewDocumentEnvironment{convention}{}{\unskip}{\unskip}
-\NewDocumentEnvironment{convention*}{}{\unskip}{\unskip}
+  % Define two top-level environment "definition" and "definition*".
+  \naproche@NewTopLevelSection{definition}{Definition}
+  \naproche@NewTopLevelSection*{definition}{Definition}
 
-\else
+  % Define two top-level environment "axiom" and "axiom*".
+  \naproche@NewTopLevelSection{axiom}{Axiom}
+  \naproche@NewTopLevelSection*{axiom}{Axiom}
 
-% Define two top-level environment "signature" and "signature*".
-\NewTopLevelSection{signature}{Signature}
-\NewTopLevelSection*{signature}{Signature}
+  % Define two top-level environment "theorem" and "theorem*".
+  \naproche@NewTopLevelSection{theorem}{Theorem}
+  \naproche@NewTopLevelSection*{theorem}{Theorem}
 
-% Define two top-level environment "definition" and "definition*".
-\NewTopLevelSection{definition}{Definition}
-\NewTopLevelSection*{definition}{Definition}
+  % Define two top-level environment "lemma" and "lemma*".
+  \naproche@NewTopLevelSection{lemma}{Lemma}
+  \naproche@NewTopLevelSection*{lemma}{Lemma}
 
-% Define two top-level environment "axiom" and "axiom*".
-\NewTopLevelSection{axiom}{Axiom}
-\NewTopLevelSection*{axiom}{Axiom}
+  % Define two top-level environment "proposition" and "proposition*".
+  \naproche@NewTopLevelSection{proposition}{Proposition}
+  \naproche@NewTopLevelSection*{proposition}{Proposition}
 
-% Define two top-level environment "theorem" and "theorem*".
-\NewTopLevelSection{theorem}{Theorem}
-\NewTopLevelSection*{theorem}{Theorem}
+  % Define two top-level environment "corollary" and "corollary*".
+  \naproche@NewTopLevelSection{corollary}{Corollary}
+  \naproche@NewTopLevelSection*{corollary}{Corollary}
 
-% Define two top-level environment "lemma" and "lemma*".
-\NewTopLevelSection{lemma}{Lemma}
-\NewTopLevelSection*{lemma}{Lemma}
-
-% Define two top-level environment "proposition" and "proposition*".
-\NewTopLevelSection{proposition}{Proposition}
-\NewTopLevelSection*{proposition}{Proposition}
-
-% Define two top-level environment "corollary" and "corollary*".
-\NewTopLevelSection{corollary}{Corollary}
-\NewTopLevelSection*{corollary}{Corollary}
-
-% Define two top-level environment "convention" and "convention*".
-\NewTopLevelSection{convention}{Convention}
-\NewTopLevelSection*{convention}{Convention}
-
-\fi
+  % Define two top-level environment "convention" and "convention*".
+  \naproche@NewTopLevelSection{convention}{Convention}
+  \naproche@NewTopLevelSection*{convention}{Convention}
+}
 
 
 % Proof Environment
@@ -330,7 +325,7 @@
 %          \end{proof}
 \NewDocumentEnvironment{proof}{o}{
   \par
-  \ifbool{forthel}{}{\vspace{0.5em}}
+  \ifbool{naproche@forthel}{}{\vspace{0.5em}}
   \noindent\textit{Proof\IfValueT{#1}{~#1}.}%
 }
 {
