@@ -131,28 +131,15 @@
 % of "forthel" environments.
 \colorlet{naproche@forthelgray}{lightgray!30}
 
-% Define a new environment "naproche@forthel@puzzle" (without any arguments)
-% whith the following properties:
-% - It is highlighted with a "naproche@forthelgray" background.
-% - In this envoronment, paragraphs are not indented.
-\NewDocumentEnvironment{naproche@forthel@puzzle}{}{
-  \begin{mdframed}[backgroundcolor=naproche@forthelgray,linecolor=naproche@forthelgray]
-  \setbool{naproche@forthel}{true}
-  \setlength{\parindent}{0pt}
-}{
-  \end{mdframed}
-  \setbool{naproche@forthel}{false}
-}
-
-% Define a new environment "naproche@forthel@standard" (without any arguments)
-% whith the following properties:
+% Define a new environment "forthel" (without any arguments) whith the following
+% properties:
 % - It is highlighted with a "naproche@forthelgray" background.
 % - The Boolean variable "naproche@forthel" (not to be confused with the *environment*
 %   "forthel" is set to "true").
 % - In this envoronment, paragraphs are not indented.
 % - In this envoronment, the vertical spacing between two paragraphs is set to
-% - 0.5 em.
-\NewDocumentEnvironment{naproche@forthel@standard}{}{
+%   0.5 em.
+\NewDocumentEnvironment{forthel}{}{
   \begin{mdframed}[backgroundcolor=naproche@forthelgray,linecolor=naproche@forthelgray]
   \setbool{naproche@forthel}{true}
   \setlength{\parindent}{0pt}
@@ -160,15 +147,6 @@
 }{
   \end{mdframed}
   \setbool{naproche@forthel}{false}
-}
-
-% If "naproche@puzzle" is "true", define an environment "forthel" as the
-% environment "naproche@forthel@puzzle", otherwise as the environment
-% "naproche@forthel@standard".
-\ifbool{naproche@puzzle}{
-  \NewDocumentEnvironment{forthel}{}{\begin{naproche@forthel@puzzle}}{\end{naproche@forthel@puzzle}}
-}{
-  \NewDocumentEnvironment{forthel}{}{\begin{naproche@forthel@standard}}{\end{naproche@forthel@standard}}
 }
 
 
