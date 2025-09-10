@@ -210,10 +210,10 @@
 %       "\nameref{hausdorff}", provided the "hyperref" package was loaded.
 \NewDocumentCommand{\naproche@NewTLS@standard}{m m}{
   \NewDocumentEnvironment{#1}{o}{
-    \refstepcounter{tlscounter}
+    \refstepcounter{naproche@tlscounter}
     \par
     \ifbool{naproche@forthel}{}{\vspace{0.5em}}
-    \noindent\textbf{#2~\thetlscounter\IfValueT{##1}{~(##1)}.}%
+    \noindent\textbf{#2~\thenaproche@tlscounter\IfValueT{##1}{~(##1)}.}%
     \IfValueT{##1}{\naproche@SetCurrentLabelName{##1}}%
   }{
     \par
