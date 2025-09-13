@@ -1,0 +1,791 @@
+% \iffalse meta-comment
+%
+% Copyright (C) 2025 Marcel Schütz
+%
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3 of this license or (at your option) any later
+% version. The latest version of this license is in:
+%
+%     http://www.latex-project.org/lppl.txt
+%
+% and version 1.3c or later is part of all distributions of
+% LaTeX version 2008-05-04 or later.
+%
+% \fi
+% 
+% \iffalse
+%<*package>
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{naproche}[2025-09-05 v1.0.0 Basic LaTeX package for Naproche formalization]
+
+%</package>
+%
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage[columns=2]{idxlayout}
+\usepackage[english]{babel}
+\usepackage{xurl}
+\usepackage{listings}
+\usepackage{./naproche}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\begin{document}
+\DocInput{naproche.dtx}
+\end{document}
+%</driver>
+% \fi
+% 
+% \changes{v1.0.0}{2025-09-05}{Initial version}
+% \GetFileInfo{naproche.sty}
+% \DoNotIndex{\#,\$,\%,\&,\@,\\,\{,\},\^,\_,\~,\ }
+% \DoNotIndex{\begin,\end}
+% 
+% \title{The \textsf{naproche} package\thanks{This document
+%   corresponds to \textsf{naproche}~\fileversion, dated~\filedate.}}
+% \author{Marcel Schütz}
+%
+% \pagenumbering{roman}
+% 
+% \maketitle
+% 
+% \noindent This |naproche| package\footnote{\label{advanced-naproche-pkg}^^A
+%   There is another |naproche| package for more advanced usecases, shipped with
+%   \Naproche at \path{math/latex/lib/naproche.sty}
+% } provides markup for \Naproche formalizations written in
+% the \LaTeX{} dialect of ForTheL.
+% It is intended to be a ``beginner-friendly'' LaTeX package (i.e. one that can
+% be easily adapted to experiment with the typesetting it provides) to be used
+% for small Naproche formalizations that
+% \begin{itemize}
+%   \item do \emph{not} depend on libraries of \Naproche formalizations and
+%   \item are \emph{not} intended to be converted to interactive HTML.
+% \end{itemize}
+% For formalizations that require any of the above features, consider to use the
+% ``advanced'' |naproche| package (see footnote \ref{advanced-naproche-pkg})
+% instead.
+% 
+% \tableofcontents
+% 
+% 
+% \newpage
+% 
+% \setlength{\parskip}{5pt}
+% 
+% \pagenumbering{arabic}
+% 
+% \part{Documentation}
+% 
+% \section{Usage}\label{sec:usage}
+% 
+% To use the |naproche| package (without installing it), write
+%\begin{verbatim}
+%\usepackage{path/to/naproche}
+%\end{verbatim}
+% in the preamble of the |.ftl.tex| file of your \Naproche formalization, where
+% |path/to/naproche| is the path to the |.sty| file of this package.
+% See the |.ftl.tex| files in the \path{math/examples} directory for examples.
+% 
+% 
+% \section{Package Options}\label{sec:package-options}
+% 
+% \noindent
+% \DescribeMacro{puzzle}
+% This package provides two typesetting styles: A ``standard'' and a ``puzzle''
+% style, where -- as the name suggests -- the ``standard'' style is the default
+% one.
+% To use the ``puzzle'' style, provide the package option |puzzle|.
+% The ``standard'' style is used by all formalizations in the
+% \path{math/examples} directory; the ``puzzle'' style is used by, e.g., 
+% \path{math/examples/puzzles/agatha.ftl.tex} and
+% \path{math/examples/puzzles/dwarfs.ftl.tex}.
+% The following sections contain notes on how they differ from each other.
+% 
+% \noindent
+% \DescribeMacro{numberswithinsection}
+% \DescribeMacro{numberswithinsubsection}
+% If the option |numberswithinsection| or |numberswithinsubsection| is given,
+% the numbering of top-level sections (i.e. definitions, theorems, axioms etc.)
+% is reset at every new section or subsection, resp.
+% 
+% 
+% \section{Commands Required by ForTheL}\label{sec:commands-required-by-forthel}
+% 
+% The syntax of ForTheL specifies keywords that have the shape of \TeX{} macros.
+% This package loads certain \LaTeX{} packages that provide some of those macros
+% and provides its own definitions for the remaining ones:
+% 
+% \noindent
+% \DescribeMacro{\dom}
+% The domain of a map, rendered as ``$\dom$''.
+% 
+% \noindent
+% \DescribeMacro{\fun}
+% The $\lambda$-operator for locally defined maps, rendered as ``$\fun$''.
+% 
+% 
+% \section{The \Naproche Logo}\label{sec:the-naproche-logo}
+% 
+% \noindent
+% \DescribeMacro{\Naproche}
+% Prints the \Naproche logo, i.e. ``\Naproche''.
+% Note that it is \emph{not} required to append an empty pair of curly braces to
+% |\Naproche| to get its trailing whitespace right.
+% E.g. |\Naproche foo| will be rendered as ``\Naproche foo'' and not (as you
+% might expect) as ``\Naproche{}foo''.
+% 
+% 
+% \section{Comprehension Terms}\label{sec:comprehension-terms}
+% 
+% \noindent
+% \DescribeMacro{\class}
+% |\class{|\meta{lhs}\verb+|+\meta{rhs}|}|
+% 
+% \noindent
+% Prints a comprehension term: ``$\class{\meta{lhs}|\meta{rhs}}$''.
+% 
+% \noindent
+% \DescribeMacro{\classtext}
+% |\classtext|\marg{arg}
+% 
+% \noindent
+% When using the |\class| command to print a comprehension term it sometimes
+% happens that its right-hand side requires more space than is left in the
+% current line.
+% In this situation the right-hand side can be wrapped in the |\classtext|
+% command which behaves much like the |\text| command (i.e. leaves math
+% mode\footnote{^^A
+%   In most cases an overlong right-hand side of a comprehension term is
+%   due to a long piece of text anyway, and not due to a long formula.
+% }) but automatically insert linebreaks at appropriate positions. Thus, when
+% using the |\classtext| command, the containing |\class| command should only
+% be used in \emph{display} math mode.
+% For example,
+%\begin{verbatim}
+%\[
+%\class{n \in X | \classtext{$n$ is an odd prime number that is greater than
+%$5$ and divides every number that is contained in $Y$}}
+%\]
+%\end{verbatim}
+% is rendered as:
+% \[
+% \class{n \in X | \classtext{$n$ is an odd prime number that is greater than
+% $5$ and divides every number that is contained in $Y$}}
+% \]
+% 
+% 
+% \section{Printing Labels}\label{sec:printing-labels}
+% 
+% \noindent
+% \DescribeMacro{\printref}
+% |\printref|\marg{id}
+% 
+% \noindent
+% Prints the label \meta{id} of a top-level section verbatimly.
+% This can be usefull to print labels of top-level sections that are defined in
+% an imported file (and therefore not accessible for \LaTeX{}).
+% 
+% For example, assume that we have a file |foo.ftl.tex| which contains the
+% following theorem environment:
+%\begin{verbatim}
+%\begin{forthel}
+%  \begin{theorem}\label{cantor}
+%    There exists no surjection from $X$ to the powerset of $X$.
+%  \end{theorem}
+%\end{forthel}
+%\end{verbatim}
+% Moreover, assume that we have another file \path{bar.ftl.tex} which imports
+% \path{foo.ftl.tex} (e.g. via |[readtex \path{foo.ftl.tex}]|) and in which we
+% want to reference the above theorem. Then \LaTeX{} would complain if we would
+% try to use, e.g.,
+%\begin{verbatim}
+%$|X|$ is strictly smaller than $|2^{X}|$ (by \ref{cantor}).
+%\end{verbatim}
+% in a ForTheL proof since the label |cantor| has not been defined in the file
+% \path{bar.ftl.tex}.
+% To reference that theorem anyway we can use
+%\begin{verbatim}
+%$|X|$ is strictly smaller than $|2^{X}|$ (by \printref{cantor}).
+%\end{verbatim}
+% instead, which is rendered as \DeleteShortVerb{\|}``$|X|$ is strictly smaller
+% than $|2^{X}|$ (by \printref{cantor}).''\MakeShortVerb{\|}.
+% 
+% 
+% \section{The ForTheL Environment}\label{sec:the-forthel-env}
+% 
+% \noindent
+% \DescribeEnv{forthel}
+% Content wrapped in a |forthel| environment is recognized by \Naproche which
+% means that \Naproche tries to check whether it is a formally correct piece of
+% mathematical text.
+% 
+% It is displayed with a gray background to distinguish its \emph{formal}
+% content from the other \emph{informal} parts of the document it is contained
+% in.
+% Moreover, paragraphs within a |forthel| environment are not indented and are
+% separated vertically from each other by $0.5$ em.
+% 
+% 
+% \section{Top-level Section Environments}\label{sec:top-level-sections-envs}
+% 
+% \noindent
+% \DescribeEnv{signature}
+% \DescribeEnv{signature*}
+% \DescribeEnv{axiom}
+% \DescribeEnv{axiom*}
+% \DescribeEnv{definition}
+% \DescribeEnv{definition*}
+% \DescribeEnv{theorem}
+% \DescribeEnv{theorem*}
+% \DescribeEnv{lemma}
+% \DescribeEnv{lemma*}
+% \DescribeEnv{proposition}
+% \DescribeEnv{proposition*}
+% \DescribeEnv{corollary}
+% \DescribeEnv{corollary*}
+% \DescribeEnv{convention}
+% \DescribeEnv{convention*}
+% Top-level sections, i.e. signature extensions, axioms, definitions, assertions
+% or conventions, can be typset via the respective environments listed in
+% figure \ref{tab:top-level-sections}.
+% \DeleteShortVerb{\|}
+% \begin{figure}[h]
+%   \begin{center}
+%   \begin{tabular}{|l|l||l|}
+%     \hline
+%     Top-Level Section   & Environments          & Name in the ``standard'' typesetting  \\\hline\hline
+%     signature extension & \verb|signature|      & Signature                             \\
+%                         & \verb|signature*|     &                                       \\\hline
+%     axiom               & \verb|axiom|          & Axiom                                 \\
+%                         & \verb|axiom*|         &                                       \\\hline
+%     definition          & \verb|definition|     & Definition                            \\
+%                         & \verb|definition*|    &                                       \\\hline
+%     assertion           & \verb|theorem|        & Theorem                               \\
+%                         & \verb|theorem*|       &                                       \\
+%                         & \verb|lemma|          & Lemma                                 \\
+%                         & \verb|lemma*|         &                                       \\
+%                         & \verb|proposition|    & Proposition                           \\
+%                         & \verb|proposition*|   &                                       \\
+%                         & \verb|corollary|      & Corollary                             \\
+%                         & \verb|corollary*|     &                                       \\\hline    
+%     convention          & \verb|convention|     & Convention                            \\
+%                         & \verb|convention*|    &                                       \\\hline
+%   \end{tabular}
+%   \end{center}
+%   \caption{Top-Level Section Environments}\label{tab:top-level-sections}
+% \end{figure}
+% \MakeShortVerb{\|}\makeatletter
+% 
+% 
+% \subsection{Top-Level Sections in the ``Standard'' Typesetting}
+% 
+% In the ``standard'' typesetting, top-level section environments take an
+% optional argument \meta{title} which is intended to contain the title of the
+% respective top-level section.
+% They are rendered as ``theorem-like'' sections, whose heading consists of the
+% name of the top-level section (see figure \ref{tab:top-level-sections}),
+% followed by an automatically generated number (only in the unstarred
+% variants), the title (if given via \meta{title}) and a punctuation mark to
+% separate the heading from the body of the section.
+% Unstarred top-level section environments or top-level section environments
+% with a \meta{title} argument may be annotated with |\label|\marg{id} which
+% allows to reference them via |\ref| or |\nameref|.
+% For instance,
+%\begin{verbatim}
+%\begin{theorem}[Cantor's Theorem]\label{cantor}
+%  There is no surjection from $X$ to the powerset of $X$.
+%\end{theorem}
+%\end{verbatim}
+% is rendered as:
+% \begin{theorem}[Cantor's Theorem]\label{cantor}
+%  There is no surjection from $X$ to the powerset of $X$.
+% \end{theorem}
+% To suppress the numbering, we can replace |theorem| by |theorem*| which
+% causes the environment to be rendered as:
+% \begin{theorem*}[Cantor's Theorem]
+%  There is no surjection from $X$ to the powerset of $X$.
+% \end{theorem*}
+% Since in the first case the environment is both starred and has a label, we
+% can reference it via |\ref|.
+% For example,
+%\begin{verbatim}
+%$|X|$ is strictly smaller than $|2^{X}|$ (by \ref{cantor}).
+%\end{verbatim}
+% is rendered as \DeleteShortVerb{\|}``$|X|$ is strictly smaller than $|2^{X}|$
+% (by \ref{cantor}).''\MakeShortVerb{\|}.
+% Alternatively, since it also has a title, we can reference it via |\nameref|.
+% For example,
+%\begin{verbatim}
+$|X|$ is strictly smaller than $|2^{X}|$ (by \nameref{cantor}).
+%\end{verbatim}
+% is rendered as \DeleteShortVerb{\|}``$|X|$ is strictly smaller than $|2^{X}|$
+% (by \nameref{cantor}).''\MakeShortVerb{\|} instead.
+% 
+% 
+% \subsection{Top-Level Sections in the ``Puzzle'' Typesetting}
+% 
+% In the ``puzzle'' typesetting, top-level section environments take no argument
+% and just print their body verbatimly.
+% In case of an assertion, an additional ``Therefore:'' is prepended to the
+% body.
+% Note that in the ``puzzle'' typesetting, using the starred or the unstarred
+% variant of a top-level section environment has the same effect.
+% 
+% For instance\footnote{^^A
+%   Taken from \path{math/examples/puzzles/dwarfs.ftl.tex}.
+% },
+%\begin{verbatim}
+%\begin{axiom}
+%  If some dwarf $D$ names the color of the hat of $D$ then all dwarfs
+%  get released.
+%\end{axiom}
+%\begin{axiom}
+%  Sigbert names the opposite color of the color of the hat of Tormund.
+%\end{axiom}
+%\begin{axiom}
+%  Tormund names the color of the hat of Sigbert.
+%\end{axiom}
+%\begin{theorem}
+%  All dwarfs get released.
+%\end{theorem}
+%\end{verbatim}
+% is rendered as:
+% 
+% \noindent ``If some dwarf $D$ names the color of the hat of $D$ then all dwarfs get released.
+% Sigbert names the opposite color of the color of the hat of Tormund.
+% Tormund names the color of the hat of Sigbert.
+% Therefore: All dwarfs get released.''
+% 
+% 
+% \section{The Proof Environment}\label{sec:the-proof-env}
+% 
+% \noindent
+% \DescribeEnv{proof}
+% Proofs can be typeset via the |proof| environment which takes an optional
+% argument \meta{method}.
+% It is rendered as a ``proof-like'' section whose heading consists of the
+% string ``Proof'', followed by \meta{method} (if given) and a punctuation mark
+% to separate the heading from the body of the section.
+% Moreover, a QED symbol is added to the end of the body.
+% 
+% For example,
+%\begin{verbatim}
+%\begin{proof}[by induction]
+%  Let $n$ be a natural number.
+%  Then $n + 1 = 1 + n$.
+%  Hence ...
+%\end{proof}
+%\end{verbatim}
+% is rendered as:
+% \begin{proof}[by induction]
+%   Let $n$ be a natural number.
+%   Then $n + 1 = 1 + n$.
+%   Hence \dots
+% \end{proof}
+% 
+% 
+% \newpage
+% 
+% \part{Implementation}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+\RequirePackage{amsfonts}
+\RequirePackage{xspace}
+\RequirePackage{xcolor}
+\RequirePackage{mdframed}
+\RequirePackage{linegoal}
+\RequirePackage{amsmath}
+\RequirePackage{url}
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% 
+% \section{Preliminary Setup}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% Preliminary Setup
+%% =================
+
+%</package>
+%    \end{macrocode}
+% \fi
+%    
+% \begin{macro}{naproche@forthel}
+% A Boolean variable that tracks iff we are currently in a |forthel|
+% environment.
+%    \begin{macrocode}
+\newbool{naproche@forthel}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{naproche@puzzle}
+% A Boolean variable whose value determines if the ``puzzle'' typesetting is to
+% be used instead of the ``standard'' typesetting.
+%    \begin{macrocode}
+\newbool{naproche@puzzle}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{naproche@tlscounter}
+% A counter for numbered top-level section environments.
+%    \begin{macrocode}
+\newcounter{naproche@tlscounter}
+%    \end{macrocode}
+% \end{macro}
+% 
+% 
+% \section{Options}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% Package Options
+%% ===============
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{macro}{puzzle}
+% See section \ref{sec:package-options}
+%    \begin{macrocode}
+\DeclareOption{puzzle}{
+  \setbool{naproche@puzzle}{true}
+}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{numberswithinsection}
+% See section \ref{sec:package-options}
+%    \begin{macrocode}
+\DeclareOption{numberswithinsection}{
+  \counterwithin{naproche@tlscounter}{section}
+}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{numberswithinsubsection}
+% See section \ref{sec:package-options}
+%    \begin{macrocode}
+\DeclareOption{numberswithinsubsection}{
+  \counterwithin{naproche@tlscounter}{subsection}
+}
+%    \end{macrocode}
+% \end{macro}
+% 
+% Throw a warning for any unknown option.
+%    \begin{macrocode}
+\DeclareOption*{
+  \PackageWarning{naproche}{Unknown option `\CurrentOption'}
+}
+%    \end{macrocode}
+% 
+% Process the options.
+%    \begin{macrocode}
+\ProcessOptions\relax
+%    \end{macrocode}
+% 
+% 
+% \section{Commands Required by ForTheL}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% Commands Required by ForTheL
+%% ============================
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{macro}{\dom}
+% See section \ref{sec:commands-required-by-forthel}
+%    \begin{macrocode}
+\NewDocumentCommand{\dom}{}{\textrm{dom}}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\fun}
+% See section \ref{sec:commands-required-by-forthel}
+%    \begin{macrocode}
+\NewDocumentCommand{\fun}{}{\mathrm{\lambda}}
+%    \end{macrocode}
+% \end{macro}
+% 
+% 
+% \section{The \Naproche Logo}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% The Naproche Logo
+%% =================
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{macro}{\Naproche}
+% See section \ref{sec:the-naproche-logo}
+%    \begin{macrocode}
+\NewDocumentCommand{\Naproche}{}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
+%    \end{macrocode}
+% \end{macro}
+%
+% 
+% \section{Comprehension Terms}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% Comprehension Terms
+%% ===================
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{macro}{\naproche@lproj,\naproche@rproj}
+% Left and right projection.
+%    \begin{macrocode}
+\NewDocumentCommand{\naproche@lproj}{m m}{#1}
+\NewDocumentCommand{\naproche@rproj}{m m}{#2}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\class}
+% See section \ref{sec:comprehension-terms}
+%    \begin{macrocode}
+\NewDocumentCommand{\class}{>{\SplitArgument{1}{|}} m}{
+  \left\{\naproche@lproj#1~\middle\vert~\naproche@rproj#1\right\}
+}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\classtext}
+% See section \ref{sec:comprehension-terms}
+%    \begin{macrocode}
+\NewDocumentCommand{\classtext}{m}{\parbox{\linegoal}{#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% 
+% \section{Printing Labels}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% Printing Labels
+%% ===============
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{macro}{\printref}
+% See section \ref{sec:printing-labels}
+%    \begin{macrocode}
+\NewDocumentCommand{\printref}{m}{\path{#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% 
+% \section{The ForTheL Environment}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% The ForTheL Environment
+%% =======================
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{macro}{naproche@forthelgray}
+% Background color of |forthel| environments.
+%    \begin{macrocode}
+\colorlet{naproche@forthelgray}{lightgray!30}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{environment}{forthel}
+% See section \ref{sec:the-forthel-env}.
+%    \begin{macrocode}
+\NewDocumentEnvironment{forthel}{}{
+  \begin{mdframed}[backgroundcolor=naproche@forthelgray,linecolor=naproche@forthelgray]
+  \setbool{naproche@forthel}{true}
+  \setlength{\parindent}{0pt}
+  \setlength{\parskip}{0.5em}
+}{
+  \end{mdframed}
+  \setbool{naproche@forthel}{false}
+}
+%    \end{macrocode}
+% \end{environment}
+%
+% 
+% \section{Top-level Section Environments}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% Top-level Section Environments
+%% ==============================
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{macro}{\naproche@SetCurrentLabelName}
+% Redefine the |\@currentlabelname| macro.
+% (See \url{https://ctan.net/macros/latex/contrib/hyperref/doc/nameref.pdf})
+% for details.
+%    \begin{macrocode}
+\NewDocumentCommand{\naproche@SetCurrentLabelName}{m}{
+  \protected@edef\@currentlabelname{#1}
+}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\naproche@NewTLS@standard}
+% |\naproche@NewTLS@standard|\marg{env}\marg{name} defines two environments
+% \meta{env} and \meta{env}|*| (which both take an optional argument
+% \meta{title}) which do the following:
+% \begin{enumerate}
+%   \item Only applies to the environment \meta{env}: The counter
+%   |naproche@tlscounter| (whose value is referred to as \meta{tls} in the
+%   following) is increased.
+%   \item\label{step@ii} Enter a new paragraph and if |naproche@forthel| is
+%   |false| (i.e. if we are currently not in a |forthel| environment), insert a
+%   horizontal space of 0.5 em. (Inside a |forthel| environment this is not
+%   necessary since there all paragraphs are separated by 0.5 em anyway.)
+%   \item In case of \meta{env} print ``\textbf{\meta{name} \meta{tls}.}'' or,
+%   if \meta{title} is given, ``\textbf{\meta{name} \meta{tls}
+%   (\meta{title}).}'' without indentation.
+%   In case of \meta{env}|*| print ``\textbf{\meta{name}.}'' or, if \meta{title}
+%   is given, ``\textbf{\meta{name} (\meta{title}).}'' without indentation.
+%   \item Print the body of the environment.
+%   \item Enter a new paragraph and if |naproche@forthel| is |false| (i.e. if we
+%   are currently not in a |forthel| environment), a horizontal space of 0.5 em
+%   is inserted (cf. step \ref{step@ii}).
+% \end{enumerate}
+%    \begin{macrocode}
+\NewDocumentCommand{\naproche@NewTLS@standard}{m m}{
+  \NewDocumentEnvironment{#1}{o}{
+    \refstepcounter{naproche@tlscounter}
+    \par
+    \ifbool{naproche@forthel}{}{\vspace{0.5em}}
+    \noindent\textbf{#2~\thenaproche@tlscounter\IfValueT{##1}{~(##1)}.}%
+    \IfValueT{##1}{\naproche@SetCurrentLabelName{##1}}%
+  }{
+    \par
+    \ifbool{naproche@forthel}{}{\vspace{0.5em}}
+  }
+  \NewDocumentEnvironment{#1*}{o}{
+    \par
+    \ifbool{naproche@forthel}{}{\vspace{0.5em}}
+    \noindent\textbf{#2\IfValueT{##1}{~(##1)}.}%
+    \IfValueT{##1}{\naproche@SetCurrentLabelName{##1}}%
+  }{
+    \par
+    \ifbool{naproche@forthel}{}{\vspace{0.5em}}
+  }
+}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\naproche@NewTLS@puzzle}
+% |\naproche@NewTLS@puzzle|\marg{env}\oarg{prefix} defines two environments
+% \meta{env} and \meta{env}|*| (which both take an optional argument) which just
+% print their bodies. In case the optional argument \meta{prefix} is given, it
+% is prepended to the body.
+%    \begin{macrocode}
+\NewDocumentCommand{\naproche@NewTLS@puzzle}{m o}{
+  \NewDocumentEnvironment{#1}{}{\unskip\IfValueT{#2}{#2}}{\unskip}
+  \NewDocumentEnvironment{#1*}{}{\unskip\IfValueT{#2}{#2}}{\unskip}
+}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{environment}{signature,axiom,definition,theorem,lemma,proposition,corollary,convention}
+% Top-level section environments (see section
+% \ref{sec:top-level-sections-envs}). If |naproche@puzzle| is |true|, define
+% them via |\naproche@NewTLS@puzzle|, otherwise via |\naproche@NewTLS@standard|.
+%    \begin{macrocode}
+\ifbool{naproche@puzzle}{
+  \naproche@NewTLS@puzzle{signature}
+  \naproche@NewTLS@puzzle{axiom}
+  \naproche@NewTLS@puzzle{definition}
+  \naproche@NewTLS@puzzle{theorem}[Therefore:]
+  \naproche@NewTLS@puzzle{lemma}[Therefore:]
+  \naproche@NewTLS@puzzle{proposition}[Therefore:]
+  \naproche@NewTLS@puzzle{corollary}[Therefore:]
+  \naproche@NewTLS@puzzle{convention}
+}{
+  \naproche@NewTLS@standard{signature}{Signature}
+  \naproche@NewTLS@standard{definition}{Definition}
+  \naproche@NewTLS@standard{axiom}{Axiom}
+  \naproche@NewTLS@standard{theorem}{Theorem}
+  \naproche@NewTLS@standard{lemma}{Lemma}
+  \naproche@NewTLS@standard{proposition}{Proposition}
+  \naproche@NewTLS@standard{corollary}{Corollary}
+  \naproche@NewTLS@standard{convention}{Convention}
+}
+%    \end{macrocode}
+% \end{environment}
+%
+% 
+% \section{The Proof Environment}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% The Proof Environment
+%% =====================
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{environment}{proof}
+% See section \ref{sec:the-proof-env}.
+%    \begin{macrocode}
+\NewDocumentEnvironment{proof}{o}{
+  \par
+  \ifbool{naproche@forthel}{}{\vspace{0.5em}}
+  \noindent\textit{Proof\IfValueT{#1}{~#1}.}%
+}
+{
+  \hfill\ensuremath{\square}
+  \par
+}
+%    \end{macrocode}
+% \end{environment}
+% 
+% 
+% \newpage
+% 
+% \PrintChanges
+% 
+% 
+% \newpage
+% 
+% \PrintIndex
+% 
