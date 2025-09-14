@@ -6,7 +6,7 @@
 - `naproche.ins`: Script to generate the style file `naproche.sty` (see below)
 - `naproche.pdf`: Documentation of the `naproche` package (automatically
   generated from `naproche.dtx`, see below)
-- `naproche.pdf`: Style file (automatically generated from `naproche.dtx`, see
+- `naproche.sty`: Style file (automatically generated from `naproche.dtx`, see
   below)
 
 To experiment with the typesetting provided by this package, you can of course
