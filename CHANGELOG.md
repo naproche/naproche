@@ -25,7 +25,18 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 --------------------------------------------------------------------------------
 
-## Current development version
+## Current development version (for Isabelle 2025-1)
+
+### Changes on the LaTeX Setup
+
+* `math/examples/lang/naproche.sty` was replaced by a properly documented
+  LaTeX package in the `dtx` format at `math/examples/latex/`. See
+  `math/examples/latex/README.md` for details.
+
+
+--------------------------------------------------------------------------------
+
+## naproche-20250328 (Isabelle_Naproche-20250328)
 
 ### Changes on the parser
 
