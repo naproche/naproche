@@ -1,7 +1,12 @@
 \documentclass[11pt]{article}
-\usepackage{lang/naproche}
+\usepackage{latex/naproche}
+\usepackage[english]{babel}
 \usepackage{ifthen}
 \usepackage{xstring}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true
+}
 
 \title{A Natural Language Formalization of Perfectoid Rings in 
 \Naproche{}}
@@ -205,7 +210,7 @@ Let $u,v,w$ denote mathematical objects.
 \end{definition}
 Let the empty set denote $\emptyset$.
 
-\begin{axiom}[title = Set Existence] $\emptyset$ is a set. \end{axiom}
+\begin{axiom}[Set Existence] $\emptyset$ is a set. \end{axiom}
 
 \begin{definition}
 $\sing{u} = \{v | v = u\}$.
@@ -218,7 +223,7 @@ $\unp{u}{v} = \{w | w = u$ or $w = v\}$.
 \end{definition}
 Let the unordered pair of $u$ and $v$ denote $\unp{u}{v}$.
 
-\begin{axiom}[title = Pairs]
+\begin{axiom}[Pairs]
 $\unp{u}{v}$ is a set.
 \end{axiom}
 
@@ -233,7 +238,7 @@ $\bigcup Z = \{x | x \in z$ for some $z \in Z\}$.
 \end{definition}
 Let the union of $Z$ denote $\bigcup Z$.
 
-\begin{axiom}[title = Union] 
+\begin{axiom}[Union] 
 Let $Z$ be a set such that every element of $Z$ is a set.
 Then $\bigcup Z$ is a set.
 \end{axiom}
@@ -244,11 +249,11 @@ that every element of $X$ is an element of $C$.
 
 Let $X \subseteq C$ stand for $X$ is a subset of $C$. 
 
-\begin{axiom}[title = Powerset] Let $X$ be a set. Let $Y$ be a class such that
+\begin{axiom}[Powerset] Let $X$ be a set. Let $Y$ be a class such that
 every element of $Y$ is a subset of $X$. Then $Y$ is a set.
 \end{axiom}
 
-\begin{axiom}[title = Separation]
+\begin{axiom}[Separation]
 Let $X$ be a set. Let $Y$ be a class such that every element
 of $Y$ is an element of $X$.
 Then $Y$ is a set.
@@ -274,7 +279,7 @@ Assume that $F$ is a map and $\dom(F)$ is a set.
 Then $F$ is a function.
 \end{axiom}
 
-\begin{axiom}[title = Replacement]
+\begin{axiom}[Replacement]
 Assume that $F$ is a map and $X$ is a set such that $X \subseteq \dom(F)$.
 Then there is a set $Y$ such that $Y = \{F(x) \mid x \in X\}$.
 \end{axiom}
@@ -356,7 +361,7 @@ Let $n,m,k,l,i,j$ denote natural numbers.
 $\mathbb{N}$ is the collection of natural numbers.
 \end{definition}
 
-\begin{axiom}[title = Axiom of Infinity]
+\begin{axiom}[Axiom of Infinity]
 $\mathbb{N}$ is a set.
 \end{axiom}
 
@@ -575,7 +580,7 @@ Let $m$ is inductively smaller than $n$ stand for $m \prec n$.
 \begin{lemma}
 For every natural number $n$: $n = 0$ or $1 \leq n$.
 \end{lemma}
-\begin{proof}[method = induction]
+\begin{proof}[by induction]
 Let $n$ be a natural number.
 Case $n = 0$. Trivial.
 
@@ -668,7 +673,7 @@ Let $n$ is odd stand for $n$ is not even.
 \begin{lemma}
 For all natural numbers $n$ $n$ is even or $n = (2 * m) + 1$ for some $m$.
 \end{lemma}
-\begin{proof}[method = induction]
+\begin{proof}[by induction]
 Let $n$ be a natural number.
 
 Case $n = 0$. Trivial.
@@ -714,7 +719,7 @@ Every even prime number is equal to $2$.
 \begin{lemma}
 Every nontrivial $n$ has a prime divisor.
 \end{lemma}
-\begin{proof}[method = induction]
+\begin{proof}[by induction]
 Let $n$ be a nontrivial natural number.
 Assume that $n$ is not prime.
 Take a divisor $m$ of $n$ such that $m \neq 1$ and $m \neq n$.
@@ -748,7 +753,7 @@ For all nonzero natural numbers $n,a,b$
 if $n | a * b$ and $n$ and $a$ are coprime then $n$ divides $b$.
 \end{lemma}
 
-\begin{proof}[method = induction on $a * b$]
+\begin{proof}[by induction on $a * b$]
 
 Let $n,a,b$ be nonzero natural numbers such that $n | a * b$ and $n$ and $a$ are coprime.
 Take a natural number $q$ such that $n * q = a * b$.
@@ -787,7 +792,7 @@ $a * (n * r) = n * (a * r) = n * q = a * b$.
 Then $n * r = b$ and $n$ divides $b$.
 \end{proof}
 
-\begin{theorem}[title = Euclids Lemma]
+\begin{theorem}[Euclids Lemma]
 Let $p$ be a prime number and $p | m * n$. Then $p | m$ or $p | n$.
 \end{theorem}
 
@@ -829,7 +834,7 @@ Then $\fac{n} = n * \fac{m}$.
 Let $p$ be a prime number.
 For all $k$ if $k < p$ then $p$ does not divide $\fac{k}$.
 \end{lemma}
-\begin{proof}[method = induction on $k$]
+\begin{proof}[by induction on $k$]
 Let $k$ be a natural number.
 Case $k = 0$. Trivial.
 Let $k < p$.
@@ -858,7 +863,7 @@ $\cho{n+1}{i} = \cho{n}{i} + \cho{n}{i-1}$.
 all natural numbers $i$
 if $i \geq n + 1$ then $\cho{n}{i} = 0$.
 \end{theorem}
-\begin{proof}[method = induction on n]
+\begin{proof}[by induction on n]
 Let $n$ be a natural number.
 Case $n = 0$. Trivial.
 
@@ -871,7 +876,7 @@ Then $\cho{n}{i} = \cho{n'}{i} + \cho{n'}{i-1} = 0 + 0 = 0$.
 \begin{theorem} For all $n$
 $\cho{n}{n} = 1$.
 \end{theorem}
-\begin{proof}[method = induction]
+\begin{proof}[by induction]
 Let $n$ be a natural number.
 Case $n = 0$. Trivial.
 
@@ -894,7 +899,7 @@ such that  $0 \leq i \leq n$
 $$\fac{n} = \cho{n}{i} * (\fac{i} * \fac{(n-i)}).$$
 \end{lemma}
 
-\begin{proof}[method = induction on $n$]
+\begin{proof}[by induction on $n$]
 Let $n$ be a natural number.
 Let $i$ be a natural number such that $0 \leq i \leq n$.
 
@@ -1166,7 +1171,8 @@ Let $G$ denote a group.
 
 \begin{signature} Let $x \in G$. $-^{G} x$ is an element of $G$. \end{signature}
 
-\begin{axiom}[id = Associativity, title = Associativity] $(x +^{G} y) +^{G} z = x +^{G} (y +^{G} z)$ for all $x,y,z \in G$.
+\begin{axiom}[Associativity]\label{Associativity}
+   $(x +^{G} y) +^{G} z = x +^{G} (y +^{G} z)$ for all $x,y,z \in G$.
 \end{axiom} 
 \begin{axiom} $x +^{G} 0^{G} = x$ for all $x \in G$.
 \end{axiom}
@@ -1322,10 +1328,10 @@ for all $x,y,z \in R$.
 \end{axiom} 
 \begin{axiom} $x \cdot^{R} 1^{R} = x$ for all $x \in R$.
 \end{axiom}
-\begin{axiom}[title = Commutativity]
+\begin{axiom}[Commutativity]
 $x \cdot^{R} y = y \cdot^{R} x$ for all $x,y \in R$.
 \end{axiom}
-\begin{axiom}[title = Distributivity]  Let $x,y,z \in R$.
+\begin{axiom}[Distributivity]  Let $x,y,z \in R$.
 $(x +^{R} y) \cdot^{R} z = (x \cdot^{R} z) +^{R} (y \cdot^{R} z)$.
 \end{axiom}
 \end{forthel}
@@ -1471,7 +1477,7 @@ Let $B \subseteq R$. Then
 $B^{n,R,subset}$ is a subgroup of $R$ 
 where $n$ is a natural number and $n > 1$.
 \end{lemma}
-\begin{proof}[method = induction on $n$]
+\begin{proof}[by induction on $n$]
 
 Let $n$ be a natural number.
 
@@ -1657,7 +1663,7 @@ $ (((x -^{R} x') \cdot^{R} y) +^{R} (x' \cdot^{R} y)) -^{R} (x' \cdot^{R} y')$
 
 $ = ((x -^{R} x') \cdot^{R} y) +^{R} ((x' \cdot^{R} y) -^{R} (x' \cdot^{R} y'))$
 
-(by Associativity).
+(by \nameref{Associativity}).
 
 $(x \cdot^{R} y) -^{R} (x' \cdot^{R} y') = $
 
@@ -1737,7 +1743,7 @@ $1^{[R]} = 1^{R}$.
 \begin{lemma}
 Let $S$ be a subring of $R$. Then $n^{[R]} \in S$ for all $n$.
 \end{lemma}
-\begin{proof}[method = induction]
+\begin{proof}[by induction]
 Let $n$ be a natural number.
 
 Case $n = 0$. Trivial.
@@ -1749,7 +1755,7 @@ Take $m = n - 1$. Then $n^{[R]} = m^{[R]} +^{R} 1^{R} \in S$.
 For all $n$ we have
 $(m + n)^{[R]} = m^{[R]} +^{R} n^{[R]}$.
 \end{lemma}
-\begin{proof}[method = induction]
+\begin{proof}[by induction]
 Let $n$ be a natural number.
 
 Case $n = 0$. Trivial.
@@ -1767,7 +1773,7 @@ m^{[R]} +^{R} n^{[R]}$.
 For all $n$ we have
 $(m * n)^{[R]} = m^{[R]} \cdot^{R} n^{[R]}$.
 \end{lemma}
-\begin{proof}[method = induction]
+\begin{proof}[by induction]
 Let $n$ be a natural number.
 
 Case $n = 0$. Trivial.
@@ -1853,7 +1859,7 @@ and
 
 (if $n$ is odd then $(-^{R}x)^{n,R} = -^{R}(x^{n,R})$).
 \end{lemma}
-\begin{proof}[method = induction]
+\begin{proof}[by induction]
 Let $n$ be a natural number.
 
 (1) Case $n = 0$. Trivial.
@@ -1879,7 +1885,7 @@ End.
 \end{proof}
 
 \begin{lemma} For all natural numbers $n$ we have $1^{R}^{n,R} = 1^{R}$. \end{lemma}
-\begin{proof}[method = induction on $n$]
+\begin{proof}[by induction on $n$]
 \end{proof}
 
 \begin{lemma} Let $n$ be a natural numbers. Then $(-^{R} 1^{R})^{n,R} = 1^{R}$
@@ -1893,7 +1899,7 @@ For all natural numbers $n$
 we have
 $x^{m,R} \cdot^{R} x^{n,R} = x^{m + n,R}$.
 \end{lemma}
-\begin{proof}[method = induction on $n$]
+\begin{proof}[by induction on $n$]
 Let $n$ be a natural number.
 
 CASE $n = 0$. Trivial.
@@ -1919,7 +1925,7 @@ For all natural numbers $n$
 we have
 $(x^{m,R})^{n,R} = x^{m * n,R}$.
 \end{lemma}
-\begin{proof}[method = induction on $n$]
+\begin{proof}[by induction on $n$]
 Let $n$ be a natural number.
 
 CASE $n = 0$. Trivial.
@@ -1934,7 +1940,7 @@ $(x^{m,R})^{n,R} =
 $n$ we have
 $(x \cdot^{R} y)^{n,R} = (x^{n,R} \cdot^{R} y^{n,R})$.
 \end{lemma}
-\begin{proof}[method = induction on $n$]
+\begin{proof}[by induction on $n$]
 Let $n$ be a natural number.
 
 CASE $n = 0$. Trivial.
@@ -2094,7 +2100,7 @@ Then
 $$\binsum{0}{m}{x}{y}{R} = x^{m,R}.$$
 \end{axiom}
 
-\begin{axiom}[id = Summation recursion, title = Summation recursion]
+\begin{axiom}[Summation recursion]\label{Summation_recursion}
 Let $1 \leq k \leq m$ and $x,y \in R$. 
 Then 
 
@@ -2117,7 +2123,7 @@ $(\binsum{m}{n+1}{x}{y}{R}) +^{R}
 (\cho{n}{m}^{[R]} \cdot^{R} (x^{n-m,R} \cdot^{R} y^{m+1,R})).$
 \end{lemma}
 
-\begin{proof}[method = induction]
+\begin{proof}[by induction]
 Let $m$ be a natural number such that $m \leq n$.
 
 Case $m = 0$. 
@@ -2263,7 +2269,7 @@ This leads to the standard binomial formula:
 Let $x,y \in R$. For all natural numbers $n$ we have
 $$(x +^{R} y)^{n,R} = \binsum{n}{n}{x}{y}{R}.$$
 \end{theorem}
-\begin{proof}[method = induction]
+\begin{proof}[by induction]
 Let $n$ be a natural number.
 
 Case $n = 0$. Trivial.
@@ -2285,7 +2291,7 @@ $(\binsum{n-1}{n}{x}{y}{R}) +^{R} (\cho{n}{n}^{[R]} \cdot^{R} (x^{n-n,R} \cdot^{
 
 $(\binsum{n-1}{n}{x}{y}{R}) +^{R} (\cho{n}{n}^{[R]} \cdot^{R} (x^{n-n,R} \cdot^{R} y^{n,R})) =$
 
-$\binsum{n}{n}{x}{y}{R}$ (by summation recursion).
+$\binsum{n}{n}{x}{y}{R}$ (by \nameref{summation_recursion}).
 
 [timelimit 3]
 
@@ -2306,7 +2312,7 @@ Then $x | (y \cdot^{R} z)$ in $S$ within $R$.
 Let $x \in S$. For all natural numbers $n$
 $x^{n,R} \in S$.
 \end{lemma}
-\begin{proof}[method = induction]
+\begin{proof}[by induction]
 Let $n$ be a natural number.
 
 Case $n=0$. Trivial.
@@ -2323,7 +2329,7 @@ Then for all natural numbers $m$ if $m < p$ then
 $\binsum{m}{p}{x}{y}{R} \equiv_{S} x^{p,R}$ mod $p^{[R]}$ within $R$.
 \end{lemma}
 
-\begin{proof}[method = induction]
+\begin{proof}[by induction]
 Let $m$ be a natural number such that $m < p$.
 
 Case $m = 0$. Trivial.
@@ -2628,7 +2634,7 @@ $G$ is negation continuous iff $G$ is negation continuous at $x$
 for every $x \in G$.
 \end{definition}
 
-\begin{definition}[title = Topological group]
+\begin{definition}[Topological group]
 A topological group is a group $G$ such that $G$ is a topological space
 and $G$ is additively continuous and negation continuous.
 \end{definition}
@@ -2731,7 +2737,7 @@ $R$ is multiplicatively continuous iff $R$ is multiplicatively continuous at
 $x$ and $x'$ for all $x,x' \in R$.
 \end{definition}
 
-\begin{definition}[title = Topological ring]
+\begin{definition}[Topological ring]
 A topological ring is a ring $R$ such that $R$ is a topological group
 and $R$ is multiplicatively continuous.
 \end{definition}
@@ -2757,7 +2763,7 @@ algebraic and the topological structure on $R$.
 Let $R$ denote a ring that is a topological space.
 
 %42
-\begin{definition}[title = L 42] Assume that $B$ is a subset of $R$.
+\begin{definition}[L 42] Assume that $B$ is a subset of $R$.
 $B$ is bounded in $R$ iff for all neighborhoods $U$ of $0^{R}$
 in $R$ there exists a neighborhood $V$ of $0^{R}$ in $R$ such that
 $v \cdot^{R} b \in U$ where $v \in V$ and $b \in B$.
@@ -2767,7 +2773,7 @@ $v \cdot^{R} b \in U$ where $v \in V$ and $b \in B$.
 The last condition can be expressed by products of sets:
 \begin{forthel}
 %48
-\begin{lemma}[title = L 48] Assume that $B$ is a subset of $R$.
+\begin{lemma}[L 48] Assume that $B$ is a subset of $R$.
 $B$ is bounded in $R$ if and only if for all neighborhoods $U$ of $0^{R}$
 in $R$ there exists a neighborhood $V$ of $0^{R}$ in $R$ such that
 $V \star^{R} B \subseteq U$.
@@ -2800,7 +2806,7 @@ Now we strengthen our assumptions on $R$ to:
 Let $R$ denote a topological ring.
 
 %91
-\begin{lemma}[title = L 91] Let $R$ be nonarchimedean and $B \subseteq R$.
+\begin{lemma}[L 91] Let $R$ be nonarchimedean and $B \subseteq R$.
 Then $B$ is bounded in $R$ iff for all neighborhoods
 $U$ of $0^{R}$ in $R$ there exists a subgroup $V$ of $R$ such
 that $V$ is open in $R$ and the additive closure of
@@ -2841,7 +2847,7 @@ end.
 $\emptyset$ is a bounded subset of $R$.
 \end{lemma}
 
-\begin{lemma}[title = Boundedness of Singletons]
+\begin{lemma}[Boundedness of Singletons]
 Let $r \in R$. Then $\sing{r}$ is bounded in $R$.
 \end{lemma}
 \begin{proof}
@@ -2877,7 +2883,7 @@ for every map $s$ such that
 $\Seq{1}{n} \subseteq \dom(s)$ and $\FinSet{s}{1}{n} \subseteq R$
 $\FinSet{s}{1}{n}$ is bounded in $R$.
 \end{lemma}
-\begin{proof}[method = induction]
+\begin{proof}[by induction]
 Let $n$ be a natural number.
 Let $s$ be a map such that 
 $\Seq{1}{n} \subseteq \dom(s)$ and $\FinSet{s}{1}{n} \subseteq R$.
@@ -2893,7 +2899,7 @@ $\sing{s_{m+1}}$ is a bounded subset of $R$.
 Hence $\FinSet{s}{1}{m+1}$ is bounded in $R$.
 \end{proof}
 
-\begin{lemma}[title = 5 28 1]
+\begin{lemma}[5 28 1]
 Every finite subset of $R$ is bounded in $R$.
 \end{lemma}
 
@@ -2905,7 +2911,7 @@ $\unp{r}{s}$ is a finite subset of $R$.
 \end{proof}
 
 %136
-\begin{lemma}[title = L 136]
+\begin{lemma}[L 136]
 Every subset of every bounded subset of $R$ is a bounded subset of $R$.
 \end{lemma}
 \begin{proof}
@@ -2943,7 +2949,7 @@ end
 %\end{lemma}
 
 %179
-\begin{definition}[title = L 179]
+\begin{definition}[L 179]
 Let $r$ be an element of $R$. $r$ is powerbounded in $R$ iff $\powers{r}{R}$ is 
 bounded in $R$.
 \end{definition}
@@ -2984,11 +2990,11 @@ end.
 \end{proof}
 
 %189
-\begin{lemma}[title = L 189]
+\begin{lemma}[L 189]
 $0^{R}$ is powerbounded in $R$.
 \end{lemma}
 %199
-\begin{lemma}[title = L 199]
+\begin{lemma}[L 199]
 $1^{R}$ is powerbounded in $R$.
 \end{lemma}
 
@@ -3004,7 +3010,7 @@ Hence $\powers{-^{R} 1^{R}}{R}$ is bounded in $R$.
 \end{proof}
 
 %248
-\begin{lemma}[title = L 248]
+\begin{lemma}[L 248]
 Let $a,b$ be elements of $R$ that are powerbounded in $R$.
 Then $a\cdot^{R} b$ is powerbounded in $R$.
 \end{lemma}
@@ -3033,7 +3039,7 @@ w  \cdot^{R} (a^{n,R} \cdot^{R} b^{n,R})=
 qed. 
 \end{proof}
 
-\begin{lemma}[title = L 290]
+\begin{lemma}[L 290]
 Let $R$ be nonarchimedean.
 Let $a,b$ be elements of $R$ that are powerbounded in $R$.
 Then $a +^{R} b$ is powerbounded in $R$.
@@ -3145,7 +3151,7 @@ $w \cdot^{R} (a +^{R} b)^{n,R} \in U'$ .
 \end{proof}
 
 %342
-\begin{lemma}[title = L 342]
+\begin{lemma}[L 342]
 Let $a$ be an element of $R$ that is powerbounded in $R$.
 Then $-^{R} a$ is powerbounded in $R$.
 \end{lemma}
@@ -3154,31 +3160,31 @@ $-^{R} a = (-^{R} 1^{R}) \cdot^{R} a$.
 \end{proof}
 
 %310
-\begin{definition}[title = L 310]  $R^o = \{x \in R \mid  x$ is powerbounded in $R\}$. 
+\begin{definition}[L 310]  $R^o = \{x \in R \mid  x$ is powerbounded in $R\}$. 
 \end{definition}
 
 \begin{lemma} $R^o$ is a subset of $R$. \end{lemma}
 
 %320
-\begin{lemma}[title = L 320]
+\begin{lemma}[L 320]
 $0^{R} \in R^o$.
 \end{lemma}
 
 %322
-\begin{lemma}[title = L 322] 
+\begin{lemma}[L 322] 
 $1^{R} \in R^o$.
 \end{lemma}
 
 %324
-\begin{lemma}[title = L 324]
+\begin{lemma}[L 324]
 Let $a,b \in R^o$. Then $a \cdot^{R} b \in R^o$.
 \end{lemma}
 
-\begin{lemma}[title = L 324]
+\begin{lemma}[L 324]
 Let $a \in R^o$. Then $a^{n,R} \in R^o$ for all $n \in \mathbb{N}$.
 \end{lemma}
 
-\begin{proof}[method = induction]
+\begin{proof}[by induction]
 Let $n \in \mathbb{N}$.
 
 Case $n = 0$. Trivial.
@@ -3188,28 +3194,28 @@ Hence $a^{n,R} = a^{m,R} \cdot^{R} a \in R^o$.
 \end{proof}
 
 %337
-\begin{lemma}[title = L 337] Let $R$ be nonarchimedean.
+\begin{lemma}[L 337] Let $R$ be nonarchimedean.
 Let $a,b \in R^o$. Then $a +^{R} b \in R^o$.
 \end{lemma}
 
 %342
-\begin{lemma}[title = L 342]
+\begin{lemma}[L 342]
 Let $a \in R^o$. Then $-^{R} a \in R^o$.
 \end{lemma}
 
 %365
-\begin{lemma}[title = L 365] Let $R$ be nonarchimedean. Then
+\begin{lemma}[L 365] Let $R$ be nonarchimedean. Then
 $R^o$ is a subgroup of $R$.
 \end{lemma}
 
 %371
-\begin{lemma}[title = L 371] Let $R$ be nonarchimedean. Then
+\begin{lemma}[L 371] Let $R$ be nonarchimedean. Then
 $R^o$ is a subring of $R$.
 \end{lemma}
 
 
 %380
-\begin{definition}[title =  380]
+\begin{definition}[ 380]
 $R$ is uniform iff $R^o$ is a bounded subset of $R$.
 \end{definition}
 
@@ -3219,7 +3225,7 @@ $R$ is uniform iff $R^o$ is a bounded subset of $R$.
 
 
 %30
-\begin{definition}[title = L 30] Let $r$ be an element of $R$. $r$ is topologically
+\begin{definition}[L 30] Let $r$ be an element of $R$. $r$ is topologically
 nilpotent in $R$ iff for all neighborhoods $U$ of $0^{R}$ in $R$
 there exists a natural number $N$ such that $r^{n,R} \in U$ 
 for all natural numbers $n$

@@ -19,7 +19,7 @@ dist-newstyle/
 *.ps
 .DS_Store
 
-# TEX-related files.
+# TeX-related files.
 *.fdb_latexmk
 *.pdf
 *.log
@@ -40,3 +40,10 @@ dist-newstyle/
 *.upb
 *.sms
 *.xhtml
+*.glo
+*.hd
+*.idx
+*.dvi
+*.gls
+*.ilg
+*.ind

@@ -1,5 +1,10 @@
 \documentclass{article}
-\usepackage{lang/naproche}
+\usepackage{latex/naproche}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true
+}
 
 \renewcommand{\mod}{\text{mod }}
 \newcommand{\Int}{\mathbb{Z}}
@@ -12,6 +17,7 @@
 \begin{document}
   \maketitle
 
+  \noindent
   Furstenberg's proof of the infinitude of primes is a topological proof of the fact that there are
   infinitely many primes. It was published 1955 while Furstenberg was still an undergraduate
   student \cite{Furstenberg1955}.
@@ -450,4 +456,11 @@
   $(q \Int + 0) + a$. This is a result of some kind of overloading of the symbol $+$. We use $+$ on
   the one hand to denote integer addition and on the other hand it is part of the operator
   $\cdot ~ \Int + ~ \cdot$.
+
+  \begin{thebibliography}{1}
+    \bibitem{Furstenberg1955}
+    Harry Furstenberg.
+    ``On the Infinitude of Primes''.
+    In: \textit{The American Mathematical Monthly} 62.1 (1955).
+  \end{thebibliography}
 \end{document}
