@@ -1,0 +1,44 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{limit-ordinals.ftl}
+\importmodule[libraries/set-theory]{zero.ftl}
+\importmodule[libraries/set-theory]{successor-ordinals.ftl}
+\symdef{ORDlim}{\mathop{\textsf{lim}}}
+
+\begin{convention}[forthel]
+  Let $\ORDlim x$ stand for $\SETunionover x$.
+\end{convention}
+
+\begin{proposition}[forthel,id=SET_THEORY_02_7202164443185152]
+  Let $x$ be a subset of $\Ord$.
+  Then $\ORDlim x$ is an ordinal.
+\end{proposition}
+\begin{proof}[forthel]
+  (1) $\ORDlim x$ is transitive.
+  \begin{proof}
+    Let $y \SETin \ORDlim x$ and $z \SETin y$.
+    Take $w \SETin x$ such that $y \SETin w$.
+    Hence $w$ is transitive.
+    Thus $z \SETin w$.
+    Therefore $z \SETin \ORDlim x$.
+  \end{proof}
+
+  (2) Every element of $\ORDlim x$ is transitive.
+  \begin{proof}
+    Let $y \SETin \ORDlim x$.
+    Let $z \SETin y$ and $v \SETin z$.
+    Take $w \SETin x$ such that $y \SETin w$.
+    Hence $w$ is an ordinal.
+    Thus $y$ is an ordinal.
+    Therefore $y$ is transitive.
+    Consequently $v \SETin y$.
+  \end{proof}
+\end{proof}
+
+\begin{definition}[forthel,id=SET_THEORY_02_7678388934279168]
+  A \emph{limit ordinal} is an ordinal $\lambda$ such that neither $\lambda$ is a successor ordinal nor $\lambda \eq \ORDzero$.
+\end{definition}
+\end{smodule}
+\end{document}

@@ -1,0 +1,131 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{transitive-classes.ftl}
+\importmodule[libraries/set-theory]{zfc.ftl}
+
+\begin{definition}[forthel,id=SET_THEORY_01_8167915266244608]
+  Let $A$ be a class.
+  $A$ is \emph{transitive} iff every element of $A$ is a subset of $A$.
+\end{definition}
+
+\begin{proposition}[forthel,id=SET_THEORY_01_6964770955591680]
+  Let $X$ be a system of sets.
+  Then $X$ is transitive iff for every $x \SETin X$ and every $y \SETin x$ we have $y \SETin X$.
+\end{proposition}
+
+\begin{definition}[forthel,id=SET_THEORY_01_4219967964708864]
+  A \emph{system of transitive sets} is a system of sets $X$ such that every member of $X$ is a transitive set.
+\end{definition}
+
+\begin{proposition}[forthel,id=SET_THEORY_01_2095807333400576]
+  Every transitive class is a system of sets.
+\end{proposition}
+
+\begin{proposition}[forthel,id=SET_THEORY_01_6524117649981440]
+  Let $X$ be a system of sets.
+  Then $X$ is transitive iff $\SETunionover X \SETinclude X$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$X$ is transitive.}
+    Let $x \SETin \SETunionover X$.
+    Take a member $y$ of $X$ such that $x \SETin y$.
+    Then $y$ is a subset of $X$.
+    Hence $x$ is an element of $X$.
+  \end{case}
+
+  \begin{case}{$\SETunionover X \SETinclude X$.}
+    Let $x \SETin X$.
+
+    Let us show that $x \SETinclude X$.
+      Let $y \SETin x$.
+      Then $y \SETin \SETunionover X$.
+      Hence $y \SETin X$.
+    End.
+  \end{case}
+\end{proof}
+
+\begin{proposition}[forthel,id=SET_THEORY_01_620651482185728]
+  Let $A$ be a transitive class.
+  Then $\SETunionover A$ is transitive.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $x \SETin \SETunionover A$.
+
+  Let us show that $x \SETinclude \SETunionover A$.
+    Let $y \SETin x$.
+    Take a member $z$ of $A$ such that $x \SETin z$.
+    Then $z \SETinclude A$.
+    Hence $x \SETin A$.
+    Thus $y$ is an element of some member of $A$.
+    Therefore $y \SETin \SETunionover A$.
+  End.
+\end{proof}
+
+\begin{proposition}[forthel,id=SET_THEORY_01_6726468811882496]
+  Let $X$ be a system of transitive sets.
+  Then $\SETunionover X$ is transitive.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $x \SETin \SETunionover X$ and $y \SETin x$.
+  Take $z \SETin X$ such that $x \SETin z$.
+  Then $z$ is transitive.
+  Hence $x \SETinclude z$.
+  Thus $y \SETin z$.
+  Therefore $y \SETin \SETunionover X$.
+\end{proof}
+
+\begin{proposition}[forthel,id=SET_THEORY_01_4884401668227072]
+  Let $X$ be a system of transitive sets.
+  Then $X \SETunion \SETunionover X$ is transitive.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $x \SETin X \SETunion \SETunionover X$.
+
+  Let us show that $x \SETinclude X \SETunion \SETunionover X$.
+    Let $u \SETin x$.
+    We have $x \SETin X$ or $x \SETin \SETunionover X$.
+    If $x \SETin X$then $u \SETin \SETunionover X$.
+    If $x \SETin \SETunionover X$ then $u \SETin \SETunionover X$.
+    Indeed $\SETunionover X$ is transitive.
+    Hence $u \SETin \SETunionover X$.
+    Thus $u \SETin X \SETunion \SETunionover X$.
+  End.
+\end{proof}
+
+\begin{proposition}[forthel,id=SET_THEORY_01_1399002962591744]
+  Let $X$ be a system of sets.
+  Then $X$ is transitive iff $X \SETinclude \SETpow(X)$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$X$ is transitive.}
+    Let $x \SETin X$.
+    Then $x \SETinclude X$.
+    Hence $x \SETin \SETpow(X)$.
+  \end{case}
+
+  \begin{case}{$X \SETinclude \SETpow(X)$.}
+    Let $x \SETin X$.
+    Then $x \SETin \SETpow(X)$.
+    Hence $x \SETinclude X$.
+  \end{case}
+\end{proof}
+
+\begin{proposition}[forthel,id=SET_THEORY_01_6995689103949824]
+  Let $A$ be a transitive class.
+  Then $\SETpow(A)$ is transitive.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $x \SETin \SETpow(A)$.
+  Then $x \SETinclude A$.
+
+  Let us show that $x \SETinclude \SETpow(A)$.
+    Let $y \SETin x$.
+    Then $y \SETin A$.
+    Hence $y \SETinclude A$.
+    Thus $y \SETin \SETpow(A)$.
+  End.
+\end{proof}
+\end{smodule}
+\end{document}

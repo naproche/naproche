@@ -1,0 +1,5 @@
+id: libraries/foundations
+ns: https://naproche.github.io/math/archive/libraries/foundations
+narration-base: https://naproche.github.io/math/archive/libraries/foundations
+url-base: http://localhost
+format:stex

@@ -1,0 +1,71 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{segments-of-natural-numbers.ftl}
+\importmodule[libraries/arithmetics]{ordering.ftl}
+\symdef{NATsegment}[args=2]{\comp{\{}#1\comp{,\dots,}#2\comp{\}}}
+
+\begin{definition}[forthel,id=FOUNDATIONS_14_3625613501923328]
+  Let $n, m$ be natural numbers.
+  $\emph{\NATsegment{n}{m}} = \{ k \in \Nat \mid n \NATleq k \NATleq m \}$.
+\end{definition}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_14_145331933151232]
+  Let $n, m$ be natural numbers.
+  If $\NATsegment{\NATone}{n} \eq \NATsegment{\NATone}{m}$ then $n \eq m$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $\NATsegment{\NATone}{n} \eq \NATsegment{\NATone}{m}$.
+
+  \begin{case}{$n \eq \NATzero$.}
+    Then $\NATsegment{\NATone}{n} \eq \SETempty$.
+    Thus $\NATsegment{\NATone}{m} \eq \SETempty$.
+    Hence there exists no $k \SETin \Nat$ such that $\NATone \NATleq k \NATleq m$.
+    Therefore $m \eq \NATzero$.
+    Consequently $n \eq m$.
+  \end{case}
+
+  \begin{case}{$m \eq \NATzero$.}
+    Then $\NATsegment{\NATone}{m} \eq \SETempty$.
+    Thus $\NATsegment{\NATone}{n} \eq \SETempty$.
+    Hence there exists no $k \SETin \Nat$ such that $\NATone \NATleq k \NATleq n$.
+    Therefore $n \eq \NATzero$.
+    Consequently $n \eq m$.
+  \end{case}
+
+  \begin{case}{$n, m \NATgeq \NATone$.}
+    For all $k \SETin \Nat$ we have $\NATone \NATleq k \NATleq n$ iff $\NATone \NATleq k \NATleq m$.
+    Hence for all $k \SETin \Nat$ we have $k \NATleq n$ iff $k \NATleq m$.
+
+    Let us show by contradiction that $n \eq m$.
+      Suppose $n \neq m$.
+      Then $n \NATgtr m$ or $m \NATgtr n$.
+
+      \begin{case}{$n \NATgtr m$.}
+        Take $k = m \NATplus \NATone$.
+        Then $k \NATleq n$ and $k \NATnleq m$.
+        Hence it is wrong that $k \NATleq n$ iff $k \NATleq m$.
+        Contradiction.
+      \end{case}
+
+      \begin{case}{$m \NATgtr n$.}
+        Take $k = n \NATplus \NATone$.
+        Then $k \NATleq m$ and $k \NATnleq m$.
+        Hence it is wrong that $k \NATleq n$ iff $k \NATleq m$.
+        Contradiction.
+      \end{case}
+    End.
+  \end{case}
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_14_658708738605056]
+  Let $n$ be a natural number.
+  Then $\NATsegment{\NATone}{n \NATplus \NATone} \eq \NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}$.
+\end{proposition}
+\begin{proof}[forthel]
+  We have
+  $\NATsegment{\NATone}{n \NATplus \NATone} \SETinclude \NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}$ and $\NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone} \SETinclude \NATsegment{\NATone}{n \NATplus \NATone}$.
+\end{proof}
+\end{smodule}
+\end{document}

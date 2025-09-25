@@ -1,0 +1,49 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+
+\title{Hilbert's Paradox in \Naproche}
+\author{Marcel Schütz}
+\date{2024--2025}
+
+\begin{document}
+\begin{smodule}{hilbert-paradox.ftl}
+\maketitle
+
+\importmodule[libraries/set-theory]{zfc.ftl}
+\importmodule[libraries/foundations]{closure-under-arbitrary-unions.ftl}
+\importmodule[libraries/foundations]{closure-under-powersets.ftl}
+\importmodule[libraries/foundations]{universal-class.ftl}
+
+\noindent \emph{Hilbert's Paradox}, discovered around 1900 by David Hilbert, 
+demonstates that there cannot exists a set that is closed under powersets and 
+under unions of arbitrary subsets \cite{PeckhausKahl2002}.
+
+\begin{theorem}[forthel,title=Hilbert's Paradox,id=hilbert_paradox]
+  There exists no system of sets that is closed under powersets and closed under unions.
+\end{theorem}
+\begin{proof}[forthel]
+  Assume the contrary.
+  Consider a system of sets $S$ that is closed under powersets and closed under unions.
+  We have $S \SETinclude S$.
+  Hence $\SETunionover S \SETin S$.
+  Thus $\SETpow(\SETunionover S) \SETin S$.
+  Contradiction.
+\end{proof}
+
+\noindent Using Hilbert's Paradox it can further be shown that there exists 
+no universal set, i.e. that the class $\Set$ of all sets is a proper class:
+
+\begin{proposition}[forthel,id=hilbert_paradox_corollary]
+  $\Set$ is not a set.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume the contrary.
+  Then $\Set$ is closed under powersets and closed under unions.
+  Contradiction (by \nameref{hilbert_paradox}).
+\end{proof}
+
+\printbibliography
+\printlicense[CcByNcSa]{2024--2025}{Marcel Schütz}
+\end{smodule}
+\end{document}

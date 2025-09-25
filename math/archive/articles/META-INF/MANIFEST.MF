@@ -1,0 +1,5 @@
+id: articles
+ns: https://naproche.github.io/math/archive/articles
+narration-base: https://naproche.github.io/math/archive/articles
+url-base: http://localhost
+format:stex

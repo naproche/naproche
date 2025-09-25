@@ -1,0 +1,35 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{finite-and-infinite-sets.ftl}
+\importmodule[libraries/set-theory]{omega-is-cardinal.ftl}
+
+\begin{definition}[forthel,id=SET_THEORY_07_5346658235711488]
+  Let $x$ be a set.
+  $x$ is \emph{finite} iff $\SETcard{x} \ORDless \ORDomega$.
+\end{definition}
+
+\begin{definition}[forthel,id=SET_THEORY_07_8295412068777984]
+  Let $x$ be a set.
+  $x$ is \emph{infinite} iff $x$ is not finite.
+\end{definition}
+
+\begin{proposition}[forthel,id=SET_THEORY_07_3806229474312192]
+  Let $x$ be a set.
+  Then $x$ is finite iff $\SETcard{x} \eq n$ for some $n \SETin \ORDomega$.
+\end{proposition}
+
+\begin{proposition}[forthel,id=SET_THEORY_07_3174577070931968]
+  Let $x$ be a set.
+  Then $x$ is infinite iff $\SETcard{x} \ORDgeq \ORDomega$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\SETcard{x} \ORDgeq \ORDomega$ iff $\SETcard{x} \ORDnless \ORDomega$.
+\end{proof}
+
+\begin{proposition}[forthel,id=SET_THEORY_07_9154385075632368]
+  $\ORDomega$ is infinite.
+\end{proposition}
+\end{smodule}
+\end{document}

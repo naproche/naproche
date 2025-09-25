@@ -1,0 +1,231 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{exponentiation.ftl}
+\importmodule[libraries/arithmetics]{multiplication.ftl}
+\symdef{NATexp}[args=2]{{#1}^{#2}}
+
+\begin{sfragment}{Definition}
+  \begin{signature}[forthel,id=ARITHMETIC_09_3663815629602816]
+    Let $n, m$ be natural numbers.
+    $\emph{\NATexp{n}{m}}$ is a natural number.
+  \end{signature}
+
+  \begin{axiom}[forthel,id=ARITHMETIC_09_5368818025103360]
+    Let $n$ be a natural number.
+    Then $\NATexp{n}{\NATzero} \eq \NATone$.
+  \end{axiom}
+
+  \begin{axiom}[forthel,id=ARITHMETIC_09_4140498660884480]
+    Let $n, m$ be natural numbers.
+    Then $\NATexp{n}{m \NATplus \NATone} \eq \NATexp{n}{m} \NATmul n$.
+  \end{axiom}
+\end{sfragment}
+
+\begin{sfragment}{Computation Laws}
+  \begin{sfragment}{Exponentiation with $0$, $1$ and $2$}
+    \begin{proposition}[forthel,id=ARITHMETIC_09_4673644676513792]
+      Let $n$ be a natural number.
+      Assume $n \neq \NATzero$.
+      Then $\NATexp{\NATzero}{n} \eq \NATzero$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Take a natural number $m$ such that $n \eq m \NATplus \NATone$.
+      Then $\NATexp{\NATzero}{n}
+        \eq \NATexp{\NATzero}{m \NATplus \NATone}
+        \eq \NATexp{\NATzero}{m} \NATmul \NATzero
+        \eq \NATzero$.
+      Indeed $\NATexp{\NATzero}{m \NATplus \NATone} \eq \NATexp{\NATzero}{m} \NATmul \NATzero$.
+    \end{proof}
+
+    \begin{proposition}[forthel,id=ARITHMETIC_09_7376849881530368]
+      Let $n$ be a natural number.
+      Then $\NATexp{\NATone}{n} \eq \NATone$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Define $\Phi = \{ n' \in \Nat \mid \NATexp{\NATone}{n'} \eq \NATone \}$.
+
+      (1) $\Phi$ contains $\NATzero$.
+
+      (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
+      \begin{proof}
+        Let $n' \SETin \Phi$.
+        Then $\NATexp{\NATone}{n' \NATplus \NATone}
+          \eq \NATexp{\NATone}{n'} \NATmul \NATone
+          \eq \NATone \NATmul \NATone
+          \eq \NATone$.
+      \end{proof}
+
+      Hence every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+      Thus $\NATexp{\NATone}{n} \eq \NATone$.
+    \end{proof}
+
+    \begin{proposition}[forthel,id=ARITHMETIC_09_4975279749464064]
+      Let $n$ be a natural number.
+      Then $\NATexp{n}{\NATone} \eq n$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      We have $\NATexp{n}{\NATone}
+        \eq \NATexp{n}{\NATzero \NATplus \NATone}
+        \eq \NATexp{n}{\NATzero} \NATmul n
+        \eq \NATone \NATmul n
+        \eq n$.
+    \end{proof}
+
+    \begin{proposition}[forthel,id=ARITHMETIC_09_8513812055457792]
+      Let $n$ be a natural number.
+      Then $\NATexp{n}{\NATtwo} \eq n \NATmul n$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      We have $\NATexp{n}{\NATtwo}
+        \eq \NATexp{n}{\NATone \NATplus \NATone}
+        \eq \NATexp{n}{\NATone} \NATmul n
+        \eq n \NATmul n$.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Sums as Exponents}
+    \begin{proposition}[forthel,id=ARITHMETIC_09_8152207530655744]
+      Let $n, m, k$ be natural numbers.
+      Then $\NATexp{k}{n \NATplus m} \eq \NATexp{k}{n} \NATmul \NATexp{k}{m}$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Define $\Phi = \{ m' \in \Nat \mid \NATexp{k}{n \NATplus m'} \eq \NATexp{k}{n} \NATmul \NATexp{k}{m'} \}$.
+
+      (1) $\Phi$ contains $\NATzero$.
+      Indeed $\NATexp{k}{n \NATplus \NATzero}
+        \eq \NATexp{k}{n}
+        \eq \NATexp{k}{n} \NATmul \NATone
+        \eq \NATexp{k}{n} \NATmul \NATexp{k}{\NATzero}$.
+
+      (2) For all $m' \SETin \Phi$ we have $m' \NATplus \NATone \SETin \Phi$.
+      \begin{proof}
+        Let $m' \SETin \Phi$.
+        Then
+        \[  \NATexp{k}{n \NATplus (m' \NATplus \NATone)}                  \]
+        \[    \eq \NATexp{k}{(n \NATplus m') \NATplus \NATone}              \]
+        \[    \eq \NATexp{k}{n \NATplus m'} \NATmul k            \]
+        \[    \eq (\NATexp{k}{n} \NATmul \NATexp{k}{m'}) \NATmul k  \]
+        \[    \eq \NATexp{k}{n} \NATmul (\NATexp{k}{m'} \NATmul k)  \]
+        \[    \eq \NATexp{k}{n} \NATmul \NATexp{k}{m' \NATplus \NATone}.       \]
+      \end{proof}
+
+      Hence every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+      Thus $\NATexp{k}{n \NATplus m} \eq \NATexp{k}{n} \NATmul \NATexp{k}{m}$.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Products as Exponents}
+    \begin{proposition}[forthel,id=ARITHMETIC_09_7827956571308032]
+      Let $n, m, k$ be natural numbers.
+      Then $\NATexp{n}{m \NATmul k} \eq \NATexp{\NATexp{n}{m}}{k}$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Define $\Phi = \{ k' \in \Nat \mid \NATexp{n}{m \NATmul k'} \eq \NATexp{\NATexp{n}{m}}{k'} \}$.
+
+      (1) $\Phi$ contains $\NATzero$.
+      Indeed $\NATexp{\NATexp{n}{m}}{\NATzero}
+        \eq \NATone
+        \eq \NATexp{n}{\NATzero}
+        \eq \NATexp{n}{m \NATmul \NATzero}$.
+
+      (2) For all $k' \SETin \Phi$ we have $k' \NATplus \NATone \SETin \Phi$.
+      \begin{proof}
+        Let $k' \SETin \Phi$.
+        Then
+        \[  \NATexp{\NATexp{n}{m}}{k' \NATplus \NATone}                \]
+        \[    \eq \NATexp{\NATexp{n}{m}}{k'} \NATmul \NATexp{n}{m}    \]
+        \[    \eq \NATexp{n}{m \NATmul k'} \NATmul \NATexp{n}{m}  \]
+        \[    \eq \NATexp{n}{(m \NATmul k') \NATplus m}        \]
+        \[    \eq \NATexp{n}{m \NATmul (k' \NATplus \NATone)}.       \]
+      \end{proof}
+
+      Therefore every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+      Consequently $\NATexp{n}{m \NATmul k} \eq \NATexp{\NATexp{n}{m}}{k}$.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Products as Base}
+    \begin{proposition}[forthel,id=ARITHMETIC_09_2563032276271104]
+      Let $n, m, k$ be natural numbers.
+      Then $\NATexp{n \NATmul m}{k} \eq \NATexp{n}{k} \NATmul \NATexp{m}{k}$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Define $\Phi = \{ k' \in \Nat \mid \NATexp{n \NATmul m}{k'} \eq \NATexp{n}{k'} \NATmul \NATexp{m}{k'} \}$.
+
+      (1) $\Phi$ contains $\NATzero$.
+      Indeed $(\NATexp{n \NATmul m}{\NATzero})
+        \eq \NATone
+        \eq \NATone \NATmul \NATone
+        \eq \NATexp{n}{\NATzero} \NATmul \NATexp{m}{\NATzero}$. %!
+
+      (2) For all $k' \SETin \Phi$ we have $k' \NATplus \NATone \SETin \Phi$.
+      \begin{proof}
+        Let $k' \SETin \Phi$.
+
+        Let us show that $(\NATexp{n}{k'} \NATmul \NATexp{m}{k'}) \NATmul (n \NATmul m) \eq (\NATexp{n}{k'} \NATmul n) \NATmul (\NATexp{m}{k'} \NATmul m)$.
+          \[  (\NATexp{n}{k'} \NATmul \NATexp{m}{k'}) \NATmul (n \NATmul m)       \]
+          \[    \eq ((\NATexp{n}{k'} \NATmul \NATexp{m}{k'}) \NATmul n) \NATmul m   \]
+          \[    \eq (\NATexp{n}{k'} \NATmul (\NATexp{m}{k'} \NATmul n)) \NATmul m   \]
+          \[    \eq (\NATexp{n}{k'} \NATmul (n \NATmul \NATexp{m}{k'})) \NATmul m   \]
+          \[    \eq ((\NATexp{n}{k'} \NATmul n) \NATmul \NATexp{m}{k'}) \NATmul m   \]
+          \[    \eq (\NATexp{n}{k'} \NATmul n) \NATmul (\NATexp{m}{k'} \NATmul m).  \]
+        End.
+
+        Hence
+        \[  \NATexp{n \NATmul m}{k' \NATplus \NATone}                          \]
+        \[    \eq \NATexp{n \NATmul m}{k'} \NATmul (n \NATmul m)        \]
+        \[    \eq (\NATexp{n}{k'} \NATmul \NATexp{m}{k'}) \NATmul (n \NATmul m)   \]
+        \[    \eq (\NATexp{n}{k'} \NATmul n) \NATmul (\NATexp{m}{k'} \NATmul m)   \]
+        \[    \eq \NATexp{n}{k' \NATplus \NATone} \NATmul \NATexp{m}{k' \NATplus \NATone}.              \]
+      \end{proof}
+
+      Therefore every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+      Consequently $\NATexp{n \NATmul m}{k} \eq \NATexp{n}{k} \NATmul \NATexp{m}{k}$.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Zeroes of Exponentiation}
+    \begin{proposition}[forthel,id=ARITHMETIC_09_3860221447372800]
+      Let $n, m$ be natural numbers.
+      Then $\NATexp{n}{m} \eq \NATzero$ iff $n \eq \NATzero$ and $m \neq \NATzero$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      \begin{case}{$\NATexp{n}{m} \eq \NATzero$.}
+        Define $\Phi = \{ m' \in \Nat \mid\text{ if }\NATexp{n}{m'} \eq \NATzero\text{ then }n \eq \NATzero\text{ and }m' \neq \NATzero \}$.
+
+        (1) $\Phi$ contains $\NATzero$.
+        Indeed if $\NATexp{n}{\NATzero} \eq \NATzero$ then we have a contradiction.
+
+        (2) For all $m' \SETin \Phi$ we have $m' \NATplus \NATone \SETin \Phi$.
+        \begin{proof}
+          Let $m' \SETin \Phi$.
+
+          Let us show that if $\NATexp{n}{m' \NATplus \NATone} \eq \NATzero$ then $n \eq \NATzero$ and $m' \NATplus \NATone \neq \NATzero$.
+            Assume $\NATexp{n}{m' \NATplus \NATone} \eq \NATzero$.
+            Then $\NATzero \eq \NATexp{n}{m' \NATplus \NATone} \eq \NATexp{n}{m'} \NATmul n$.
+            Hence $\NATexp{n}{m'} \eq \NATzero$ or $n \eq \NATzero$.
+            We have $m' \NATplus \NATone \neq \NATzero$ and if $\NATexp{n}{m'} \eq \NATzero$ then $n \eq \NATzero$.
+            Hence $n \eq \NATzero$ and $m' \NATplus \NATone \neq \NATzero$.
+          End.
+        \end{proof}
+
+        Thus every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+        Consequently $m \SETin \Phi$.
+        Therefore $n \eq \NATzero$ and $m \neq \NATzero$.
+      \end{case}
+
+      \begin{case}{$n \eq \NATzero$ and $m \neq \NATzero$.}
+        Take a natural number $k$ such that $m \eq k \NATplus \NATone$.
+        Then $\NATexp{n}{m}
+          \eq \NATexp{n}{k \NATplus \NATone}
+          \eq \NATexp{n}{k} \NATmul n
+          \eq \NATexp{\NATzero}{k} \NATmul \NATzero
+          \eq \NATzero$.
+      \end{case}
+    \end{proof}
+  \end{sfragment}
+\end{sfragment}
+\end{smodule}
+\end{document}

@@ -1,3 +1,0 @@
-id: libraries/everyday-ontology
-ns: https://naproche.github.io/math/libraries/everyday-ontology
-narration-base: https://naproche.github.io/math/libraries/everyday-ontology

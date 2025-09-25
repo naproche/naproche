@@ -1,0 +1,22 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{omega-is-least-limit-ordinal.ftl}
+\importmodule[libraries/set-theory]{omega-is-limit-ordinal.ftl}
+\importmodule[libraries/set-theory]{ordering.ftl}
+
+\begin{proposition}[forthel,id=SET_THEORY_03_5517271459954688]
+  Let $\lambda$ be a limit ordinal.
+  Then \[ \ORDomega \ORDleq \lambda. \]
+\end{proposition}
+\begin{proof}[forthel]
+  Assume the contrary.
+  Then $\lambda \ORDless \ORDomega$.
+  Consequently $\lambda \SETin \ORDomega$.
+  Hence $\lambda \eq \ORDzero$ or $\lambda \eq \ORDsucc(n)$ for some $n \SETin \ORDomega$.
+  Thus $\lambda$ is not a limit ordinal.
+  Contradiction.
+\end{proof}
+\end{smodule}
+\end{document}

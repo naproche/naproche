@@ -22,101 +22,105 @@ math .................................... Naproche formalizations
 │
 ├── TUTORIAL ............................ Naproche tutorial
 │
-├── archive ............................. Formalizations based on sTeX and the formalizations in math/libraries
+├── archive
 │   │
-│   ├── barber-paradox .................. the barber paradox
-│   │
-│   ├── burali-forti-paradox ............ Burali-Forti's paradox
-│   │
-│   ├── cantor-paradox .................. Cantor's paradoxes
-│   │
-│   ├── cantor-schroeder-bernstein ...... classical result in cardinality theory
-│   │
-│   ├── cantor .......................... Cantor's diagonal argument
-│   │
-│   ├── curry-paradox ................... Curry's paradox
-│   │
-│   ├── drinker-paradox ................. the drinker paradox
-│   │
-│   ├── furstenberg ..................... Furstenberg's topological proof of infinity of primes
-│   │
-│   ├── hausdorff ....................... theorem on the regularity of successor cardinals
-│   │
-│   ├── hilbert-paradox ................. Hilbert's paradox
-│   │
-│   ├── koenig .......................... Kőnig's theorem about sequences of cardinals
-│   │
-│   ├── little-gauss .................... sum of the first *n* positive integers
-│   │
-│   ├── russell-myhill-paradox .......... the Russell-Myhill paradox
-│   │
-│   └── russell-paradox ................. Russell's paradox
-│   │
-│   ├── transfinite-recursion ........... the transfinite recursion theorem
-│   │
-│   └── zermelo ......................... Zermelo's well-ordering theorem
-│
-├── examples ............................ Stand-alone formalizations
-│   │
-│   ├── lang............................. ForTheL and LaTeX files used in math/examples and math/TUTORIAL
-│   │
-│   ├── puzzles ......................... logic puzzles
+│   ├── articles ........................ Formalizations based on sTeX and the formalizations in math/libraries
 │   │   │
-│   │   ├── agatha ...................... a logic puzzle set in "Dreadsbury Mansion"
+│   │   ├── barber-paradox .............. the barber paradox
 │   │   │
-│   │   ├── checkerboard ................ the mutilated checkerboard
+│   │   ├── burali-forti-paradox ........ Burali-Forti's paradox
 │   │   │
-│   │   └── dwarfs ...................... a "hat puzzle"
+│   │   ├── cantor-paradox .............. Cantor's paradoxes
+│   │   │
+│   │   ├── cantor-schroeder-bernstein .. classical result in cardinality theory
+│   │   │
+│   │   ├── cantor ...................... Cantor's diagonal argument
+│   │   │
+│   │   ├── curry-paradox ............... Curry's paradox
+│   │   │
+│   │   ├── drinker-paradox ............. the drinker paradox
+│   │   │
+│   │   ├── furstenberg ................. Furstenberg's topological proof of infinity of primes
+│   │   │
+│   │   ├── hausdorff ................... theorem on the regularity of successor cardinals
+│   │   │
+│   │   ├── hilbert-paradox ............. Hilbert's paradox
+│   │   │
+│   │   ├── koenig ...................... Kőnig's theorem about sequences of cardinals
+│   │   │
+│   │   ├── little-gauss ................ sum of the first *n* positive integers
+│   │   │
+│   │   ├── russell-myhill-paradox ...... the Russell-Myhill paradox
+│   │   │
+│   │   ├── russell-paradox ............. Russell's paradox
+│   │   │
+│   │   ├── transfinite-recursion ....... the transfinite recursion theorem
+│   │   │
+│   │   └── zermelo ..................... Zermelo's well-ordering theorem
 │   │
-│   ├── 100_theorems .................... some of Wiedijk's "100 Theorems"
+│   ├── libraries ....................... Naproche libraries based on sTeX
+│   │   │
+│   │   ├── arithmetics ................. basic notions and results concerning natural numbers
+│   │   │
+│   │   ├── everyday-ontology............ an basic ontology for concepts from everyday language
+│   │   │
+│   │   ├── foundations ................. basic notions and results concerning sets and functions
+│   │   │
+│   │   ├── lists ....................... basic notions and results concerning lists
+│   │   │
+│   │   └── set-theory .................. basic notions and results concerning ordinal and cardinal numbers
 │   │
-│   ├── cantor .......................... Cantor's diagonal argument
-│   │
-│   ├── chinese ......................... Chinese remainder theorem
-│   │
-│   ├── classes ......................... basic theory of classes and sets
-│   │
-│   ├── euclid_primes ................... classical proof of infinity of primes
-│   │
-│   ├── furstenberg ..................... Furstenberg's topological proof of infinity of primes
-│   │
-│   ├── geometry ........................ beginnings of Tarski geometry
-│   │
-│   ├── group.lean ...................... Naproche rendering of a Lean file on groups
-│   │
-│   ├── hausdorff ....................... theorem on the regularity of successor cardinals
-│   │
-│   ├── hilbert-calculus ................ proving derivations in a Hilbert calculus
-│   │
-│   ├── koenig .......................... Kőnig's theorem about sequences of cardinals
-│   │
-│   ├── maximum_modulus ................. theorem from complex analysis
-│   │
-│   ├── newman .......................... Newman's theorem on rewriting systems
-│   │
-│   ├── numbers ......................... introduction of number systems for Rudin's Principles of Mathematical Analysis
-│   │
-│   ├── perfectoidrings ................. perfectoid rings
-│   │
-│   ├── preliminaries ................... basic theory of classes and sets
-│   │
-│   ├── prime_no_square ................. irrationality of square roots
-│   │
-│   └── tarski .......................... Tarski's fixpoint theorem for lattices
+│   └── meta-inf ........................ LaTeX files used in math/archive and math/libraries
 │
-├── latex ............................... LaTeX files used in math/archive and math/libraries
-│
-└── libraries ........................... Naproche libraries based on sTeX
+└── examples ............................ Stand-alone formalizations
     │
-    ├── arithmetics ..................... basic notions and results concerning natural numbers
+    ├── lang ............................ ForTheL and LaTeX files used in math/examples and math/TUTORIAL
     │
-    ├── everyday-ontology................ an basic ontology for concepts from everyday language
+    ├── latex ........................... LaTeX package for example formalizations
     │
-    ├── foundations ..................... basic notions and results concerning sets and functions
+    ├── puzzles ......................... logic puzzles
+    │   │
+    │   ├── agatha ...................... a logic puzzle set in "Dreadsbury Mansion"
+    │   │
+    │   ├── checkerboard ................ the mutilated checkerboard
+    │   │
+    │   └── dwarfs ...................... a "hat puzzle"
     │
-    ├── lists ........................... basic notions and results concerning lists
+    ├── 100_theorems .................... some of Wiedijk's "100 Theorems"
     │
-    └── set-theory ...................... basic notions and results concerning ordinal and cardinal numbers
+    ├── cantor .......................... Cantor's diagonal argument
+    │
+    ├── chinese ......................... Chinese remainder theorem
+    │
+    ├── classes ......................... basic theory of classes and sets
+    │
+    ├── euclid_primes ................... classical proof of infinity of primes
+    │
+    ├── furstenberg ..................... Furstenberg's topological proof of infinity of primes
+    │
+    ├── geometry ........................ beginnings of Tarski geometry
+    │
+    ├── group.lean ...................... Naproche rendering of a Lean file on groups
+    │
+    ├── hausdorff ....................... theorem on the regularity of successor cardinals
+    │
+    ├── hilbert-calculus ................ proving derivations in a Hilbert calculus
+    │
+    ├── koenig .......................... Kőnig's theorem about sequences of cardinals
+    │
+    ├── maximum_modulus ................. theorem from complex analysis
+    │
+    ├── newman .......................... Newman's theorem on rewriting systems
+    │
+    ├── numbers ......................... introduction of number systems for Rudin's Principles of Mathematical Analysis
+    │
+    ├── perfectoidrings ................. perfectoid rings
+    │
+    ├── preliminaries ................... basic theory of classes and sets
+    │
+    ├── prime_no_square ................. irrationality of square roots
+    │
+    └── tarski .......................... Tarski's fixpoint theorem for lattices
 ```
 
 The further development of Naproche will focus on the `.ftl.tex` format in order

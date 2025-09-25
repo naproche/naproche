@@ -1,3 +1,0 @@
-id: archive
-ns: https://naproche.github.io/math/archive
-narration-base: https://naproche.github.io/math/archive

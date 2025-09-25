@@ -1,0 +1,148 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{finite-and-infinite-classes.ftl}
+\importmodule[libraries/foundations]{segments-of-natural-numbers.ftl}
+\importmodule[libraries/foundations]{equinumerosity.ftl}
+
+\begin{sfragment}{Finite Classes}
+  \begin{definition}[forthel,id=FOUNDATIONS_14_3512046897512410]
+    Let $X$ be a class and $n$ be a natural number.
+    $X$ \emph{has $n$ elements} iff $X$ is equinumerous to $\NATsegment{\NATone}{n}$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=FOUNDATIONS_14_3694156977274880]
+    Let $X$ be a class.
+    $X$ is \emph{finite} iff there exists a natural number $n$ such that $X$ has $n$ elements.
+  \end{definition}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_14_3929085203972096]
+    Let $X, Y$ be classes.
+    If $X$ is finite and $Y$ is equinumerous to $X$ then $Y$ is finite.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Assume that $X$ is finite and $Y$ is equinumerous to $X$.
+    Take a natural number $n$ and a bijection $f$ between $\NATsegment{\NATone}{n}$ and $X$ and a bijection $g$ between $X$ and $Y$.
+    Then $g \FUNcomp f$ is a bijection between $\NATsegment{\NATone}{n}$ and $Y$ (by \printref{FOUNDATIONS_08_6435206693126144}).
+    Indeed $X, Y$ are classes.
+    Hence $Y$ is finite.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_14_5132547854597502]
+    Let $X$ be a class.
+    $X$ has zero elements iff $X \eq \SETempty$.
+  \end{proposition}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_14_6812054297034125]
+    Let $X$ be a class.
+    $X$ has one element iff $X \eq \SETsingleton{a}$ for some object $a$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    \begin{case}{$X$ has one element.}
+      Take a bijection $f$ between $\NATsegment{\NATone}{\NATone}$ and $X$.
+      We have $\NATsegment{\NATone}{\NATone} \eq \SETsingleton{\NATone}$.
+      Hence $X \eq \SETsingleton{f(\NATone)}$.
+    \end{case}
+
+    \begin{case}{$X \eq \SETsingleton{a}$ for some object $a$.}
+      Consider an object $a$ such that $X \eq \SETsingleton{a}$.
+      Define $f(x) = \NATone$ for $x \in \SETsingleton{a}$.
+      Then $f$ is a bijection between $\SETsingleton{a}$ and $\NATsegment{\NATone}{\NATone}$.
+    \end{case}
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_14_3468912675458910]
+    Let $X$ be a class.
+    $X$ has two elements iff $X \eq \SETpair{a}{b}$ for some distinct objects $a, b$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    \begin{case}{$X$ has two elements.}
+      Take a bijection $f$ between $\NATsegment{\NATone}{\NATtwo}$ and $X$.
+      We have $\NATsegment{\NATone}{\NATtwo} \eq \SETpair{\NATone}{\NATtwo}$.
+      Hence $X \eq \SETpair{f(\NATone)}{f(\NATtwo)}$.
+      We have $f(\NATone) \neq f(\NATtwo)$.
+    \end{case}
+
+    \begin{case}{$X \eq \SETpair{a}{b}$ for some distinct objects $a, b$.}
+      Consider distinct objects $a, b$ such that $X \eq \SETpair{a}{b}$.
+      Define \[f(x) =
+        \begin{cases}
+          \NATone & : x \eq a \\
+          \NATtwo & : x \eq b
+        \end{cases}\]
+      for $x \in \SETpair{a}{b}$.
+      Then $f$ is a bijection between $\SETpair{a}{b}$ and $\NATsegment{\NATone}{\NATtwo}$.
+      Indeed $f$ is injective and surjective onto $\NATsegment{\NATone}{\NATtwo}$.
+    \end{case}
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_14_0615204230800975]
+    Let $n$ be a natural number and $X$ be a class that has $n$ elements and $a$ be an object such that $a \SETnotin X$.
+    Then $X \SETunion \SETsingleton{a}$ has $n \NATplus \NATone$ elements.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take a bijection $f$ between $X$ and $\NATsegment{\NATone}{n}$.
+    Define \[g(x) =
+      \begin{cases}
+        f(x)  & : x \SETin X \\
+        n \NATplus \NATone & : x \eq a
+      \end{cases}\]
+    for $x \in X \SETunion \SETsingleton{a}$.
+
+    (1) $g$ is a map from $X \SETunion \SETsingleton{a}$ to $\NATsegment{\NATone}{n \NATplus \NATone}$.
+    Indeed we can show that $g(x) \SETin \NATsegment{\NATone}{n \NATplus \NATone}$ for all $x \SETin X \SETunion \SETsingleton{a}$.
+      Let $x \SETin X \SETunion \SETsingleton{a}$.
+      If $x \SETin X$ then $g(x) \SETin \NATsegment{\NATone}{n}$.
+      If $x \eq a$ then $g(x) \eq n \NATplus \NATone$.
+    End.
+
+    (2) $g$ is injective.
+    \begin{proof}
+      Let $x, y \SETin \FUNdom(g)$.
+      Assume $x \neq y$.
+      
+      \begin{case}{$x, y \SETin X$.} \end{case}
+
+      \begin{case}{$x \SETin X$ and $y \eq a$.} \end{case}
+
+      \begin{case}{$x \eq a$ and $y \SETin X$.} \end{case}
+    \end{proof}
+
+    (3) $g$ is surjective onto $\NATsegment{\NATone}{n \NATplus \NATone}$.
+    Indeed we can show that for every $k \SETin \NATsegment{\NATone}{n \NATplus \NATone}$ there exists an $x \SETin \FUNdom(g)$ such that $k \eq g(x)$.
+    \begin{proof}
+      Let $k \SETin \NATsegment{\NATone}{n \NATplus \NATone}$.
+
+      \begin{case}{$k \NATleq n$.}
+        Then $k \SETin \NATsegment{\NATone}{n}$.
+        Hence we can take a $x \SETin X$ such that $k \eq f(x)$.
+      \end{case}
+
+      \begin{case}{$k \eq n \NATplus \NATone$.}
+        Then $k \eq g(a)$.
+      \end{case}
+    \end{proof}
+
+    Hence $g$ is a bijection between $X \SETunion \SETsingleton{a}$ and $\NATsegment{\NATone}{n \NATplus \NATone}$.
+  \end{proof}
+\end{sfragment}
+
+\begin{sfragment}{Infinite Classes}
+  \begin{definition}[forthel,id=FOUNDATIONS_14_6612510618681344]
+    Let $X$ be a class.
+    $X$ is \emph{infinite} iff $X$ is not finite.
+  \end{definition}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_14_5814530911240192]
+    Let $X, Y$ be classes.
+    If $X$ is infinite and $Y$ is equinumerous to $X$ then $Y$ is infinite.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Assume that $Y$ is equinumerous to $X$.
+    If $Y$ is finite then $X$ is finite.
+    Hence if $X$ is infinite then $Y$ is infinite.
+  \end{proof}
+\end{sfragment}
+\end{smodule}
+\end{document}

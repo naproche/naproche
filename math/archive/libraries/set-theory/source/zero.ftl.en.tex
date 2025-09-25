@@ -1,0 +1,19 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{zero.ftl}
+\importmodule[libraries/set-theory]{ordinals.ftl}
+\symdef{ORDzero}{0}
+
+\begin{convention}[forthel]
+  Let $\emph{\ORDzero}$ stand for $\SETempty$.
+
+  Let $\alpha$ is \emph{nonzero} stand for $\alpha \neq \ORDzero$.
+\end{convention}
+
+\begin{proposition}[forthel,id=SET_THEORY_02_8483196888940544]
+  $\ORDzero$ is an ordinal.
+\end{proposition}
+\end{smodule}
+\end{document}

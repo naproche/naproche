@@ -1,0 +1,13 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\begin{document}
+\begin{smodule}{human.ftl}
+  \importmodule[libraries/everyday-ontology]{properties?human.ftl}
+
+  \begin{definition}[forthel]
+    A \emph{human} is a human being $B$.
+    % We need the variable $B$ because of the bug describen in
+    % <https://github.com/naproche/naproche/issues/23>.
+  \end{definition}
+\end{smodule}
+\end{document}
