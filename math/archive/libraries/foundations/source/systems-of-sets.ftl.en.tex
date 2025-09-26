@@ -1,0 +1,143 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{systems-of-sets.ftl}
+\importmodule[libraries/foundations]{sub-and-supersets.ftl}
+\symdef{SETunionover}{\bigcup\,}
+\symdef{SETintersectover}{\bigcap\,}
+
+\begin{definition}[forthel,id=FOUNDATIONS_10_5805323570905088]
+  A \emph{system of sets} is a class $X$ such that every element of $X$ is a set.
+\end{definition}
+
+\begin{definition}[forthel,id=FOUNDATIONS_10_1631952387964928]
+  A \emph{system of nonempty sets} is a class $X$ such that every element of $X$ is a nonempty set.
+\end{definition}
+
+\begin{definition}[forthel,id=FOUNDATIONS_10_943381479948288]
+  Let $A$ be a class.
+  A \emph{system of subsets of $A$} is a class $X$ such that every element of $X$ is a subset of $A$.
+\end{definition}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_10_8268633648136192]
+  Let $A$ be a class.
+  Then $\SETempty$ is a system of subsets of $A$.
+\end{proposition}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_10_7546016869908480]
+  Let $A$ be a class.
+  Then $\SETpow(A)$ is a system of subsets of $A$.
+\end{proposition}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_10_2794857209384572]
+  Let $X, Y$ be systems of sets.
+  Then $X \SETunion Y$ is a system of sets.
+\end{proposition}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_10_1983754920483934]
+  Let $X, Y$ be systems of sets.
+  Then $X \SETintersect Y$ is a system of sets.
+\end{proposition}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_10_0928495478392003]
+  Let $X, Y$ be systems of sets.
+  Then $X \SETdiff Y$ is a system of sets.
+\end{proposition}
+
+\begin{sfragment}{Unions Over Systems of Sets}
+  \begin{definition}[forthel,id=FOUNDATIONS_10_541772562300928]
+    Let $X$ be a system of sets.
+    $\emph{\SETunionover X} = \{ a \mid a \SETin x\text{ for some }x \SETin X \}$.
+
+    Let \emph{union over $X$} stand for $\SETunionover X$.
+  \end{definition}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_4872701241982976]
+    $\SETunionover \SETempty \eq \SETempty$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    $\SETunionover \SETempty = \{ a \mid a \SETin x\text{ for some }x \SETin \SETempty \}$.
+    $\SETempty$ has no elements.
+    Hence there is no object $a$ such that $a \SETin x$ for some $x \SETin \SETempty$.
+    Thus $\SETunionover \SETempty \eq \SETempty$.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_2559541585641472]
+    Let $x, y$ be sets.
+    Then $\SETunionover \SETpair{x}{y} \eq x \SETunion y$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $\SETunionover \SETpair{x}{y} \SETinclude x \SETunion y$.
+      Let $a \SETin \SETunionover \SETpair{x}{y}$.
+      Then $a$ is contained in some element of $\SETpair{x}{y}$.
+      Hence $a \SETin x$ or $a \SETin y$.
+      Thus $a \SETin x \SETunion y$.
+    End.
+
+    Let us show that $x \SETunion y \SETinclude \SETunionover \SETpair{x}{y}$.
+      Let $a \SETin x \SETunion y$.
+      Then $a \SETin x$ or $a \SETin y$.
+      Hence $a$ is contained in some element of $\SETpair{x}{y}$.
+      Therefore $a \SETin \SETunionover \SETpair{x}{y}$.
+    End.
+  \end{proof}
+
+  \begin{corollary}[forthel,id=FOUNDATIONS_10_2157223832715264]
+    Let $x$ be a set.
+    Then $\SETunionover \SETsingleton{x} \eq x$.
+  \end{corollary}
+\end{sfragment}
+
+\begin{sfragment}{Intersections Over Systems of Sets}
+  \begin{definition}[forthel,id=FOUNDATIONS_10_2659345095458816]
+    Let $X$ be a system of sets.
+    $\emph{\SETintersectover X} = \{ a \mid a \SETin x\text{ for all }x \SETin X \}$.
+
+    Let the \emph{intersection over $X$} stand for $\SETintersectover X$.
+  \end{definition}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_2809770322952192]
+    $\SETintersectover \SETempty$ is the class of all objects.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Define $V = \{ x \mid x\text{ is an object}\}$.
+    We have $\SETintersectover \SETempty \SETinclude V$.
+    Indeed every element of $\SETintersectover \SETempty$ is an object.
+
+    Let us show that $V \SETinclude \SETintersectover \SETempty$.
+      Let $a \SETin V$.
+      Then $a$ is an object.
+      For every $x \SETin \SETempty$ we have $a \SETin x$.
+      Indeed $\SETempty$ has no elements.
+      Thus $a \SETin \SETintersectover \SETempty$.
+    End.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_7851827447988224]
+    Let $x, y$ be sets.
+    Then $\SETintersectover \SETpair{x}{y} \eq x \SETintersect y$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $\SETintersectover \SETpair{x}{y} \SETinclude x \SETintersect y$.
+      Let $a \SETin \SETintersectover \SETpair{x}{y}$.
+      Then $a$ is contained in every element of $\SETpair{x}{y}$.
+      Hence $a \SETin x$ and $a \SETin y$.
+      Thus $a \SETin x \SETintersect y$.
+    End.
+
+    Let us show that $x \SETintersect y \SETinclude \SETintersectover \SETpair{x}{y}$.
+      Let $a \SETin x \SETintersect y$.
+      Then $a \SETin x$ and $a \SETin y$.
+      Hence $a$ is contained in every element of $\SETpair{x}{y}$.
+      Therefore $a \SETin \SETintersectover \SETpair{x}{y}$.
+    End.
+  \end{proof}
+
+  \begin{corollary}[forthel,id=FOUNDATIONS_10_7239895674257408]
+    Let $x$ be a set.
+    Then $\SETintersectover \SETsingleton{x} \eq x$.
+  \end{corollary}
+\end{sfragment}
+\end{smodule}
+\end{document}

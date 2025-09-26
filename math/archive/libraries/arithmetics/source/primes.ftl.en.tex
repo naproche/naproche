@@ -1,0 +1,153 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{primes.ftl}
+\importmodule[libraries/arithmetics]{divisibility.ftl}
+\importmodule[libraries/arithmetics]{modular-arithmetics.ftl}
+\symdef{Prime}{\mathbb P}
+
+\begin{definition}[forthel,id=ARITHMETIC_10_5450464558579712]
+  Let $n$ be a natural number.
+  $n$ is \emph{prime} iff $n \NATgtr \NATone$ and $n$ has no nontrivial divisors.
+
+  Let $n$ is \emph{compound} stand for $n$ is not prime.
+  Let a \emph{prime number} stand for a natural number that is prime.
+\end{definition}
+
+\begin{definition}[forthel,id=ARITHMETIC_10_3834705971511296]
+  $\emph{\Prime}$ is the class of all prime numbers.
+\end{definition}
+
+\begin{proposition}[forthel,id=ARITHMETIC_10_7801379464675328]
+  Let $n$ be a natural number such that $n \NATgtr \NATone$.
+  Then $n$ is prime iff every divisor of $n$ is a trivial divisor of $n$.
+\end{proposition}
+
+\begin{proposition}[forthel,id=ARITHMETIC_10_3606185106210816]
+  Let $n$ be a natural number such that $n \NATgtr \NATone$.
+  Then $n$ has a prime divisor.
+\end{proposition}
+\begin{proof}[forthel]
+  Define $\Phi = \{ n' \in \Nat \mid\text{ if }n' \NATgtr \NATone\text{ then }n'\text{ has a prime divisor}\}$.
+
+  Let us show that for every $n' \SETin \Nat$ if $\Phi$ contains all
+  predecessors of $n'$ then $\Phi$ contains $n'$.
+    Let $n' \SETin \Nat$.
+    Assume that $\Phi$ contains all predecessors of $n'$.
+    We have $n' \eq \NATzero$ or $n' \eq \NATone$ or $n'$ is prime or $n'$ is composite.
+
+    \begin{case}{$n' \eq \NATzero$ or $n' \eq \NATone$.} \end{case}
+
+    \begin{case}{$n'$ is prime.} \end{case}
+
+    \begin{case}{$n'$ is composite.}
+      Take a nontrivial divisor $m$ of $n'$.
+      Then $\NATone \NATless m \NATless n'$.
+      $m$ is contained in $\Phi$.
+      Hence we can take a prime divisor $p$ of $m$.
+      Then we have $p \NATmid m \NATmid n'$.
+      Thus $p \NATmid n'$.
+      Therefore $p$ is a prime divisor of $n'$.
+    \end{case}
+  End.
+
+  Thus every natural number belongs to $\Phi$ (by \printref{ARITHMETIC_04_3609801697263616}).
+\end{proof}
+
+\begin{definition}[forthel,id=ARITHMETIC_10_463197419077632]
+  Let $n, m$ be natural numbers.
+  $n$ and $m$ are \emph{coprime} iff for all nonzero natural numbers $k$ such that $k \NATmid n$ and $k \NATmid m$ we have $k \eq \NATone$.
+
+  Let $n$ and $m$ are \emph{relatively prime} stand for $n$ and $m$ are coprime.
+  Let $n$ and $m$ are \emph{mutually prime} stand for $n$ and $m$ are coprime.
+  Let $n$ is \emph{prime to $m$} stand for $n$ and $m$ are coprime.
+\end{definition}
+
+\begin{proposition}[forthel,id=ARITHMETIC_10_5776394594287616]
+  Let $n, m$ be natural numbers.
+  $n$ and $m$ are coprime iff $n$ and $m$ have no common prime divisor.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$n$ and $m$ are coprime.}
+    Let $p$ be a prime number such that $p \NATmid n$ and $p \NATmid m$.
+    Then $p$ is nonzero and $p \neq \NATone$.
+    Contradiction.
+  \end{case}
+
+  \begin{case}{$n$ and $m$ have no common prime divisor.}
+    Assume that $n$ and $m$ are not coprime.
+    Let $k$ be a nonzero natural number such that $k \NATmid n$ and $k \NATmid m$.
+    Assume that $k \neq \NATone$.
+    Consider a prime divisor $p$ of $k$.
+    Then $p \NATmid k \NATmid n,m$.
+    Hence $p \NATmid n$ and $p \NATmid m$.
+    Contradiction.
+  \end{case}
+\end{proof}
+
+\begin{proposition}[forthel,id=ARITHMETIC_10_7212152851005440]
+  Let $n, m$ be natural numbers and $p$ be a prime number.
+  If $p$ does not divide $n$ then $p$ and $n$ are coprime.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $p \NATnmid n$.
+  Suppose that $p$ and $n$ are not coprime.
+  Take a nonzero natural number $k$ such that $k \NATmid p$ and $k \NATmid n$.
+  Then $k \eq p$.
+  Hence $p \NATmid n$.
+  Contradiction.
+\end{proof}
+
+\begin{proposition}[forthel,id=ARITHMETIC_10_8313676557713408]
+  Let $n, m$ be natural numbers and $p$ be a prime number.
+  If $p \NATmid n \NATmul m$ then $p \NATmid n$ or $p \NATmid m$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $p \NATmid n \NATmul m$.
+
+  \begin{case}{$p \NATmid n$.} \end{case}
+
+  \begin{case}{$p \NATnmid n$.}
+    Define $\Phi = \{ k \in \Nat \mid k \neq \NATzero\text{ and }p \NATmid k \NATmul m \}$.
+    Then $p \SETin \Phi$ and $n \SETin \Phi$.
+    Hence $\Phi$ contains some natural number.
+    Thus we can take $a \SETin \Phi$ such that $a \NATleq k$ for all $k \SETin \Phi$.
+
+    Let us show that $a$ divides all elements of $\Phi$.
+      Let $k \SETin \Phi$.
+      Take natural numbers $q, r$ such that $k \eq (a \NATmul q) \NATplus r$ and $r \NATless a$ (by \printref{ARITHMETIC_08_7743986617810944}).
+      Indeed $a$ is nonzero.
+      Then $k \NATmul m
+        \eq ((q \NATmul a) \NATplus r) \NATmul m
+        \eq ((q \NATmul a) \NATmul m) \NATplus (r \NATmul m)$.
+      We have $p \NATmid k \NATmul m$.
+      Hence $p \NATmid ((q \NATmul a) \NATmul m) \NATplus (r \NATmul m)$.
+
+      We can show that $p \NATmid r \NATmul m$.
+        We have $p \NATmid a \NATmul m$.
+        Hence $p \NATmid (q \NATmul a) \NATmul m$.
+        Indeed $((q \NATmul a) \NATmul m) \eq q \NATmul (a \NATmul m)$. %!
+        Take $A = (q \NATmul a) \NATmul m$ and $B = r \NATmul m$. %!
+        Then $p \NATmid A \NATplus B$ and $p \NATmid A$.
+        Thus $p \NATmid B$ (by \printref{ARITHMETIC_07_1076947887063040}).
+        Indeed $p, A$ and $B$ are natural numbers.
+        Consequently $p \NATmid r \NATmul m$.
+      End.
+
+      Therefore $r \eq \NATzero$.
+      Indeed if $r \neq \NATzero$ then $r$ is an element of $\Phi$ that is less than $a$.
+      Hence $k \eq q \NATmul a$.
+      Thus $a$ divides $k$.
+    End.
+
+    Then we have $a \NATmid p$ and $a \NATmid n$.
+    Hence $a \eq p$ or $a \eq \NATone$.
+    Thus $a \eq \NATone$.
+    Indeed if $a \eq p$ then $p \NATmid n$.
+    Then $\NATone \SETin \Phi$.
+    Therefore $p \NATmid \NATone \NATmul m \eq m$.
+  \end{case}
+\end{proof}
+\end{smodule}
+\end{document}

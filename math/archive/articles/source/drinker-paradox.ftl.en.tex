@@ -1,0 +1,55 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+
+\title{The Drinker Paradox in \Naproche}
+\author{Marcel Schütz}
+\date{2024--2025}
+
+\begin{document}
+\begin{smodule}{drinker-paradox.ftl}
+\maketitle
+
+\importmodule[libraries/everyday-ontology]{classes?person.ftl}
+\importmodule[libraries/everyday-ontology]{classes?place.ftl}
+\importmodule[libraries/everyday-ontology]{properties?inside.ftl}
+\importmodule[libraries/everyday-ontology]{properties?drinking.ftl}
+
+\noindent The \emph{Drinker Paradox} is a principle of classical predicate 
+logic popularised by the logician Raymond Smullyan in his 1978 book
+\textit{What Is the Name of this Book?} \cite{Smullyan1978} which can be 
+stated as:
+
+\begin{quotation}
+  \noindent There is someone in the pub such that, if he is drinking then 
+  everyone in the pub is drinking.
+\end{quotation}
+
+\begin{forthel}
+
+  \begin{signature*}
+    The pub is a place.
+  \end{signature*}
+  
+  \begin{theorem*}[title=Drinker Paradox,id=drinker_paradox]
+    Assume that there is a person inside the pub.
+    Then there is a person $P$ inside the pub such that if $P$ is drinking then every person inside the pub is drinking.
+  \end{theorem*}
+  \begin{proof}[method=case analysis]
+    \begin{case}{every person inside the pub is drinking.}
+      Choose a person $P$ inside the pub.
+      Then $P$ is drinking and every person inside the pub is drinking.
+      Hence if $P$ is drinking then every person inside the pub is drinking.
+    \end{case}
+  
+    \begin{case}{there is a person inside the pub that is not drinking.}
+      Consider a person $P$ inside the pub that is not drinking.
+      Then if $P$ is drinking then every person inside the pub is drinking.
+    \end{case}
+  \end{proof}
+\end{forthel}
+
+\printbibliography
+\printlicense[CcByNcSa]{2024--2025}{Marcel Schütz}
+\end{smodule}
+\end{document}

@@ -1,0 +1,24 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{exponentiation-and-division.ftl}
+\importmodule[libraries/arithmetics]{division.ftl}
+\importmodule[libraries/arithmetics]{exponentiation.ftl}
+\importmodule[libraries/arithmetics]{subtraction.ftl}
+
+\begin{proposition}[forthel,id=ARITHMETIC_14_2345102698451257]
+  Let $n, m, k$ be natural numbers such that $k$ is nonzero and $n \NATgeq m$.
+  Then \[\NATfrac{\NATexp{k}{n}}{\NATexp{k}{m}} \eq \NATexp{k}{n \NATsub m}.\]
+\end{proposition}
+\begin{proof}[forthel]
+  We have $\NATexp{k}{n} \eq \NATexp{k}{(n \NATsub m) \NATplus m} \eq \NATexp{k}{n \NATsub m} \NATmul \NATexp{k}{m}$.
+  Hence
+  \[  \NATfrac{\NATexp{k}{n}}{\NATexp{k}{m}}
+      \eq \NATfrac{\NATexp{k}{n \NATsub m} \NATmul \NATexp{k}{m}}{\NATexp{k}{m}}
+      \eq \NATfrac{\NATexp{k}{n \NATsub m} \NATmul \NATexp{k}{m}}{\NATone \NATmul \NATexp{k}{m}}
+      \eq \NATfrac{\NATexp{k}{n \NATsub m}}{\NATone}
+      \eq \NATexp{k}{n \NATsub m}. \]
+\end{proof}
+\end{smodule}
+\end{document}

@@ -1,3 +1,0 @@
-id: libraries/arithmetics
-ns: https://naproche.github.io/math/libraries/arithmetics
-narration-base: https://naproche.github.io/math/libraries/arithmetics

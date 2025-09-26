@@ -1,0 +1,47 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{omega-is-limit-ordinal.ftl}
+\importmodule[libraries/set-theory]{omega.ftl}
+\importmodule[libraries/set-theory]{limit-ordinals.ftl}
+
+\begin{proposition}[forthel,id=SET_THEORY_03_764451995254784]
+  $\ORDomega$ is a limit ordinal.
+\end{proposition}
+\begin{proof}[forthel]
+  $\ORDomega$ is transitive.
+  \begin{proof}
+    Define $\Phi = \{ n \in \ORDomega \mid\text{ for all }m \SETin n\text{ we have }m \SETin \ORDomega \}$.
+
+    (1) $\ORDzero \SETin \Phi$.
+
+    (2) For all $n \SETin \Phi$ we have $\ORDsucc(n) \SETin \Phi$.
+    \begin{proof}
+      Let $n \SETin \Phi$.
+      Then every element of $n$ is contained in $\ORDomega$.
+      Hence every element of $\ORDsucc(n)$ is contained in $\ORDomega$.
+      Thus $\ORDsucc(n) \SETin \Phi$.
+    \end{proof}
+
+    Therefore $\ORDomega \SETinclude \Phi$.
+    Consequently $\ORDomega$ is transitive.
+  \end{proof}
+
+  Every element of $\ORDomega$ is an ordinal.
+  Hence every element of $\ORDomega$ is transitive.
+  Thus $\ORDomega$ is an ordinal.
+
+  $\ORDomega$ is a limit ordinal.
+  \begin{proof}
+    Assume the contrary.
+    We have $\ORDomega \neq \ORDzero$.
+    Hence $\ORDomega$ is a successor ordinal.
+    Take an ordinal $\alpha$ such that $\ORDsucc(\alpha) \eq \ORDomega$.
+    Then $\alpha \SETin \ORDomega$.
+    Thus $\ORDomega \eq \ORDsucc(\alpha) \SETin \ORDomega$.
+    Contradiction.
+  \end{proof}
+\end{proof}
+\end{smodule}
+\end{document}

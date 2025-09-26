@@ -1,0 +1,305 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{symmetric-difference.ftl}
+\importmodule[libraries/foundations]{computation-laws-for-classes.ftl}
+\symdef{SETsymdiff}{\,\triangle\,}
+
+\begin{sfragment}{Definitions}
+  \begin{definition}[forthel,id=FOUNDATIONS_03_7457594151010304]
+    Let $A, B$ be classes.
+    $\emph{A \SETsymdiff B} = (A \SETunion B) \SETdiff (A \SETintersect B)$.
+
+    Let the \emph{symmetric difference of $A$ and $B$} stand for $A \SETsymdiff B$.
+  \end{definition}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_03_4886447211413504]
+    Let $A, B$ be classes.
+    Then $A \SETsymdiff B \eq (A \SETdiff B) \SETunion (B \SETdiff A)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $A \SETsymdiff B \SETinclude (A \SETdiff B) \SETunion (B \SETdiff A)$.
+      Let $u \SETin A \SETsymdiff B$.
+      Then $u \SETin A \SETunion B$ and $u \SETnotin A \SETintersect B$.
+      Hence ($u \SETin A$ or $u \SETin B$) and not ($u \SETin A$ and $u \SETin B$).
+      Thus ($u \SETin A$ or $u \SETin B$) and ($u \SETnotin A$ or $u \SETnotin B$).
+      Therefore if $u \SETin A$ then $u \SETnotin B$.
+      If $u \SETin B$ then $u \SETnotin A$.
+      Then we have ($u \SETin A$ and $u \SETnotin B$) or ($u \SETin B$ and $u \SETnotin A$).
+      Hence $u \SETin A \SETdiff B$ or $u \SETin B \SETdiff A$.
+      Thus $u \SETin (A \SETdiff B) \SETunion (B \SETdiff A)$.
+    End.
+
+    Let us show that $((A \SETdiff B) \SETunion (B \SETdiff A)) \SETinclude A \SETsymdiff B$. %!
+      Let $u \SETin (A \SETdiff B) \SETunion (B \SETdiff A)$.
+      Then ($u \SETin A$ and $u \SETnotin B$) or ($u \SETin B$ and $u \SETnotin A$).
+      If $u \SETin A$ and $u \SETnotin B$ then $u \SETin A \SETunion B$ and $u \SETnotin A \SETintersect B$.
+      If $u \SETin B$ and $u \SETnotin A$ then $u \SETin A \SETunion B$ and $u \SETnotin A \SETintersect B$.
+      Hence $u \SETin A \SETunion B$ and $u \SETnotin A \SETintersect B$.
+      Thus $u \SETin (A \SETunion B) \SETdiff (A \SETintersect B) \eq A \SETsymdiff B$.
+    End.
+  \end{proof}
+\end{sfragment}
+
+\begin{sfragment}{Computation Laws}
+  \begin{sfragment}{Commutativity}
+    \begin{proposition}[forthel,id=FOUNDATIONS_03_4518372049944576]
+      Let $A, B$ be classes.
+      Then $A \SETsymdiff B \eq B \SETsymdiff A$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      $A \SETsymdiff B
+        \eq (A \SETunion B) \SETdiff (A \SETintersect B)
+        \eq (B \SETunion A) \SETdiff (B \SETintersect A)
+        \eq B \SETsymdiff A$.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Associativity}
+    \begin{proposition}[forthel,id=FOUNDATIONS_03_8680845204258816]
+      Let $A, B, C$ be classes.
+      Then $(A \SETsymdiff B) \SETsymdiff C \eq A \SETsymdiff (B \SETsymdiff C)$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Take a class $X$ such that $X \eq (((A \SETdiff B) \SETunion (B \SETdiff A)) \SETdiff C) \SETunion (C \SETdiff ((A \SETdiff B) \SETunion (B \SETdiff A)))$.
+
+      Take a class $Y$ such that $Y \eq (A \SETdiff ((B \SETdiff C) \SETunion (C \SETdiff B))) \SETunion (((B \SETdiff C) \SETunion (C \SETdiff B)) \SETdiff A)$.
+
+      We have $A \SETsymdiff B \eq (A \SETdiff B) \SETunion (B \SETdiff A)$ and $B \SETsymdiff C \eq (B \SETdiff C) \SETunion (C \SETdiff B)$.
+      Hence $(A \SETsymdiff B) \SETsymdiff C \eq X$ and $A \SETsymdiff (B \SETsymdiff C) \eq Y$.
+
+      Let us show that (I) $X \SETinclude Y$.
+        Let $x \SETin X$.
+
+        \begin{case}{$x \SETin ((A \SETdiff B) \SETunion (B \SETdiff A)) \SETdiff C$.}
+          Then $x \SETnotin C$.
+
+          \begin{case}{$x \SETin A \SETdiff B$.}
+            Then $x \SETnotin B \SETdiff C$ and $x \SETnotin C \SETdiff B$. $x \SETin A$.
+            Hence $x \SETin A \SETdiff ((B \SETdiff C) \SETunion (C \SETdiff B))$.
+            Thus $x \SETin Y$.
+          \end{case}
+
+          \begin{case}{$x \SETin B \SETdiff A$.}
+            Then $x \SETin B \SETdiff C$.
+            Hence $x \SETin (B \SETdiff C) \SETunion (C \SETdiff B)$. $x \SETnotin A$.
+            Thus $x \SETin ((B \SETdiff C) \SETunion (C \SETdiff B)) \SETdiff A$.
+            Therefore $x \SETin Y$.
+          \end{case}
+        \end{case}
+
+        \begin{case}{$x \SETin C \SETdiff ((A \SETdiff B) \SETunion (B \SETdiff A))$.}
+          Then $x \SETin C$.
+          $x \SETnotin A \SETdiff B$ and $x \SETnotin B \SETdiff A$.
+          Hence not ($x \SETin A \SETdiff B$ or $x \SETin B \SETdiff A$).
+          Thus not (($x \SETin A$ and $x \SETnotin B$) or ($x \SETin B$ and $x \SETnotin A$)).
+          Therefore ($x \SETnotin A$ or $x \SETin B$) and ($x \SETnotin B$ or $x \SETin A$).
+
+          \begin{case}{$x \SETin A$.}
+            Then $x \SETin B$.
+            Hence $x \SETnotin (B \SETdiff C) \SETunion (C \SETdiff B)$.
+            Thus $x \SETin A \SETdiff ((B \SETdiff C) \SETunion (C \SETdiff B))$.
+            Therefore $x \SETin Y$.
+          \end{case}
+
+          \begin{case}{$x \SETnotin A$.}
+            Then $x \SETnotin B$.
+            Hence $x \SETin C \SETdiff B$.
+            Thus $x \SETin (B \SETdiff C) \SETunion (C \SETdiff B)$.
+            Therefore $x \SETin ((B \SETdiff C) \SETunion (C \SETdiff B)) \SETdiff A$.
+            Then we have $x \SETin Y$.
+          \end{case}
+        \end{case}
+      End.
+
+      Let us show that (II) $Y \SETinclude X$.
+        Let $y \SETin Y$.
+
+        \begin{case}{$y \SETin A \SETdiff ((B \SETdiff C) \SETunion (C \SETdiff B))$.}
+          Then $y \SETin A$.
+          $y \SETnotin B \SETdiff C$ and $y \SETnotin C \SETdiff B$.
+          Hence not ($y \SETin B \SETdiff C$ or $y \SETin C \SETdiff B$).
+          Thus not (($y \SETin B$ and $y \SETnotin C$) or ($y \SETin C$ and $y \SETnotin B$)).
+          Therefore ($y \SETnotin B$ or $y \SETin C$) and ($y \SETnotin C$ or $y \SETin B$).
+
+          \begin{case}{$y \SETin B$.}
+            Then $y \SETin C$.
+            $y \SETnotin A \SETdiff B$ and $y \SETnotin B \SETdiff A$.
+            Hence $y \SETnotin (A \SETdiff B) \SETunion (B \SETdiff A)$.
+            Thus $y \SETin C \SETdiff ((A \SETdiff B) \SETunion (B \SETdiff A))$.
+            Therefore $y \SETin X$.
+          \end{case}
+
+          \begin{case}{$y \SETnotin B$.}
+            Then $y \SETnotin C$.
+            $y \SETin A \SETdiff B$.
+            Hence $y \SETin (A \SETdiff B) \SETunion (B \SETdiff A)$.
+            Thus $y \SETin ((A \SETdiff B) \SETunion (B \SETdiff A)) \SETdiff C$.
+            Therefore $y \SETin X$.
+          \end{case}
+        \end{case}
+
+        \begin{case}{$y \SETin ((B \SETdiff C) \SETunion (C \SETdiff B)) \SETdiff A$.}
+          Then $y \SETnotin A$.
+
+          \begin{case}{$y \SETin B \SETdiff C$.}
+            Then $y \SETin B \SETdiff A$.
+            Hence $y \SETin (A \SETdiff B) \SETunion (B \SETdiff A)$.
+            Thus $y \SETin ((A \SETdiff B) \SETunion (B \SETdiff A)) \SETdiff C$.
+            Therefore $y \SETin X$.
+          \end{case}
+
+          \begin{case}{$y \SETin C \SETdiff B$.}
+            Then $y \SETin C$.
+            $y \SETnotin A \SETdiff B$ and $y \SETnotin B \SETdiff A$.
+            Hence $y \SETnotin (A \SETdiff B) \SETunion (B \SETdiff A)$.
+            Thus $y \SETin C \SETdiff ((A \SETdiff B) \SETunion (B \SETdiff A))$.
+            Therefore $y \SETin X$.
+          \end{case}
+        \end{case}
+      End.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Distributivity}
+    \begin{proposition}[forthel,id=FOUNDATIONS_03_4119141910839296]
+      Let $A, B, C$ be classes.
+      Then $A \SETintersect (B \SETsymdiff C) \eq (A \SETintersect B) \SETsymdiff (A \SETintersect C)$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      $A \SETintersect (B \SETsymdiff C)
+        \eq A \SETintersect ((B \SETdiff C) \SETunion (C \SETdiff B))
+        \eq (A \SETintersect (B \SETdiff C)) \SETunion (A \SETintersect (C \SETdiff B))$.
+
+      $A \SETintersect (B \SETdiff C) \eq (A \SETintersect B) \SETdiff (A \SETintersect C)$.
+      $A \SETintersect (C \SETdiff B) \eq (A \SETintersect C) \SETdiff (A \SETintersect B)$.
+
+      Hence $A \SETintersect (B \SETsymdiff C)
+        \eq ((A \SETintersect B) \SETdiff (A \SETintersect C)) \SETunion ((A \SETintersect C) \SETdiff (A \SETintersect B))
+        \eq (A \SETintersect B) \SETsymdiff (A \SETintersect C)$.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Miscellaneous Rules}
+    \begin{proposition}[forthel,id=FOUNDATIONS_03_7383417205293056]
+      Let $A, B$ be classes.
+      Then $A \SETinclude B \iff A \SETsymdiff B \eq B \SETdiff A$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      \begin{case}{$A \SETinclude B$.}
+        Then $A \SETunion B \eq B$ and $A \SETintersect B \eq A$.
+        Hence the thesis.
+      \end{case}
+
+      \begin{case}{$A \SETsymdiff B \eq B \SETdiff A$.}
+        Let $a \SETin A$.
+        Then $a \SETnotin B \SETdiff A$.
+        Hence $a \SETnotin A \SETsymdiff B$.
+        Thus $a \SETnotin A \SETunion B$ or $a \SETin A \SETintersect B$.
+        Indeed $A \SETsymdiff B \eq (A \SETunion B) \SETdiff (A \SETintersect B)$.
+        If $a \SETnotin A \SETunion B$ then we have a contradiction.
+        Therefore $a \SETin A \SETintersect B$.
+        Then we have the thesis.
+      \end{case}
+    \end{proof}
+
+    \begin{proposition}[forthel,id=FOUNDATIONS_03_4490230937681920]
+      Let $A, B, C$ be classes.
+      Then $A \SETsymdiff B \eq A \SETsymdiff C \iff B \eq C$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      \begin{case}{$A \SETsymdiff B \eq A \SETsymdiff C$.}
+
+        Let us show that $B \SETinclude C$.
+          Let $b \SETin B$.
+
+          \begin{case}{$b \SETin A$.}
+            Then $b \SETnotin A \SETsymdiff B$.
+            Hence $b \SETnotin A \SETsymdiff C$.
+            Therefore $b \SETin A \SETintersect C$.
+            Indeed $A \SETsymdiff C \eq (A \SETunion C) \SETdiff (A \SETintersect C)$.
+            Hence $b \SETin C$.
+          \end{case}
+
+          \begin{case}{$b \SETnotin A$.}
+            Then $b \SETin A \SETsymdiff B$.
+            Indeed $b \SETin A \SETunion B$ and $b \SETnotin A \SETintersect B$.
+            Hence $b \SETin A \SETsymdiff C$.
+            Thus $b \SETin A \SETunion C$ and $b \SETnotin A \SETintersect C$.
+            Therefore $b \SETin A$ or $b \SETin C$.
+            Then we have the thesis.
+          \end{case}
+        End.
+
+        Let us show that $C \SETinclude B$.
+          Let $c \SETin C$.
+
+          \begin{case}{$c \SETin A$.}
+            Then $c \SETnotin A \SETsymdiff C$.
+            Hence $c \SETnotin A \SETsymdiff B$.
+            Therefore $c \SETin A \SETintersect B$.
+            Indeed $c \SETnotin A \SETunion B$ or $c \SETin A \SETintersect B$.
+            Hence $c \SETin B$.
+          \end{case}
+
+          \begin{case}{$c \SETnotin A$.}
+            Then $c \SETin A \SETsymdiff C$.
+            Indeed $c \SETin A \SETunion C$ and $c \SETnotin A \SETintersect C$.
+            Hence $c \SETin A \SETsymdiff B$.
+            Thus $c \SETin A \SETunion B$ and $c \SETnotin A \SETintersect B$.
+            Therefore $c \SETin A$ or $c \SETin B$.
+            Then we have the thesis.
+          \end{case}
+        End.
+      \end{case}
+    \end{proof}
+
+    \begin{proposition}[forthel,id=FOUNDATIONS_03_4578696040022016]
+      Let $A$ be a class.
+      Then $A \SETsymdiff A \eq \SETempty$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      $A \SETsymdiff A
+        \eq (A \SETunion A) \SETdiff (A \SETintersect A)
+        \eq A \SETdiff A
+        \eq \SETempty$.
+    \end{proof}
+
+    \begin{proposition}[forthel,id=FOUNDATIONS_03_6698730398941184]
+      Let $A$ be a class.
+      Then $A \SETsymdiff \SETempty \eq A$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      $A \SETsymdiff \SETempty
+        \eq (A \SETunion \SETempty) \SETdiff (A \SETintersect \SETempty)
+        \eq A \SETdiff \SETempty
+        \eq A$.
+    \end{proof}
+
+    \begin{proposition}[forthel,id=FOUNDATIONS_03_6111806917443584]
+      Let $A, B$ be classes.
+      Then $A \eq B \iff A \SETsymdiff B \eq \SETempty$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      \begin{case}{$A \eq B$.}
+        Then $A \SETsymdiff B
+          \eq (A \SETunion A) \SETdiff (A \SETintersect A)
+          \eq A \SETdiff A
+          \eq \SETempty.$
+        Hence the thesis.
+      \end{case}
+
+      \begin{case}{$A \SETsymdiff B \eq \SETempty$.}
+        Then $(A \SETunion B) \SETdiff (A \SETintersect B)$ is empty.
+        Hence every element of $A \SETunion B$ is an element of $A \SETintersect B$.
+        Thus for all objects $u$ if $u \SETin A$ or $u \SETin B$ then $u \SETin A$ and $u \SETin B$.
+        Therefore every element of $A$ is an element of $B$.
+        Every element of $B$ is an element of $A$.
+        Then we have the thesis.
+      \end{case}
+    \end{proof}
+  \end{sfragment}
+\end{sfragment}
+\end{smodule}
+\end{document}

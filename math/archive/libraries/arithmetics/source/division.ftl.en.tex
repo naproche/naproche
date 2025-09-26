@@ -1,0 +1,109 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{division.ftl}
+\importmodule[libraries/arithmetics]{divisibility.ftl}
+\symdef{NATfrac}[args=2]{\frac{#1}{#2}}
+
+\begin{definition}[forthel,id=ARITHMETIC_14_2313654268297915]
+  Let $n$ be a natural number and $m$ be a nonzero divisor of $n$.
+  $\emph{\NATfrac{n}{m}}$ is the natural number $k$ such that $k \NATmul m \eq n$.
+
+  Let the \emph{quotient of $n$ and $m$} stand for $\NATfrac{n}{m}$.
+\end{definition}
+
+\begin{proposition}[forthel,id=ARITHMETIC_14_0843793254698710]
+  Let $n$ be a natural number.
+  $\NATfrac{n}{\NATone} \eq n$.
+\end{proposition}
+\begin{proof}[forthel]
+  We have $\NATfrac{n}{\NATone}
+    \eq \NATfrac{n}{\NATone} \NATmul \NATone
+    \eq n$.
+\end{proof}
+
+\begin{proposition}[forthel,id=ARITHMETIC_14_1254235698632545]
+  Let $n$ be a natural number and $m$ be a nonzero divisor of $n$.
+  Then $\NATfrac{n}{m} \eq \NATzero$ iff $n \eq \NATzero$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$\NATfrac{n}{m} \eq \NATzero$.}
+    Then $n
+      \eq \NATfrac{n}{m} \NATmul m
+      \eq \NATzero \NATmul m
+      \eq \NATzero$.
+  \end{case}
+
+  \begin{case}{$n \eq \NATzero$.}
+    Then $\NATfrac{n}{m} \NATmul m
+      \eq n
+      \eq \NATzero$.
+    Hence $\NATfrac{n}{m} \eq \NATzero$ or $m \eq \NATzero$.
+    $m$ is nonzero.
+    Thus $\NATfrac{n}{m} \eq \NATzero$.
+  \end{case}
+\end{proof}
+
+\begin{proposition}[forthel,id=ARITHMETIC_14_5137961454123875]
+  Let $n, m, k$ be natural numbers such that $k$ is nonzero.
+  Assume $k \NATmid n,m$.
+  Then \[\NATfrac{n \NATplus m}{k} \eq \NATfrac{n}{k} \NATplus \NATfrac{m}{k}.\]
+\end{proposition}
+\begin{proof}[forthel]
+  We have $\NATfrac{n \NATplus m}{k} \NATmul k \eq n \NATplus m$ and $\NATfrac{n}{k} \NATmul k \eq n$ and $\NATfrac{m}{k} \NATmul k \eq m$.
+  Hence
+  \[  \NATfrac{n \NATplus m}{k} \NATmul k
+      \eq \left( \NATfrac{n}{k} \NATmul k \right) \NATplus \left( \NATfrac{m}{k} \NATmul k \right)
+      \eq \left( \NATfrac{n}{k} \NATplus \NATfrac{m}{k} \right) \NATmul k. \]
+  Thus $\NATfrac{n \NATplus m}{k} \eq \NATfrac{n}{k} \NATplus \NATfrac{m}{k}$.
+\end{proof}
+
+\begin{proposition}[forthel,id=ARITHMETIC_14_1203565412058488]
+  Let $n, m$ be natural numbers and $k$ be a nonzero divisor of $m$.
+  Then \[\NATfrac{n \NATmul m}{k} \eq n \NATmul \NATfrac{m}{k}.\]
+\end{proposition}
+\begin{proof}[forthel]
+  We have $\NATfrac{n \NATmul m}{k} \NATmul k \eq n \NATmul m$ and $\NATfrac{m}{k} \NATmul k \eq m$.
+  Hence
+  \[  \NATfrac{n \NATmul m}{k} \NATmul k
+      \eq n \NATmul \left( \NATfrac{m}{k} \NATmul k \right)
+      \eq \left( n \NATmul \NATfrac{m}{k} \right) \NATmul k. \]
+  Thus $\NATfrac{n \NATmul m}{k} \eq n \NATmul \NATfrac{m}{k}$.
+\end{proof}
+
+\begin{corollary}[forthel,id=ARITHMETIC_14_7985412544563256]
+  Let $n, m$ be natural numbers and $k$ be a nonzero divisor of $m$.
+  Then \[\NATfrac{n \NATmul m}{k} \eq \NATfrac{m}{k} \NATmul n.\]
+\end{corollary}
+
+\begin{corollary}[forthel,id=ARITHMETIC_14_5446124202158602]
+  Let $n, m$ be natural numbers and $k$ be a nonzero divisor of $n$.
+  Then \[\NATfrac{n \NATmul m}{k} \eq \NATfrac{n}{k} \NATmul m.\]
+\end{corollary}
+
+\begin{corollary}[forthel,id=ARITHMETIC_14_7751120023654896]
+  Let $n, m$ be natural numbers and $k$ be a nonzero divisor of $n$.
+  Then \[\NATfrac{n \NATmul m}{k} \eq m \NATmul \NATfrac{n}{k}.\]
+\end{corollary}
+
+\begin{proposition}[forthel,id=ARITHMETIC_14_0531254868745988]
+  Let $n, k$ be natural numbers such that $k$ be nonzero and $m$ be a nonzero divisor of $n$.
+  Then \[\NATfrac{n \NATmul k}{m \NATmul k} \eq \NATfrac{n}{m}.\]
+\end{proposition}
+\begin{proof}[forthel]
+  We have $\NATfrac{n \NATmul k}{m \NATmul k} \NATmul (m \NATmul k) \eq n \NATmul k$.
+  Hence
+  \[  \left( \NATfrac{n \NATmul k}{m \NATmul k} \NATmul m \right) \NATmul k
+      \eq \NATfrac{n \NATmul k}{m \NATmul k} \NATmul (m \NATmul k)
+      \eq n \NATmul k. \]
+  Thus $\NATfrac{n \NATmul k}{m \NATmul k} \NATmul m \eq n$.
+  Therefore $\NATfrac{n}{m} \eq \NATfrac{n \NATmul k}{m \NATmul k}$.
+\end{proof}
+
+\begin{corollary}[forthel,id=ARITHMETIC_14_7954254458622034]
+  Let $n, k$ be natural numbers such that $k$ be nonzero and $m$ be a nonzero divisor of $n$.
+  Then \[\NATfrac{k \NATmul n}{k \NATmul m} \eq \NATfrac{n}{m}.\]
+\end{corollary}
+\end{smodule}
+\end{document}

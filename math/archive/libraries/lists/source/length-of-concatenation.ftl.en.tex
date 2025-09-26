@@ -1,0 +1,36 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{length-of-concatenation.ftl}
+\importmodule[libraries/lists]{length.ftl}
+\importmodule[libraries/lists]{concatenation.ftl}
+
+\begin{proposition}[forthel,id=LISTS_LENGTHCONCAT_4512036658964875]
+  $\LISTlength(L \LISTconcat L') \eq \LISTlength(L) \NATplus \LISTlength(L')$ for all lists $L, L'$.
+\end{proposition}
+\begin{proof}[forthel,method=induction on $L$]
+  Let $L$ be a list.
+
+  \begin{case}{$L \eq \LISTlist{}$.}\end{case}
+
+  \begin{case}{$L \eq a \LISTcons L''$ for some object $a$ and some list $L''$.}
+    Take an object $a$ and a list $L''$ such that $L \eq a \LISTcons L''$.
+    Then $L'' \prec L$.
+    Hence $\LISTlength(L'' \LISTconcat L') \eq \LISTlength(L'') \NATplus \LISTlength(L')$ for every list $L'$.
+    Thus
+    \begin{align*}
+      \LISTlength(L \LISTconcat L')
+        &\eq \LISTlength((a \LISTcons L'') \LISTconcat L')\\
+        &\eq \LISTlength(a \LISTcons (L'' \LISTconcat L'))\\
+        &\eq \LISTlength(L'' \LISTconcat L') \NATplus \NATone\\
+        &\eq (\LISTlength(L'') \NATplus \LISTlength(L')) \NATplus \NATone\\
+        &\eq (\LISTlength(L'') \NATplus \NATone) \NATplus \LISTlength(L')\\
+        &\eq \LISTlength(a \LISTcons L'') \NATplus \LISTlength(L')\\
+        &\eq \LISTlength(L) \NATplus \LISTlength(L')
+    \end{align*}
+    for every list $L'$.
+  \end{case}
+\end{proof}
+\end{smodule}
+\end{document}

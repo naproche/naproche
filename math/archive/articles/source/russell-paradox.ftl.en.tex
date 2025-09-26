@@ -1,0 +1,35 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+
+\title{Russell's Paradox in \Naproche}
+\author{Marcel Schütz}
+\date{2024--2025}
+
+\begin{document}
+\begin{smodule}{russell-paradox.ftl}
+\maketitle
+
+\noindent \emph{Russell's Paradox} is a set-theoretical paradox discovered by
+Bertrand Russell around 1902 \cite[chapter XV]{Frege1980} which shows that 
+there exist statements $\varphi$ whose extension
+$\{x\mid\varphi(x)\}$ cannot constitute a set -- or in other words:
+Not every class is a set.
+
+\begin{forthel}
+  \begin{theorem}[title=Russell's Paradox]
+    There exists a class that is not a set.
+  \end{theorem}
+  \begin{proof}[forthel]
+    Assume the contrary.
+    Define $R = \{x \mid x \text{ is a set such that } x \notin x\}$.
+    Then $R$ is a set.
+    Hence $R \in R$ iff $R \notin R$.
+    Contradiction.
+  \end{proof}
+\end{forthel}
+
+\printbibliography
+\printlicense[CcByNcSa]{2024--2025}{Marcel Schütz}
+\end{smodule}
+\end{document}

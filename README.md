@@ -188,34 +188,6 @@ Naproche [<options>] [<file>]
   text in the TEX dialect, provide the option `--tex=on`).
 
 
-## Rendering the Formalizations as PDF or HTML
-
-### Prerequisites
-
-* Make sure that up-to-date versions of `pdflatex` and `bibtex` are in your
-  `PATH`.
-
-* (Optional – only required to render the formalizations as HTML.)
-  Make sure that an up-to-date version of [RusTeX][rustex] is in your `PATH`.
-
-
-### Rendering as PDF
-
-```shell
-Naproche --mode=render <filename>.ftl.tex
-```
-
-
-### Rendering as HTML
-
-```shell
-rustex -i <filename>.ftl.tex -o <filename>.ftl.xhtml
-bibtex <filename>.ftl
-
-sed -i "s|</style>|</style>\n    <link rel=\"stylesheet\" href=\"$(isabelle getenv -b NAPROCHE_FORMALIZATIONS)/latex/lib/lib.css\"/>\;|g" <filename>.ftl.xhtml
-```
-
-
 ## Changelog
 
 See [CHANGELOG.md](CHAMGELOG.md) for a changelog of Naproche.
@@ -244,5 +216,3 @@ You can find more resources in our [CONTRIBUTING.md](CONTRIBUTING.md).
 [vampire]: <https://vprover.github.io/>
 [cygwin]: <https://cygwin.com/>
 [wsl]: <https://learn.microsoft.com/en-us/windows/wsl/>
-[rustex]: <https://github.com/slatex/RusTeX>
-[texlive]: <https://tug.org/texlive/>

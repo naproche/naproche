@@ -1,0 +1,377 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{image-and-preimage.ftl}
+\importmodule[libraries/foundations]{maps.ftl}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_5919649206108160]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
+  Then $\FUNim{f}{X} = \{ f(x) \mid x \SETin X \}$.
+\end{proposition}
+
+\begin{corollary}[forthel,id=FOUNDATIONS_07_5543924730953728]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
+  Then $\FUNim{f}{A} \eq \FUNrange(f)$.
+\end{corollary}
+
+\begin{corollary}[forthel,id=FOUNDATIONS_07_1818812171157504]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
+  Then $\FUNim{f}{X} \eq \FUNrange(f \FUNrest X)$.
+\end{corollary}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_911395830890496]
+  Let $A$ be a class and $X \SETinclude A$.
+  Then $\FUNim{\FUNid{A}}{X} \eq X$.
+\end{proposition}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_3349817830932480]
+  Let $B$ be a class and $Y \SETinclude B$.
+  Then $\FUNpreim{\FUNid{B}}{Y} \eq Y$.
+\end{proposition}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_6362984433582080]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y \SETinclude B$ and $a \SETin A$.
+  Then $f(a) \SETin Y$ iff $a \SETin \FUNpreim{f}{Y}$.
+\end{proposition}
+\begin{proof}[forthel]
+  We have $\FUNpreim{f}{Y} = \{ x \in A \mid f(x) \SETin Y \}$.
+  Hence $a \SETin \FUNpreim{f}{Y}$ iff $a \SETin A$ and $f(a) \SETin Y$.
+  Then we have the thesis.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_6730546254184448]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
+  Then $\FUNim{f}{A} \SETinclude B$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\FUNim{f}{A}
+    \eq \FUNim{f}{\FUNdom(f)}
+    \eq \FUNrange(f)
+    \SETinclude B$.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_6541963008409600]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
+  Then $\FUNpreim{f}{B} \eq A$.
+\end{proposition}
+\begin{proof}[forthel]
+  We have $\FUNpreim{f}{B} = \{ a \in A \mid f(a) \SETin B \}$.
+  $f(a) \SETin B$ for all $a \SETin A$.
+  Hence the thesis.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_1913313581596672]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
+  Then $\FUNim{f}{\FUNpreim{f}{B}} \eq \FUNim{f}{A}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $\FUNim{f}{\FUNpreim{f}{B}} \SETinclude \FUNim{f}{A}$.
+    Let $b \SETin \FUNim{f}{\FUNpreim{f}{B}}$.
+    Take $a \SETin \FUNpreim{f}{B} \SETintersect A$ such that $b \eq f(a)$.
+    Then $a \SETin A$.
+    Hence $b \SETin \FUNim{f}{A}$.
+  End.
+
+  Let us show that $\FUNim{f}{A} \SETinclude \FUNim{f}{\FUNpreim{f}{B}}$.
+    Let $b \SETin \FUNim{f}{A}$.
+    Take $a \SETin A$ such that $b \eq f(a)$.
+    We have $b \SETin B$.
+    Hence $a \SETin \FUNpreim{f}{B}$.
+    Thus $f(a) \SETin \FUNim{f}{\FUNpreim{f}{B}}$.
+    Indeed $\FUNpreim{f}{B} \SETinclude A$.
+    Therefore $b \SETin \FUNim{f}{\FUNpreim{f}{B}}$.
+  End.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_3819758101200896]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
+  Then $\FUNpreim{f}{\FUNim{f}{A}} \eq A$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\FUNpreim{f}{\FUNim{f}{A}} = \{ a \in A \mid f(a) \SETin \FUNim{f}{A} \}$.
+  For all $a \SETin A$ we have $f(a) \SETin \FUNim{f}{A}$.
+  Hence every element of $\FUNpreim{f}{\FUNim{f}{A}}$ is contained in $A$ and every element of $A$ is contained in $\FUNpreim{f}{\FUNim{f}{A}}$.
+  Thus $\FUNpreim{f}{\FUNim{f}{A}} \eq A$.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_7760514696347648]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y \SETinclude B$.
+  Then $\FUNim{f}{\FUNpreim{f}{Y}} \eq Y \SETintersect \FUNim{f}{A}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $\FUNim{f}{\FUNpreim{f}{Y}} \SETinclude Y \SETintersect \FUNim{f}{A}$.
+    Let $b \SETin \FUNim{f}{\FUNpreim{f}{Y}}$.
+    Take $a \SETin \FUNpreim{f}{Y}$ such that $b \eq f(a)$.
+    Then $f(a) \SETin Y \SETintersect \FUNim{f}{A}$.
+    Hence we have $b \SETin Y \SETintersect \FUNim{f}{A}$.
+  End.
+
+  Let us show that $Y \SETintersect \FUNim{f}{A} \SETinclude \FUNim{f}{\FUNpreim{f}{Y}}$.
+    Let $b \SETin Y \SETintersect \FUNim{f}{A}$.
+    Take $a \SETin A$ such that $b \eq f(a)$.
+    Then $a \SETin \FUNpreim{f}{Y}$.
+    Hence $f(a) \SETin \FUNim{f}{\FUNpreim{f}{Y}}$.
+  End.
+\end{proof}
+
+\begin{corollary}[forthel,id=FOUNDATIONS_07_5585105345052672]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y \SETinclude B$.
+  Then $\FUNim{f}{\FUNpreim{f}{Y}} \SETinclude Y$.
+\end{corollary}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_4890896170483712]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
+  Then $\FUNpreim{f}{\FUNim{f}{X}} \SETniclude X$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $a \SETin X$.
+  Then $f(a) \SETin \FUNim{f}{X}$.
+  Hence $a \SETin \FUNpreim{f}{\FUNim{f}{X}}$.
+  Indeed $\FUNim{f}{X} \SETinclude B$.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_3318372355801088]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
+  Then $\FUNim{f}{X} \eq \SETempty$ iff $X \eq \SETempty$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$\FUNim{f}{X}$ is empty.}
+    Then there is no $a \SETin X$ such that $f(a) \SETin \FUNim{f}{X}$.
+    For all $a \SETin X$ we have $f(a) \SETin \FUNim{f}{X}$.
+    Hence $X$ is empty.
+  \end{case}
+
+  \begin{case}{$X$ is empty.}
+    For all $b \SETin \FUNim{f}{X}$ we have $b \eq f(a)$ for some $a \SETin X$.
+    There is no $a \SETin X$.
+    Hence $\FUNim{f}{X}$ is empty.
+  \end{case}
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_8597874786959360]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y \SETinclude B$.
+  Then $\FUNpreim{f}{Y} \eq \SETempty$ iff $Y \SETinclude B \SETdiff \FUNim{f}{A}$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$\FUNpreim{f}{Y}$ is empty.}
+    Let $b \SETin Y$.
+    Then $b \SETin B$.
+
+    There is no $a \SETin A$ such that $b \eq f(a)$.
+    \begin{proof}
+      Assume the contrary.
+      Take $a \SETin A$ such that $b \eq f(a)$.
+      Then $a \SETin \FUNpreim{f}{Y}$.
+      Contradiction.
+    \end{proof}
+
+    Hence $b \SETnotin \FUNim{f}{A}$.
+    Therefore $b \SETin B \SETdiff \FUNim{f}{A}$.
+  \end{case}
+
+  \begin{case}{$Y \SETinclude B \SETdiff \FUNim{f}{A}$.}
+    Then no element of $Y$ is an element of $\FUNim{f}{A}$.
+    Assume that $\FUNpreim{f}{Y}$ is nonempty.
+    Take $a \SETin \FUNpreim{f}{Y}$.
+    Then $f(a) \SETin Y$ and $f(a) \SETin \FUNim{f}{A}$.
+    Contradiction.
+  \end{case}
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_6295504988143616]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$ and $Y \SETinclude B$.
+  Then $\FUNim{f}{X} \SETintersect Y \eq \SETempty$ iff $X \SETintersect \FUNpreim{f}{Y} \eq \SETempty$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$\FUNim{f}{X} \SETintersect Y$ is empty.}
+    Assume that $X \SETintersect \FUNpreim{f}{Y}$ is nonempty.
+    Take $a \SETin X \SETintersect \FUNpreim{f}{Y}$.
+    Then $f(a) \SETin \FUNim{f}{X}$ and $f(a) \SETin Y$.
+    Hence $f(a) \SETin \FUNim{f}{X} \SETintersect Y$.
+    Contradiction.
+  \end{case}
+
+  \begin{case}{$X \SETintersect \FUNpreim{f}{Y}$ is empty.}
+    Assume that $\FUNim{f}{X} \SETintersect Y$ is nonempty.
+    Take $b \SETin \FUNim{f}{X} \SETintersect Y$.
+    Consider a $a \SETin X$ such that $b \eq f(a)$.
+    Then $a \SETin \FUNpreim{f}{Y}$.
+    Indeed $b \SETin Y$.
+    Hence $a \SETin X \SETintersect \FUNpreim{f}{Y}$.
+    Contradiction.
+  \end{case}
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_5628919411638272]
+  Let $A, B, C$ be classes and $f \FUNfromto{A}{B}$ and $g \FUNfromto{B}{C}$ and $X \SETinclude A$.
+  Then $\FUNim{g \FUNcomp f}{X} \eq \FUNim{g}{\FUNim{f}{X}}$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\FUNim{g \FUNcomp f}{X} = \{ g(f(a)) \mid a \SETin X \}$.
+  $\FUNim{f}{X}$ is a subclass of $B$.
+  We have $\FUNim{g}{\FUNim{f}{X}} = \{ g(b) \mid b \SETin \FUNim{f}{X} \}\text{ and }\FUNim{f}{X} = \{ f(a) \mid a \SETin X \}$.
+  Thus $\FUNim{g}{\FUNim{f}{X}} = \{ g(f(a)) \mid a \SETin X \}$.
+  Therefore $\FUNim{g \FUNcomp f}{X} \eq \FUNim{g}{\FUNim{f}{X}}$.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_6824917886566400]
+  Let $A, B, C$ be classes and $f \FUNfromto{A}{B}$ and $g \FUNfromto{B}{C}$ and $Z \SETinclude C$.
+  Then $\FUNpreim{g \FUNcomp f}{Z} \eq \FUNpreim{f}{\FUNpreim{g}{Z}}$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\FUNpreim{g \FUNcomp f}{Z} = \{ a \in A \mid g(f(a)) \SETin Z \}$.
+  We have $\FUNpreim{g}{Z} = \{ b \in B \mid g(b) \SETin Z \}$ and $\FUNpreim{f}{\FUNpreim{g}{Z}} = \{ a \in A \mid f(a) \SETin \FUNpreim{g}{Z} \}$.
+  Hence $\FUNpreim{f}{\FUNpreim{g}{Z}} = \{ a \in A \mid g(f(a)) \SETin Z \}$.
+  Thus $\FUNpreim{g \FUNcomp f}{Z} \eq \FUNpreim{f}{\FUNpreim{g}{Z}}$.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_7396318576115712]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X, X' \SETinclude A$.
+  If $X \SETinclude X'$ then $\FUNim{f}{X} \SETinclude \FUNim{f}{X'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $X \SETinclude X'$.
+  Let $b \SETin \FUNim{f}{X}$.
+  Take $a \SETin X$ such that $f(a) \eq b$.
+  Then $a \SETin X'$.
+  Hence $b \eq f(a) \SETin \FUNim{f}{X'}$.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_8376448628817920]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y, Y' \SETinclude B$.
+  If $Y \SETinclude Y'$ then $\FUNpreim{f}{Y} \SETinclude \FUNpreim{f}{Y'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume $Y \SETinclude Y'$.
+  Let $a \SETin \FUNpreim{f}{Y}$.
+  Then $f(a) \SETin Y$.
+  Hence $f(a) \SETin Y'$.
+  Thus $a \SETin \FUNpreim{f}{Y'}$.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_4448961469349888]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X, X' \SETinclude A$.
+  Then $\FUNim{f}{X \SETunion X'} \eq \FUNim{f}{X} \SETunion \FUNim{f}{X'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $\FUNim{f}{X \SETunion X'} \SETinclude \FUNim{f}{X} \SETunion \FUNim{f}{X'}$.
+    Let $b \SETin \FUNim{f}{X \SETunion X'}$.
+    Take $a \SETin X \SETunion X'$ such that $b \eq f(a)$.
+    Then $a \SETin X$ or $a \SETin X'$.
+    Hence $f(a) \SETin \FUNim{f}{X}$ or $f(a) \SETin \FUNim{f}{X'}$.
+    Thus $b \eq f(a) \SETin \FUNim{f}{X} \SETunion \FUNim{f}{X'}$.
+  End.
+
+  Let us show that $\FUNim{f}{X} \SETunion \FUNim{f}{X'} \SETinclude \FUNim{f}{X \SETunion X'}$.
+    Let $b \SETin \FUNim{f}{X} \SETunion \FUNim{f}{X'}$.
+
+    \begin{case}{$b \SETin \FUNim{f}{X}$.}
+      Take $a \SETin X$ such that $b \eq f(a)$.
+      Then $a \SETin X \SETunion X'$.
+      Hence $b \SETin \FUNim{f}{X \SETunion X'}$.
+    \end{case}
+
+    \begin{case}{$b \SETin \FUNim{f}{X'}$.}
+      Take $a \SETin X'$ such that $b \eq f(a)$.
+      Then $a \SETin X \SETunion X'$.
+      Hence $b \SETin \FUNim{f}{X \SETunion X'}$.
+    \end{case}
+  End.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_1547089051910144]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y, Y' \SETinclude B$.
+  Then $\FUNpreim{f}{Y \SETunion Y'} \eq \FUNpreim{f}{Y} \SETunion \FUNpreim{f}{Y'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $\FUNpreim{f}{Y \SETunion Y'} \SETinclude \FUNpreim{f}{Y} \SETunion \FUNpreim{f}{Y'}$.
+    Let $a \SETin \FUNpreim{f}{Y \SETunion Y'}$.
+    Then $f(a) \SETin Y \SETunion Y'$.
+    Hence $f(a) \SETin Y$ or $f(a) \SETin Y'$.
+    If $f(a) \SETin Y$ then $a \SETin \FUNpreim{f}{Y}$.
+    If $f(a) \SETin Y'$ then $a \SETin \FUNpreim{f}{Y'}$.
+    Thus $a \SETin \FUNpreim{f}{Y} \SETunion \FUNpreim{f}{Y'}$.
+  End.
+
+  Let us show that $\FUNpreim{f}{Y} \SETunion \FUNpreim{f}{Y'} \SETinclude \FUNpreim{f}{Y \SETunion Y'}$.
+    Let $a \SETin \FUNpreim{f}{Y} \SETunion \FUNpreim{f}{Y'}$.
+    Then $a \SETin \FUNpreim{f}{Y}$ or $a \SETin \FUNpreim{f}{Y'}$.
+    If $a \SETin \FUNpreim{f}{Y}$ then $f(a) \SETin Y$.
+    If $a \SETin \FUNpreim{f}{Y'}$ then $f(a) \SETin Y'$.
+    Hence $f(a) \SETin Y \SETunion Y'$.
+    Thus $a \SETin \FUNpreim{f}{Y \SETunion Y'}$.
+  End.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_3966130473402368]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X, X' \SETinclude A$.
+  Then $\FUNim{f}{X \SETintersect X'} \SETinclude \FUNim{f}{X} \SETintersect \FUNim{f}{X'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $b \SETin \FUNim{f}{X \SETintersect X'}$.
+  Take $a \SETin X \SETintersect X'$ such that $b \eq f(a)$.
+  Then $a \SETin X$ and $a \SETin X'$.
+  Hence $f(a) \SETin \FUNim{f}{X}$ and $f(a) \SETin \FUNim{f}{X'}$.
+  Thus $b \SETin \FUNim{f}{X} \SETintersect \FUNim{f}{X}$.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_4021844428455936]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y, Y' \SETinclude B$.
+  Then $\FUNpreim{f}{Y \SETintersect Y'} \eq \FUNpreim{f}{Y} \SETintersect \FUNpreim{f}{Y'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $\FUNpreim{f}{Y \SETintersect Y'} \SETinclude \FUNpreim{f}{Y} \SETintersect \FUNpreim{f}{Y'}$.
+    Let $a \SETin \FUNpreim{f}{Y \SETintersect Y'}$.
+    Then $f(a) \SETin Y \SETintersect Y'$.
+    Hence $f(a) \SETin Y$ and $f(a) \SETin Y'$.
+    Thus $a \SETin \FUNpreim{f}{Y}$ and $a \SETin \FUNpreim{f}{Y'}$.
+    Therefore $a \SETin \FUNpreim{f}{Y} \SETintersect \FUNpreim{f}{Y'}$.
+  End.
+
+  Let us show that $\FUNpreim{f}{Y} \SETintersect \FUNpreim{f}{Y'} \SETinclude \FUNpreim{f}{Y \SETintersect Y'}$.
+    Let $a \SETin \FUNpreim{f}{Y} \SETintersect \FUNpreim{f}{Y'}$.
+    Then $a \SETin \FUNpreim{f}{Y}$ and $a \SETin \FUNpreim{f}{Y'}$.
+    Hence $f(a) \SETin Y$ and $f(a) \SETin Y'$.
+    Thus $f(a) \SETin Y \SETintersect Y'$.
+    Therefore $a \SETin \FUNpreim{f}{Y \SETintersect Y'}$.
+  End.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_8372256617005056]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X, X' \SETinclude A$.
+  Then $\FUNim{f}{X \SETdiff X'} \SETniclude \FUNim{f}{X} \SETdiff \FUNim{f}{X'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $b \SETin \FUNim{f}{X} \SETdiff \FUNim{f}{X'}$.
+  Then $b \SETin \FUNim{f}{X}$ and $b \SETnotin \FUNim{f}{X'}$.
+  Take $a \SETin X$ such that $b \eq f(a)$.
+  If $a \SETin X'$ then $b \SETin \FUNim{f}{X'}$.
+  Hence $a \SETnotin X'$.
+  Thus $a \SETin X \SETdiff X'$.
+  Therefore $b \eq f(a) \SETin \FUNim{f}{X \SETdiff X'}$.
+\end{proof}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_07_6552168641331200]
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y, Y' \SETinclude B$.
+  Then $\FUNpreim{f}{Y \SETdiff Y'} \eq \FUNpreim{f}{Y} \SETdiff \FUNpreim{f}{Y'}$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let us show that $\FUNpreim{f}{Y \SETdiff Y'} \SETinclude \FUNpreim{f}{Y} \SETdiff \FUNpreim{f}{Y'}$.
+    Let $a \SETin \FUNpreim{f}{Y \SETdiff Y'}$.
+    Then $f(a) \SETin Y \SETdiff Y'$.
+    Hence $f(a) \SETin Y$ and $f(a) \SETnotin Y'$.
+    Thus $a \SETin \FUNpreim{f}{Y}$ and $a \SETnotin \FUNpreim{f}{Y'}$.
+    Therefore $a \SETin \FUNpreim{f}{Y} \SETdiff \FUNpreim{f}{Y'}$.
+  End.
+
+  Let us show that $\FUNpreim{f}{Y} \SETdiff \FUNpreim{f}{Y'} \SETinclude \FUNpreim{f}{Y \SETdiff Y'}$.
+    Let $a \SETin \FUNpreim{f}{Y} \SETdiff \FUNpreim{f}{Y'}$.
+    Then $a \SETin \FUNpreim{f}{Y}$ and $a \SETnotin \FUNpreim{f}{Y'}$.
+    Hence $f(a) \SETin Y$ and $f(a) \SETnotin Y'$.
+    Thus $f(a) \SETin Y \SETdiff Y'$.
+    Therefore $a \SETin \FUNpreim{f}{Y \SETdiff Y'}$.
+  End.
+\end{proof}
+\end{smodule}
+\end{document}

@@ -1,0 +1,73 @@
+\documentclass[lang=en,debug=all]{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{concatenation.ftl}
+\importmodule[libraries/lists]{lists.ftl}
+\symdef{LISTconcat}[op=+\mkern-10mu+]{\,\comp+\mkern-10mu\comp+\,}
+
+\begin{signature}[forthel,id=LISTS_CONCAT_4578620297183232]
+  Let $L, L'$ be lists.
+  $\emph{L \LISTconcat L'}$ is a list.
+\end{signature}
+
+\begin{axiom}[forthel,id=LISTS_CONCAT_3703161885818880]
+  Let $L$ be a list.
+  Then $\LISTlist{} \LISTconcat L \eq L$.
+\end{axiom}
+
+\begin{axiom}[forthel,id=LISTS_CONCAT_8050301789536256]
+  Let $a$ be an object and $L, L'$ be lists.
+  Then $(a \LISTcons L) \LISTconcat L' \eq a \LISTcons (L \LISTconcat L')$.
+\end{axiom}
+
+\begin{proposition}[forthel,id=LISTS_CONCAT_4512036658964875]
+  $L \LISTconcat \LISTlist{} \eq L$ for every list $L$.
+\end{proposition}
+\begin{proof}[forthel,method=induction on $L$]
+  Let $L$ be a list.
+
+  \begin{case}{$L \eq \LISTlist{}$.} \end{case}
+  
+  \begin{case}{$L \eq a \LISTcons L'$ for some object $a$ and some list $L'$.}
+    Consider an object $a$ and a list $L'$ such that $L \eq a \LISTcons L'$.
+    Then $L' \prec L$.
+    Hence $L' \LISTconcat \LISTlist{} \eq L'$.
+    Thus
+    \begin{align*}
+      L \LISTconcat \LISTlist{}
+        &\eq (a \LISTcons L') \LISTconcat \LISTlist{}\\
+        &\eq a \LISTcons (L' \LISTconcat \LISTlist{})\\
+        &\eq a \LISTcons L'\\
+        &\eq L
+    \end{align*}.
+  \end{case}
+\end{proof}
+
+\begin{proposition}[forthel,id=LISTS_CONCAT_1021563255448756]
+  $L \LISTconcat (L' \LISTconcat L'') \eq (L \LISTconcat L') \LISTconcat L''$ for any lists $L, L', L''$.
+\end{proposition}
+\begin{proof}[forthel,method=induction on $L$]
+  Let $L$ be a list.
+
+  \begin{case}{$L \eq \LISTlist{}$.} \end{case}
+
+  \begin{case}{$L \eq a \LISTcons L'''$ for some object $a$ and some list $L'''$.}
+    Consider an object $a$ and a list $L'''$ such that $L \eq a \LISTcons L'''$.
+    Then $L''' \prec L$.
+    Let $L',L''$ be lists.
+    Then $L''' \LISTconcat (L' \LISTconcat L'') \eq (L''' \LISTconcat L') \LISTconcat L''$.
+    Thus
+    \begin{align*}
+      L \LISTconcat (L' \LISTconcat L'') 
+        &\eq (a \LISTcons L''') \LISTconcat (L' \LISTconcat L'')\\
+        &\eq a \LISTcons (L''' \LISTconcat (L' \LISTconcat L''))\\
+        &\eq a \LISTcons ((L''' \LISTconcat L') \LISTconcat L'')\\
+        &\eq (a \LISTcons (L''' \LISTconcat L')) \LISTconcat L''\\
+        &\eq ((a \LISTcons L''') \LISTconcat L') \LISTconcat L''\\
+        &\eq (L \LISTconcat L') \LISTconcat L''
+    \end{align*}.
+  \end{case}
+\end{proof}
+\end{smodule}
+\end{document}

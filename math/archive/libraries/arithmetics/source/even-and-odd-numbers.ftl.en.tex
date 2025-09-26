@@ -1,0 +1,296 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{even-and-odd-numbers.ftl}
+\importmodule[libraries/arithmetics]{divisibility.ftl}
+\importmodule[libraries/arithmetics]{subtraction.ftl}
+
+\begin{sfragment}{Definition}
+  \begin{definition}[forthel,id=ARITHMETIC_15_4521358965847512]
+    Let $n$ be a natural number.
+    $n$ is \emph{even} iff $n$ is divisible by $\NATtwo$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=ARITHMETIC_15_1023652125874596]
+    Let $n$ be a natural number.
+    $n$ is \emph{odd} iff $n$ is not divisible by $\NATtwo$.
+  \end{definition}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_0236985458752156]
+    Let $n$ be a natural number.
+    $n$ is even iff $n \eq \NATtwo \NATmul m$ for some natural number $m$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    \begin{case}{$n$ is even.}
+      Then $\NATtwo$ divides $n$.
+      Hence $n \eq \NATtwo \NATmul m$ for some natural number $m$.
+    \end{case}
+
+    \begin{case}{$n \eq \NATtwo \NATmul m$ for some natural number $m$.}
+      Then $\NATtwo$ divides $n$.
+      Hence $\NATtwo$ is even.
+    \end{case}
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_1023512547854265]
+    Let $n$ be a natural number.
+    $n$ is odd iff $n \eq (\NATtwo \NATmul m) \NATplus \NATone$ for some natural number $m$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    \begin{case}{$n$ is odd.}
+      (a) Define $\Phi = \{ n' \in \Nat \mid \text{ if }n'\text{ is odd then }n' \eq (\NATtwo \NATmul m) \NATplus \NATone\text{ for some natural number }m \}$.
+
+      (1) $\Phi$ contains $\NATzero$.
+      Indeed $\NATzero$ is not odd.
+
+      (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$. 
+      \begin{proof}
+        Let $n' \SETin \Phi$.
+
+        Let us show that if $n' \NATplus  \NATone$ is odd then $(n' \NATplus  \NATone) \eq (\NATtwo \NATmul m) \NATplus  \NATone$ for some natural number $m$.
+          Assume that $n' \NATplus  \NATone$ is odd.
+
+          \begin{case}{$n'$ is even.}
+            Take a natural number $m$ such that $n' \eq \NATtwo \NATmul m$.
+            Then $n' \NATplus \NATone \eq (\NATtwo \NATmul m) \NATplus  \NATone$.
+          \end{case}
+
+          \begin{case}{$n'$ is odd.}
+            Take a natural number $m$ such that $n' \eq (\NATtwo \NATmul m) \NATplus  \NATone$.
+            Then $n' \NATplus  \NATone
+              \eq ((\NATtwo \NATmul m) \NATplus  \NATone) \NATplus  \NATone
+              \eq (\NATtwo \NATmul m) \NATplus (\NATone \NATplus  \NATone)
+              \eq (\NATtwo \NATmul m) \NATplus \NATtwo
+              \eq \NATtwo \NATmul (m \NATplus  \NATone)$.
+            Hence $\NATtwo$ divides $n'$.
+            Thus $n'$ is even.
+            Contradiction.
+          \end{case}
+        End.
+      \end{proof}
+
+      Then $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+      Hence $n$ is odd iff $n \eq (\NATtwo \NATmul m) \NATplus  \NATone$ for some natural number $m$ (by a).
+    \end{case}
+
+    \begin{case}{$n \eq (\NATtwo \NATmul m) \NATplus  \NATone$ for some natural number $m$.}
+      Consider a natural number $m$ such that $n \eq (\NATtwo \NATmul m) \NATplus  \NATone$.
+      Assume that $n$ is even.
+      Then we can take a natural number $k$ such that $n \eq \NATtwo \NATmul k$.
+      Then we have $\NATtwo \NATmul k \eq (\NATtwo \NATmul m) \NATplus  \NATone$.
+      Hence $\NATtwo$ divides $(\NATtwo \NATmul m) \NATplus  \NATone$.
+      Thus $\NATtwo$ divides $ \NATone$.
+      Indeed $\NATtwo$ divides $\NATtwo \NATmul m$.
+      Contradiction.
+    \end{case}
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_1023652154254789]
+    Let $n$ be a natural number.
+    $n$ is odd iff $n \eq (\NATtwo \NATmul m) \NATsub  \NATone$ for some positive natural number $m$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    \begin{case}{$n$ is odd.}
+      Consider a natural number $k$ such that $n \eq (\NATtwo \NATmul k) \NATplus  \NATone$.
+      Take $m = k \NATplus \NATone$.
+      Then $n
+        \eq (\NATtwo \NATmul k) \NATplus  \NATone
+        \eq (\NATtwo \NATmul (k \NATplus \NATzero)) \NATplus  \NATone
+        \eq (\NATtwo \NATmul (k \NATplus (\NATone \NATsub  \NATone))) \NATplus  \NATone
+        \eq (\NATtwo \NATmul ((k \NATplus  \NATone) \NATsub  \NATone)) \NATplus  \NATone
+        \eq (\NATtwo \NATmul (m \NATsub  \NATone)) \NATplus  \NATone
+        \eq ((\NATtwo \NATmul m) \NATsub (\NATtwo \NATmul  \NATone)) \NATplus  \NATone
+        \eq ((\NATtwo \NATmul m) \NATsub \NATtwo) \NATplus  \NATone
+        \eq (\NATtwo \NATmul m) \NATsub  \NATone$.
+    \end{case}
+
+    \begin{case}{$n \eq (\NATtwo \NATmul m) \NATsub  \NATone$ for some positive natural number $m$.}
+      Consider a positive natural number $m$ such that $n \eq (\NATtwo \NATmul m) \NATsub  \NATone$.
+      Take $k = m \NATsub  \NATone$.
+      Then $n
+        \eq (\NATtwo \NATmul m) \NATsub  \NATone
+        \eq (\NATtwo \NATmul (m \NATplus \NATzero)) \NATsub  \NATone
+        \eq (\NATtwo \NATmul (m \NATplus (\NATone \NATsub  \NATone))) \NATsub  \NATone
+        \eq (\NATtwo \NATmul ((m \NATplus  \NATone) \NATsub  \NATone)) \NATsub  \NATone
+        \eq (\NATtwo \NATmul ((m \NATsub  \NATone) \NATplus  \NATone)) \NATsub  \NATone
+        \eq (\NATtwo \NATmul (k \NATplus  \NATone)) \NATsub  \NATone
+        \eq ((\NATtwo \NATmul k) \NATplus (\NATtwo \NATmul  \NATone)) \NATsub  \NATone
+        \eq ((\NATtwo \NATmul k) \NATplus \NATtwo) \NATsub  \NATone
+        \eq (\NATtwo \NATmul k) \NATplus (\NATtwo \NATsub  \NATone)
+        \eq (\NATtwo \NATmul k) \NATplus  \NATone$.
+      Hence $n$ is odd.
+    \end{case}
+  \end{proof}
+\end{sfragment}
+
+\begin{sfragment}{Addition of Even and Odd Numbers}
+  \begin{proposition}[forthel,id=ARITHMETIC_15_7845441256365256]
+    Let $n, m$ be natural numbers.
+    Assume that $n$ and $m$ are even.
+    Then $n \NATplus m$ is even.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n \eq \NATtwo \NATmul k$ and $m \eq \NATtwo \NATmul l$.
+    Then $n \NATplus m
+      \eq (\NATtwo \NATmul k) \NATplus (\NATtwo \NATmul l)
+      \eq \NATtwo \NATmul (k \NATplus l)$.
+    Hence $n \NATplus m$ is even.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_1023655256985478]
+    Let $n, m$ be natural numbers.
+    Assume that $n$ is even and $m$ is odd.
+    Then $n \NATplus m$ is odd.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n \eq \NATtwo \NATmul k$ and $m \eq (\NATtwo \NATmul l) \NATplus  \NATone$.
+    Then $n \NATplus m
+      \eq (\NATtwo \NATmul k) \NATplus ((\NATtwo \NATmul l) \NATplus  \NATone)
+      \eq ((\NATtwo \NATmul k) \NATplus (\NATtwo \NATmul l)) \NATplus  \NATone
+      \eq (\NATtwo \NATmul (k \NATplus l)) \NATplus  \NATone$.
+    Hence $n \NATplus m$ is odd.
+  \end{proof}
+
+  \begin{corollary}[forthel,id=ARITHMETIC_15_0125412589658745]
+    Let $n, m$ be natural numbers.
+    Assume that $n$ is odd and $m$ is even.
+    Then $n \NATplus m$ is odd.
+  \end{corollary}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_1023659854785412]
+    Let $n, m$ be natural numbers.
+    Assume that $n$ and $m$ are odd.
+    Then $n \NATplus m$ is even.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n \eq (\NATtwo \NATmul k) \NATplus  \NATone$ and $m \eq (\NATtwo \NATmul l) \NATplus  \NATone$.
+    Then $n \NATplus m
+      \eq ((\NATtwo \NATmul k) \NATplus  \NATone) \NATplus ((\NATtwo \NATmul l) \NATplus  \NATone)
+      \eq (((\NATtwo \NATmul k) \NATplus  \NATone) \NATplus (\NATtwo \NATmul l)) \NATplus  \NATone
+      \eq ((\NATtwo \NATmul k) \NATplus (\NATone \NATplus (\NATtwo \NATmul l))) \NATplus  \NATone
+      \eq ((\NATtwo \NATmul k) \NATplus ((\NATtwo \NATmul l) \NATplus  \NATone)) \NATplus  \NATone
+      \eq (((\NATtwo \NATmul k) \NATplus (\NATtwo \NATmul l)) \NATplus  \NATone) \NATplus  \NATone
+      \eq ((\NATtwo \NATmul k) \NATplus (\NATtwo \NATmul l)) \NATplus (\NATone \NATplus  \NATone)
+      \eq ((\NATtwo \NATmul k) \NATplus (\NATtwo \NATmul l)) \NATplus \NATtwo
+      \eq (\NATtwo \NATmul (k \NATplus l)) \NATplus \NATtwo
+      \eq \NATtwo \NATmul ((k \NATplus l) \NATplus  \NATone)$.
+      Hence $n \NATplus m$ is even.
+  \end{proof}
+\end{sfragment}
+
+\begin{sfragment}{Subtraction of even and odd numbers}
+  \begin{proposition}[forthel,id=ARITHMETIC_15_8748569852145203]
+    Let $n, m$ be natural numbers such that $n \NATgeq m$.
+    Assume that $n, m$ are even.
+    Then $n \NATsub m$ is even.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n \eq \NATtwo \NATmul k$ and $m \eq \NATtwo \NATmul l$.
+    Then $k \NATgeq l$.
+    Hence $n \NATsub m
+      \eq (\NATtwo \NATmul k) \NATsub (\NATtwo \NATmul l)
+      \eq \NATtwo \NATmul (k \NATsub l)$.
+    Thus $n \NATsub m$ is even.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_0125412036589958]
+    Let $n, m$ be natural numbers such that $n \NATgeq m$.
+    Assume that $n$ is even and $m$ is odd.
+    Then $n \NATsub m$ is odd.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n \eq \NATtwo \NATmul k$ and $m \eq (\NATtwo \NATmul l) \NATplus  \NATone$.
+    Then $k \NATgeq l$ and $\NATtwo \NATmul (k \NATsub l) \NATgeq  \NATone$.
+    Hence $n \NATsub m
+      \eq (\NATtwo \NATmul k) \NATsub ((\NATtwo \NATmul l) \NATplus  \NATone)
+      \eq ((\NATtwo \NATmul k) \NATsub (\NATtwo \NATmul l)) \NATsub  \NATone
+      \eq (\NATtwo \NATmul (k \NATsub l)) \NATsub  \NATone$.
+    Thus $n \NATsub m$ is odd.
+  \end{proof}
+
+  \begin{corollary}[forthel,id=ARITHMETIC_15_1021458745896523]
+    Let $n, m$ be natural numbers such that $n \NATgeq m$.
+    Assume that $n$ is odd and $m$ is even.
+    Then $n \NATsub m$ is odd.
+  \end{corollary}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n \eq (\NATtwo \NATmul k) \NATplus  \NATone$ and $m \eq \NATtwo \NATmul l$.
+    Then $k \NATgeq l$.
+    Hence $n \NATsub m
+      \eq ((\NATtwo \NATmul k) \NATplus  \NATone) \NATsub (\NATtwo \NATmul l)
+      \eq (\NATone \NATplus (\NATtwo \NATmul k)) \NATsub (\NATtwo \NATmul l)
+      \eq \NATone \NATplus ((\NATtwo \NATmul k) \NATsub (\NATtwo \NATmul l))
+      \eq ((\NATtwo \NATmul k) \NATsub (\NATtwo \NATmul l)) \NATplus  \NATone
+      \eq (\NATtwo \NATmul (k \NATsub l)) \NATplus  \NATone$.
+    Indeed $((\NATtwo \NATmul k) \NATsub (\NATtwo \NATmul l)) \eq \NATtwo \NATmul (k \NATsub l)$. %!
+    Thus $n \NATsub m$ is odd.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_0125478854587412]
+    Let $n, m$ be natural numbers such that $n \NATgeq m$.
+    Assume that $n, m$ are odd.
+    Then $n \NATsub m$ is even.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n \eq (\NATtwo \NATmul k) \NATplus  \NATone$ and $m \eq (\NATtwo \NATmul l) \NATplus  \NATone$.
+    Then $k \NATgeq l$.
+    Indeed $\NATtwo \NATmul k \NATgeq \NATtwo \NATmul l$.
+    Hence $\NATone \NATplus (\NATtwo \NATmul k) \NATgeq \NATtwo \NATmul l$.
+    Thus $n \NATsub m
+      \eq ((\NATtwo \NATmul k) \NATplus  \NATone) \NATsub ((\NATtwo \NATmul l) \NATplus  \NATone)
+      \eq ((\NATone \NATplus (\NATtwo \NATmul k)) \NATsub (\NATtwo \NATmul l)) \NATsub  \NATone
+      \eq (\NATone \NATplus ((\NATtwo \NATmul k) \NATsub (\NATtwo \NATmul l))) \NATsub  \NATone
+      \eq (\NATone \NATplus (\NATtwo \NATmul (k \NATsub l))) \NATsub  \NATone
+      \eq ((\NATtwo \NATmul (k \NATsub l)) \NATplus  \NATone) \NATsub  \NATone
+      \eq \NATtwo \NATmul (k \NATsub l)$.
+    Indeed $((\NATtwo \NATmul k) \NATsub (\NATtwo \NATmul l)) \eq \NATtwo \NATmul (k \NATsub l)$. %!
+    Therefore $n \NATsub m$ is even.
+  \end{proof}
+\end{sfragment}
+
+\begin{sfragment}{Multiplication of Even and Odd Numbers}
+  \begin{proposition}[forthel,id=ARITHMETIC_15_0125698547589652]
+    Let $n, m$ be natural numbers.
+    Assume that $n$ is even or $n$ is even.
+    Then $n \NATmul m$ is even.
+  \end{proposition}
+  \begin{proof}[forthel]
+    \begin{case}{$n$ is even.}
+      Take a natural number $k$ such that $n \eq \NATtwo \NATmul k$.
+      Then $n \NATmul m
+        \eq (\NATtwo \NATmul k) \NATmul m
+        \eq \NATtwo \NATmul (k \NATmul m)$.
+      Hence $n \NATmul m$ is even.
+    \end{case}
+
+    \begin{case}{$m$ is even.}
+      Take a natural number $l$ such that $m \eq \NATtwo \NATmul l$.
+      Then $n \NATmul m
+        \eq n \NATmul (\NATtwo \NATmul l)
+        \eq (n \NATmul \NATtwo) \NATmul l
+        \eq (\NATtwo \NATmul n) \NATmul l
+        \eq \NATtwo \NATmul (n \NATmul l)$.
+      Hence $n \NATmul m$ is even.
+    \end{case}
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_0236596587452145]
+    Let $n, m$ be natural numbers.
+    Assume that $n$ and $m$ are odd.
+    Then $n \NATmul m$ is odd.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n \eq (\NATtwo \NATmul k) \NATplus  \NATone$ and $m \eq (\NATtwo \NATmul l) \NATplus  \NATone$.
+    Then $n \NATmul m
+      \eq ((\NATtwo \NATmul k) \NATplus  \NATone) \NATmul m
+      \eq ((\NATtwo \NATmul k) \NATmul m) \NATplus (\NATone \NATmul m)
+      \eq ((\NATtwo \NATmul k) \NATmul m) \NATplus m
+      \eq (\NATtwo \NATmul (k \NATmul m)) \NATplus m$.
+    $\NATtwo \NATmul (k \NATmul m)$ is even and $m$ is odd.
+    Hence $(\NATtwo \NATmul (k \NATmul m)) \NATplus m$ is odd.
+    Therefore $n \NATmul m$ is odd.
+  \end{proof}
+\end{sfragment}
+\end{smodule}
+\end{document}

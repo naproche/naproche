@@ -1,0 +1,5 @@
+id: libraries/set-theory
+ns: https://naproche.github.io/math/archive/libraries/set-theory
+narration-base: https://naproche.github.io/math/archive/libraries/set-theory
+url-base: http://localhost
+format:stex

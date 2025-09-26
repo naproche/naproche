@@ -1,0 +1,12 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\begin{document}
+\begin{smodule}{all-humans-are-mortal.ftl}
+  \importmodule[libraries/everyday-ontology]{properties?mortal.ftl}
+  \importmodule[libraries/everyday-ontology]{classes?human.ftl}
+
+  \begin{axiom}[forthel]
+    All humans are mortal.
+  \end{axiom}
+\end{smodule}
+\end{document}

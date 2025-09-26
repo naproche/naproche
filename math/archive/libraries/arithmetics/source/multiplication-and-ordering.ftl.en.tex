@@ -1,0 +1,136 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{multiplication-and-ordering.ftl}
+\importmodule[libraries/arithmetics]{multiplication.ftl}
+\importmodule[libraries/arithmetics]{ordering.ftl}
+
+\begin{proposition}[forthel,id=ARITHMETIC_06_8817333933965312]
+  Let $n, m, k$ be natural numbers.
+  Assume $k \neq \NATzero$.
+  Then $n \NATless m$ iff $n \NATmul k \NATless m \NATmul k$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$n \NATmul k \NATless m \NATmul k$.}
+    Define $\Phi = \{ n' \in \Nat \mid\text{ if }n' \NATmul k \NATless m \NATmul k\text{ then }n' \NATless m \}$.
+
+    (1) $\Phi$ contains $\NATzero$.
+
+    (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
+    \begin{proof}
+      Let $n' \SETin \Phi$.
+
+      Let us show that if $(n' \NATplus \NATone) \NATmul k \NATless m \NATmul k$ then $n' \NATplus \NATone \NATless m$.
+        Assume $(n' \NATplus \NATone) \NATmul k \NATless m \NATmul k$.
+        Then $(n' \NATmul k) \NATplus k \NATless m \NATmul k$.
+        Hence $n' \NATmul k \NATless m \NATmul k$.
+        Thus $n' \NATless m$.
+        Then $n' \NATplus \NATone \NATleq m$.
+        If $n' \NATplus \NATone \eq m$ then $(n' \NATplus \NATone) \NATmul k \eq m \NATmul k$.
+        Hence $n' \NATplus \NATone \NATless m$.
+      End.
+    \end{proof}
+
+    Therefore every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+    Consequently $n \NATless m$.
+  \end{case}
+
+  \begin{case}{$n \NATless m$.}
+    Take a positive natural number $l$ such that $m \eq n \NATplus l$.
+    Then $m \NATmul k \eq (n \NATplus l) \NATmul k \eq (n \NATmul k) \NATplus (l \NATmul k)$.
+    $l \NATmul k$ is positive.
+    Hence $n \NATmul k \NATless m \NATmul k$.
+  \end{case}
+\end{proof}
+
+\begin{corollary}[forthel,id=ARITHMETIC_06_5048640368279552]
+  Let $n, m, k$ be natural numbers.
+  Assume $k \neq \NATzero$.
+  Then $n \NATless m$ iff $k \NATmul n \NATless k \NATmul m$.
+\end{corollary}
+\begin{proof}[forthel]
+  The thesis (by \printref{ARITHMETIC_06_8817333933965312}, \printref{ARITHMETIC_06_1764759896588288}).
+\end{proof}
+
+\begin{proposition}[forthel,id=ARITHMETIC_06_1826268599287808]
+  Let $n, m, k$ be natural numbers.
+  If $n, m \NATgtr k$ then $n \NATmul m \NATgtr k$.
+\end{proposition}
+\begin{proof}[forthel]
+  Define $\Phi = \{ n' \in \Nat \mid\text{ if }n', m \NATgtr k\text{ then }n' \NATmul m \NATgtr k \}$.
+
+  (1) $\Phi$ contains $\NATzero$.
+
+  (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
+  \begin{proof}
+    Let $n' \SETin \Phi$.
+
+    Let us show that if $n' \NATplus \NATone, m \NATgtr k$ then $(n' \NATplus \NATone) \NATmul m \NATgtr k$.
+      Assume $n' \NATplus \NATone, m \NATgtr k$.
+      Then $(n' \NATplus \NATone) \NATmul m \eq (n' \NATmul m) \NATplus m$.
+      If $n' \eq \NATzero$ then
+      $(n' \NATmul m) \NATplus m
+        \eq \NATzero \NATplus m
+        \eq m
+        \NATgtr k$.
+      If $n' \neq \NATzero$ then
+      $(n' \NATmul m) \NATplus m
+        \NATgtr m
+        \NATgtr k$.
+      Indeed if $n' \neq \NATzero$ then $n' \NATmul m \NATgtr \NATzero$.
+      Indeed $m \NATgtr \NATzero$.
+      Hence $(n' \NATplus \NATone) \NATmul m \NATgtr k$.
+    End.
+  \end{proof}
+
+  Thus every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+  Therefore if $n, m \NATgtr k$ then $n \NATmul m \NATgtr k$.
+\end{proof}
+
+\begin{corollary}[forthel,id=ARITHMETIC_06_1751605544222720]
+  Let $n, m, k$ be natural numbers.
+  If $n \NATleq m$ then $k \NATmul n \NATleq k \NATmul m$.
+\end{corollary}
+
+\begin{corollary}[forthel,id=ARITHMETIC_06_3965209318260736]
+  Let $n, m, k$ be natural numbers.
+  Assume $k \neq \NATzero$.
+  If $k \NATmul n \NATleq k \NATmul m$ then $n \NATleq m$.
+\end{corollary}
+\begin{proof}[forthel]
+  If $k \NATmul n \eq k \NATmul m$ then $n \eq m$ (by \printref{ARITHMETIC_06_8575191374364672}).
+  If $k \NATmul n \NATless k \NATmul m$ then $n \NATless m$ (by \printref{ARITHMETIC_06_5048640368279552}).
+\end{proof}
+
+\begin{corollary}[forthel,id=ARITHMETIC_06_8946886668976128]
+  Let $n, m, k$ be natural numbers.
+  If $n \NATleq m$ then $n \NATmul k \NATleq m \NATmul k$.
+\end{corollary}
+
+\begin{corollary}[forthel,id=ARITHMETIC_06_4374428949413888]
+  Let $n, m, k$ be natural numbers.
+  Assume $k \neq \NATzero$.
+  If $n \NATmul k \NATleq m \NATmul k$ then $n \NATleq m$.
+\end{corollary}
+
+\begin{proposition}[forthel,id=ARITHMETIC_06_8813409145454592]
+  Let $n, m, k$ be natural numbers.
+  Assume $m \NATgtr \NATzero$ and $k \NATgtr \NATone$.
+  Then $k \NATmul m \NATgtr m$.
+\end{proposition}
+\begin{proof}[forthel]
+  Take a natural number $l$ such that $k \eq l \NATplus \NATtwo$.
+  Then
+  \[  k \NATmul m                       \]
+  \[    \eq (l \NATplus \NATtwo) \NATmul m             \]
+  \[    \eq (l \NATmul m) \NATplus (\NATtwo \NATmul m)   \]
+  \[    \eq (l \NATmul m) \NATplus (m \NATplus m)       \]
+  \[    \eq ((l \NATmul m) \NATplus m) \NATplus m       \]
+  \[    \eq ((l \NATplus \NATone) \NATmul m) \NATplus m       \]
+  \[    \NATgeq \NATone \NATplus m                    \]
+  \[    \NATgtr m.                          \]
+  Indeed $((l \NATplus \NATone) \NATmul m) \NATplus m \NATgeq \NATone \NATplus m$.
+\end{proof}
+\end{smodule}
+\end{document}

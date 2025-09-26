@@ -1,0 +1,90 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{omega-is-cardinal.ftl}
+\importmodule[libraries/set-theory]{natural-numbers-are-cardinals.ftl}
+
+\begin{proposition}[forthel,id=SET_THEORY_07_4952029518626816]
+  $\SETcard{\ORDomega} \eq \ORDomega$.
+\end{proposition}
+\begin{proof}[forthel]
+  We have $\SETcard{\ORDomega} \ORDleq \ORDomega$.
+
+  Let us show that $\SETcard{\ORDomega}$ is not less than $\ORDomega$.
+    Assume the contrary.
+    Then $\SETcard{\ORDomega} \SETin \ORDomega$.
+    Take $n = \SETcard{\ORDomega}$ and a bijection $f$ between $n$ and $\ORDomega$.
+
+    Define \[ g(k) =
+      \begin{cases}
+        \ORDsucc(f(k)) & : k \ORDless n
+        \\
+        \ORDzero           & : k \eq n
+      \end{cases} \]
+    for $k \in \ORDsucc(n)$.
+    Then $g$ is a map from $\ORDsucc(n)$ to $\ORDomega$.
+    Indeed we can show that $g(k) \SETin \ORDomega$ for all $k \SETin \ORDsucc(n)$.
+      Let $k \SETin \ORDsucc(n)$.
+      \begin{case}{$k \ORDless n$.} \end{case}
+      \begin{case}{$k \eq n$.} \end{case}
+    End.
+
+    $g$ is injective.
+    Indeed we can show that for all $k, k' \SETin \ORDsucc(n)$ if $k \neq k'$
+    then $g(k) \neq g(k')$. 
+    \begin{proof}
+      Let $k, k' \SETin \ORDsucc(n)$.
+      Assume $k \neq k'$.
+
+      \begin{case}{$k, k' \ORDless n$.}
+        Then $f(k) \neq f(k')$.
+        Hence $\ORDsucc(f(k)) \neq \ORDsucc(f(k'))$.
+        Thus $g(k) \neq g(k')$.
+      \end{case}
+
+      \begin{case}{$k \ORDless n$ and $k' \eq n$.}
+        We have $\ORDsucc(f(k)) \neq \ORDzero$.
+        Hence $g(k) \neq g(k')$.
+      \end{case}
+
+      \begin{case}{$k \eq n$ and $k' \ORDless n$.}
+        We have $\ORDsucc(f(k')) \neq \ORDzero$.
+        Hence $g(k) \neq g(k')$.
+      \end{case}
+    \end{proof}
+
+    $g$ is surjective onto $\ORDomega$.
+    Indeed we can show that for any $m \SETin \ORDomega$ there exists a $k \SETin \ORDsucc(n)$ such that $m \eq g(k)$.
+    \begin{proof}
+      Let $m \SETin \ORDomega$.
+      Then $\FUNinv{f}(m) \SETin n$.
+
+      \begin{case}{$m \eq \ORDzero$.}
+        Then $m \eq g(n)$.
+      \end{case}
+
+      \begin{case}{$m \neq \ORDzero$.}
+        Take $m' \SETin \ORDomega$ such that $m \eq \ORDsucc(m')$.
+        Then $m
+          \eq \ORDsucc(m')
+          \eq \ORDsucc(f(\FUNinv{f}(m')))
+          \eq g(\FUNinv{f}(m'))$.
+        Indeed $f(\FUNinv{f}(m')) \eq m'$ and $\FUNinv{f}(m') \ORDless n$.
+      \end{case}
+    \end{proof}
+
+    Hence $g$ is a bijection between $\ORDsucc(n)$ and $\ORDomega$.
+    Then we have $n
+      \eq \SETcard{n}
+      \eq \SETcard{\ORDsucc(n)}
+      \eq \ORDsucc(n)$.
+    Contradiction.
+  End.
+\end{proof}
+
+\begin{corollary}[forthel,id=SET_THEORY_07_2717623053713408]
+  $\ORDomega$ is a cardinal.
+\end{corollary}
+\end{smodule}
+\end{document}

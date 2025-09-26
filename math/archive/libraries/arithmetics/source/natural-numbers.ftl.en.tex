@@ -1,0 +1,321 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{natural-numbers.ftl}
+\importmodule[libraries/foundations]{classes.ftl}
+\symdef{Nat}{\mathbb N}
+\symdef{NATplus}{\,+\,}
+\symdef{NATzero}{0}
+\symdef{NATone}{1}
+\symdef{NATtwo}{2}
+\symdef{NATthree}{3}
+\symdef{NATfour}{4}
+\symdef{NATfive}{5}
+\symdef{NATsix}{6}
+\symdef{NATseven}{7}
+\symdef{NATeight}{8}
+\symdef{NATnine}{9}
+
+\begin{sfragment}{The Language of Natural Number Arithmetic}
+  \begin{signature}[forthel,id=ARITHMETIC_01_3074681254969344]
+    A \emph{natural number} is an object.
+  \end{signature}
+
+  \begin{definition}[forthel,id=ARITHMETIC_01_7367148418629632]
+    $\emph{\Nat}$ is the class of natural numbers.
+  \end{definition}
+
+  \begin{signature}[forthel,id=ARITHMETIC_01_1567933815848960]
+    Let $n, m$ be natural numbers.
+    $\emph{n \NATplus m}$ is a natural number.
+
+    Let the \emph{sum of $n$ and $m$} stand for $n \NATplus m$.
+  \end{signature}
+
+  \begin{signature}[forthel,id=ARITHMETIC_01_7633304715001856]
+    $\emph{\NATzero}$ is a natural number.
+
+    Let \emph{zero} stand for $\NATzero$.
+    Let $n$ is \emph{nonzero} stand for $n \neq \NATzero$.
+  \end{signature}
+
+  \begin{signature}[forthel,id=ARITHMETIC_01_1200254566985232]
+    $\emph{\NATone}$ is a natural number.
+
+    Let \emph{one} stand for $\NATone$.
+    Let the \emph{direct successor of $n$} stand for $n \NATplus \NATone$.
+  \end{signature}
+
+  \begin{definition}[forthel,id=ARITHMETIC_01_4584236572999680]
+    $\emph{\NATtwo} = \NATone \NATplus \NATone$.
+
+    Let \emph{two} stand for $\NATtwo$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=ARITHMETIC_01_3836725109456896]
+    $\emph{\NATthree} = \NATtwo \NATplus \NATone$.
+
+    Let \emph{three} stand for $\NATthree$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=ARITHMETIC_01_1709884968009728]
+    $\emph{\NATfour} = \NATthree \NATplus \NATone$.
+
+    Let \emph{four} stand for $\NATfour$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=ARITHMETIC_01_6734726333202432]
+    $\emph{\NATfive} = \NATfour \NATplus \NATone$.
+
+    Let \emph{five} stand for $\NATfive$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=ARITHMETIC_01_949139189792768]
+    $\emph{\NATsix} = \NATfive \NATplus \NATone$.
+
+    Let \emph{six} stand for $\NATsix$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=ARITHMETIC_01_7245471749767168]
+    $\emph{\NATseven} = \NATsix \NATplus \NATone$.
+
+    Let \emph{seven} stand for $\NATseven$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=ARITHMETIC_01_5658172888973312]
+    $\emph{\NATeight} = \NATseven \NATplus \NATone$.
+
+    Let \emph{eight} stand for $\NATeight$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=ARITHMETIC_01_7371844250238976]
+    $\emph{\NATnine} = \NATeight \NATplus \NATone$.
+
+    Let \emph{nine} stand for $\NATnine$.
+  \end{definition}
+\end{sfragment}
+
+\begin{sfragment}{The Axioms of Natural Number Arithmetic}
+  \begin{axiom}[forthel,id=ARITHMETIC_01_3604163883696128]
+    Let $n, m$ be natural numbers.
+    If $n \NATplus \NATone \eq m \NATplus \NATone$ then $n \eq m$.
+  \end{axiom}
+
+  \begin{axiom}[forthel,id=ARITHMETIC_01_4454289938317312]
+    There exists no natural number $n$ such that $n \NATplus \NATone \eq \NATzero$.
+  \end{axiom}
+
+  \begin{axiom}[forthel,title=Induction,id=ARITHMETIC_01_4764664342773760]
+    Let $\Phi$ be a class.
+    Assume $\NATzero \SETin \Phi$ and for all natural numbers $n$ if $n \SETin \Phi$ then
+    $n \NATplus \NATone \SETin \Phi$.
+    Then $\Phi$ contains every natural number.
+  \end{axiom}
+
+  \begin{axiom}[forthel,id=ARITHMETIC_03_5962332515874540]
+    Then $\NATone \eq \NATzero \NATplus \NATone$.
+  \end{axiom}
+
+  \begin{axiom}[forthel,id=ARITHMETIC_03_4827955356237824]
+    Let $n$ be a natural number.
+    Then $n \NATplus \NATzero \eq n$.
+  \end{axiom}
+
+  \begin{axiom}[forthel,id=ARITHMETIC_03_4427935386238924]
+    Let $n, m$ be natural numbers.
+    Then $n \NATplus (m \NATplus \NATone) \eq (n \NATplus m) \NATplus \NATone$.
+  \end{axiom}
+\end{sfragment}
+
+\begin{sfragment}{Immediate Consequences of the Axioms}
+  \begin{proposition}[forthel,id=ARITHMETIC_01_4966080109871104]
+    Let $n$ be a natural number.
+    Then $n \eq \NATzero$ or $n \eq m \NATplus \NATone$ for some natural number $m$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Define $\Phi = \{ n' \in \Nat \mid n' \eq \NATzero\text{ or }n' \eq m' \NATplus \NATone\text{ for some natural number }m' \}$.
+    $\NATzero \SETin \Phi$ and for all $n' \SETin  \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
+    Hence every natural number is contained in $\Phi$.
+    Thus $n \eq \NATzero$ or $n \eq m \NATplus \NATone$ for some natural number $m$.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_01_5996049267163136]
+    Let $n$ be a natural number.
+    Then $n \neq n \NATplus \NATone$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Define $\Phi = \{ n' \in \Nat \mid n' \neq n' \NATplus \NATone \}$.
+
+    (1) $\NATzero$ belongs to $\Phi$.
+
+    (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
+    \begin{proof}
+      Let $n' \SETin \Phi$.
+      Then $n' \neq n' \NATplus \NATone$.
+      If $n' \NATplus \NATone \eq (n' \NATplus \NATone) \NATplus \NATone$ then $n' \eq n' \NATplus \NATone$.
+      Thus it is wrong that $n' \NATplus \NATone \eq (n' \NATplus \NATone) \NATplus \NATone$.
+      Hence $n' \NATplus \NATone \SETin \Phi$.
+    \end{proof}
+
+    Therefore every natural number is an element of $\Phi$.
+    Consequently $n \neq n \NATplus \NATone$.
+  \end{proof}
+\end{sfragment}
+
+\begin{sfragment}{Computation Laws for Addition}
+  \begin{sfragment}{Associativity}
+    \begin{proposition}[forthel,id=ARITHMETIC_03_3235893452210176]
+      Let $n, m, k$ be natural numbers.
+      Then $n \NATplus (m \NATplus k) \eq (n \NATplus m) \NATplus k$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Define $\Phi = \{ k' \in \Nat \mid n \NATplus (m \NATplus k') \eq (n \NATplus m) \NATplus k' \}$.
+
+      (1) $\NATzero$ is contained in $\Phi$.
+      Indeed $n \NATplus (m \NATplus \NATzero) \eq n \NATplus m \eq (n \NATplus m) \NATplus \NATzero$.
+
+      (2) For all $k' \SETin \Phi$ we have $k' \NATplus \NATone \SETin \Phi$.
+      \begin{proof}
+        Let $k' \SETin \Phi$.
+        Then $n \NATplus (m \NATplus k') \eq (n \NATplus m) \NATplus k'$.
+        Hence
+        \[  n \NATplus (m \NATplus (k' \NATplus \NATone))        \]
+        \[    \eq n \NATplus ((m \NATplus k') \NATplus \NATone)    \]
+        \[    \eq (n \NATplus (m \NATplus k')) \NATplus \NATone    \]
+        \[    \eq ((n \NATplus m) \NATplus k') \NATplus \NATone    \]
+        \[    \eq (n \NATplus m) \NATplus (k' \NATplus \NATone).   \]
+        Thus $k' \NATplus \NATone \SETin \Phi$.
+      \end{proof}
+
+      Thus every natural number is an element of $\Phi$.
+      Therefore $n \NATplus (m \NATplus k) \eq (n \NATplus m) \NATplus k$.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Commutativity}
+    \begin{proposition}[forthel,id=ARITHMETIC_03_4029553232052224]
+      Let $n, m$ be natural numbers.
+      Then $n \NATplus m \eq m \NATplus n$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Define $\Phi = \{ m' \in \Nat \mid n \NATplus m' \eq m' \NATplus n \}$.
+
+      (1) $\NATzero$ is an element of $\Phi$.
+      \begin{proof}
+        Define $\Psi = \{ n' \in \Nat \mid n' \NATplus \NATzero \eq \NATzero \NATplus n' \}$.
+
+        (1a) $\NATzero$ belongs to $\Psi$.
+
+        (1b) For all $n' \SETin \Psi$ we have $n' \NATplus \NATone \SETin \Psi$.
+        \begin{proof}
+          Let $n' \SETin \Psi$.
+          Then $n' \NATplus \NATzero \eq \NATzero \NATplus n'$.
+          Hence
+          \[  (n' \NATplus \NATone) \NATplus \NATzero        \]
+          \[    \eq n' \NATplus \NATone          \]
+          \[    \eq (n' \NATplus \NATzero) \NATplus \NATone    \]
+          \[    \eq (\NATzero \NATplus n') \NATplus \NATone    \]
+          \[    \eq \NATzero \NATplus (n' \NATplus \NATone).   \]
+        \end{proof}
+
+        Hence every natural number belongs to $\Psi$.
+        Thus $n \NATplus \NATzero \eq \NATzero \NATplus n$.
+        Therefore $\NATzero$ is an element of $\Phi$.
+      \end{proof}
+
+      Let us show that (2) $n \NATplus \NATone \eq \NATone \NATplus n$.
+      \begin{proof}
+        Define $\Theta = \{ n' \in \Nat \mid n' \NATplus \NATone \eq \NATone \NATplus n' \}$.
+
+        (2a) $\NATzero$ is an element of $\Theta$.
+
+        (2b) For all $n' \SETin \Theta$ we have $n' \NATplus \NATone \SETin \Theta$.
+        \begin{proof}
+          Let $n' \SETin \Theta$.
+          Then $n' \NATplus \NATone \eq \NATone \NATplus n'$.
+          Hence
+          \[  (n' \NATplus \NATone) \NATplus \NATone        \]
+          \[    \eq (\NATone \NATplus n') \NATplus \NATone    \]
+          \[    \eq \NATone \NATplus (n' \NATplus \NATone).   \]
+          Thus $n' \NATplus \NATone \SETin \Theta$.
+        \end{proof}
+
+        Thus every natural number belongs to $\Theta$.
+        Therefore $n \NATplus \NATone \eq \NATone \NATplus n$.
+      \end{proof}
+
+      (3) For all $m' \SETin \Phi$ we have $m' \NATplus \NATone \SETin \Phi$.
+      \begin{proof}
+        Let $m' \SETin \Phi$.
+        Then $n \NATplus m' \eq m' \NATplus n$.
+        Hence
+        \[  n \NATplus (m'  \NATplus \NATone)       \]
+        \[    \eq (n \NATplus m') \NATplus \NATone    \]
+        \[    \eq (m' \NATplus n) \NATplus \NATone    \]
+        \[    \eq m' \NATplus (n \NATplus \NATone)    \]
+        \[    \eq m' \NATplus (\NATone \NATplus n)    \]
+        \[    \eq (m' \NATplus \NATone) \NATplus n.   \]
+        Thus $m' \NATplus \NATone \SETin \Phi$.
+      \end{proof}
+
+      Thus every natural number is an element of $\Phi$.
+      Therefore $n \NATplus m \eq m \NATplus n$.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Cancellation}
+    \begin{proposition}[forthel,id=ARITHMETIC_03_3137702874578944]
+      Let $n, m, k$ be natural numbers.
+      If $n \NATplus k \eq m \NATplus k$ then $n \eq m$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Define $\Phi = \{ k' \in \Nat \mid\text{ if }n \NATplus k' \eq m \NATplus k'\text{ then }n \eq m \}$.
+
+      (1) $\NATzero$ is an element of $\Phi$.
+
+      (2) For all $k' \SETin \Phi$ we have $k' \NATplus \NATone \SETin \Phi$.
+      \begin{proof}
+        Let $k' \SETin \Phi$.
+        Suppose $n \NATplus (k' \NATplus \NATone) \eq m \NATplus (k' \NATplus \NATone)$.
+        Then $(n \NATplus k') \NATplus \NATone \eq (m \NATplus k') \NATplus \NATone$.
+        Hence $n \NATplus k' \eq m \NATplus k'$.
+        Thus $n \eq m$.
+      \end{proof}
+
+      Therefore every natural number is an element of $\Phi$.
+      Consequently if $n \NATplus k \eq m \NATplus k$ then $n \eq m$.
+    \end{proof}
+
+    \begin{corollary}[forthel,id=ARITHMETIC_03_8445946379632640]
+      Let $n, m, k$ be natural numbers.
+      If $k \NATplus n \eq k \NATplus m$ then $n \eq m$.
+    \end{corollary}
+    \begin{proof}[forthel]
+      Assume $k \NATplus n \eq k \NATplus m$.
+      We have $k \NATplus n \eq n \NATplus k$ and $k \NATplus m \eq m \NATplus k$.
+      Hence $n \NATplus k \eq m \NATplus k$.
+      Thus $n \eq m$.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Zero Sums}
+    \begin{proposition}[forthel,id=ARITHMETIC_03_3520602170195968]
+      Let $n, m$ be natural numbers.
+      If $n \NATplus m \eq \NATzero$ then $n \eq \NATzero$ and $m \eq \NATzero$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Assume $n \NATplus m \eq \NATzero$.
+      Suppose $n \neq \NATzero$ or $m \neq \NATzero$.
+      Then we can take a $k \SETin \Nat$ such that $n \eq k \NATplus \NATone$ or $m \eq k \NATplus \NATone$.
+      Hence there exists a natural number $l$ such that
+      $n \NATplus m
+        \eq l \NATplus (k \NATplus \NATone)
+        \eq (l \NATplus k) \NATplus \NATone
+        \neq \NATzero$.
+      Contradiction.
+    \end{proof}
+  \end{sfragment}
+\end{sfragment}
+\end{smodule}
+\end{document}

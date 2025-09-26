@@ -29,9 +29,27 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 ### Changes on the LaTeX Setup
 
-* `math/examples/lang/naproche.sty` was replaced by a properly documented
-  LaTeX package in the `dtx` format at `math/examples/latex/`. See
+* **Changed:** `math/examples/lang/naproche.sty` was replaced by a properly
+  documented LaTeX package in the `dtx` format at `math/examples/latex/`. See
   `math/examples/latex/README.md` for details.
+
+
+### Changes on the Formalizations
+
+* **Changed:** Better separation between "basic" example formalizations
+  (`math/examples`) and "advanced" sTeX-based formalizations (`math/archive`).
+
+* **New:** The formalizations in `math/archive` now have associated
+  `archive.json` files to list them on the landing page of the FLAMS dashboard.
+
+
+### Misc
+
+* **New:** (TEX) Isabelle/jEdit now recognizes files with the extension
+  `.ftl.en.tex` as ForTheL files. (Needed to ensure compatibility with
+  sTeX/FLAMS). Moreover, Naproche expects the formalizations in `marh/archive`
+  to have that file name extension; otherwise importing them via `\importmodule`
+  or `\usemodule` will fail.
 
 
 --------------------------------------------------------------------------------

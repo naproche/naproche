@@ -1,0 +1,45 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{factorial.ftl}
+\importmodule[libraries/arithmetics]{multiplication.ftl}
+\symdef{NATfac}[args=1]{#1\comp!}
+
+\begin{signature}[forthel,id=ARITHMETIC_12_0210357812531785]
+  Let $n$ be a natural number.
+  $\emph{\NATfac{n}}$ is a natural number.
+\end{signature}
+
+\begin{axiom}[forthel,id=ARITHMETIC_12_6945210541236989]
+  $\NATfac{\NATzero} \eq \NATone$.
+\end{axiom}
+
+\begin{axiom}[forthel,id=ARITHMETIC_12_2312015846987452]
+  Let $n$ be a natural number.
+  Then $\NATfac{n \NATplus \NATone} \eq \NATfac{n} \NATmul (n \NATplus \NATone)$.
+\end{axiom}
+
+\begin{proposition}[forthel,id=ARITHMETIC_12_6123519005949952]
+  Let $n$ be a natural number.
+  Then $\NATfac{n} \neq \NATzero$.
+\end{proposition}
+\begin{proof}[forthel]
+  Define $\Phi = \{n' \in \Nat \mid \NATfac{n'} \neq \NATzero \}$.
+
+  (1) $\Phi$ contains $\NATzero$.
+  Indeed $\NATfac{\NATzero} \eq \NATone \neq \NATzero$.
+
+  (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
+  \begin{proof}
+    Let $n' \SETin \Phi$.
+    We have $\NATfac{n' \NATplus \NATone} \eq (n' \NATplus \NATone) \NATmul \NATfac{n'}$.
+    $n' \NATplus \NATone$ and $\NATfac{n'}$ are nonzero.
+    Hence $\NATfac{n' \NATplus \NATone} \neq \NATzero$.
+  \end{proof}
+
+  Thus $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+  Therefore $\NATfac{n} \neq \NATzero$.
+\end{proof}
+\end{smodule}
+\end{document}

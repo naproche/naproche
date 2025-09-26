@@ -1,0 +1,5 @@
+id: libraries/lists
+ns: https://naproche.github.io/math/archive/libraries/lists
+narration-base: https://naproche.github.io/math/archive/libraries/lists
+url-base: http://localhost
+format:stex

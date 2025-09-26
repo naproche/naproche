@@ -1,0 +1,110 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{closure-under-finite-unions.ftl}
+\importmodule[libraries/foundations]{systems-of-sets.ftl}
+\importmodule[libraries/foundations]{finite-and-infinite-classes.ftl}
+
+\begin{definition}[forthel,id=FOUNDATIONS_14_7040118193913856]
+  Let $X$ be a system of sets.
+  $X$ is \emph{closed under finite unions} iff $\SETunionover U \SETin X$ for every nonempty finite subclass $U$ of $X$.
+\end{definition}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_17_4164024962908160]
+  Let $X$ be a system of sets.
+  $X$ is closed under finite unions iff $U \SETunion V \SETin X$ for every $U, V \SETin X$.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$X$ is closed under finite unions.}
+    Let $U, V \SETin X$.
+    Then $\SETpair{U}{V}$ is a nonempty finite subclass of $X$.
+    Hence $U \SETunion V \eq \SETunionover \SETpair{U}{V} \SETin X$.
+  \end{case}
+
+  \begin{case}{$U \SETunion V \SETin X$ for every $U, V \SETin X$.}
+    Define $\Phi = \{ n \in \Nat \mid \SETunionover U \SETin X\text{ for every nonempty subclass }U\text{ of }X\text{ that has }n\text{ elements}\}$.
+
+    (1) $\Phi$ contains $\NATzero$.
+
+    (2) For every $n \SETin \Phi$ we have $n \NATplus \NATone \SETin \Phi$.
+    \begin{proof}
+      Let $n \SETin \Phi$.
+      Then $\SETunionover U \SETin X$ for every nonempty subclass $U$ of $X$ that has $n$ elements.
+
+      Let us show that $\SETunionover U \SETin X$ for every nonempty subclass $U$ of $X$ that has $n \NATplus \NATone$ elements.
+
+        \begin{case}{$n \eq \NATzero$.} \end{case}
+
+        \begin{case}{$n \neq \NATzero$.}
+          Let $U$ be a nonempty subclass of $X$ such that $U$ has $n \NATplus \NATone$ elements.
+          Take a bijection $f$ between $\NATsegment{\NATone}{n \NATplus \NATone}$ and $U$.
+          We have $\NATsegment{\NATone}{n \NATplus \NATone} \eq \NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}$.
+          Take $V = \FUNim{f}{\NATsegment{\NATone}{n}}$.
+          We have $\NATsegment{\NATone}{n} \SETinclude \NATsegment{\NATone}{n \NATplus \NATone}$.
+
+          Let us show that $V \SETinclude U$.
+            Let $x \SETin V$.
+            Take $k \SETin \NATsegment{\NATone}{n}$ such that $x \eq f(k)$.
+            Indeed we can show that there exists a $k \SETin \NATsegment{\NATone}{n}$ such that $x \eq f(k)$.
+              Assume the contrary.
+              Then $x \neq f(k)$ for all $k \SETin \NATsegment{\NATone}{n}$.
+              Hence $x \SETnotin \FUNim{f}{\NATsegment{\NATone}{n}} \eq V$.
+              Contradiction.
+            End.
+            Hence $x \SETin U$.
+            Indeed $x \SETin \FUNim{f}{\NATsegment{\NATone}{n \NATplus \NATone}}$.
+          End.
+
+          $V$ is nonempty.
+          Indeed $f(\NATone) \SETin \FUNim{f}{\NATsegment{\NATone}{n}}$.
+          Indeed $\NATone \SETin \NATsegment{\NATone}{n}$.
+          Hence $f \FUNrest \NATsegment{\NATone}{n}$ is a bijection between $\NATsegment{\NATone}{n}$ and $V$ (by \printref{FOUNDATIONS_08_647446231252992}).
+          Thus $V$ has $n$ elements.
+          Consequently $\SETunionover V \SETin X$.
+
+          Let us show that $U \eq V \SETunion \SETsingleton{f(n \NATplus \NATone)}$.
+
+            (1) $\FUNim{f}{A \SETunion B} \eq \FUNim{f}{A} \SETunion \FUNim{f}{B}$ for all $A, B \SETinclude \FUNdom(f)$.
+
+            (2) $\FUNim{f}{\SETsingleton{a}} \eq \SETsingleton{f(a)}$ for all $a \SETin \FUNdom(f)$.
+
+            Hence $U
+              \eq \FUNim{f}{\FUNdom(f)}
+              \eq \FUNim{f}{\NATsegment{\NATone}{n \NATplus \NATone}}
+              \eq \FUNim{f}{\NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}}
+              \eq \FUNim{f}{\NATsegment{\NATone}{n}} \SETunion \FUNim{f}{\SETsingleton{n \NATplus \NATone}}
+              \eq \FUNim{f}{\NATsegment{\NATone}{n}} \SETunion \SETsingleton{f(n \NATplus \NATone)}
+              \eq V \SETunion \SETsingleton{f(n \NATplus \NATone)}$.
+            Indeed $n \NATplus \NATone \SETin \FUNdom(f)$ and $\NATsegment{\NATone}{n}, \SETsingleton{\NATone \NATplus n} \SETinclude \FUNdom(f)$.
+          End.
+
+          Let us show that $\SETunionover (A \SETunion B) \eq (\SETunionover A) \SETunion (\SETunionover B)$ for any nonempty systems of sets $A, B$.
+            Let $A, B$ be nonempty systems of sets.
+            $\SETunionover (A \SETunion B) \SETinclude (\SETunionover A) \SETunion (\SETunionover B)$.
+            $((\SETunionover A) \SETunion (\SETunionover B)) \SETinclude \SETunionover (A \SETunion B)$. %!
+          End.
+
+          Let us show that $f(n \NATplus \NATone)$ and $f(k)$ are sets for every $k \SETin \NATsegment{\NATone}{n}$.
+            Let $k \SETin \NATsegment{\NATone}{n}$.
+            Then $f(k), f(n \NATplus \NATone) \SETin U$.
+            Hence $f(k)$ and $f(n \NATplus \NATone)$ are sets.
+          End.
+
+          Hence $V$ and $\SETsingleton{f(n \NATplus \NATone)}$ are nonempty systems of sets.
+          Thus $\SETunionover U
+            \eq \SETunionover (V \SETunion \SETsingleton{f(n \NATplus \NATone)})
+            \eq (\SETunionover V) \SETunion (\SETunionover \SETsingleton{f(n \NATplus \NATone)})
+            \eq (\SETunionover V) \SETunion f(n \NATplus \NATone)
+            \SETin X$.
+        \end{case}
+      End.
+    \end{proof}
+
+    Therefore $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+    Thus $\SETunionover U \SETin X$ for every nonempty finite subclass $U$ of $X$.
+    Consequently $X$ is closed under finite unions.
+  \end{case}
+\end{proof}
+\end{smodule}
+\end{document}

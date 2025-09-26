@@ -1,0 +1,22 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{one-element-sets.ftl}
+\importmodule[libraries/set-theory]{one.ftl}
+\importmodule[libraries/set-theory]{cardinals.ftl}
+
+\begin{proposition}[forthel,id=SET_THEORY_07_836893598023680]
+  Let $a$ be an object.
+  Then $\SETcard{\SETsingleton{a}} \eq \ORDone$.
+\end{proposition}
+\begin{proof}[forthel]
+  Define $f(x) = \ORDzero$ for $x \in \SETsingleton{a}$.
+  Then $f$ is a map from $\SETsingleton{a}$ to $\ORDone$.
+  $f$ is injective and surjective onto $\ORDone$.
+  Hence $f$ is a bijection between $\SETsingleton{a}$ and $\ORDone$.
+  Consequently $\SETsingleton{a}$ and $\ORDone$ are equinumerous.
+  Thus $\SETcard{\SETsingleton{a}} \eq \SETcard{\ORDone} \eq \ORDone$.
+\end{proof}
+\end{smodule}
+\end{document}

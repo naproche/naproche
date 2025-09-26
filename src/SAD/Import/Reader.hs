@@ -60,8 +60,8 @@ reader depth dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetM
   let relativeFilePath = archivePath </> "source" </> modulePath </> moduleName
       relativeFilePath' = case dialect of
         Ftl -> relativeFilePath
-        Tex -> relativeFilePath <.> "tex"
-      absoluteFilePath = pathToLibrary </> relativeFilePath'
+        Tex -> relativeFilePath <.> "en" <.> "tex"
+      absoluteFilePath = pathToLibrary </> "archive" </> relativeFilePath'
       instr = GetAbsoluteFilePath absoluteFilePath
   in do
     (proofTexts, reports) <- reader (depth + 1) dialect pathToLibrary doneFiles stateList [ProofTextInstr pos instr]
@@ -75,7 +75,6 @@ reader depth dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetM
             ]
           else proofTexts
     return (proofTexts', reports)
-  --in reader depth dialect pathToLibrary doneFiles stateList proofText
 -- Take a relative file path (i.e. relative to the library directory) and turn
 -- it into an absolute path.
 reader depth dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetRelativeFilePath relativeFilePath)]
@@ -90,7 +89,7 @@ reader depth dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetR
         "\"..\" is not allowed as a directory name in a file path: " ++
         relativeFilePath
   -- Catch invalid file name extension:
-  | takeExtensions relativeFilePath `notElem` [".ftl", ".ftl.tex"] =
+  | takeExtensions relativeFilePath `notElem` [".ftl", ".ftl.tex", ".ftl.en.tex"] =
       Message.errorParser pos $
         "Invalid file name extension \"" ++ takeExtensions relativeFilePath ++
         "\": " ++ relativeFilePath
@@ -103,6 +102,11 @@ reader depth dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetR
   | takeExtensions relativeFilePath == ".ftl.tex" && dialect == Ftl =
       Message.errorParser pos $
         "Invalid read instruction for a \".ftl.tex\" file in a \".ftl\" text: "
+        ++ relativeFilePath
+  -- Catch .ftl.en.tex file read from within a text written in the FTL dialect:
+  | takeExtensions relativeFilePath == ".ftl.en.tex" && dialect == Ftl =
+      Message.errorParser pos $
+        "Invalid read instruction for a \".ftl.en.tex\" file in a \".ftl\" text: "
         ++ relativeFilePath
   | otherwise =
       let absoluteFilePath = pathToLibrary </> relativeFilePath
