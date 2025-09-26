@@ -54,6 +54,8 @@ math .................................... Naproche formalizations
 │   │   │
 │   │   ├── russell-paradox ............. Russell's paradox
 │   │   │
+│   │   ├── socrates .................... The "Socrates is mortal" syllogism
+│   │   │
 │   │   ├── transfinite-recursion ....... the transfinite recursion theorem
 │   │   │
 │   │   └── zermelo ..................... Zermelo's well-ordering theorem

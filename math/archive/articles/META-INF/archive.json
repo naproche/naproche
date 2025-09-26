@@ -120,6 +120,14 @@
   },
   {
     "type": "paper",
+    "title": "\"Socrates is Mortal\"",
+    "authors": [
+      {"name": "Marcel Schütz (2025)"}
+    ],
+    "file": "socrates.ftl.en"
+  },
+  {
+    "type": "paper",
     "title": "The Transfinite Recursion Theorem",
     "authors": [
       {"name": "Marcel Schütz (2024–2025)"}
