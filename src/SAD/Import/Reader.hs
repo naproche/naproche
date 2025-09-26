@@ -75,7 +75,6 @@ reader depth dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetM
             ]
           else proofTexts
     return (proofTexts', reports)
-  --in reader depth dialect pathToLibrary doneFiles stateList proofText
 -- Take a relative file path (i.e. relative to the library directory) and turn
 -- it into an absolute path.
 reader depth dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetRelativeFilePath relativeFilePath)]
