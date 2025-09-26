@@ -29,8 +29,8 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 ### Changes on the LaTeX Setup
 
-* `math/examples/lang/naproche.sty` was replaced by a properly documented
-  LaTeX package in the `dtx` format at `math/examples/latex/`. See
+* **Changed:** `math/examples/lang/naproche.sty` was replaced by a properly
+  documented LaTeX package in the `dtx` format at `math/examples/latex/`. See
   `math/examples/latex/README.md` for details.
 
 
