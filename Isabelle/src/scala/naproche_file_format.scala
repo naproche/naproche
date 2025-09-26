@@ -54,7 +54,7 @@ class Naproche_File_Format extends File_Format {
   override def format_name: String = "forthel"
 
   val file_ext = ""
-  def detect_tex(name: String): Boolean = name.endsWith(".ftl.tex")
+  def detect_tex(name: String): Boolean = name.endsWith(".ftl.tex") || name.endsWith(".ftl.en.tex")
   override def detect(name: String): Boolean = name.endsWith(".ftl") || detect_tex(name)
 
   override def theory_suffix: String = "forthel_file"

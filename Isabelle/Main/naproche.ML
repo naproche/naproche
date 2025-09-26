@@ -429,7 +429,7 @@ val _ =
         let
           val ({src_path, lines, pos, ...}, thy') = get_file thy;
           val file_name = Path.implode (Path.expand src_path);
-          val tex = String.isSuffix ".ftl.tex" file_name;
+          val tex = String.isSuffix ".ftl.tex" file_name orelse String.isSuffix ".ftl.en.tex" file_name;
         in check_forthel {tex = tex} (cat_lines lines, pos) thy' end)));
 
 val _ =
