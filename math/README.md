@@ -76,7 +76,7 @@ math .................................... Naproche formalizations
 │
 └── examples ............................ Stand-alone formalizations
     │
-    ├── lang ............................ ForTheL and LaTeX files used in math/examples and math/TUTORIAL
+    ├── lang ............................ Extensions of the initial ForTheL lexicon
     │
     ├── latex ........................... LaTeX package for example formalizations
     │
