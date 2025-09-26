@@ -34,6 +34,12 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   `math/examples/latex/README.md` for details.
 
 
+### Changes on the Formalizations
+
+* **Changed:** Better separation between "basic" example formalizations
+  (`math/examples`) and "advanced" sTeX-based formalizations (`math/archive`).
+
+
 ### Misc
 
 * **New:** (TEX) Isabelle/jEdit now recognizes files with the extension
