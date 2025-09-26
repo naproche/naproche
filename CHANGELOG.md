@@ -39,6 +39,9 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 * **Changed:** Better separation between "basic" example formalizations
   (`math/examples`) and "advanced" sTeX-based formalizations (`math/archive`).
 
+* **New:** The formalizations in `math/archive` now have associated
+  `archive.json` files to list them on the landing page of the FLAMS dashboard.
+
 
 ### Misc
 
