@@ -50,7 +50,7 @@ math .................................... Naproche formalizations
 │   │   │
 │   │   ├── koenig ...................... Kőnig's theorem about sequences of cardinals
 │   │   │
-│   │   ├── little-gauss ................ sum of the first *n* positive integers
+│   │   ├── little-gauss ................ sum of the first n positive integers
 │   │   │
 │   │   ├── russell-myhill-paradox ...... the Russell-Myhill paradox
 │   │   │
