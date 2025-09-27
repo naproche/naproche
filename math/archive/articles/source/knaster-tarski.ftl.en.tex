@@ -1,0 +1,55 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libusepackage{copyright}
+\libinput{preamble}
+
+\title{The Knaster-Tarski Fixed Point Theorem in \Naproche}
+\author{Alexander Holz, Marcel Schütz}
+\date{2025}
+
+\begin{document}
+\begin{smodule}{knaster-tarski.ftl}
+\maketitle
+
+\importmodule[libraries/foundations]{maps-and-systems-of-sets.ftl}
+\importmodule[libraries/set-theory]{zfc.ftl}
+
+\noindent This is a formalization of the \textit{Knaster-Tarski Fixed Point
+Theorem}, i.e. of the assertion that every subset-preserving map has a fixed
+point \cite{Schroeder2012}.
+
+\begin{theorem}[forthel,title=Knaster-Tarski,id=knaster_tarski]
+  Let $x$ be a set.
+  Let $h$ be a map from $\SETpow(x)$ to $\SETpow(x)$ that preserves subsets.
+  Then $h$ has a fixed point.
+\end{theorem}
+\begin{proof}[forthel]
+  (1) Define $A = \{y \in \SETpow(x) \mid y \SETinclude h(y)\}$.
+  Then $A$ is a subset of $\SETpow(x)$.
+  We have $\SETunionover A \SETin \SETpow(x)$.
+
+  Let us show that (2) $\SETunionover A \SETinclude h(\SETunionover A)$.
+    Let $u \SETin \SETunionover A$.
+    Take $y \SETin A$ such that $u \SETin y$.
+    Then $u \SETin h(y)$.
+    We have $y \SETinclude \SETunionover A$.
+    Hence $h(y) \SETinclude h(\SETunionover A)$.
+    Indeed $h$ is a subset preserving map between systems of sets and $y, \SETunionover A \SETin \FUNdom(h)$.
+    Thus $h(y) \SETinclude h(\SETunionover A)$.
+    Therefore $u \SETin h(\SETunionover A)$.
+  End.
+
+  Then $h(\SETunionover A) \SETin A$ (by 1).
+  Indeed $h(\SETunionover A) \SETinclude x$.
+  (3) Hence $h(\SETunionover A) \SETinclude \SETunionover A$.
+  Indeed every element of $h(\SETunionover A)$ is an element of some element of
+  $A$.
+
+  Thus $h(\SETunionover A) \eq \SETunionover A$ (by 2, 3).
+\end{proof}
+
+
+\printbibliography
+\printlicense[CcByNcSa]{Alexander Holz (2018), Marcel Schütz (2018--2025)}
+\end{smodule}
+\end{document}

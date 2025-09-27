@@ -3,7 +3,7 @@
 \libusepackage{copyright}
 \libinput{preamble}
 
-\title{The Knaster-Tarski fixed point theorem\\and\\the Cantor-Schröder-Bernstein Theorem\\in \Naproche}
+\title{The Cantor-Schröder-Bernstein Theoremin \Naproche}
 \author{Alexander Holz, Marcel Schütz}
 \date{2025}
 
@@ -14,48 +14,12 @@
 \importmodule[libraries/foundations]{equinumerosity.ftl}
 \importmodule[libraries/foundations]{maps-and-systems-of-sets.ftl}
 \importmodule[libraries/set-theory]{zfc.ftl}
+\importmodule[articles]{knaster-tarski.ftl}
 
-\noindent This is a formalization of the \textit{Knaster-Tarski Fixed Point
-Theorem} (i.e. of the assertion that every subset-preserving map has a fixed
-point) and of the \textit{Cantor-Schröder-Bernstein Theorem} (i.e. of the
-fact that two sets are equinumerous iff they can be embedded into each other),
-where the proof of the latter theorem is based on the former one, as in
-\cite{Schroeder2012}.
-
-\section*{The Knaster-Tarski Fixed Point Theorem}
-
-\begin{theorem}[forthel,title=Knaster-Tarski,id=knaster_tarski]
-  Let $x$ be a set.
-  Let $h$ be a map from $\SETpow(x)$ to $\SETpow(x)$ that preserves subsets.
-  Then $h$ has a fixed point.
-\end{theorem}
-\begin{proof}[forthel]
-  (1) Define $A = \{y \in \SETpow(x) \mid y \SETinclude h(y)\}$.
-  Then $A$ is a subset of $\SETpow(x)$.
-  We have $\SETunionover A \SETin \SETpow(x)$.
-
-  Let us show that (2) $\SETunionover A \SETinclude h(\SETunionover A)$.
-    Let $u \SETin \SETunionover A$.
-    Take $y \SETin A$ such that $u \SETin y$.
-    Then $u \SETin h(y)$.
-    We have $y \SETinclude \SETunionover A$.
-    Hence $h(y) \SETinclude h(\SETunionover A)$.
-    Indeed $h$ is a subset preserving map between systems of sets and $y, \SETunionover A \SETin \FUNdom(h)$.
-    Thus $h(y) \SETinclude h(\SETunionover A)$.
-    Therefore $u \SETin h(\SETunionover A)$.
-  End.
-
-  Then $h(\SETunionover A) \SETin A$ (by 1).
-  Indeed $h(\SETunionover A) \SETinclude x$.
-  (3) Hence $h(\SETunionover A) \SETinclude \SETunionover A$.
-  Indeed every element of $h(\SETunionover A)$ is an element of some element of
-  $A$.
-
-  Thus $h(\SETunionover A) \eq \SETunionover A$ (by 2, 3).
-\end{proof}
-
-
-\section*{The Cantor-Schröder-Bernstein Theorem}
+\noindent This is a formalization of the \textit{Cantor-Schröder-Bernstein
+Theorem}, i.e. of the fact that two sets are equinumerous iff they can be
+embedded into each other \cite{Schroeder2012}.
+Its proof of is based on the Knaster-Tarski Fixed Point Theorem.
 
 \begin{theorem}[forthel,title=Cantor-Schröder-Bernstein,id=cantor_schroeder_bernstein]
   Let $x,y$ be sets.

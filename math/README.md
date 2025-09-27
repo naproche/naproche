@@ -32,7 +32,7 @@ math .................................... Naproche formalizations
 │   │   │
 │   │   ├── cantor-paradox .............. Cantor's paradoxes
 │   │   │
-│   │   ├── cantor-schroeder-bernstein .. classical result in cardinality theory
+│   │   ├── cantor-schroeder-bernstein .. The Cantor-Schröder-Bernstein theorem
 │   │   │
 │   │   ├── cantor ...................... Cantor's diagonal argument
 │   │   │
@@ -45,6 +45,8 @@ math .................................... Naproche formalizations
 │   │   ├── hausdorff ................... theorem on the regularity of successor cardinals
 │   │   │
 │   │   ├── hilbert-paradox ............. Hilbert's paradox
+│   │   │
+│   │   ├── knaster-tarski .............. the Knaster-Tarski fixed point theorem
 │   │   │
 │   │   ├── koenig ...................... Kőnig's theorem about sequences of cardinals
 │   │   │
