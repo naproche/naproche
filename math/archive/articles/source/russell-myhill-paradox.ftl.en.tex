@@ -9,6 +9,9 @@
 
 \begin{document}
 \begin{smodule}{russell-myhill-paradox.ftl}
+
+\usemodule[libraries/meta]{preliminaries.ftl}
+
 \maketitle
 
 \noindent The \emph{Russell-Myhill Paradox} is a paradox discovered by 
@@ -43,12 +46,12 @@ It was discussed in Russell's 1903 \emph{Principles of Mathematics}
   
   \begin{theorem*}[title=Russell-Myhill Paradox,id=russell_myhill_paradox]
     It is wrong that
-    \[ \sqcap P = \sqcap Q \implies P = Q \]
+    \[ \sqcap P = \sqcap Q \Implies P = Q \]
     for all systems of propositions $P, Q$.
   \end{theorem*}
   \begin{proof}
     Assume the contrary.
-    Define $Q = \{q \mid$ there exists a system of propositions $P$ such that $q = \sqcap P$ and $q \notin P\}$.
+    Define $Q = \CClass{q}{\text{there exists a system of propositions } P \text{ such that } q = \sqcap P \text{ and } q \notin P}$.
     Consider $q = \sqcap Q$.
     Then for any system of propositions $P$ such that $\sqcap P = q$ we have $P = Q$.
     Hence $q \in Q$ iff $q \notin Q$.

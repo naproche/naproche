@@ -5,10 +5,6 @@
 \begin{smodule}{classes.ftl}
 \importmodule[libraries/meta]{preliminaries.ftl}
 
-\symdef{eq}{\;=\;}
-\symdef{neq}{\;\not=\;}
-\symdef{SETin}{\;\in\;}
-\symdef{SETnotin}{\;\notin\;}
 \symdef{SETinclude}{\;\subseteq\;}
 \notation{SETinclude}{\;\subset\;}
 \symdef{SETstrictinclude}{\;\subsetneq\;}
@@ -22,28 +18,6 @@
 \symdef{SETintersect}{\,\cap\,}
 \symdef{SETdiff}{\,\setminus\,}
 
-\begin{sfragment}{Equality}
-  \begin{convention}[forthel]
-    Let $\emph{x\eq y}$ stand for $x$ is equal to $y$.
-    Let $x$ and $y$ \emph{agree} stand for $x \eq y$.
-    Let $x$ \emph{agrees with $y$} stand for $x \eq y$.
-    Let $x$ and $y$ are \emph{distinct} stand for $x \neq y$.
-  \end{convention}
-\end{sfragment}
-
-\begin{sfragment}{Membership}
-  \begin{convention}[forthel]
-    Let $\emph{x\SETin y}$ stand for $x$ is an element of $y$.
-    Let $\emph{x\SETnotin y}$ stand for $x$ is not an element of $y$.
-    Let a \emph{member of $X$} stand for an element of $X$.
-    Let $x$ \emph{belongs to $X$} stand for $x$ is an element of $X$.
-    Let $X$ \emph{contains $x$} stand for $x$ is an element of $X$.
-    Let $x$ is \emph{contained in $X$} stand for $x$ is an element of $X$.
-    Let $x$ \emph{lies in $X$} stand for $x$ is an element of $X$.
-    Let $x$ is \emph{in $X$} stand for $x$ is an element of $X$.
-  \end{convention}
-\end{sfragment}
-
 \begin{sfragment}{Sub- and Superclasses}
   \begin{definition}[forthel,id=FOUNDATIONS_01_3275578358628352]
     Let $A$ be a class.
@@ -55,10 +29,10 @@
     Let a \emph{superclass of $B$} stand for a class $A$ such that $B \SETinclude A$.
     Let $\emph{B \SETniclude A}$ stand for $B$ is a superclass of $A$.
 
-    Let a \emph{proper subclass of $A$} stand for a subclass $B$ of $A$ such that $B \neq A$.
+    Let a \emph{proper subclass of $A$} stand for a subclass $B$ of $A$ such that $B \NotEq A$.
     Let $\emph{B \SETstrictinclude A}$ stand for $B$ is a proper subclass of $A$.
 
-    Let a \emph{proper superclass of $B$} stand for a superclass $A$ of $B$ such that $A \neq B$.
+    Let a \emph{proper superclass of $B$} stand for a superclass $A$ of $B$ such that $A \NotEq B$.
     Let $\emph{B \SETstrictniclude A}$ stand for $B$ is a proper superclass of $A$.
 
     Let \emph{$A$ includes $B$} stand for $B \SETinclude A$.
@@ -87,12 +61,12 @@
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_7159957847801856]
     Let $A, B$ be classes.
-    If $A \SETinclude B$ and $B \SETinclude A$ then $A \eq B$.
+    If $A \SETinclude B$ and $B \SETinclude A$ then $A \Eq B$.
   \end{proposition}
   \begin{proof}[forthel]
     Assume $A \SETinclude B$ and $B \SETinclude A$.
     Then every element of $A$ is contained in $B$ and every element of $B$ is contained in $A$.
-    Hence $A \eq B$.
+    Hence $A \Eq B$.
   \end{proof}
 \end{sfragment}
 
@@ -105,20 +79,20 @@
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_7939928493129728]
-    $\emph{\SETempty} = \{ x \mid x \neq x \}$.
+    $\emph{\SETempty} = \CClass{x}{x \NotEq x}$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_2263153161273344]
     Let $A$ be a class.
-    $A$ is empty iff $A \eq \SETempty$.
+    $A$ is empty iff $A \Eq \SETempty$.
   \end{proposition}
   \begin{proof}[forthel]
     We can show that $\SETempty$ is empty.
     Indeed any element $x$ of $\SETempty$ is nonequal to $x$.
-    Hence if $A \eq \SETempty$ then $A$ is empty.
+    Hence if $A \Eq \SETempty$ then $A$ is empty.
     If $A$ is empty then $A$ and $\SETempty$ have no elements.
     Hence if $A$ is empty then $A \SETinclude \SETempty$ and $\SETempty \SETinclude A$.
-    Thus if $A$ is empty then $A \eq \SETempty$.
+    Thus if $A$ is empty then $A \Eq \SETempty$.
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_01_1495141426659328]
@@ -138,72 +112,72 @@
 \begin{sfragment}{Unordered Pairs}
   \begin{definition}[forthel,id=FOUNDATIONS_01_3471035364016128]
     Let $a, b$ be objects.
-    $\emph{\SETpair{a}{b}} = \{ x \mid x \eq a\text{ or }x \eq b \}$.
+    $\emph{\SETpair{a}{b}} = \CClass{x}{x \Eq a\text{ or }x \Eq b}$.
 
     Let the \emph{unordered pair of $a$ and $b$} stand for $\SETpair{a}{b}$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_605432672419840]
-    An \emph{unordered pair} is a class $A$ such that $A \eq \SETpair{a}{b}$ for some distinct objects $a, b$.
+    An \emph{unordered pair} is a class $A$ such that $A \Eq \SETpair{a}{b}$ for some distinct objects $a, b$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_1160414603771904]
     Let $a$ be an object.
-    $\emph{\SETsingleton{a}} = \{ x \mid x \eq a \}$.
+    $\emph{\SETsingleton{a}} = \CClass{x}{x \Eq a}$.
 
     Let the \emph{singleton class of $a$} stand for $\SETsingleton{a}$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_6786618161627136]
-    A \emph{singleton class} is a class $A$ such that $A \eq \SETsingleton{a}$ for some object $a$.
+    A \emph{singleton class} is a class $A$ such that $A \Eq \SETsingleton{a}$ for some object $a$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_6125259604361216]
     Let $a, a', b, b'$ be objects.
-    Assume $\SETpair{a}{b} \eq \SETpair{a'}{b'}$.
-    Then ($a \eq a'$ and $b \eq b'$) or ($a \eq b'$ and $b \eq a'$).
+    Assume $\SETpair{a}{b} \Eq \SETpair{a'}{b'}$.
+    Then ($a \Eq a'$ and $b \Eq b'$) or ($a \Eq b'$ and $b \Eq a'$).
   \end{proposition}
   \begin{proof}[forthel]
-    We have $a \eq a'$ or $a \eq b'$.
-    If $a \eq a'$ then $b \eq b'$.
-    If $a \eq b'$ then $b \eq a'$.
-    Hence ($a \eq a'$ and $b \eq b'$) or ($a \eq b'$ and $b \eq a'$).
+    We have $a \Eq a'$ or $a \Eq b'$.
+    If $a \Eq a'$ then $b \Eq b'$.
+    If $a \Eq b'$ then $b \Eq a'$.
+    Hence ($a \Eq a'$ and $b \Eq b'$) or ($a \Eq b'$ and $b \Eq a'$).
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_01_6954678910713856]
     Let $a, a'$ be objects.
-    If $\SETsingleton{a} \eq \SETsingleton{a'}$ then $a \eq a'$.
+    If $\SETsingleton{a} \Eq \SETsingleton{a'}$ then $a \Eq a'$.
   \end{corollary}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_29867480293464351]
     Let $A$ be a class.
-    A \emph{unique element of $A$} is an element $a$ of $A$ such that for each $x \SETin A$ we have $x \eq a$.
+    A \emph{unique element of $A$} is an element $a$ of $A$ such that for each $x \Elem A$ we have $x \Eq a$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_0166348647163481]
     Let $A$ be a class.
-    Then $A$ has a unique element iff $A \eq \SETsingleton{a}$ for some object $a$.
+    Then $A$ has a unique element iff $A \Eq \SETsingleton{a}$ for some object $a$.
   \end{proposition}
 \end{sfragment}
 
 \begin{sfragment}{Unions, Intersections, Complements}
   \begin{definition}[forthel,id=FOUNDATIONS_01_2159753924968448]
     Let $A, B$ be classes.
-    $\emph{A \SETunion B} = \{ x \mid x \SETin A\text{ or }x \SETin B \}$.
+    $\emph{A \SETunion B} = \CClass{x}{x \Elem A\text{ or }x \Elem B}$.
 
     Let the \emph{union of $A$ and $B$} stand for $A \SETunion B$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_5744033011859456]
     Let $A, B$ be classes.
-    $\emph{A \SETintersect B} = \{ x \mid x \SETin A\text{ and }x \SETin B \}$.
+    $\emph{A \SETintersect B} = \CClass{x}{x \Elem A\text{ and }x \Elem B}$.
 
     Let the \emph{intersection of $A$ and $B$} stand for $A \SETintersect B$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_7620345041256448]
     Let $A, B$ be classes.
-    $\emph{A \SETdiff B} = \{ x \mid x \SETin A\text{ and }x \SETnotin B \}$.
+    $\emph{A \SETdiff B} = \CClass{x}{x \Elem A\text{ and }x \NotElem B}$.
 
     Let the \emph{complement of $B$ in $A$} stand for $A \SETdiff B$.
   \end{definition}

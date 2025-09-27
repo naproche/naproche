@@ -13,59 +13,59 @@
 
 \begin{axiom}[forthel,id=LISTS_CONCAT_3703161885818880]
   Let $L$ be a list.
-  Then $\LISTlist{} \LISTconcat L \eq L$.
+  Then $\LISTlist{} \LISTconcat L \Eq L$.
 \end{axiom}
 
 \begin{axiom}[forthel,id=LISTS_CONCAT_8050301789536256]
   Let $a$ be an object and $L, L'$ be lists.
-  Then $(a \LISTcons L) \LISTconcat L' \eq a \LISTcons (L \LISTconcat L')$.
+  Then $(a \LISTcons L) \LISTconcat L' \Eq a \LISTcons (L \LISTconcat L')$.
 \end{axiom}
 
 \begin{proposition}[forthel,id=LISTS_CONCAT_4512036658964875]
-  $L \LISTconcat \LISTlist{} \eq L$ for every list $L$.
+  $L \LISTconcat \LISTlist{} \Eq L$ for every list $L$.
 \end{proposition}
 \begin{proof}[forthel,method=induction on $L$]
   Let $L$ be a list.
 
-  \begin{case}{$L \eq \LISTlist{}$.} \end{case}
+  \begin{case}{$L \Eq \LISTlist{}$.} \end{case}
   
-  \begin{case}{$L \eq a \LISTcons L'$ for some object $a$ and some list $L'$.}
-    Consider an object $a$ and a list $L'$ such that $L \eq a \LISTcons L'$.
+  \begin{case}{$L \Eq a \LISTcons L'$ for some object $a$ and some list $L'$.}
+    Consider an object $a$ and a list $L'$ such that $L \Eq a \LISTcons L'$.
     Then $L' \prec L$.
-    Hence $L' \LISTconcat \LISTlist{} \eq L'$.
+    Hence $L' \LISTconcat \LISTlist{} \Eq L'$.
     Thus
     \begin{align*}
       L \LISTconcat \LISTlist{}
-        &\eq (a \LISTcons L') \LISTconcat \LISTlist{}\\
-        &\eq a \LISTcons (L' \LISTconcat \LISTlist{})\\
-        &\eq a \LISTcons L'\\
-        &\eq L
+        &\Eq (a \LISTcons L') \LISTconcat \LISTlist{}\\
+        &\Eq a \LISTcons (L' \LISTconcat \LISTlist{})\\
+        &\Eq a \LISTcons L'\\
+        &\Eq L
     \end{align*}.
   \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=LISTS_CONCAT_1021563255448756]
-  $L \LISTconcat (L' \LISTconcat L'') \eq (L \LISTconcat L') \LISTconcat L''$ for any lists $L, L', L''$.
+  $L \LISTconcat (L' \LISTconcat L'') \Eq (L \LISTconcat L') \LISTconcat L''$ for any lists $L, L', L''$.
 \end{proposition}
 \begin{proof}[forthel,method=induction on $L$]
   Let $L$ be a list.
 
-  \begin{case}{$L \eq \LISTlist{}$.} \end{case}
+  \begin{case}{$L \Eq \LISTlist{}$.} \end{case}
 
-  \begin{case}{$L \eq a \LISTcons L'''$ for some object $a$ and some list $L'''$.}
-    Consider an object $a$ and a list $L'''$ such that $L \eq a \LISTcons L'''$.
+  \begin{case}{$L \Eq a \LISTcons L'''$ for some object $a$ and some list $L'''$.}
+    Consider an object $a$ and a list $L'''$ such that $L \Eq a \LISTcons L'''$.
     Then $L''' \prec L$.
     Let $L',L''$ be lists.
-    Then $L''' \LISTconcat (L' \LISTconcat L'') \eq (L''' \LISTconcat L') \LISTconcat L''$.
+    Then $L''' \LISTconcat (L' \LISTconcat L'') \Eq (L''' \LISTconcat L') \LISTconcat L''$.
     Thus
     \begin{align*}
       L \LISTconcat (L' \LISTconcat L'') 
-        &\eq (a \LISTcons L''') \LISTconcat (L' \LISTconcat L'')\\
-        &\eq a \LISTcons (L''' \LISTconcat (L' \LISTconcat L''))\\
-        &\eq a \LISTcons ((L''' \LISTconcat L') \LISTconcat L'')\\
-        &\eq (a \LISTcons (L''' \LISTconcat L')) \LISTconcat L''\\
-        &\eq ((a \LISTcons L''') \LISTconcat L') \LISTconcat L''\\
-        &\eq (L \LISTconcat L') \LISTconcat L''
+        &\Eq (a \LISTcons L''') \LISTconcat (L' \LISTconcat L'')\\
+        &\Eq a \LISTcons (L''' \LISTconcat (L' \LISTconcat L''))\\
+        &\Eq a \LISTcons ((L''' \LISTconcat L') \LISTconcat L'')\\
+        &\Eq (a \LISTcons (L''' \LISTconcat L')) \LISTconcat L''\\
+        &\Eq ((a \LISTcons L''') \LISTconcat L') \LISTconcat L''\\
+        &\Eq (L \LISTconcat L') \LISTconcat L''
     \end{align*}.
   \end{case}
 \end{proof}

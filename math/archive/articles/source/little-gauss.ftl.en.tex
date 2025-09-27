@@ -17,8 +17,8 @@
 
 \noindent This is a formalization of ``Little Gauß''' Theorem, i.e. of
 the assertion that
-\[\sum_{k = \NATzero}^n k \eq \frac{k(k \NATplus \NATone)}\NATtwo\]
-for all $n \SETin \Nat$.
+\[\sum_{k = \NATzero}^n k \Eq \frac{k(k \NATplus \NATone)}\NATtwo\]
+for all $n \Elem \Nat$.
 In \Naproche we can define the sum $\sum_{n = \NATzero}^k n$ by the function
 $\gauss : \Nat \to \Nat$ with $\gauss(\NATzero) = \NATzero$ and
 $\gauss(n \NATplus \NATone) = \gauss(n) \NATplus (n \NATplus \NATone)$:
@@ -31,11 +31,11 @@ $\gauss(n \NATplus \NATone) = \gauss(n) \NATplus (n \NATplus \NATone)$:
   \end{signature*}
 
   \begin{axiom*}
-    $\gauss(\NATzero) \eq \NATzero$.
+    $\gauss(\NATzero) \Eq \NATzero$.
   \end{axiom*}
 
   \begin{axiom*}
-    $\gauss(n \NATplus \NATone) \eq \gauss(n) \NATplus (n \NATplus \NATone)$.
+    $\gauss(n \NATplus \NATone) \Eq \gauss(n) \NATplus (n \NATplus \NATone)$.
   \end{axiom*}
 \end{forthel}
 
@@ -44,26 +44,26 @@ $\gauss(n \NATplus \NATone) = \gauss(n) \NATplus (n \NATplus \NATone)$:
 \begin{forthel}
   \begin{theorem*}[title=Little Gauß,id=little_gauss]
     For all natural numbers $n$ we have
-    \[\NATtwo \NATmul \gauss(n) \eq n \NATmul (n \NATplus \NATone).\]
+    \[\NATtwo \NATmul \gauss(n) \Eq n \NATmul (n \NATplus \NATone).\]
   \end{theorem*}
   \begin{proof}
-    Define $\Phi = \{ n \in \Nat \mid \NATtwo \NATmul \gauss(n) \eq n \NATmul (n \NATplus \NATone) \}$.
+    Define $\Phi = \SClass{n}{\Nat}{\NATtwo \NATmul \gauss(n) \Eq n \NATmul (n \NATplus \NATone)}$.
     
-    (1) $\NATzero \SETin \Phi$.
+    (1) $\NATzero \Elem \Phi$.
 
-    (2) For all $n \SETin \Phi$ we have $n \NATplus \NATone \SETin \Phi$.
+    (2) For all $n \Elem \Phi$ we have $n \NATplus \NATone \Elem \Phi$.
     \begin{proof}
-      Let $n \SETin \Phi$.
-      Then $\NATtwo \NATmul \gauss(n) \eq n \NATmul (n \NATplus \NATone)$.
+      Let $n \Elem \Phi$.
+      Then $\NATtwo \NATmul \gauss(n) \Eq n \NATmul (n \NATplus \NATone)$.
       Hence
       \begin{align*}
               \NATtwo \NATmul \gauss(n \NATplus \NATone)
-        & \eq \NATtwo \NATmul (\gauss(n) \NATplus (n \NATplus \NATone)) \\
-        & \eq (\NATtwo \NATmul \gauss(n)) \NATplus (\NATtwo \NATmul (n \NATplus \NATone)) \\
-        & \eq (n \NATmul (n \NATplus \NATone)) \NATplus (\NATtwo \NATmul (n \NATplus \NATone)) \\
-        & \eq (n \NATplus \NATtwo) \NATmul (n \NATplus \NATone) \\
-        & \eq (n \NATplus \NATone) \NATmul (n \NATplus \NATtwo) \\
-        & \eq (n \NATplus \NATone) \NATmul ((n \NATplus \NATone) \NATplus \NATone)
+        & \Eq \NATtwo \NATmul (\gauss(n) \NATplus (n \NATplus \NATone)) \\
+        & \Eq (\NATtwo \NATmul \gauss(n)) \NATplus (\NATtwo \NATmul (n \NATplus \NATone)) \\
+        & \Eq (n \NATmul (n \NATplus \NATone)) \NATplus (\NATtwo \NATmul (n \NATplus \NATone)) \\
+        & \Eq (n \NATplus \NATtwo) \NATmul (n \NATplus \NATone) \\
+        & \Eq (n \NATplus \NATone) \NATmul (n \NATplus \NATtwo) \\
+        & \Eq (n \NATplus \NATone) \NATmul ((n \NATplus \NATone) \NATplus \NATone)
       \end{align*}.
     \end{proof}
   \end{proof}

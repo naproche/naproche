@@ -12,34 +12,34 @@
 \end{signature}
 
 \begin{axiom}[forthel,id=ARITHMETIC_12_6945210541236989]
-  $\NATfac{\NATzero} \eq \NATone$.
+  $\NATfac{\NATzero} \Eq \NATone$.
 \end{axiom}
 
 \begin{axiom}[forthel,id=ARITHMETIC_12_2312015846987452]
   Let $n$ be a natural number.
-  Then $\NATfac{n \NATplus \NATone} \eq \NATfac{n} \NATmul (n \NATplus \NATone)$.
+  Then $\NATfac{n \NATplus \NATone} \Eq \NATfac{n} \NATmul (n \NATplus \NATone)$.
 \end{axiom}
 
 \begin{proposition}[forthel,id=ARITHMETIC_12_6123519005949952]
   Let $n$ be a natural number.
-  Then $\NATfac{n} \neq \NATzero$.
+  Then $\NATfac{n} \NotEq \NATzero$.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $\Phi = \{n' \in \Nat \mid \NATfac{n'} \neq \NATzero \}$.
+  Define $\Phi = \SClass{n'}{\Nat}{\NATfac{n'} \NotEq \NATzero}$.
 
   (1) $\Phi$ contains $\NATzero$.
-  Indeed $\NATfac{\NATzero} \eq \NATone \neq \NATzero$.
+  Indeed $\NATfac{\NATzero} \Eq \NATone \NotEq \NATzero$.
 
-  (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
+  (2) For all $n' \Elem \Phi$ we have $n' \NATplus \NATone \Elem \Phi$.
   \begin{proof}
-    Let $n' \SETin \Phi$.
-    We have $\NATfac{n' \NATplus \NATone} \eq (n' \NATplus \NATone) \NATmul \NATfac{n'}$.
+    Let $n' \Elem \Phi$.
+    We have $\NATfac{n' \NATplus \NATone} \Eq (n' \NATplus \NATone) \NATmul \NATfac{n'}$.
     $n' \NATplus \NATone$ and $\NATfac{n'}$ are nonzero.
-    Hence $\NATfac{n' \NATplus \NATone} \neq \NATzero$.
+    Hence $\NATfac{n' \NATplus \NATone} \NotEq \NATzero$.
   \end{proof}
 
   Thus $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
-  Therefore $\NATfac{n} \neq \NATzero$.
+  Therefore $\NATfac{n} \NotEq \NATzero$.
 \end{proof}
 \end{smodule}
 \end{document}

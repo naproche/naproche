@@ -9,7 +9,7 @@
 
 \begin{definition}[forthel,id=ARITHMETIC_07_4239998993825792]
   Let $n, m$ be natural numbers.
-  $\emph{n \NATmid m}$ iff there exists a natural number $k$ such that $n \NATmul k \eq m$.
+  $\emph{n \NATmid m}$ iff there exists a natural number $k$ such that $n \NATmul k \Eq m$.
 
   Let $m$ is \emph{divisible by $n$} stand for $n \NATmid m$.
   Let $n$ \emph{divides $m$} stand for $n \NATmid m$.
@@ -18,7 +18,7 @@
 
 \begin{lemma}[forthel,id=ARITHMETIC_07_1478855118290944]
   Let $n, m$ be natural numbers.
-  $n$ divides $m$ iff there exists a natural number $k$ such that $k \NATmul n \eq m$.
+  $n$ divides $m$ iff there exists a natural number $k$ such that $k \NATmul n \Eq m$.
 \end{lemma}
 
 \begin{definition}[forthel,id=ARITHMETIC_07_1311437490225152]
@@ -30,12 +30,12 @@
 
 \begin{definition}[forthel,id=ARITHMETIC_10_5438991513944064]
   Let $n$ be a natural number.
-  A \emph{trivial divisor of $n$} is a divisor $m$ of $n$ such that $m \eq \NATone$ or $m \eq n$.
+  A \emph{trivial divisor of $n$} is a divisor $m$ of $n$ such that $m \Eq \NATone$ or $m \Eq n$.
 \end{definition}
 
 \begin{definition}[forthel,id=ARITHMETIC_10_8768240253665280]
   Let $n$ be a natural number.
-  A \emph{nontrivial divisor of $n$} is a divisor $m$ of $n$ such that $m \neq \NATone$ and $m \neq n$.
+  A \emph{nontrivial divisor of $n$} is a divisor $m$ of $n$ such that $m \NotEq \NATone$ and $m \NotEq n$.
 \end{definition}
 
 \begin{definition}[forthel,id=ARITHMETIC_10_8020087063707648]
@@ -48,18 +48,18 @@
   Then $n \NATmid \NATzero$.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $n \NATmul \NATzero \eq \NATzero$.
+  We have $n \NATmul \NATzero \Eq \NATzero$.
   Hence $n \NATmid \NATzero$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_8611150130315264]
   Let $n$ be a natural number.
-  If $\NATzero \NATmid n$ then $n \eq \NATzero$.
+  If $\NATzero \NATmid n$ then $n \Eq \NATzero$.
 \end{proposition}
 \begin{proof}[forthel]
   Assume $\NATzero \NATmid n$.
-  Consider a natural number $k$ such that $\NATzero \NATmul k \eq n$.
-  Then $n \eq \NATzero$.
+  Consider a natural number $k$ such that $\NATzero \NATmul k \Eq n$.
+  Then $n \Eq \NATzero$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_1259086070939648]
@@ -67,7 +67,7 @@
   Then $\NATone \NATmid n$.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $\NATone \NATmul n \eq n$.
+  We have $\NATone \NATmul n \Eq n$.
   Hence $\NATone \NATmid n$.
 \end{proof}
 
@@ -76,42 +76,42 @@
   Then $n \NATmid n$.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $n \NATmul \NATone \eq n$.
+  We have $n \NATmul \NATone \Eq n$.
   Hence $n \NATmid n$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_6917446193643520]
   Let $n$ be a natural number.
-  If $n \NATmid \NATone$ then $n \eq \NATone$.
+  If $n \NATmid \NATone$ then $n \Eq \NATone$.
 \end{proposition}
 \begin{proof}[forthel]
   Assume $n \NATmid \NATone$.
-  Take a natural number $k$ such that $n \NATmul k \eq \NATone$.
-  Suppose $n \neq \NATone$.
+  Take a natural number $k$ such that $n \NATmul k \Eq \NATone$.
+  Suppose $n \NotEq \NATone$.
   Then $n \NATless \NATone$ or $n \NATgtr \NATone$.
 
   \begin{case}{$n \NATless \NATone$.}
-    Then $n \eq \NATzero$.
+    Then $n \Eq \NATzero$.
     Hence $\NATzero
-      \eq \NATzero \NATmul k
-      \eq n \NATmul k
-      \eq \NATone$.
+      \Eq \NATzero \NATmul k
+      \Eq n \NATmul k
+      \Eq \NATone$.
     Contradiction.
   \end{case}
 
   \begin{case}{$n \NATgtr \NATone$.}
-    We have $k \neq \NATzero$.
-    Indeed if $k \eq \NATzero$ then
+    We have $k \NotEq \NATzero$.
+    Indeed if $k \Eq \NATzero$ then
     $\NATone
-      \eq n \NATmul k
-      \eq n \NATmul \NATzero
-      \eq \NATzero$.
+      \Eq n \NATmul k
+      \Eq n \NATmul \NATzero
+      \Eq \NATzero$.
     Hence $k \NATgeq \NATone$.
-    Take a positive natural number $l$ such that $n \eq \NATone \NATplus l$.
+    Take a positive natural number $l$ such that $n \Eq \NATone \NATplus l$.
     Then $\NATone
       \NATless \NATone \NATplus l
-      \eq n
-      \eq n \NATmul \NATone
+      \Eq n
+      \Eq n \NATmul \NATone
       \NATleq n \NATmul k$.
     Hence $\NATone \NATless n$.
     Contradiction.
@@ -124,10 +124,10 @@
 \end{proposition}
 \begin{proof}[forthel]
   Assume $n \NATmid m$.
-  Take $l \SETin \Nat$ such that $n \NATmul l \eq m$.
+  Take $l \Elem \Nat$ such that $n \NATmul l \Eq m$.
   Then $n \NATmul (l \NATmul k)
-    \eq (n \NATmul l) \NATmul k
-    \eq m \NATmul k$.
+    \Eq (n \NATmul l) \NATmul k
+    \Eq m \NATmul k$.
   Hence $n \NATmid m \NATmul k$.
 \end{proof}
 
@@ -142,28 +142,28 @@
 \end{proposition}
 \begin{proof}[forthel]
   Assume $n \NATmid m$ and $m \NATmid k$.
-  Take natural numbers $l,l'$ such that $n \NATmul l \eq m$ and $m \NATmul l' \eq k$.
+  Take natural numbers $l,l'$ such that $n \NATmul l \Eq m$ and $m \NATmul l' \Eq k$.
   Then $n \NATmul (l \NATmul l')
-    \eq (n \NATmul l) \NATmul l'
-    \eq m \NATmul l'
-    \eq k$.
+    \Eq (n \NATmul l) \NATmul l'
+    \Eq m \NATmul l'
+    \Eq k$.
   Hence $n \NATmid k$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_4933275640397824]
-  Let $n, m$ be natural numbers such that $n \neq \NATzero$.
-  If $n \NATmid m$ and $m \NATmid n$ then $n \eq m$.
+  Let $n, m$ be natural numbers such that $n \NotEq \NATzero$.
+  If $n \NATmid m$ and $m \NATmid n$ then $n \Eq m$.
 \end{proposition}
 \begin{proof}[forthel]
   Assume $n \NATmid m$ and $m \NATmid n$.
-  Take natural numbers $k,k'$ such that $n \NATmul k \eq m$ and $m \NATmul k' \eq n$.
+  Take natural numbers $k,k'$ such that $n \NATmul k \Eq m$ and $m \NATmul k' \Eq n$.
   Then $n
-    \eq m \NATmul k'
-    \eq (n \NATmul k) \NATmul k'
-    \eq n \NATmul (k \NATmul k')$.
-  Hence $k \NATmul k' \eq \NATone$.
-  Thus $k \eq \NATone \eq k'$.
-  Therefore $n \eq m$.
+    \Eq m \NATmul k'
+    \Eq (n \NATmul k) \NATmul k'
+    \Eq n \NATmul (k \NATmul k')$.
+  Hence $k \NATmul k' \Eq \NATone$.
+  Thus $k \Eq \NATone \Eq k'$.
+  Therefore $n \Eq m$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_1283495225720832]
@@ -172,23 +172,23 @@
 \end{proposition}
 \begin{proof}[forthel]
   Assume $n \NATmid m$.
-  Take a natural number $l$ such that $n \NATmul l \eq m$.
+  Take a natural number $l$ such that $n \NATmul l \Eq m$.
   Then $(k \NATmul n) \NATmul l
-    \eq k \NATmul (n \NATmul l)
-    \eq k \NATmul m$.
+    \Eq k \NATmul (n \NATmul l)
+    \Eq k \NATmul m$.
   Hence $k \NATmul n \NATmid k \NATmul m$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_6469492028735488]
   Let $n, m, k$ be natural numbers.
-  Assume $k \neq \NATzero$.
+  Assume $k \NotEq \NATzero$.
   If $k \NATmul n \NATmid k \NATmul m$ then $n \NATmid m$.
 \end{proposition}
 \begin{proof}[forthel]
   Assume $k \NATmul n \NATmid k \NATmul m$.
-  Take a natural number $l$ such that $(k \NATmul n) \NATmul l \eq k \NATmul m$.
-  Then $k \NATmul (n \NATmul l) \eq k \NATmul m$.
-  Hence $n \NATmul l \eq m$ (by \printref{ARITHMETIC_06_8575191374364672}).
+  Take a natural number $l$ such that $(k \NATmul n) \NATmul l \Eq k \NATmul m$.
+  Then $k \NATmul (n \NATmul l) \Eq k \NATmul m$.
+  Hence $n \NATmul l \Eq m$ (by \printref{ARITHMETIC_06_8575191374364672}).
   Thus $n \NATmid m$.
 \end{proof}
 
@@ -200,13 +200,13 @@
 \begin{proof}[forthel]
   Assume $k \NATmid n$ and $k \NATmid m$.
   Let $n', m'$ be natural numbers.
-  Take natural numbers $l,l'$ such that $k \NATmul l \eq n$ and $k \NATmul l' \eq m$.
+  Take natural numbers $l,l'$ such that $k \NATmul l \Eq n$ and $k \NATmul l' \Eq m$.
   Then
   \[  k \NATmul ((n' \NATmul l) \NATplus (m' \NATmul l'))                \]
-  \[    \eq (k \NATmul (n' \NATmul l)) \NATplus (k \NATmul (m' \NATmul l'))  \]
-  \[    \eq ((k \NATmul n') \NATmul l) \NATplus ((k \NATmul m') \NATmul l')  \]
-  \[    \eq (n' \NATmul (k \NATmul l)) \NATplus (m' \NATmul (k \NATmul l'))  \]
-  \[    \eq (n' \NATmul n) \NATplus (m' \NATmul m).                      \]
+  \[    \Eq (k \NATmul (n' \NATmul l)) \NATplus (k \NATmul (m' \NATmul l'))  \]
+  \[    \Eq ((k \NATmul n') \NATmul l) \NATplus ((k \NATmul m') \NATmul l')  \]
+  \[    \Eq (n' \NATmul (k \NATmul l)) \NATplus (m' \NATmul (k \NATmul l'))  \]
+  \[    \Eq (n' \NATmul n) \NATplus (m' \NATmul m).                      \]
 \end{proof}
 
 \begin{corollary}[forthel,id=ARITHMETIC_07_1556786209357824]
@@ -217,7 +217,7 @@
   Assume $k \NATmid n$ and $k \NATmid m$.
   Take $n' = \NATone$ and $m' = \NATone$.
   Then $k \NATmid (n' \NATmul n) \NATplus (m' \NATmul m)$.
-  $(n' \NATmul n) \NATplus (m' \NATmul m) \eq n \NATplus m$.
+  $(n' \NATmul n) \NATplus (m' \NATmul m) \Eq n \NATplus m$.
   Hence $k \NATmid n \NATplus m$.
 \end{proof}
 
@@ -228,48 +228,48 @@
 \begin{proof}[forthel]
   Assume $k \NATmid n$ and $k \NATmid n \NATplus m$.
 
-  \begin{case}{$k \eq \NATzero$.} \end{case}
+  \begin{case}{$k \Eq \NATzero$.} \end{case}
 
-  \begin{case}{$k \neq \NATzero$.}
-    Take a natural number $l$ such that $n \eq k \NATmul l$.
-    Take a natural number $l'$ such that $n \NATplus m \eq k \NATmul l'$.
-    Then $(k \NATmul l) \NATplus m \eq k \NATmul l'$.
+  \begin{case}{$k \NotEq \NATzero$.}
+    Take a natural number $l$ such that $n \Eq k \NATmul l$.
+    Take a natural number $l'$ such that $n \NATplus m \Eq k \NATmul l'$.
+    Then $(k \NATmul l) \NATplus m \Eq k \NATmul l'$.
     We have $l' \NATgeq l$.
     Indeed if $l' \NATless l$ then
     $n \NATplus m
-      \eq k \NATmul l'
+      \Eq k \NATmul l'
       \NATless k \NATmul l
-      \eq n$ (by \printref{ARITHMETIC_06_5048640368279552}).
-    Hence we can take a natural number $l''$ such that $l' \eq l \NATplus l''$.
+      \Eq n$ (by \printref{ARITHMETIC_06_5048640368279552}).
+    Hence we can take a natural number $l''$ such that $l' \Eq l \NATplus l''$.
     Then $(k \NATmul l) \NATplus m
-      \eq k \NATmul l'
-      \eq k \NATmul (l \NATplus l'')
-      \eq (k \NATmul l) \NATplus (k \NATmul l'')$.
-    Indeed $k \NATmul (l \NATplus l'') \eq (k \NATmul l) \NATplus (k \NATmul l'')$ (by \printref{ARITHMETIC_06_9001524774567936}).
-    Thus $m \eq (k \NATmul l'')$ (by \printref{ARITHMETIC_03_8445946379632640}).
+      \Eq k \NATmul l'
+      \Eq k \NATmul (l \NATplus l'')
+      \Eq (k \NATmul l) \NATplus (k \NATmul l'')$.
+    Indeed $k \NATmul (l \NATplus l'') \Eq (k \NATmul l) \NATplus (k \NATmul l'')$ (by \printref{ARITHMETIC_06_9001524774567936}).
+    Thus $m \Eq (k \NATmul l'')$ (by \printref{ARITHMETIC_03_8445946379632640}).
     Indeed $k \NATmul l$ and $k \NATmul l''$ are natural numbers.
     Therefore $k \NATmid m$.
   \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_2187144577679360]
-  Let $n, m$ be natural numbers such that $n, m \neq \NATzero$.
+  Let $n, m$ be natural numbers such that $n, m \NotEq \NATzero$.
   If $m \NATmid n$ then $m \NATleq n$.
 \end{proposition}
 \begin{proof}[forthel]
   Assume $m \NATmid n$.
-  Take a natural number $k$ such that $m \NATmul k \eq n$.
-  If $k \eq \NATzero$ then
+  Take a natural number $k$ such that $m \NATmul k \Eq n$.
+  If $k \Eq \NATzero$ then
   $n
-    \eq m \NATmul k
-    \eq m \NATmul \NATzero
-    \eq \NATzero$.
+    \Eq m \NATmul k
+    \Eq m \NATmul \NATzero
+    \Eq \NATzero$.
   Thus $k \NATgeq \NATone$.
   Assume $m \NATgtr n$.
   Then $n
-    \eq m \NATmul k
+    \Eq m \NATmul k
     \NATgeq m \NATmul \NATone
-    \eq m
+    \Eq m
     \NATgtr n$.
   Hence $n \NATgtr n$.
   Contradiction.

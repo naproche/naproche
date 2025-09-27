@@ -8,12 +8,12 @@
 
 \begin{proposition}[forthel,id=SET_THEORY_06_5513850721927168]
   Let $x, y$ be sets and $f \FUNfrominto{x}{y}$ and $a \SETinclude x$.
-  Then $\SETcard{\FUNim{f}{a}} \eq \SETcard{a}$.
+  Then $\SETcard{\FUNim{f}{a}} \Eq \SETcard{a}$.
 \end{proposition}
 \begin{proof}[forthel]
   $f \FUNrest a$ is a bijection between $a$ and $\FUNim{f}{a}$.
   $\FUNim{f}{a}$ is a set.
-  Hence $\SETcard{a} \eq \SETcard{\FUNim{f}{a}}$.
+  Hence $\SETcard{a} \Eq \SETcard{\FUNim{f}{a}}$.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_06_6702394681735923]
@@ -28,7 +28,7 @@
   $\FUNid{x}$ is an injective map from $x$ to $\kappa$.
   Hence $x$ and $\kappa$ are equinumerous (by \printref{cantor_schroeder_bernstein}).
   Indeed $x$ is a set.
-  Thus $\SETcard{x} \eq \kappa$.
+  Thus $\SETcard{x} \Eq \kappa$.
   Contradiction.
 \end{proof}
 
@@ -44,8 +44,8 @@
     Hence $h \FUNcomp f$ is an injective map from $x$ to $\SETcard{y}$.
     Thus $(h \FUNcomp f) \FUNcomp g$ is an injective map from $\SETcard{x}$ to $\SETcard{y}$.
     Therefore $\SETcard{x}
-      \eq \SETcard{\SETcard{x}}
-      \eq \SETcard{\FUNim{(h \FUNcomp f) \FUNcomp g}{\SETcard{x}}}$
+      \Eq \SETcard{\SETcard{x}}
+      \Eq \SETcard{\FUNim{(h \FUNcomp f) \FUNcomp g}{\SETcard{x}}}$
     (by \printref{SET_THEORY_06_2820082336006144}, \printref{SET_THEORY_06_5513850721927168}).
     We have $\FUNim{(h \FUNcomp f) \FUNcomp g}{\SETcard{x}} \SETinclude \SETcard{y}$.
     Hence $\SETcard{x} \ORDleq \SETcard{y}$.
@@ -90,19 +90,19 @@
 \begin{proof}[forthel]
   \begin{case}{there exists a surjective map from $x$ onto $y$.}
     Consider a surjective map $f$ from $x$ onto $y$.
-    Define $g(v) =$ ``choose $u \SETin x$ such that $f(u) \eq v$ in $u$'' for $v \in y$.
+    Define $g(v) =$ ``choose $u \Elem x$ such that $f(u) \Eq v$ in $u$'' for $v \in y$.
     Then $g$ is an injective map from $y$ to $x$.
     Indeed we can show that $g$ is injective.
-      Let $v, v' \SETin y$.
-      Assume $g(v) \eq g(v')$.
-      Take $u \SETin x$ such that $f(u) \eq v$ and $g(v) \eq u$.
-      Take $u' \SETin x$ such that $f(u') \eq v'$ and $g(v') \eq u'$.
+      Let $v, v' \Elem y$.
+      Assume $g(v) \Eq g(v')$.
+      Take $u \Elem x$ such that $f(u) \Eq v$ and $g(v) \Eq u$.
+      Take $u' \Elem x$ such that $f(u') \Eq v'$ and $g(v') \Eq u'$.
       Then $v
-        \eq f(u)
-        \eq f(g(v))
-        \eq f(g(v'))
-        \eq f(u')
-        \eq v'$.
+        \Eq f(u)
+        \Eq f(g(v))
+        \Eq f(g(v'))
+        \Eq f(u')
+        \Eq v'$.
     End.
     Hence $\SETcard{x} \ORDgeq \SETcard{y}$.
   \end{case}
@@ -113,15 +113,15 @@
     Consider an element $z$ of $y$.
     Define \[ g(u) =
       \begin{cases}
-        \FUNinv{f}(u) & : u \SETin \FUNrange(f) \\
-        z         & : u \SETnotin \FUNrange(f)
+        \FUNinv{f}(u) & : u \Elem \FUNrange(f) \\
+        z         & : u \NotElem \FUNrange(f)
       \end{cases} \]
     for $u \in x$.
     Then $g$ is a surjective map from $x$ onto $y$.
     Indeed we can show that every element of $y$ is a value of $g$.
-      Let $v \SETin y$.
-      Then $f(v) \SETin \FUNrange(f)$.
-      Hence $g(f(v)) \eq \FUNinv{f}(f(v)) \eq v$.
+      Let $v \Elem y$.
+      Then $f(v) \Elem \FUNrange(f)$.
+      Hence $g(f(v)) \Eq \FUNinv{f}(f(v)) \Eq v$.
     End.
   \end{case}
 \end{proof}

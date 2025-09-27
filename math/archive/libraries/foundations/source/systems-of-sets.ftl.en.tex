@@ -48,51 +48,51 @@
 \begin{sfragment}{Unions Over Systems of Sets}
   \begin{definition}[forthel,id=FOUNDATIONS_10_541772562300928]
     Let $X$ be a system of sets.
-    $\emph{\SETunionover X} = \{ a \mid a \SETin x\text{ for some }x \SETin X \}$.
+    $\emph{\SETunionover X} = \CClass{a}{a \Elem x\text{ for some }x \Elem X}$.
 
     Let \emph{union over $X$} stand for $\SETunionover X$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_10_4872701241982976]
-    $\SETunionover \SETempty \eq \SETempty$.
+    $\SETunionover \SETempty \Eq \SETempty$.
   \end{proposition}
   \begin{proof}[forthel]
-    $\SETunionover \SETempty = \{ a \mid a \SETin x\text{ for some }x \SETin \SETempty \}$.
+    $\SETunionover \SETempty = \CClass{a \mid}{a \Elem x\text{ for some }x \Elem \SETempty}$.
     $\SETempty$ has no elements.
-    Hence there is no object $a$ such that $a \SETin x$ for some $x \SETin \SETempty$.
-    Thus $\SETunionover \SETempty \eq \SETempty$.
+    Hence there is no object $a$ such that $a \Elem x$ for some $x \Elem \SETempty$.
+    Thus $\SETunionover \SETempty \Eq \SETempty$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_10_2559541585641472]
     Let $x, y$ be sets.
-    Then $\SETunionover \SETpair{x}{y} \eq x \SETunion y$.
+    Then $\SETunionover \SETpair{x}{y} \Eq x \SETunion y$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $\SETunionover \SETpair{x}{y} \SETinclude x \SETunion y$.
-      Let $a \SETin \SETunionover \SETpair{x}{y}$.
+      Let $a \Elem \SETunionover \SETpair{x}{y}$.
       Then $a$ is contained in some element of $\SETpair{x}{y}$.
-      Hence $a \SETin x$ or $a \SETin y$.
-      Thus $a \SETin x \SETunion y$.
+      Hence $a \Elem x$ or $a \Elem y$.
+      Thus $a \Elem x \SETunion y$.
     End.
 
     Let us show that $x \SETunion y \SETinclude \SETunionover \SETpair{x}{y}$.
-      Let $a \SETin x \SETunion y$.
-      Then $a \SETin x$ or $a \SETin y$.
+      Let $a \Elem x \SETunion y$.
+      Then $a \Elem x$ or $a \Elem y$.
       Hence $a$ is contained in some element of $\SETpair{x}{y}$.
-      Therefore $a \SETin \SETunionover \SETpair{x}{y}$.
+      Therefore $a \Elem \SETunionover \SETpair{x}{y}$.
     End.
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_10_2157223832715264]
     Let $x$ be a set.
-    Then $\SETunionover \SETsingleton{x} \eq x$.
+    Then $\SETunionover \SETsingleton{x} \Eq x$.
   \end{corollary}
 \end{sfragment}
 
 \begin{sfragment}{Intersections Over Systems of Sets}
   \begin{definition}[forthel,id=FOUNDATIONS_10_2659345095458816]
     Let $X$ be a system of sets.
-    $\emph{\SETintersectover X} = \{ a \mid a \SETin x\text{ for all }x \SETin X \}$.
+    $\emph{\SETintersectover X} = \CClass{a}{a \Elem x\text{ for all }x \Elem X}$.
 
     Let the \emph{intersection over $X$} stand for $\SETintersectover X$.
   \end{definition}
@@ -101,42 +101,42 @@
     $\SETintersectover \SETempty$ is the class of all objects.
   \end{proposition}
   \begin{proof}[forthel]
-    Define $V = \{ x \mid x\text{ is an object}\}$.
+    Define $V = \CClass{x}{x\text{ is an object}}$.
     We have $\SETintersectover \SETempty \SETinclude V$.
     Indeed every element of $\SETintersectover \SETempty$ is an object.
 
     Let us show that $V \SETinclude \SETintersectover \SETempty$.
-      Let $a \SETin V$.
+      Let $a \Elem V$.
       Then $a$ is an object.
-      For every $x \SETin \SETempty$ we have $a \SETin x$.
+      For every $x \Elem \SETempty$ we have $a \Elem x$.
       Indeed $\SETempty$ has no elements.
-      Thus $a \SETin \SETintersectover \SETempty$.
+      Thus $a \Elem \SETintersectover \SETempty$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_10_7851827447988224]
     Let $x, y$ be sets.
-    Then $\SETintersectover \SETpair{x}{y} \eq x \SETintersect y$.
+    Then $\SETintersectover \SETpair{x}{y} \Eq x \SETintersect y$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $\SETintersectover \SETpair{x}{y} \SETinclude x \SETintersect y$.
-      Let $a \SETin \SETintersectover \SETpair{x}{y}$.
+      Let $a \Elem \SETintersectover \SETpair{x}{y}$.
       Then $a$ is contained in every element of $\SETpair{x}{y}$.
-      Hence $a \SETin x$ and $a \SETin y$.
-      Thus $a \SETin x \SETintersect y$.
+      Hence $a \Elem x$ and $a \Elem y$.
+      Thus $a \Elem x \SETintersect y$.
     End.
 
     Let us show that $x \SETintersect y \SETinclude \SETintersectover \SETpair{x}{y}$.
-      Let $a \SETin x \SETintersect y$.
-      Then $a \SETin x$ and $a \SETin y$.
+      Let $a \Elem x \SETintersect y$.
+      Then $a \Elem x$ and $a \Elem y$.
       Hence $a$ is contained in every element of $\SETpair{x}{y}$.
-      Therefore $a \SETin \SETintersectover \SETpair{x}{y}$.
+      Therefore $a \Elem \SETintersectover \SETpair{x}{y}$.
     End.
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_10_7239895674257408]
     Let $x$ be a set.
-    Then $\SETintersectover \SETsingleton{x} \eq x$.
+    Then $\SETintersectover \SETsingleton{x} \Eq x$.
   \end{corollary}
 \end{sfragment}
 \end{smodule}

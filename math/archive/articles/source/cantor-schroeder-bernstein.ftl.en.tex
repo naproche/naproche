@@ -36,7 +36,7 @@ Its proof of is based on the Knaster-Tarski Fixed Point Theorem.
   \begin{case}{there exists an injective map from $x$ to $y$ and there exists an injective map from $y$ to $x$.}
     Take an injective map $f$ from $x$ to $y$.
     Take an injective map $g$ from $y$ to $x$.
-    We have $y \SETdiff \FUNim{f}{a} \SETinclude y$ for any $a \SETin \SETpow(x)$.
+    We have $y \SETdiff \FUNim{f}{a} \SETinclude y$ for any $a \Elem \SETpow(x)$.
 
     (1) Define $h(a) = x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{a}}$ for $a \in \SETpow(x)$.
 
@@ -58,10 +58,10 @@ Its proof of is based on the Knaster-Tarski Fixed Point Theorem.
 
     (2) Define $F(u) = f(u)$ for $u \in c$.
 
-    We have $c \eq h(c)$ iff $x \SETdiff c \eq \FUNim{g}{y \SETdiff \FUNim{f}{c}}$.
+    We have $c \Eq h(c)$ iff $x \SETdiff c \Eq \FUNim{g}{y \SETdiff \FUNim{f}{c}}$.
     $\FUNinv{g}$ is a bijection between $\FUNrange(g)$ and $y$.
-    Thus $x \SETdiff c \eq \FUNim{g}{y \SETdiff \FUNim{f}{c}} \SETinclude \FUNrange(g)$.
-    Therefore $x \SETdiff c$ is a subset of $\FUNdom(\FUNinv{g})$.
+    Thus $x \SETdiff c \Eq \FUNim{g}{y \SETdiff \FUNim{f}{c}} \SETinclude \FUNrange(g)$.
+    Therefore $x \SETdiff c$ is a subset of $\Dom(\FUNinv{g})$.
 
     (3) Define $G(u) = \FUNinv{g}(u)$ for $u \in x \SETdiff c$.
 
@@ -70,73 +70,73 @@ Its proof of is based on the Knaster-Tarski Fixed Point Theorem.
 
     Define \[ H(u) =
       \begin{cases}
-        F(u) & : u \SETin c \\
-        G(u) & : u \SETnotin c
+        F(u) & : u \Elem c \\
+        G(u) & : u \NotElem c
       \end{cases} \]
     for $u \in x$.
 
     Let us show that $H$ is a map to $y$.
-      $\FUNdom(H)$ is a set and every value of $H$ is an object.
+      $\Dom(H)$ is a set and every value of $H$ is an object.
       Hence $H$ is a map.
 
       Let us show that every value of $H$ lies in $y$.
         Let $v$ be a value of $H$.
-        Take $u \SETin x$ such that $H(u) \eq v$.
-        If $u \SETin c$ then $v \eq H(u) \eq F(u) \eq f(u) \SETin y$.
-        If $u \SETnotin c$ then $v \eq H(u) \eq G(u) \eq \FUNinv{g}(u) \SETin y$.
+        Take $u \Elem x$ such that $H(u) \Eq v$.
+        If $u \Elem c$ then $v \Eq H(u) \Eq F(u) \Eq f(u) \Elem y$.
+        If $u \NotElem c$ then $v \Eq H(u) \Eq G(u) \Eq \FUNinv{g}(u) \Elem y$.
       End.
     End.
 
     (4) $H$ is surjective onto $y$.
     Indeed we can show that every element of $y$ is a value of $H$.
-      Let $v \SETin y$.
+      Let $v \Elem y$.
 
-      \begin{case}{$v \SETin \FUNim{f}{c}$.}
-        Take $u \SETin c$ such that $f(u) \eq v$.
-        Then $F(u) \eq v$.
+      \begin{case}{$v \Elem \FUNim{f}{c}$.}
+        Take $u \Elem c$ such that $f(u) \Eq v$.
+        Then $F(u) \Eq v$.
       \end{case}
 
-      \begin{case}{$v \SETnotin \FUNim{f}{c}$.}
-        Then $v \SETin y \SETdiff \FUNim{f}{c}$.
-        Hence $g(v) \SETin \FUNim{g}{y \SETdiff \FUNim{f}{c}}$.
-        Thus $g(v) \SETin x \SETdiff h(c)$.
-        We have $g(v) \SETin x \SETdiff c$.
-        Therefore we can take $u \SETin x \SETdiff c$ such that $G(u) \eq v$.
-        Then $v \eq H(u)$.
+      \begin{case}{$v \NotElem \FUNim{f}{c}$.}
+        Then $v \Elem y \SETdiff \FUNim{f}{c}$.
+        Hence $g(v) \Elem \FUNim{g}{y \SETdiff \FUNim{f}{c}}$.
+        Thus $g(v) \Elem x \SETdiff h(c)$.
+        We have $g(v) \Elem x \SETdiff c$.
+        Therefore we can take $u \Elem x \SETdiff c$ such that $G(u) \Eq v$.
+        Then $v \Eq H(u)$.
       \end{case}
     End.
 
     (5) $H$ is injective.
-    Indeed we can show that for all $u, v \SETin x$ if $u \neq v$ then $H(u) \neq H(v)$.
-      Let $u,v \SETin x$.
-      Assume $u \neq v$.
+    Indeed we can show that for all $u, v \Elem x$ if $u \NotEq v$ then $H(u) \NotEq H(v)$.
+      Let $u,v \Elem x$.
+      Assume $u \NotEq v$.
 
-      \begin{case}{$u,v \SETin c$.}
-        Then $H(u) \eq F(u)$ and $H(v) \eq F(v)$.
-        We have $F(u) \neq F(v)$.
-        Hence $H(u) \neq H(v)$.
+      \begin{case}{$u,v \Elem c$.}
+        Then $H(u) \Eq F(u)$ and $H(v) \Eq F(v)$.
+        We have $F(u) \NotEq F(v)$.
+        Hence $H(u) \NotEq H(v)$.
       \end{case}
 
-      \begin{case}{$u,v \SETnotin c$.}
-        Then $H(u) \eq G(u)$ and $H(v) \eq G(v)$.
-        We have $G(u) \neq G(v)$.
-        Hence $H(u) \neq H(v)$.
+      \begin{case}{$u,v \NotElem c$.}
+        Then $H(u) \Eq G(u)$ and $H(v) \Eq G(v)$.
+        We have $G(u) \NotEq G(v)$.
+        Hence $H(u) \NotEq H(v)$.
       \end{case}
 
-      \begin{case}{$u \SETin c$ and $v \SETnotin c$.}
-        Then $H(u) \eq F(u)$ and $H(v) \eq G(v)$.
-        Hence $v \SETin \FUNim{g}{y \SETdiff \FUNim{F}{c}}$.
-        We have $G(v) \eq \FUNinv{g}(v) \SETin y \SETdiff \FUNim{F}{c}$.
-        Indeed $v \eq g(v')$ for some $v' \SETin y \SETdiff \FUNim{F}{c}$.
-        Thus $G(v) \neq F(u)$.
+      \begin{case}{$u \Elem c$ and $v \NotElem c$.}
+        Then $H(u) \Eq F(u)$ and $H(v) \Eq G(v)$.
+        Hence $v \Elem \FUNim{g}{y \SETdiff \FUNim{F}{c}}$.
+        We have $G(v) \Eq \FUNinv{g}(v) \Elem y \SETdiff \FUNim{F}{c}$.
+        Indeed $v \Eq g(v')$ for some $v' \Elem y \SETdiff \FUNim{F}{c}$.
+        Thus $G(v) \NotEq F(u)$.
       \end{case}
 
-      \begin{case}{$u \SETnotin c$ and $v \SETin c$.}
-        Then $H(u) \eq G(u)$ and $H(v) \eq F(v)$.
-        Hence $u \SETin \FUNim{g}{y \SETdiff \FUNim{F}{c}}$.
-        We have $G(u) \eq \FUNinv{g}(u) \SETin y \SETdiff \FUNim{F}{c}$.
-        Indeed $u \eq g(u')$ for some $u' \SETin y \SETdiff \FUNim{F}{c}$.
-        Thus $G(u) \neq F(v)$.
+      \begin{case}{$u \NotElem c$ and $v \Elem c$.}
+        Then $H(u) \Eq G(u)$ and $H(v) \Eq F(v)$.
+        Hence $u \Elem \FUNim{g}{y \SETdiff \FUNim{F}{c}}$.
+        We have $G(u) \Eq \FUNinv{g}(u) \Elem y \SETdiff \FUNim{F}{c}$.
+        Indeed $u \Eq g(u')$ for some $u' \Elem y \SETdiff \FUNim{F}{c}$.
+        Thus $G(u) \NotEq F(v)$.
       \end{case}
     End.
 

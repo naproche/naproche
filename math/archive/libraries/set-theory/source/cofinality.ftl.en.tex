@@ -8,7 +8,7 @@
 
 \begin{definition}[forthel,id=SET_THEORY_06_5621203645212879]
   Let $\kappa$ be a cardinal and $Y \SETinclude \kappa$.
-  $Y$ is \emph{cofinal in $\kappa$} iff for every $x \SETin \kappa$ there exists a $y \SETin Y$ such that $x \ORDless y$.
+  $Y$ is \emph{cofinal in $\kappa$} iff for every $x \Elem \kappa$ there exists a $y \Elem Y$ such that $x \ORDless y$.
 
   Let a \emph{cofinal subset of $\kappa$} stand for a subset of $\kappa$ that is cofinal in $\kappa$.
 \end{definition}
@@ -24,8 +24,8 @@
 \begin{proof}[forthel]
   Assume the contrary.
   Consider a cofinal subset $Y$ of $n$.
-  We have $\ORDpred(n) \SETin n$.
-  Hence we can take a $y \SETin Y$ such that $\ORDpred(n) \ORDless y$.
+  We have $\ORDpred(n) \Elem n$.
+  Hence we can take a $y \Elem Y$ such that $\ORDpred(n) \ORDless y$.
   Then $y \ORDgeq n$.
   Contradiction.
 \end{proof}

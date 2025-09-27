@@ -16,7 +16,7 @@
 \end{definition}
 
 \begin{definition}[forthel,id=SET_THEORY_06_6818986081648640]
-  A \emph{cardinal number} is an ordinal $\kappa$ such that $\kappa \eq \SETcard{x}$ for some
+  A \emph{cardinal number} is an ordinal $\kappa$ such that $\kappa \Eq \SETcard{x}$ for some
   set $x$.
 
   Let a \emph{cardinal} stand for a cardinal number.
@@ -24,20 +24,20 @@
 
 \begin{proposition}[forthel,id=SET_THEORY_06_2820082336006144]
   Let $\kappa$ be a cardinal.
-  Then $\SETcard{\kappa} \eq \kappa$.
+  Then $\SETcard{\kappa} \Eq \kappa$.
 \end{proposition}
 \begin{proof}[forthel]
   $\kappa$ is an ordinal that is equinumerous to $\kappa$.
   Hence $\SETcard{\kappa} \ORDleq \kappa$.
-  Consider a set $x$ such that $\kappa \eq \SETcard{x}$.
+  Consider a set $x$ such that $\kappa \Eq \SETcard{x}$.
   Then $\SETcard{\kappa}$ is an ordinal that is equinumerous to $x$.
   Hence $\kappa \ORDleq \SETcard{\kappa}$.
-  Thus $\SETcard{\kappa} \eq \kappa$.
+  Thus $\SETcard{\kappa} \Eq \kappa$.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_06_6920913721229312]
   Let $x, y$ be sets.
-  Then $x$ and $y$ are equinumerous iff $\SETcard{x} \eq \SETcard{y}$.
+  Then $x$ and $y$ are equinumerous iff $\SETcard{x} \Eq \SETcard{y}$.
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$x$ and $y$ are equinumerous.}
@@ -53,10 +53,10 @@
     Hence $y$ and $\SETcard{x}$ are equinumerous.
     Thus $\SETcard{x} \ORDgeq \SETcard{y}$.
 
-    Therefore $\SETcard{x} \eq \SETcard{y}$.
+    Therefore $\SETcard{x} \Eq \SETcard{y}$.
   \end{case}
 
-  \begin{case}{$\SETcard{x} \eq \SETcard{y}$.}
+  \begin{case}{$\SETcard{x} \Eq \SETcard{y}$.}
     Consider a bijection $f$ between $x$ and $\SETcard{x}$ and a bijection $g$
     between $\SETcard{y}$ and $y$.
     Then $g \FUNcomp f$ is a bijection between $x$ and $y$.

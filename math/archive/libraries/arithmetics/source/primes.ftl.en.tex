@@ -29,15 +29,15 @@
   Then $n$ has a prime divisor.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $\Phi = \{ n' \in \Nat \mid\text{ if }n' \NATgtr \NATone\text{ then }n'\text{ has a prime divisor}\}$.
+  Define $\Phi = \SClass{n'}{\Nat}{\text{ if }n' \NATgtr \NATone\text{ then }n'\text{ has a prime divisor}}$.
 
-  Let us show that for every $n' \SETin \Nat$ if $\Phi$ contains all
+  Let us show that for every $n' \Elem \Nat$ if $\Phi$ contains all
   predecessors of $n'$ then $\Phi$ contains $n'$.
-    Let $n' \SETin \Nat$.
+    Let $n' \Elem \Nat$.
     Assume that $\Phi$ contains all predecessors of $n'$.
-    We have $n' \eq \NATzero$ or $n' \eq \NATone$ or $n'$ is prime or $n'$ is composite.
+    We have $n' \Eq \NATzero$ or $n' \Eq \NATone$ or $n'$ is prime or $n'$ is composite.
 
-    \begin{case}{$n' \eq \NATzero$ or $n' \eq \NATone$.} \end{case}
+    \begin{case}{$n' \Eq \NATzero$ or $n' \Eq \NATone$.} \end{case}
 
     \begin{case}{$n'$ is prime.} \end{case}
 
@@ -57,7 +57,7 @@
 
 \begin{definition}[forthel,id=ARITHMETIC_10_463197419077632]
   Let $n, m$ be natural numbers.
-  $n$ and $m$ are \emph{coprime} iff for all nonzero natural numbers $k$ such that $k \NATmid n$ and $k \NATmid m$ we have $k \eq \NATone$.
+  $n$ and $m$ are \emph{coprime} iff for all nonzero natural numbers $k$ such that $k \NATmid n$ and $k \NATmid m$ we have $k \Eq \NATone$.
 
   Let $n$ and $m$ are \emph{relatively prime} stand for $n$ and $m$ are coprime.
   Let $n$ and $m$ are \emph{mutually prime} stand for $n$ and $m$ are coprime.
@@ -71,14 +71,14 @@
 \begin{proof}[forthel]
   \begin{case}{$n$ and $m$ are coprime.}
     Let $p$ be a prime number such that $p \NATmid n$ and $p \NATmid m$.
-    Then $p$ is nonzero and $p \neq \NATone$.
+    Then $p$ is nonzero and $p \NotEq \NATone$.
     Contradiction.
   \end{case}
 
   \begin{case}{$n$ and $m$ have no common prime divisor.}
     Assume that $n$ and $m$ are not coprime.
     Let $k$ be a nonzero natural number such that $k \NATmid n$ and $k \NATmid m$.
-    Assume that $k \neq \NATone$.
+    Assume that $k \NotEq \NATone$.
     Consider a prime divisor $p$ of $k$.
     Then $p \NATmid k \NATmid n,m$.
     Hence $p \NATmid n$ and $p \NATmid m$.
@@ -94,7 +94,7 @@
   Assume $p \NATnmid n$.
   Suppose that $p$ and $n$ are not coprime.
   Take a nonzero natural number $k$ such that $k \NATmid p$ and $k \NATmid n$.
-  Then $k \eq p$.
+  Then $k \Eq p$.
   Hence $p \NATmid n$.
   Contradiction.
 \end{proof}
@@ -109,25 +109,25 @@
   \begin{case}{$p \NATmid n$.} \end{case}
 
   \begin{case}{$p \NATnmid n$.}
-    Define $\Phi = \{ k \in \Nat \mid k \neq \NATzero\text{ and }p \NATmid k \NATmul m \}$.
-    Then $p \SETin \Phi$ and $n \SETin \Phi$.
+    Define $\Phi = \SClass{k}{\Nat}{k \NotEq \NATzero\text{ and }p \NATmid k \NATmul m}$.
+    Then $p \Elem \Phi$ and $n \Elem \Phi$.
     Hence $\Phi$ contains some natural number.
-    Thus we can take $a \SETin \Phi$ such that $a \NATleq k$ for all $k \SETin \Phi$.
+    Thus we can take $a \Elem \Phi$ such that $a \NATleq k$ for all $k \Elem \Phi$.
 
     Let us show that $a$ divides all elements of $\Phi$.
-      Let $k \SETin \Phi$.
-      Take natural numbers $q, r$ such that $k \eq (a \NATmul q) \NATplus r$ and $r \NATless a$ (by \printref{ARITHMETIC_08_7743986617810944}).
+      Let $k \Elem \Phi$.
+      Take natural numbers $q, r$ such that $k \Eq (a \NATmul q) \NATplus r$ and $r \NATless a$ (by \printref{ARITHMETIC_08_7743986617810944}).
       Indeed $a$ is nonzero.
       Then $k \NATmul m
-        \eq ((q \NATmul a) \NATplus r) \NATmul m
-        \eq ((q \NATmul a) \NATmul m) \NATplus (r \NATmul m)$.
+        \Eq ((q \NATmul a) \NATplus r) \NATmul m
+        \Eq ((q \NATmul a) \NATmul m) \NATplus (r \NATmul m)$.
       We have $p \NATmid k \NATmul m$.
       Hence $p \NATmid ((q \NATmul a) \NATmul m) \NATplus (r \NATmul m)$.
 
       We can show that $p \NATmid r \NATmul m$.
         We have $p \NATmid a \NATmul m$.
         Hence $p \NATmid (q \NATmul a) \NATmul m$.
-        Indeed $((q \NATmul a) \NATmul m) \eq q \NATmul (a \NATmul m)$. %!
+        Indeed $((q \NATmul a) \NATmul m) \Eq q \NATmul (a \NATmul m)$. %!
         Take $A = (q \NATmul a) \NATmul m$ and $B = r \NATmul m$. %!
         Then $p \NATmid A \NATplus B$ and $p \NATmid A$.
         Thus $p \NATmid B$ (by \printref{ARITHMETIC_07_1076947887063040}).
@@ -135,18 +135,18 @@
         Consequently $p \NATmid r \NATmul m$.
       End.
 
-      Therefore $r \eq \NATzero$.
-      Indeed if $r \neq \NATzero$ then $r$ is an element of $\Phi$ that is less than $a$.
-      Hence $k \eq q \NATmul a$.
+      Therefore $r \Eq \NATzero$.
+      Indeed if $r \NotEq \NATzero$ then $r$ is an element of $\Phi$ that is less than $a$.
+      Hence $k \Eq q \NATmul a$.
       Thus $a$ divides $k$.
     End.
 
     Then we have $a \NATmid p$ and $a \NATmid n$.
-    Hence $a \eq p$ or $a \eq \NATone$.
-    Thus $a \eq \NATone$.
-    Indeed if $a \eq p$ then $p \NATmid n$.
-    Then $\NATone \SETin \Phi$.
-    Therefore $p \NATmid \NATone \NATmul m \eq m$.
+    Hence $a \Eq p$ or $a \Eq \NATone$.
+    Thus $a \Eq \NATone$.
+    Indeed if $a \Eq p$ then $p \NATmid n$.
+    Then $\NATone \Elem \Phi$.
+    Therefore $p \NATmid \NATone \NATmul m \Eq m$.
   \end{case}
 \end{proof}
 \end{smodule}

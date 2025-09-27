@@ -114,7 +114,7 @@ are themselves non-empty:
     $G(n,i) \in \ProdSet{\lambda}{D}$ for every $i \in D$ and every $n \in \kappa_{i}$.
     Hence for every $i \in D$ and every $n \in \kappa_{i}$ $G(n,i)$ is a map such that $i \in \dom(G(n,i))$.
 
-    Define $\Delta(i) = \{ G(n,i)(i) \in \Lambda \mid n \in \kappa_{i} \}$ for $i \in D$.
+    Define $\Delta(i) = \SClass{G(n,i)(i)}{\Lambda}{n \in \kappa_{i}}$ for $i \in D$.
 
     For every element $f$ of $\ProdSet{\lambda}{D}$ and every element $i$ of $D$ we have $f(i) \in \Lambda$.
 
@@ -123,7 +123,7 @@ are themselves non-empty:
       Let $i$ be an element of $D$.
       Define $F(n) = G(n,i)(i)$ for $n$ in $\kappa_{i}$.
       Then $F$ is a map from $\kappa_{i}$ to $\lambda_{i}$.
-      We have $\Delta(i) = \{ F(n) \mid n \in \kappa_{i} \}$.
+      We have $\Delta(i) = \CClass{F(n)}{n \in \kappa_{i}}$.
       Thus $\FUNim{F}{\kappa_{i}} = \Delta(i)$.
       Therefore $\SETcard{\Delta(i)}
         = \SETcard{\FUNim{F}{\kappa_{i}}}

@@ -12,7 +12,7 @@
 
 \begin{corollary}[forthel,id=FOUNDATIONS_10_9532145874510315]
   Let $X$ be a nonempty system of sets.
-  Then $X$ has an element $x$ such that for no $y \SETin X$ we have $y \SETin x$.
+  Then $X$ has an element $x$ such that for no $y \Elem X$ we have $y \Elem x$.
 \end{corollary}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_11_2812087589928960]
@@ -22,9 +22,9 @@
 \end{proposition}
 \begin{proof}[forthel]
   Assume the contrary.
-  Define $M = \{ x \mid x\text{ is a set such that }x \SETnotin \Phi \}$.
+  Define $M = \CClass{x}{x\text{ is a set such that }x \NotElem \Phi}$.
   Then $M$ is nonempty.
-  Hence we can take a $x \SETin M$ such that for no $y \SETin M$ we have $y \SETin x$.
+  Hence we can take a $x \Elem M$ such that for no $y \Elem M$ we have $y \Elem x$.
   Then $x$ is a set such that every element of $x$ that is a set is contained in $\Phi$.
   Thus $\Phi$ contains $x$.
   Contradiction.

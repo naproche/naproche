@@ -12,7 +12,7 @@
 
 \begin{proposition}[forthel,id=SET_THEORY_01_6964770955591680]
   Let $X$ be a system of sets.
-  Then $X$ is transitive iff for every $x \SETin X$ and every $y \SETin x$ we have $y \SETin X$.
+  Then $X$ is transitive iff for every $x \Elem X$ and every $y \Elem x$ we have $y \Elem X$.
 \end{proposition}
 
 \begin{definition}[forthel,id=SET_THEORY_01_4219967964708864]
@@ -29,19 +29,19 @@
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$X$ is transitive.}
-    Let $x \SETin \SETunionover X$.
-    Take a member $y$ of $X$ such that $x \SETin y$.
+    Let $x \Elem \SETunionover X$.
+    Take a member $y$ of $X$ such that $x \Elem y$.
     Then $y$ is a subset of $X$.
     Hence $x$ is an element of $X$.
   \end{case}
 
   \begin{case}{$\SETunionover X \SETinclude X$.}
-    Let $x \SETin X$.
+    Let $x \Elem X$.
 
     Let us show that $x \SETinclude X$.
-      Let $y \SETin x$.
-      Then $y \SETin \SETunionover X$.
-      Hence $y \SETin X$.
+      Let $y \Elem x$.
+      Then $y \Elem \SETunionover X$.
+      Hence $y \Elem X$.
     End.
   \end{case}
 \end{proof}
@@ -51,15 +51,15 @@
   Then $\SETunionover A$ is transitive.
 \end{proposition}
 \begin{proof}[forthel]
-  Let $x \SETin \SETunionover A$.
+  Let $x \Elem \SETunionover A$.
 
   Let us show that $x \SETinclude \SETunionover A$.
-    Let $y \SETin x$.
-    Take a member $z$ of $A$ such that $x \SETin z$.
+    Let $y \Elem x$.
+    Take a member $z$ of $A$ such that $x \Elem z$.
     Then $z \SETinclude A$.
-    Hence $x \SETin A$.
+    Hence $x \Elem A$.
     Thus $y$ is an element of some member of $A$.
-    Therefore $y \SETin \SETunionover A$.
+    Therefore $y \Elem \SETunionover A$.
   End.
 \end{proof}
 
@@ -68,12 +68,12 @@
   Then $\SETunionover X$ is transitive.
 \end{proposition}
 \begin{proof}[forthel]
-  Let $x \SETin \SETunionover X$ and $y \SETin x$.
-  Take $z \SETin X$ such that $x \SETin z$.
+  Let $x \Elem \SETunionover X$ and $y \Elem x$.
+  Take $z \Elem X$ such that $x \Elem z$.
   Then $z$ is transitive.
   Hence $x \SETinclude z$.
-  Thus $y \SETin z$.
-  Therefore $y \SETin \SETunionover X$.
+  Thus $y \Elem z$.
+  Therefore $y \Elem \SETunionover X$.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_01_4884401668227072]
@@ -81,16 +81,16 @@
   Then $X \SETunion \SETunionover X$ is transitive.
 \end{proposition}
 \begin{proof}[forthel]
-  Let $x \SETin X \SETunion \SETunionover X$.
+  Let $x \Elem X \SETunion \SETunionover X$.
 
   Let us show that $x \SETinclude X \SETunion \SETunionover X$.
-    Let $u \SETin x$.
-    We have $x \SETin X$ or $x \SETin \SETunionover X$.
-    If $x \SETin X$then $u \SETin \SETunionover X$.
-    If $x \SETin \SETunionover X$ then $u \SETin \SETunionover X$.
+    Let $u \Elem x$.
+    We have $x \Elem X$ or $x \Elem \SETunionover X$.
+    If $x \Elem X$then $u \Elem \SETunionover X$.
+    If $x \Elem \SETunionover X$ then $u \Elem \SETunionover X$.
     Indeed $\SETunionover X$ is transitive.
-    Hence $u \SETin \SETunionover X$.
-    Thus $u \SETin X \SETunion \SETunionover X$.
+    Hence $u \Elem \SETunionover X$.
+    Thus $u \Elem X \SETunion \SETunionover X$.
   End.
 \end{proof}
 
@@ -100,14 +100,14 @@
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$X$ is transitive.}
-    Let $x \SETin X$.
+    Let $x \Elem X$.
     Then $x \SETinclude X$.
-    Hence $x \SETin \SETpow(X)$.
+    Hence $x \Elem \SETpow(X)$.
   \end{case}
 
   \begin{case}{$X \SETinclude \SETpow(X)$.}
-    Let $x \SETin X$.
-    Then $x \SETin \SETpow(X)$.
+    Let $x \Elem X$.
+    Then $x \Elem \SETpow(X)$.
     Hence $x \SETinclude X$.
   \end{case}
 \end{proof}
@@ -117,14 +117,14 @@
   Then $\SETpow(A)$ is transitive.
 \end{proposition}
 \begin{proof}[forthel]
-  Let $x \SETin \SETpow(A)$.
+  Let $x \Elem \SETpow(A)$.
   Then $x \SETinclude A$.
 
   Let us show that $x \SETinclude \SETpow(A)$.
-    Let $y \SETin x$.
-    Then $y \SETin A$.
+    Let $y \Elem x$.
+    Then $y \Elem A$.
     Hence $y \SETinclude A$.
-    Thus $y \SETin \SETpow(A)$.
+    Thus $y \Elem \SETpow(A)$.
   End.
 \end{proof}
 \end{smodule}
