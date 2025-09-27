@@ -37,7 +37,7 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 ### Changes on the Formalizations
 
 * **New:** A new formalization of the "Socrates is mortal" syllogism:
-  `math/archive/source/socrates.ftl.en.tex`
+  `math/archive/articles/source/socrates.ftl.en.tex`
 
 * **New:** Documentation of the object-level ontology of Naproche:
   `math/archive/documentation/ontology`
