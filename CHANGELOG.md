@@ -27,11 +27,14 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 ## Current development version (for Isabelle 2025-1)
 
-### Changes on the LaTeX Setup
+### Changes on the LaTeX Packages
 
 * **Changed:** `math/examples/lang/naproche.sty` was replaced by a properly
   documented LaTeX package in the `dtx` format at `math/examples/latex/`. See
   `math/examples/latex/README.md` for details.
+
+* **New:** Both LaTeX packages provide a new macro `\ForTheL` that prints the
+  ForTheL logo.
 
 
 ### Changes on the Formalizations
