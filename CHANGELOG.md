@@ -65,7 +65,7 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 * **New:** (TEX) Isabelle/jEdit now recognizes files with the extension
   `.ftl.en.tex` as ForTheL files. (Needed to ensure compatibility with
-  sTeX/FLAMS). Moreover, Naproche expects the formalizations in `marh/archive`
+  sTeX/FLAMS). Moreover, Naproche expects the formalizations in `math/archive`
   to have that file name extension; otherwise importing them via `\importmodule`
   or `\usemodule` will fail.
 
