@@ -42,15 +42,15 @@ access to all macros described in this document.
 We therefore provide some symbolic notations for logical connectives and
 quantifiers that are supported by \ForTheL:
 
-\inputref[libraries/meta]{propositions/truth.ftl.en}
-\inputref[libraries/meta]{propositions/falsity.ftl.en}
-\inputref[libraries/meta]{propositions/negation.ftl.en}
-\inputref[libraries/meta]{propositions/conjunction.ftl.en}
-\inputref[libraries/meta]{propositions/disjunction.ftl.en}
-\inputref[libraries/meta]{propositions/implication.ftl.en}
-\inputref[libraries/meta]{propositions/equivalence.ftl.en}
-\inputref[libraries/meta]{propositions/universal-quantification.ftl.en}
-\inputref[libraries/meta]{propositions/existential-quantification.ftl.en}
+\inputref[libraries/meta]{propositions/truth.ftl.en.tex}
+\inputref[libraries/meta]{propositions/falsity.ftl.en.tex}
+\inputref[libraries/meta]{propositions/negation.ftl.en.tex}
+\inputref[libraries/meta]{propositions/conjunction.ftl.en.tex}
+\inputref[libraries/meta]{propositions/disjunction.ftl.en.tex}
+\inputref[libraries/meta]{propositions/implication.ftl.en.tex}
+\inputref[libraries/meta]{propositions/equivalence.ftl.en.tex}
+\inputref[libraries/meta]{propositions/universal-quantification.ftl.en.tex}
+\inputref[libraries/meta]{propositions/existential-quantification.ftl.en.tex}
 
 
 \section{Notions}\label{sec:notions}
@@ -60,23 +60,23 @@ quantifiers that are supported by \ForTheL:
 \emph{Objects} are mathematical entities that are ``small'' enough to be
 contained in classes.
 
-\inputref[libraries/meta]{notions/objects.ftl.en}
+\inputref[libraries/meta]{notions/objects.ftl.en.tex}
 
 
 \subsection{Ordered Pairs}\label{sec:ordered-pairs}
 
-\inputref[libraries/meta]{notions/pairs.ftl.en}
+\inputref[libraries/meta]{notions/pairs.ftl.en.tex}
 
 
 \subsection{Classes and Sets}\label{sec:classes-and-sets}
 
-\inputref[libraries/meta]{notions/classes.ftl.en}
+\inputref[libraries/meta]{notions/classes.ftl.en.tex}
 
 Sets are considered to be classes that are ``small'' enough to be contained in
 other classes:
 
-\inputref[libraries/meta]{notions/sets.ftl.en}
-\inputref[libraries/meta]{notions/elements.ftl.en}
+\inputref[libraries/meta]{notions/sets.ftl.en.tex}
+\inputref[libraries/meta]{notions/elements.ftl.en.tex}
 
 
 \subsection{Comprehension Terms}\label{sec:comprehension-terms}
@@ -106,26 +106,26 @@ In \ForTheL we have three types of comprehension terms:
   $(p,n)$ of natural numbers such that $p$ is a prime divisor of $n$).
 \end{itemize}
 
-\inputref[libraries/meta]{notions/enumeration-class.ftl.en}
-\inputref[libraries/meta]{notions/comprehension-class.ftl.en}
-\inputref[libraries/meta]{notions/separation-class.ftl.en}
+\inputref[libraries/meta]{notions/enumeration-class.ftl.en.tex}
+\inputref[libraries/meta]{notions/comprehension-class.ftl.en.tex}
+\inputref[libraries/meta]{notions/separation-class.ftl.en.tex}
 
 
 \subsection{Maps and Functions}\label{sec:maps-and-functions}
 
-\inputref[libraries/meta]{notions/maps.ftl.en}
+\inputref[libraries/meta]{notions/maps.ftl.en.tex}
 
 Similar to the notion of sets which are considered to be ``small'' classes, we
 consider \emph{functions} to be ``small'' maps.
 
-\inputref[libraries/meta]{notions/functions.ftl.en}
-\inputref[libraries/meta]{notions/domain.ftl.en}
-\inputref[libraries/meta]{notions/application.ftl.en}
+\inputref[libraries/meta]{notions/functions.ftl.en.tex}
+\inputref[libraries/meta]{notions/domain.ftl.en.tex}
+\inputref[libraries/meta]{notions/application.ftl.en.tex}
 
 
 \section{Relations}\label{sec:relations}
 
-\inputref[libraries/meta]{relations/equality.ftl.en}
+\inputref[libraries/meta]{relations/equality.ftl.en.tex}
 
 \Naproche has a hard-coded induction proof tactic (cf. section
 \ref{sec:misc-axioms}) that relies on an ``induction ordering'' $\ILess$.
@@ -137,7 +137,7 @@ natural number arithmetics (with $\ILess$ being the $<$-relation) or the
 $\in$-induction principle from set theory (with $\ILess$ being the
 $\in$-relation).
 
-\inputref[libraries/meta]{relations/induction-order.ftl.en}
+\inputref[libraries/meta]{relations/induction-order.ftl.en.tex}
 
 
 \section{Axioms}\label{sec:axioms}
@@ -147,9 +147,9 @@ $\in$-relation).
 To provide equality conditions for ordered pairs, classes and maps, the
 following extensionality axioms are hard-coded in \Naproche.
 
-\inputref[libraries/meta]{axioms/pair-extensionality.ftl.en}
-\inputref[libraries/meta]{axioms/class-extensionality.ftl.en}
-\inputref[libraries/meta]{axioms/map-extensionality.ftl.en}
+\inputref[libraries/meta]{axioms/pair-extensionality.ftl.en.tex}
+\inputref[libraries/meta]{axioms/class-extensionality.ftl.en.tex}
+\inputref[libraries/meta]{axioms/map-extensionality.ftl.en.tex}
 
 
 \subsection{Comprehension Term Axioms}\label{sec:comprehension-term-axioms}
@@ -157,9 +157,9 @@ following extensionality axioms are hard-coded in \Naproche.
 The following axioms specify the elements of comprehension terms (cf. section
 \ref{sec:comprehension-terms}).
 
-\inputref[libraries/meta]{axioms/separation.ftl.en}
-\inputref[libraries/meta]{axioms/enumeration-class.ftl.en}
-\inputref[libraries/meta]{axioms/comprehension-class.ftl.en}
+\inputref[libraries/meta]{axioms/separation.ftl.en.tex}
+\inputref[libraries/meta]{axioms/enumeration-class.ftl.en.tex}
+\inputref[libraries/meta]{axioms/comprehension-class.ftl.en.tex}
 
 
 \subsection{Miscellaneous Axioms}\label{sec:misc-axioms}
@@ -167,18 +167,18 @@ The following axioms specify the elements of comprehension terms (cf. section
 Subclasses of sets that are formed via separation class terms (cf.
 \ref{sec:comprehension-terms}) are again sets:
 
-\inputref[libraries/meta]{axioms/separation-class.ftl.en}
+\inputref[libraries/meta]{axioms/separation-class.ftl.en.tex}
 
 As noted in section \ref{sec:maps-and-functions}, functions are considered to be
 ``small'' maps. Whether a map is small or not is determined by the ``size'' of
 its domain:
 
-\inputref[libraries/meta]{axioms/function-condition.ftl.en}
+\inputref[libraries/meta]{axioms/function-condition.ftl.en.tex}
 
 To facilitate proofs by induction, \Naproche provides a hard-coded induction
 proof tactic which corresponds to the following induction principle.
 
-\inputref[libraries/meta]{axioms/induction.ftl.en}
+\inputref[libraries/meta]{axioms/induction.ftl.en.tex}
 
 
 \printlicense[CcByNcSa]{Marcel Schütz (2025)}
