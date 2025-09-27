@@ -1,0 +1,20 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{comprehension-class.ftl}
+
+\importmodule[libraries/meta]{notions?classes.ftl}
+\importmodule[libraries/meta]{notions?objects.ftl}
+
+\symdef{CClass}[args=2,name=comprehension class]{\comp\{#1\comp\mid#2\comp\}}
+
+\begin{fakeforthel}
+  \begin{signature}
+    Let $\tau$ be a term and $\varphi$ be a formula.
+    $\emph{\CClass{\tau}{\varphi}}$ is a class.
+  \end{signature}
+\end{fakeforthel}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,5 @@
+id: libraries/meta
+ns: https://naproche.github.io/math/archive/libraries/meta
+narration-base: https://naproche.github.io/math/archive/libraries/meta
+url-base: http://localhost
+format:stex

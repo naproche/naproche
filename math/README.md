@@ -70,6 +70,8 @@ math .................................... Naproche formalizations
 │   │   │
 │   │   ├── lists ....................... basic notions and results concerning lists
 │   │   │
+│   │   ├── meta ........................ meta content
+│   │   │
 │   │   └── set-theory .................. basic notions and results concerning ordinal and cardinal numbers
 │   │
 │   └── meta-inf ........................ LaTeX files used in math/archive and math/libraries
