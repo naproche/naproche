@@ -18,7 +18,7 @@
 %<*package>
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{naproche}[2025-09-05 v1.0.0 Basic LaTeX package for Naproche formalization]
+\ProvidesPackage{naproche}[2025-09-27 v1.0.1 Basic LaTeX package for Naproche formalization]
 
 %</package>
 %
@@ -39,6 +39,7 @@
 % \fi
 % 
 % \changes{v1.0.0}{2025-09-05}{Initial version}
+% \changes{v1.0.1}{2025-09-27}{Add \ForTheL logo}
 % \GetFileInfo{naproche.sty}
 % \DoNotIndex{\#,\$,\%,\&,\@,\\,\{,\},\^,\_,\~,\ }
 % \DoNotIndex{\begin,\end}
@@ -126,7 +127,7 @@
 % The $\lambda$-operator for locally defined maps, rendered as ``$\fun$''.
 % 
 % 
-% \section{The \Naproche Logo}\label{sec:the-naproche-logo}
+% \section{Logos}\label{sec:logos}
 % 
 % \noindent
 % \DescribeMacro{\Naproche}
@@ -135,6 +136,12 @@
 % |\Naproche| to get its trailing whitespace right.
 % E.g. |\Naproche foo| will be rendered as ``\Naproche foo'' and not (as you
 % might expect) as ``\Naproche{}foo''.
+% 
+% \noindent
+% \DescribeMacro{\ForTheL}
+% Prints the \ForTheL logo, i.e. ``\ForTheL''.
+% As with the |\Naproche| macro it is \emph{not} required to append an empty
+% pair of curly braces to |\ForTheL| to get its trailing whitespace right.
 % 
 % 
 % \section{Comprehension Terms}\label{sec:comprehension-terms}
@@ -318,7 +325,7 @@
 % Alternatively, since it also has a title, we can reference it via |\nameref|.
 % For example,
 %\begin{verbatim}
-$|X|$ is strictly smaller than $|2^{X}|$ (by \nameref{cantor}).
+%$|X|$ is strictly smaller than $|2^{X}|$ (by \nameref{cantor}).
 %\end{verbatim}
 % is rendered as \DeleteShortVerb{\|}``$|X|$ is strictly smaller than $|2^{X}|$
 % (by \nameref{cantor}).''\MakeShortVerb{\|} instead.
@@ -527,23 +534,30 @@ $|X|$ is strictly smaller than $|2^{X}|$ (by \nameref{cantor}).
 % \end{macro}
 % 
 % 
-% \section{The \Naproche Logo}
+% \section{Logos}
 % 
 % \iffalse
 %    \begin{macrocode}
 %<*package>
 
-%% The Naproche Logo
-%% =================
+%% Logos
+%% =====
 
 %</package>
 %    \end{macrocode}
 % \fi
 % 
 % \begin{macro}{\Naproche}
-% See section \ref{sec:the-naproche-logo}
+% See section \ref{sec:logos}
 %    \begin{macrocode}
 \NewDocumentCommand{\Naproche}{}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\ForTheL}
+% See section \ref{sec:logos}
+%    \begin{macrocode}
+\NewDocumentCommand{\ForTheL}{}{\mbox{ForTheL}\xspace}
 %    \end{macrocode}
 % \end{macro}
 %
