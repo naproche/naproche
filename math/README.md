@@ -74,7 +74,7 @@ math .................................... Naproche formalizations
 │   │   │
 │   │   └── set-theory .................. basic notions and results concerning ordinal and cardinal numbers
 │   │
-│   └── meta-inf ........................ LaTeX files used in math/archive and math/libraries
+│   └── meta-inf ........................ LaTeX files used in math/archive
 │
 └── examples ............................ Stand-alone formalizations
     │
