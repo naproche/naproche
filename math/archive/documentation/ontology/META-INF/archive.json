@@ -1,0 +1,10 @@
+[
+  {
+    "type": "book",
+    "title": "The Ontology of Naproche",
+    "authors": [
+      {"name": "Marcel Schütz (2025)"}
+    ],
+    "file": "ontology.ftl.en"
+  }
+]

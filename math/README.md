@@ -60,6 +60,10 @@ math .................................... Naproche formalizations
 │   │   │
 │   │   └── zermelo ..................... Zermelo's well-ordering theorem
 │   │
+│   ├── documentation ................... Documentation of Naproche
+│   │   │
+│   │   ├── ontology .................... The object-level ontology of Naproche
+│   │
 │   ├── libraries ....................... Naproche libraries based on sTeX
 │   │   │
 │   │   ├── arithmetics ................. basic notions and results concerning natural numbers

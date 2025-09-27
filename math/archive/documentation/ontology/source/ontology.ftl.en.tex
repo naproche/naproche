@@ -1,0 +1,186 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libusepackage{copyright}
+\libinput{preamble}
+\libinput[libraries/meta]{preamble}
+
+\title{The Ontology of \Naproche}
+\author{Marcel Schütz}
+\date{2025}
+
+\begin{document}
+
+\usemodule[libraries/meta]{preliminaries.ftl}
+
+\maketitle
+
+\begin{abstract}
+  This document provides an overview of the object-level ontology of \Naproche.
+  Moreover, it introduces common (symbolic and verbal) macros for the notions
+  provided by this ontology which extend the core language of \ForTheL.
+\end{abstract}
+
+\ifstexhtml\else\tableofcontents\fi
+
+
+\section{Introduction}\label{sec:introduction}
+
+This document describes the notions and axioms hard-coded in \Naproche.
+Furthermore, it presents some additional symbolic and verbal macros that extend
+the core language of \ForTheL.
+These macros are provided by the library \path{libraries/meta} which contains a
+module \path{preliminaries.ftl} that exports all these macros.
+Every library module (excluding those in the library \path{meta}) is expected to
+import the module \path{preliminaries.ftl}.
+So by importing any library module to your formalization, you automatically have
+access to all macros described in this document.
+
+
+\section{Propositions}\label{sec:propositions}
+
+\ForTheL is essentially a surface language for (unsorted) first-order logic.
+We therefore provide some symbolic notations for logical connectives and
+quantifiers that are supported by \ForTheL:
+
+\inputref[libraries/meta]{propositions/truth.ftl.en}
+\inputref[libraries/meta]{propositions/falsity.ftl.en}
+\inputref[libraries/meta]{propositions/negation.ftl.en}
+\inputref[libraries/meta]{propositions/conjunction.ftl.en}
+\inputref[libraries/meta]{propositions/disjunction.ftl.en}
+\inputref[libraries/meta]{propositions/implication.ftl.en}
+\inputref[libraries/meta]{propositions/equivalence.ftl.en}
+\inputref[libraries/meta]{propositions/universal-quantification.ftl.en}
+\inputref[libraries/meta]{propositions/existential-quantification.ftl.en}
+
+
+\section{Notions}\label{sec:notions}
+
+\subsection{Objects}\label{sec:objects}
+
+\emph{Objects} are mathematical entities that are ``small'' enough to be
+contained in classes.
+
+\inputref[libraries/meta]{notions/objects.ftl.en}
+
+
+\subsection{Ordered Pairs}\label{sec:ordered-pairs}
+
+\inputref[libraries/meta]{notions/pairs.ftl.en}
+
+
+\subsection{Classes and Sets}\label{sec:classes-and-sets}
+
+\inputref[libraries/meta]{notions/classes.ftl.en}
+
+Sets are considered to be classes that are ``small'' enough to be contained in
+other classes:
+
+\inputref[libraries/meta]{notions/sets.ftl.en}
+\inputref[libraries/meta]{notions/elements.ftl.en}
+
+
+\subsection{Comprehension Terms}\label{sec:comprehension-terms}
+
+In \ForTheL we have three types of comprehension terms:
+\begin{itemize}
+  \item ``Enumeration classes'', i.e. terms of the form
+  $\EClass{a_1,\dots,a_n}$, that represent the class that contains precisely the
+  objects $a_1,\dots,a_n$.
+  Typical examples are $\EClass{4,7,11}$ (i.e. the class consisting of the
+  numbers $4$, $7$ and $11$) or $\EClass{x,y+1,z-x}$ (i.e. the class consisting
+  of the elements $x$, $y+1$ and $z-x$ for some fixed objects $x$, $y$ and $z$).
+  \item ``Comprehension classes'', i.e. terms of the form
+  $\CClass{\tau}{\varphi}$, that represent the class of all objects of the form
+  $\tau$ such that the components of $\tau$ satisfy the condition $\varphi$.
+  Typical examples are $\CClass{p}{p \text{ is an odd prime number}}$ (i.e the
+  class of all odd prime numbers) or $\CClass{(p,n)}{n \in \mathbb{N}
+  \text{ and } p \text{ is a prime divisor of } n}$ (i.e. the class of all pairs
+  $(p,n)$ of natural numbers such that $p$ is a prime divisor of $n$).
+  \item ``Separation classes'', i.e. terms of the form
+  $\SClass{\tau}{A}{\varphi}$, that represent the subclass of a class $A$ of all
+  objects of the form $\tau$ such that the components of $\tau$ satisfy the
+  condition $\varphi$.
+  Typical examples are $\SClass{p}{\mathbb{P}}{p \text{ is odd}}$ (i.e the
+  class of all odd prime numbers) or $\SClass{(p,n)}{\mathbb{N}\times\mathbb{N}}
+  {p \text{ is a prime divisor of } n}$ (i.e. the class of all pairs
+  $(p,n)$ of natural numbers such that $p$ is a prime divisor of $n$).
+\end{itemize}
+
+\inputref[libraries/meta]{notions/enumeration-class.ftl.en}
+\inputref[libraries/meta]{notions/comprehension-class.ftl.en}
+\inputref[libraries/meta]{notions/separation-class.ftl.en}
+
+
+\subsection{Maps and Functions}\label{sec:maps-and-functions}
+
+\inputref[libraries/meta]{notions/maps.ftl.en}
+
+Similar to the notion of sets which are considered to be ``small'' classes, we
+consider \emph{functions} to be ``small'' maps.
+
+\inputref[libraries/meta]{notions/functions.ftl.en}
+\inputref[libraries/meta]{notions/domain.ftl.en}
+\inputref[libraries/meta]{notions/application.ftl.en}
+
+
+\section{Relations}\label{sec:relations}
+
+\inputref[libraries/meta]{relations/equality.ftl.en}
+
+\Naproche has a hard-coded induction proof tactic (cf. section
+\ref{sec:misc-axioms}) that relies on an ``induction ordering'' $\ILess$.
+An important special case of this tactic is the following induction principle:
+If, for all $x$, we can show that a predicate $\varphi[y]$ holds for every
+$y \ILess x$, then $\varphi[x]$ holds for every $x$.
+Typical instances of this principle are the (strong) induction principle from
+natural number arithmetics (with $\ILess$ being the $<$-relation) or the
+$\in$-induction principle from set theory (with $\ILess$ being the
+$\in$-relation).
+
+\inputref[libraries/meta]{relations/induction-order.ftl.en}
+
+
+\section{Axioms}\label{sec:axioms}
+
+\subsection{Extensionality Axioms}\label{sec:extensionality-axioms}
+
+To provide equality conditions for ordered pairs, classes and maps, the
+following extensionality axioms are hard-coded in \Naproche.
+
+\inputref[libraries/meta]{axioms/pair-extensionality.ftl.en}
+\inputref[libraries/meta]{axioms/class-extensionality.ftl.en}
+\inputref[libraries/meta]{axioms/map-extensionality.ftl.en}
+
+
+\subsection{Comprehension Term Axioms}\label{sec:comprehension-term-axioms}
+
+The following axioms specify the elements of comprehension terms (cf. section
+\ref{sec:comprehension-terms}).
+
+\inputref[libraries/meta]{axioms/separation.ftl.en}
+\inputref[libraries/meta]{axioms/enumeration-class.ftl.en}
+\inputref[libraries/meta]{axioms/comprehension-class.ftl.en}
+
+
+\subsection{Miscellaneous Axioms}\label{sec:misc-axioms}
+
+Subclasses of sets that are formed via separation class terms (cf.
+\ref{sec:comprehension-terms}) are again sets:
+
+\inputref[libraries/meta]{axioms/separation-class.ftl.en}
+
+As noted in section \ref{sec:maps-and-functions}, functions are considered to be
+``small'' maps. Whether a map is small or not is determined by the ``size'' of
+its domain:
+
+\inputref[libraries/meta]{axioms/function-condition.ftl.en}
+
+To facilitate proofs by induction, \Naproche provides a hard-coded induction
+proof tactic which corresponds to the following induction principle.
+
+\inputref[libraries/meta]{axioms/induction.ftl.en}
+
+
+\printlicense[CcByNcSa]{Marcel Schütz (2025)}
+
+\end{document}

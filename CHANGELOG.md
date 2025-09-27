@@ -39,6 +39,9 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 * **New:** A new formalization of the "Socrates is mortal" syllogism:
   `math/archive/source/socrates.ftl.en.tex`
 
+* **New:** Documentation of the object-level ontology of Naproche:
+  `math/archive/documentation/ontology`
+
 * **New:** A new library `math/archive/libraries/meta` that provides semantic
   macros for the meta theory of Naproche. Moreover, it contains a file
   `math/archive/libraries/meta/source/preliminaries.ftl.en.tex` that serves as
