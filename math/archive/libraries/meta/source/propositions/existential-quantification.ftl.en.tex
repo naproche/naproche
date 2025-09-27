@@ -6,11 +6,11 @@
 
 \importmodule[libraries/meta]{notions?elements.ftl}
 
-\symdef{Exists}[args=3]{\comp\exists#1\comp\in#2\comp.\,#3}
+\symdef{Exists}{\mathop\exists}
 
 \begin{fakeforthel}
   \begin{convention}
-    Let $\emph{\Exists{x}{A}{\varphi}}$ stand for there exists an $x \Elem A$ such that $\varphi$.
+    Let $\emph{\Exists} x \mathrel{R} y : \varphi$ stand for there exists an $x \mathrel{R} y$ such that $\varphi$.
   \end{convention}
 \end{fakeforthel}
 
