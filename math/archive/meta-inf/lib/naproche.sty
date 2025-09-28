@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{naproche}[2025/03/08 package naproche]
+\ProvidesPackage{naproche}[2025-09-28 v1.0.0 Advanced LaTeX package for Naproche formalization]
 
 \RequirePackage{stex}
 \RequirePackage{amsmath,amssymb,amsfonts}
@@ -10,46 +10,19 @@
 \RequirePackage{marginnote}
 \RequirePackage{mdframed}
 \RequirePackage{url}
-
-
-% Predefined symbols
-% ------------------
-
-\newcommand{\dom}{\operatorname{dom}}
-\newcommand{\fun}{\mathrm{\lambda}}
+\RequirePackage{xspace}
+\RequirePackage{linegoal}
 
 
 % Logos
 % -----
 
-\RequirePackage{xspace}
-\newcommand{\Naproche}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
-\newcommand{\ForTheL}{\mbox{ForTheL}\xspace}
+\NewDocumentCommand{\Naproche}{}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
+\NewDocumentCommand{\ForTheL}{}{\mbox{ForTheL}\xspace}
 
 
 % Comprehension terms
 % -------------------
-
-\RequirePackage{linegoal}
-
-% Gets the left-hand and right-hand side, resp., of an expression of the form
-% "foo|bar"
-\def\getfirst#1|#2\relax{#1}
-\def\getsecond#1|#2\relax{#2}
-
-% Comprehension term: "\class{... | ...}".
-% Naproche allows to enclose the RHS within "\text{...}", e.g.
-% "\class{x | \text{$x$ is greater than $y$}}".
-% Use "\classtext{...}" instead of "\text{...}" to enable automatic line breaks
-% in the RHS.
-\newcommand{\class}[1]{%
-  \left\{%
-  \getfirst#1\relax%
-  ~\middle\vert~%
-  \linebreak[1]%
-  \getsecond#1\relax%
-  \right\}%
-}
 
 \newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
 
