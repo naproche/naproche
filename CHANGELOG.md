@@ -36,6 +36,10 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 * **New:** Both LaTeX packages provide a new macro `\ForTheL` that prints the
   ForTheL logo.
 
+* **New:** An expl3-based LaTeX style file `math/archive/meta-inf/lib/copyright`
+  to insert copyright and license information into a document. This is
+  essentially the same as the old `math/latex/lib/license.tex`.
+
 
 ### Changes on the Formalizations
 
