@@ -42,6 +42,9 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 * **New:** A new formalization of the "Socrates is mortal" syllogism:
   `math/archive/articles/source/socrates.ftl.en.tex`
 
+* **New:** A new formalization of §1 of Peano's *Principles of Arithmetics*:
+  `math/archive/articles/source/peano.ftl.en.tex`
+
 * **New:** Documentation of the object-level ontology of Naproche:
   `math/archive/documentation/ontology`
 

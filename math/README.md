@@ -52,6 +52,8 @@ math .................................... Naproche formalizations
 │   │   │
 │   │   ├── little-gauss ................ sum of the first n positive integers
 │   │   │
+│   │   ├── peano ....................... first paragraph of Peano's "Principles of Arithmetics"
+│   │   │
 │   │   ├── russell-myhill-paradox ...... the Russell-Myhill paradox
 │   │   │
 │   │   ├── russell-paradox ............. Russell's paradox

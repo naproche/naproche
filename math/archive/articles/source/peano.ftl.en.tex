@@ -1,0 +1,278 @@
+\documentclass{stex}
+\usepackage{graphicx}
+\usepackage{upgreek}
+\usepackage{titlesec}
+\libusepackage{naproche}
+\libusepackage{copyright}
+\libinput{preamble}
+
+\title{Peano's \textit{Principles of Arithmetics}}
+\author{Marcel Schütz (2025)}
+\date{}
+
+\begin{document}
+\begin{smodule}{peano.ftl}
+
+\titleformat{\section}[block]{\Large}{\S\thesection.}{1em}{\centering}[\vspace{1em}---]
+\titleformat{\subsection}[block]{\vspace{2em}\large\itshape}{}{0em}{\centering}
+
+\importmodule[libraries/foundations]{classes.ftl}
+
+\symdef{Nat}{\mathbb N}
+\symdef{one}{\comp1}
+\symdef{two}{\comp2}
+\symdef{three}{\comp3}
+\symdef{four}{\comp4}
+\symdef{succ}[args=1]{\comp{\textsf{succ}}\dobrackets{#1}}
+\symdef{plus}{\mathrel{\comp+}}
+\symdef{triplus}[args=3]{#1\mathrel{\comp+}#2\mathrel{\comp+}#3}
+
+% (An approximation to) Peano's original notation:
+\notation*{True}[peano]{\mathrm V}
+\notation*{False}[peano]{\Uplambda}
+\notation*{And}[peano]{\mathrel{\comp{.\raisebox{1ex}..}}}
+\notation*{Implies}[peano]{\mathrel{\comp{.\reflectbox c.}}}
+\notation*{Iff}[peano]{\mathrel{\comp{.{=}.}}}
+\notation*{Not}[peano]{\mathrel{\comp{-{=}}}}
+\notation*{Elem}[peano]{\mathrel{\comp\epsilon}}
+\notation*{SETinclude}[peano]{\mathrel{\comp{\reflectbox c}}}
+\notation*{Nat}[peano]{\comp{\mathrm N}}
+\notation*{succ}[peano]{#1\mathbin{\comp+}\comp1}
+
+\maketitle
+
+\noindent This is a translation of \S 1 of Giuseppe Peano's
+\emph{Arithmetices Principia} (eng: \emph{Principles of Arithmetics})
+\cite{Peano1889, Verheyen2022} to \ForTheL.
+It introduces Peano's language and famous axioms of arithmetics as well as a
+number of theorems about addition of natural numbers.
+                                      
+\vspace{1em}\hrule
+
+\section{Numbers and Addition.}
+
+\subsection{Explanations.}
+
+\begin{forthel}
+  Let $a,b,c,d$ denote mathematical objects.
+
+  \begin{signature*}
+    A \emph{number} is a mathematical object.
+  \end{signature*}
+
+  \begin{definition*}
+    $\emph{\Nat}$ is the class of all numbers.
+  \end{definition*}
+
+  \begin{signature*}
+    $\emph{\one}$ is a mathematical object.
+  \end{signature*}
+
+  \begin{signature*}
+    $\emph{\succ{a}}$ is a mathematical object.
+  \end{signature*}
+\end{forthel}
+
+
+\subsection{Axioms.}
+
+\begin{forthel}
+  \begin{axiom*}[title=1,id=P1]
+    $\one \Elem \Nat$.
+  \end{axiom*}
+
+  \begin{axiom*}[title=2,id=P2]
+    $a \Elem \Nat \Implies a \Eq a$.
+  \end{axiom*}
+  
+  \begin{axiom*}[title=3,id=P3]
+    $a,b,c \Elem \Nat \Implies (a \Eq b \Iff b \Eq a)$.
+  \end{axiom*}
+  
+  \begin{axiom*}[title=4,id=P4]
+    $a,b \Elem \Nat \Implies ((a \Eq b \And b \Eq c) \Implies a \Eq c)$.
+  \end{axiom*}
+  
+  \begin{axiom*}[title=5,id=P5]
+    $(a \Eq b \And b \Elem \Nat) \Implies a \Elem \Nat$.
+  \end{axiom*}
+  
+  \begin{axiom*}[title=6,id=P6]
+    $a \Elem \Nat \Implies \succ{a} \Elem \Nat$.
+  \end{axiom*}
+  
+  \begin{axiom*}[title=7,id=P7]
+    $a,b \Elem \Nat \Implies (a \Eq b \Iff \succ{a} \Eq \succ{b})$.
+  \end{axiom*}
+  
+  \begin{axiom*}[title=8,id=P8]
+    $a \Elem \Nat \Implies \succ{a} \NotEq \one$.
+  \end{axiom*}
+  
+  \begin{axiom*}[title=9,id=P9]
+    Let $k$ be a class.
+    Then $(\one \Elem k \And \Forall x \Elem \Nat: x \Elem k \Implies \succ{x} \Elem k) \Implies \Nat \SETinclude k$.
+  \end{axiom*}
+\end{forthel}
+
+
+\subsection{Definitions.}
+
+\begin{forthel}
+  \begin{definition*}[title=10.i,id=P10_1]
+    $\emph{\two} = \succ{\one}$.
+  \end{definition*}
+
+  \begin{definition*}[title=10.ii,id=P10_2]
+    $\emph{\three} = \succ{\two}$.
+  \end{definition*}
+  
+  \begin{definition*}[title=10.iii,id=P10_3]
+    $\emph{\four} = \succ{\three}$.
+  \end{definition*}
+\end{forthel}
+
+
+\subsection{Theorems.}
+
+\begin{forthel}
+  \begin{theorem*}[title=11,id=P11]
+    $\two \Elem \Nat$.
+  \end{theorem*}
+  \begin{proof}
+    (1) $\one \Elem \Nat$ (by \ref{P1}).
+
+    (2) $\one \Elem \Nat \Implies \succ{\one} \Elem \Nat$ (by \ref{P6}).
+
+    (3) $\succ{\one} \Elem \Nat$ (by 1, 2).
+
+    (4) $\two \Eq \succ{\one}$ (by \ref{P10_1}).
+
+    Therefore $\two \Elem \Nat$.
+  \end{proof}
+
+  \begin{theorem*}[title=12,id=P12]
+    $\three,\four \Elem \Nat$.
+  \end{theorem*}
+
+  \begin{theorem*}[title=13,id=P13]
+    $(a,b,c,d \Elem \Nat \And a \Eq b \And b \Eq c \And c \Eq d) \Implies a \Eq d$.
+  \end{theorem*}
+
+  \begin{theorem*}[title=14,id=P14]
+    $(a,b,c \Elem \Nat \And a \Eq b \And b \Eq c \And a \NotEq c) \Iff \False$.
+  \end{theorem*}
+
+  \begin{theorem*}[title=15,id=P15]
+    $(a,b,c \Elem \Nat \And a \Eq b \And b \NotEq c) \Implies a \NotEq c$.
+  \end{theorem*}
+
+  \begin{theorem*}[title=16,id=P16]
+    $(a,b \Elem \Nat \And \succ{a} \Eq \succ{b}) \Implies a \Eq b$.
+  \end{theorem*}
+
+  \begin{theorem*}[title=17,id=P17]
+    $a,b \Elem \Nat \Implies (a \NotEq b \Iff \succ{a} \NotEq \succ{b})$.
+  \end{theorem*}
+\end{forthel}
+
+
+\subsection{Definition.}
+
+\begin{forthel}
+  \begin{signature*}
+    $\emph{a \plus b}$ is a mathematical object.
+  \end{signature*}
+
+  \begin{axiom*}
+    $a \Elem \Nat \Implies a \plus \one \Eq \succ{a}$.
+  \end{axiom*}
+
+  \begin{axiom*}[title=18,id=P18]
+    $a,b \Elem \Nat \Implies a \plus (\succ{b}) \Eq \succ{a \plus b}$.
+  \end{axiom*}
+\end{forthel}
+
+
+\subsection{Theorems.}
+
+\begin{forthel}
+  \begin{theorem*}[title=19,id=P19]
+    $a,b \Elem \Nat \Implies a \plus b \Elem \Nat$.
+  \end{theorem*}
+  \begin{proof}
+    Let $a,b \Elem \Nat$.
+    Define $T = \CClass{b'}{a \plus b' \Elem \Nat}$.
+    
+    We have $a \Elem \Nat$.
+    Hence $\succ{a} \Elem \Nat$ (by \ref{P6}).
+    
+    (1) Thus $\one \Elem T$.
+
+    (2) For all $b' \Elem \Nat$ if $b' \Elem T$ then $\succ{b'} \Elem T$.
+    \begin{proof}
+      Let $b' \Elem \Nat$.
+      Assume $b' \Elem T$.
+      Then $a \plus b' \Elem \Nat$.
+      Hence $\succ{a \plus b'} \Elem \Nat$ (by \ref{P6}).
+      Thus $a \plus \succ{b'} \Elem \Nat$ (by \ref{P18}).
+      Consequently $\succ{b'} \Elem T$.
+    \end{proof}
+
+    (3) Therefore $\Nat \SETinclude T$ (by 1, 2, \ref{P9}).
+
+    We have $b \Elem \Nat$.
+    Hence $b \Elem T$.
+    Thus $a \plus b \Elem \Nat$.
+  \end{proof}
+
+  \begin{definition*}[title=20,id=P20]
+    $\emph{\triplus{a}{b}{c}} = (a \plus b) \plus c$.
+  \end{definition*}
+
+  \begin{theorem*}[title=21,id=P21]
+    $a,b,c \Elem \Nat \Implies \triplus{a}{b}{c} \Elem \Nat$.
+  \end{theorem*}
+
+  \begin{theorem*}[title=22,id=P22]
+    $a,b,c \Elem \Nat \Implies (a \Eq b \Iff a \plus c \Eq b \plus c)$.
+  \end{theorem*}
+
+  \begin{theorem*}[title=23,id=P23]
+    $a,b,c \Elem \Nat \Implies (a \plus (b \plus c) \Eq \triplus{a}{b}{c})$.
+  \end{theorem*}
+
+  \begin{theorem*}[title=24,id=P24]
+    $a \Elem \Nat \Implies \one \plus a \Eq a \plus \one$.
+  \end{theorem*}
+
+  \begin{theorem*}[title=24',id=P24prime]
+    $a,b \Elem \Nat \Implies \triplus{\one}{a}{b} \Eq \triplus{a}{\one}{b}$.
+  \end{theorem*}
+
+  \begin{theorem*}[title=25,id=P25]
+    $a,b \Elem \Nat \And a \plus b \Eq b \plus a$.
+  \end{theorem*}
+
+  \begin{theorem*}[title=26,id=P26]
+    $a,b,c \Elem \Nat \Implies (a \Eq b \Iff c \plus a \Eq c \plus b)$.
+  \end{theorem*}
+
+  \begin{theorem*}[title=27,id=P27]
+    $a,b,c \Elem \Nat \Implies \triplus{a}{b}{c} \Eq \triplus{a}{c}{b}$.
+  \end{theorem*}
+
+  \begin{theorem*}[title=28,id=P28]
+    $(a,b,c,d \Elem \Nat \And a \Eq b \And c \Eq d) \Implies a \plus c \Eq b \plus d$.
+  \end{theorem*}
+\end{forthel}
+
+\vspace{1em}\hrule
+
+\titleformat{\section}[hang]{\Large\bfseries}{}{0em}{}
+
+\printbibliography
+\printlicense[CcByNcSa]{Marcel Schütz (2025)}
+
+\end{smodule}
+\end{document}

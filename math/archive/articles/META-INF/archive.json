@@ -113,6 +113,14 @@
   },
   {
     "type": "paper",
+    "title": "Peano's Principles of Arithmetics",
+    "authors": [
+      {"name": "Marcel Schütz (2025)"}
+    ],
+    "file": "peano.ftl.en"
+  },
+  {
+    "type": "paper",
     "title": "The Russell-Myhill Paradox",
     "authors": [
       {"name": "Marcel Schütz (2024–2025)"}
