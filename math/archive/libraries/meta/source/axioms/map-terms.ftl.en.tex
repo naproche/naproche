@@ -1,0 +1,27 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{map-terms.ftl}
+
+\importmodule[libraries/meta]{notions?map-terms.ftl}
+\importmodule[libraries/meta]{relations?equality.ftl}
+\importmodule[libraries/meta]{notions?domain.ftl}
+\importmodule[libraries/meta]{notions?elements.ftl}
+
+\begin{fakeforthel}
+  \begin{axiom}
+    Let $v$ be a variable, $A$ be a class and $\tau[v]$ be a term.
+    Then $\Dom(\Map{v}{A}\tau) \Eq A$.
+  \end{axiom}
+\end{fakeforthel}
+
+\begin{fakeforthel}
+  \begin{axiom}
+    Let $v$ be a variable, $A$ be a class and $\tau[v]$ be a term.
+    Then $(\Map{v}{A}\tau)(x) \Eq \tau[x]$ for all $x \Elem A$.
+  \end{axiom}
+\end{fakeforthel}
+
+\end{smodule}
+\end{document}
