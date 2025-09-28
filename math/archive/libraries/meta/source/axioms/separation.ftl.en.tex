@@ -1,0 +1,32 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{separation.ftl}
+
+\importmodule[libraries/meta]{notions?separation-class.ftl}
+\importmodule[libraries/meta]{notions?sets.ftl}
+\importmodule[libraries/meta]{notions?elements.ftl}
+\importmodule[libraries/meta]{relations?equality.ftl}
+
+\begin{fakeforthel}
+  \begin{axiom}
+    Let $\tau$ be a term, $A$ be a class and $\varphi$ be a formula.
+    If $A$ is a set then $\SClass{\tau}{A}{\varphi}$ is a set.
+  \end{axiom}
+\end{fakeforthel}
+
+\begin{forthel}
+  \begin{corollary}
+    Let $A$ be a set and $B$ be a class.
+    Assume that every element of $B$ is an element of $A$.
+    Then $B$ is a set.
+  \end{corollary}
+  \begin{proof}
+    Define $C = \SClass{x}{A}{x \Elem B}$.
+    Then $C$ is a set and $C \Eq B$.
+  \end{proof}
+\end{forthel}
+
+\end{smodule}
+\end{document}

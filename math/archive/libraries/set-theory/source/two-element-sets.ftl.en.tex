@@ -8,21 +8,21 @@
 
 \begin{proposition}[forthel,id=SET_THEORY_07_5465279026954240]
   Let $a, b$ be distinct objects.
-  Then $\SETcard{\SETpair{a}{b}} \eq \ORDtwo$.
+  Then $\SETcard{\SETpair{a}{b}} \Eq \ORDtwo$.
 \end{proposition}
 \begin{proof}[forthel]
   Define \[ f(x) =
     \begin{cases}
-      \ORDzero & x \eq a
+      \ORDzero & x \Eq a
       \\
-      \ORDone & x \eq b
+      \ORDone & x \Eq b
     \end{cases} \]
   for $x \in \SETpair{a}{b}$.
   Then $f$ is a map from $\SETpair{a}{b}$ to $\ORDtwo$.
   $f$ is injective and surjective onto $\ORDtwo$.
   Hence $f$ is a bijection between $\SETpair{a}{b}$ and $\ORDtwo$.
   Consequently $\SETpair{a}{b}$ and $\ORDtwo$ are equinumerous.
-  Thus $\SETcard{\SETpair{a}{b}} \eq \SETcard{\ORDtwo} \eq \ORDtwo$.
+  Thus $\SETcard{\SETpair{a}{b}} \Eq \SETcard{\ORDtwo} \Eq \ORDtwo$.
 \end{proof}
 \end{smodule}
 \end{document}

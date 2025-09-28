@@ -1,0 +1,69 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libusepackage{copyright}
+\libinput{preamble}
+
+\title{``Socrates is Mortal'' in \Naproche}
+\author{Marcel Schütz}
+\date{2025}
+
+\begin{document}
+\begin{smodule}{socrates.ftl}
+\maketitle
+
+\importmodule[libraries/everyday-ontology]{individuals?socrates.ftl}
+\importmodule[libraries/everyday-ontology]{axioms?all-humans-are-mortal.ftl}
+
+\noindent Probably one of the most famous logical arguments is the following
+syllogism, mentioned the first time by John Stuart Mill in 1843
+\cite{Wheeler2023} in his \textit{System of Logic}
+\cite[Book II, Chapter 3]{Mill1843}:
+\begin{center}
+  \begin{tabular}{c}
+    All humans are mortal. \\
+    Socrates is a human. \\
+    \hline
+    Therefore Socrates is mortal.
+  \end{tabular}
+\end{center}
+We can formalize this syllogism in \Naproche without changing its wording:
+
+\begin{forthel}
+  \begin{theorem}[title=Mill's Syllogism,id=mill_syllogism]
+    Socrates is mortal.
+  \end{theorem}
+  \begin{proof}
+    All humans are mortal.
+    Socrates is a human.
+    Therefore Socrates is mortal.
+  \end{proof}
+\end{forthel}
+
+A similar syllogism was given by Sextus Empiricus in his \textit{Outlines of
+Pyrrhonism} \cite{SextusEmpiricus1933}:
+\begin{center}
+  \begin{tabular}{c}
+    Socrates is human. \\
+    Every human being is an animal. \\
+    \hline
+    Therefore Socrates is an animal.
+  \end{tabular}
+\end{center}
+Again, this syllogism can be adopted word-by-word to \Naproche:
+
+\begin{forthel}
+  \begin{theorem}[title=Sextus Empiricus' Syllogism,id=sextus_empiricus_syllogism]
+    Socrates is an animal.
+  \end{theorem}
+  \begin{proof}
+    Socrates is human.
+    Every human being is an animal.
+    Therefore Socrates is an animal.
+  \end{proof}
+\end{forthel}
+
+\printbibliography
+\printlicense[CcByNcSa]{Marcel Schütz (2025)}
+
+\end{smodule}
+\end{document}

@@ -13,10 +13,10 @@
   \end{proposition}
   \begin{proof}[forthel]
     Assume $A \SETinclude B$.
-    Let $x \SETin A \SETprod C$.
-    Take $a \SETin A$ and $c \SETin C$ such that $x \eq (a, c)$.
-    Then $a \SETin B$.
-    Hence $(a, c) \SETin B \SETprod C$.
+    Let $x \Elem A \SETprod C$.
+    Take $a \Elem A$ and $c \Elem C$ such that $x \Eq (a, c)$.
+    Then $a \Elem B$.
+    Hence $(a, c) \Elem B \SETprod C$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_05_4888282951319552]
@@ -26,19 +26,19 @@
   \end{proposition}
   \begin{proof}[forthel]
     \begin{case}{$(A \SETprod A') \SETinclude (B \SETprod B')$.}
-      Let us show that for all $a \SETin A$ and all $a' \SETin A'$ we have $a \SETin B$ and $a' \SETin B'$.
-        Let $a \SETin A$ and $a' \SETin A'$.
-        Then $(a, a') \SETin A \SETprod A'$.
-        Hence $(a, a') \SETin B \SETprod B'$.
-        Thus $a \SETin B$ and $a' \SETin B'$.
+      Let us show that for all $a \Elem A$ and all $a' \Elem A'$ we have $a \Elem B$ and $a' \Elem B'$.
+        Let $a \Elem A$ and $a' \Elem A'$.
+        Then $(a, a') \Elem A \SETprod A'$.
+        Hence $(a, a') \Elem B \SETprod B'$.
+        Thus $a \Elem B$ and $a' \Elem B'$.
       End.
     \end{case}
 
     \begin{case}{$A \SETinclude B$ and $A' \SETinclude B'$.}
-      Let $x \SETin A \SETprod A'$.
-      Take $a \SETin A$ and $a' \SETin A'$ such that $x \eq (a, a')$.
-      Then $a \SETin B$ and $a' \SETin B'$.
-      Hence $(a, a') \SETin B \SETprod B'$.
+      Let $x \Elem A \SETprod A'$.
+      Take $a \Elem A$ and $a' \Elem A'$ such that $x \Eq (a, a')$.
+      Then $a \Elem B$ and $a' \Elem B'$.
+      Hence $(a, a') \Elem B \SETprod B'$.
     \end{case}
   \end{proof}
 \end{sfragment}
@@ -46,48 +46,48 @@
 \begin{sfragment}{Distributivity of Product and Union}
   \begin{proposition}[forthel,id=FOUNDATIONS_05_8849658323402752]
     Let $A, B, C$ be classes.
-    Then $(A \SETunion B) \SETprod C \eq (A \SETprod C) \SETunion (B \SETprod C)$.
+    Then $(A \SETunion B) \SETprod C \Eq (A \SETprod C) \SETunion (B \SETprod C)$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $((A \SETunion B) \SETprod C) \SETinclude (A \SETprod C) \SETunion (B \SETprod C).$ %!
-      Let $x \SETin (A \SETunion B) \SETprod C$.
-      Take $y \SETin A \SETunion B$ and $c \SETin C$ such that $x \eq (y, c)$.
-      Then $y \SETin A$ or $y \SETin B$.
-      If $y \SETin A$ then $x \SETin A \SETprod C$ and if $y \SETin B$ then $x \SETin B \SETprod C$.
-      Hence $x \SETin A \SETprod C$ or $x \SETin B \SETprod C$.
-      Thus $x \SETin (A \SETprod C) \SETunion (B \SETprod C)$.
+      Let $x \Elem (A \SETunion B) \SETprod C$.
+      Take $y \Elem A \SETunion B$ and $c \Elem C$ such that $x \Eq (y, c)$.
+      Then $y \Elem A$ or $y \Elem B$.
+      If $y \Elem A$ then $x \Elem A \SETprod C$ and if $y \Elem B$ then $x \Elem B \SETprod C$.
+      Hence $x \Elem A \SETprod C$ or $x \Elem B \SETprod C$.
+      Thus $x \Elem (A \SETprod C) \SETunion (B \SETprod C)$.
     End.
 
     Let us show that $((A \SETprod C) \SETunion (B \SETprod C)) \SETinclude (A \SETunion B) \SETprod C$. %!
-      Let $x \SETin (A \SETprod C) \SETunion (B \SETprod C)$.
-      Then $x \SETin A \SETprod C$ or $x \SETin B \SETprod C$.
-      Take objects $y, c$ such that $x \eq (y, c)$.
-      Then ($y \SETin A$ or $y \SETin B$) and $c \SETin C$.
-      Hence $y \SETin A \SETunion B$.
-      Thus $x \SETin (A \SETunion B) \SETprod C$.
+      Let $x \Elem (A \SETprod C) \SETunion (B \SETprod C)$.
+      Then $x \Elem A \SETprod C$ or $x \Elem B \SETprod C$.
+      Take objects $y, c$ such that $x \Eq (y, c)$.
+      Then ($y \Elem A$ or $y \Elem B$) and $c \Elem C$.
+      Hence $y \Elem A \SETunion B$.
+      Thus $x \Elem (A \SETunion B) \SETprod C$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_05_476526841692160]
     Let $A, B, C$ be classes.
-    Then $A \SETprod (B \SETunion C) \eq (A \SETprod B) \SETunion (A \SETprod C)$.
+    Then $A \SETprod (B \SETunion C) \Eq (A \SETprod B) \SETunion (A \SETprod C)$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETprod (B \SETunion C) \SETinclude (A \SETprod B) \SETunion (A \SETprod C)$.
-      Let $x \SETin A \SETprod (B \SETunion C)$.
-      Take $a \SETin A$ and $y \SETin B \SETunion C$ such that $x \eq (a, y)$.
-      Then $y \SETin B$ or $y \SETin C$.
-      Hence $x \SETin A \SETprod B$ or $x \SETin A \SETprod C$.
-      Indeed if $y \SETin B$ then $x \SETin A \SETprod B$ and if $y \SETin C$ then $x \SETin A \SETprod C$.
-      Thus $x \SETin (A \SETprod B) \SETunion (A \SETprod C)$.
+      Let $x \Elem A \SETprod (B \SETunion C)$.
+      Take $a \Elem A$ and $y \Elem B \SETunion C$ such that $x \Eq (a, y)$.
+      Then $y \Elem B$ or $y \Elem C$.
+      Hence $x \Elem A \SETprod B$ or $x \Elem A \SETprod C$.
+      Indeed if $y \Elem B$ then $x \Elem A \SETprod B$ and if $y \Elem C$ then $x \Elem A \SETprod C$.
+      Thus $x \Elem (A \SETprod B) \SETunion (A \SETprod C)$.
     End.
 
     Let us show that $((A \SETprod B) \SETunion (A \SETprod C)) \SETinclude A \SETprod (B \SETunion C)$.
-      Let $x \SETin (A \SETprod B) \SETunion (A \SETprod C)$.
-      Then $x \SETin A \SETprod B$ or $x \SETin A \SETprod C$.
-      Take objects $a, y$ such that $x \eq (a, y)$.
-      Then $a \SETin A$ and ($y \SETin B$ or $y \SETin C$).
-      Hence $x \SETin A \SETprod (B \SETunion C)$.
+      Let $x \Elem (A \SETprod B) \SETunion (A \SETprod C)$.
+      Then $x \Elem A \SETprod B$ or $x \Elem A \SETprod C$.
+      Take objects $a, y$ such that $x \Eq (a, y)$.
+      Then $a \Elem A$ and ($y \Elem B$ or $y \Elem C$).
+      Hence $x \Elem A \SETprod (B \SETunion C)$.
     End.
   \end{proof}
 \end{sfragment}
@@ -95,46 +95,46 @@
 \begin{sfragment}{Distributivity of Product and Intersection}
   \begin{proposition}[forthel,id=FOUNDATIONS_05_1249567930580992]
     Let $A, B, C$ be classes.
-    Then $(A \SETintersect B) \SETprod C \eq (A \SETprod C) \SETintersect (B \SETprod C)$.
+    Then $(A \SETintersect B) \SETprod C \Eq (A \SETprod C) \SETintersect (B \SETprod C)$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $((A \SETintersect B) \SETprod C) \SETinclude (A \SETprod C) \SETintersect (B \SETprod C)$. %!
-      Let $x \SETin (A \SETintersect B) \SETprod C$.
-      Take $y \SETin A \SETintersect B$ and $c \SETin C$ such that $x \eq (y, c)$.
-      Then $y \SETin A$ and $y \SETin B$.
-      Hence $x \SETin A \SETprod C$ and $x \SETin B \SETprod C$.
-      Thus $x \SETin (A \SETprod C) \SETintersect (B \SETprod C)$.
+      Let $x \Elem (A \SETintersect B) \SETprod C$.
+      Take $y \Elem A \SETintersect B$ and $c \Elem C$ such that $x \Eq (y, c)$.
+      Then $y \Elem A$ and $y \Elem B$.
+      Hence $x \Elem A \SETprod C$ and $x \Elem B \SETprod C$.
+      Thus $x \Elem (A \SETprod C) \SETintersect (B \SETprod C)$.
     End.
 
     Let us show that $((A \SETprod C) \SETintersect (B \SETprod C)) \SETinclude (A \SETintersect B) \SETprod C$. %!
-      Let $x \SETin (A \SETprod C) \SETintersect (B \SETprod C)$.
-      Then $x \SETin A \SETprod C$ and $x \SETin B \SETprod C$.
-      Take objects $y, z$ such that $x \eq (y, z)$.
-      Then ($y \SETin A$ and $y \SETin B$) and $z \SETin C$.
-      Hence $y \SETin A \SETintersect B$.
-      Thus $x \SETin (A \SETintersect B) \SETprod C$.
+      Let $x \Elem (A \SETprod C) \SETintersect (B \SETprod C)$.
+      Then $x \Elem A \SETprod C$ and $x \Elem B \SETprod C$.
+      Take objects $y, z$ such that $x \Eq (y, z)$.
+      Then ($y \Elem A$ and $y \Elem B$) and $z \Elem C$.
+      Hence $y \Elem A \SETintersect B$.
+      Thus $x \Elem (A \SETintersect B) \SETprod C$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_05_954964241285120]
     Let $A, B, C$ be classes.
-    Then $A \SETprod (B \SETintersect C) \eq (A \SETprod B) \SETintersect (A \SETprod C)$.
+    Then $A \SETprod (B \SETintersect C) \Eq (A \SETprod B) \SETintersect (A \SETprod C)$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETprod (B \SETintersect C) \SETinclude (A \SETprod B) \SETintersect (A \SETprod C)$.
-      Let $x \SETin A \SETprod (B \SETintersect C)$.
-      Take $a \SETin A$ and $b \SETin B \SETintersect C$ such that $x \eq (a, b)$.
-      Then $b \SETin B$ and $b \SETin C$.
-      Hence $x \SETin A \SETprod B$ and $x \SETin A \SETprod C$.
-      Thus $x \SETin (A \SETprod B) \SETintersect (A \SETprod C)$.
+      Let $x \Elem A \SETprod (B \SETintersect C)$.
+      Take $a \Elem A$ and $b \Elem B \SETintersect C$ such that $x \Eq (a, b)$.
+      Then $b \Elem B$ and $b \Elem C$.
+      Hence $x \Elem A \SETprod B$ and $x \Elem A \SETprod C$.
+      Thus $x \Elem (A \SETprod B) \SETintersect (A \SETprod C)$.
     End.
 
     Let us show that $((A \SETprod B) \SETintersect (A \SETprod C)) \SETinclude A \SETprod (B \SETintersect C)$. %!
-      Let $x \SETin (A \SETprod B) \SETintersect (A \SETprod C)$.
-      Then $x \SETin A \SETprod B$ and $x \SETin A \SETprod C$.
-      Take objects $y, z$ such that $x \eq (y, z)$.
-      Then $y \SETin A$ and ($z \SETin B$ and $z \SETin C$).
-      Hence $x \SETin A \SETprod (B \SETintersect C)$.
+      Let $x \Elem (A \SETprod B) \SETintersect (A \SETprod C)$.
+      Then $x \Elem A \SETprod B$ and $x \Elem A \SETprod C$.
+      Take objects $y, z$ such that $x \Eq (y, z)$.
+      Then $y \Elem A$ and ($z \Elem B$ and $z \Elem C$).
+      Hence $x \Elem A \SETprod (B \SETintersect C)$.
     End.
   \end{proof}
 \end{sfragment}
@@ -142,47 +142,47 @@
 \begin{sfragment}{Distributivity of Product and Complement}
   \begin{proposition}[forthel,id=FOUNDATIONS_05_6495329908162560]
     Let $A, B, C$ be classes.
-    Then $(A \SETdiff B) \SETprod C \eq (A \SETprod C) \SETdiff (B \SETprod C)$.
+    Then $(A \SETdiff B) \SETprod C \Eq (A \SETprod C) \SETdiff (B \SETprod C)$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $((A \SETdiff B) \SETprod C) \SETinclude (A \SETprod C) \SETdiff (B \SETprod C).$ %!
-      Let $x \SETin (A \SETdiff B) \SETprod C$.
-      Take $a \SETin A \SETdiff B$ and $c \SETin C$ such that $x \eq (a, c)$.
-      Then $a \SETin A$ and $a \SETnotin B$.
-      Hence $x \SETin A \SETprod C$ and $x \SETnotin B \SETprod C$.
-      Thus $x \SETin (A \SETprod C) \SETdiff (B \SETprod C)$.
+      Let $x \Elem (A \SETdiff B) \SETprod C$.
+      Take $a \Elem A \SETdiff B$ and $c \Elem C$ such that $x \Eq (a, c)$.
+      Then $a \Elem A$ and $a \NotElem B$.
+      Hence $x \Elem A \SETprod C$ and $x \NotElem B \SETprod C$.
+      Thus $x \Elem (A \SETprod C) \SETdiff (B \SETprod C)$.
     End.
 
     Let us show that $((A \SETprod C) \SETdiff (B \SETprod C)) \SETinclude (A \SETdiff B) \SETprod C$. %!
-      Let $x \SETin (A \SETprod C) \SETdiff (B \SETprod C)$.
-      Then $x \SETin A \SETprod C$ and $x \SETnotin B \SETprod C$.
-      Take $a \SETin A$ and $c \SETin C$ such that $x \eq (a, c)$.
-      Then $a \SETnotin B$.
-      Indeed if $a \SETin B$ then $x \SETin B \SETprod C$.
-      Hence $a \SETin A \SETdiff B$.
-      Thus $x \SETin (A \SETdiff B) \SETprod C$.
+      Let $x \Elem (A \SETprod C) \SETdiff (B \SETprod C)$.
+      Then $x \Elem A \SETprod C$ and $x \NotElem B \SETprod C$.
+      Take $a \Elem A$ and $c \Elem C$ such that $x \Eq (a, c)$.
+      Then $a \NotElem B$.
+      Indeed if $a \Elem B$ then $x \Elem B \SETprod C$.
+      Hence $a \Elem A \SETdiff B$.
+      Thus $x \Elem (A \SETdiff B) \SETprod C$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_05_3195639422779392]
     Let $A, B, C$ be classes.
-    Then $A \SETprod (B \SETdiff C) \eq (A \SETprod B) \SETdiff (A \SETprod C)$.
+    Then $A \SETprod (B \SETdiff C) \Eq (A \SETprod B) \SETdiff (A \SETprod C)$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETprod (B \SETdiff C) \SETinclude (A \SETprod B) \SETdiff (A \SETprod C)$.
-      Let $x \SETin A \SETprod (B \SETdiff C)$.
-      Take $a \SETin A$ and $b \SETin B \SETdiff C$ such that $x \eq (a, b)$.
-      Then $b \SETin B$ and $b \SETnotin C$.
-      Hence $x \SETin A \SETprod B$ and $x \SETnotin A \SETprod C$.
-      Thus $x \SETin (A \SETprod B) \SETdiff (A \SETprod C)$.
+      Let $x \Elem A \SETprod (B \SETdiff C)$.
+      Take $a \Elem A$ and $b \Elem B \SETdiff C$ such that $x \Eq (a, b)$.
+      Then $b \Elem B$ and $b \NotElem C$.
+      Hence $x \Elem A \SETprod B$ and $x \NotElem A \SETprod C$.
+      Thus $x \Elem (A \SETprod B) \SETdiff (A \SETprod C)$.
     End.
 
     Let us show that $((A \SETprod B) \SETdiff (A \SETprod C)) \SETinclude A \SETprod (B \SETdiff C)$. %!
-      Let $x \SETin (A \SETprod B) \SETdiff (A \SETprod C)$.
-      Then $x \SETin A \SETprod B$ and $x \SETnotin A \SETprod C$.
-      Take objects $a, b$ such that $x \eq (a, b)$.
-      Then $a \SETin A$ and ($b \SETin B$ and $b \SETnotin C$).
-      Hence $x \SETin A \SETprod (B \SETdiff C)$.
+      Let $x \Elem (A \SETprod B) \SETdiff (A \SETprod C)$.
+      Then $x \Elem A \SETprod B$ and $x \NotElem A \SETprod C$.
+      Take objects $a, b$ such that $x \Eq (a, b)$.
+      Then $a \Elem A$ and ($b \Elem B$ and $b \NotElem C$).
+      Hence $x \Elem A \SETprod (B \SETdiff C)$.
     End.
   \end{proof}
 \end{sfragment}
@@ -191,59 +191,59 @@
   \begin{proposition}[forthel,id=FOUNDATIONS_05_2677218429894656]
     Let $A, A', B, B'$ be classes.
     Assume that $A$ and $A'$ are nonempty or $B$ and $B'$ are nonempty.
-    Then $(A \SETprod A') \eq (B \SETprod B')$ iff $A \eq B$ and $A' \eq B'$.
+    Then $(A \SETprod A') \Eq (B \SETprod B')$ iff $A \Eq B$ and $A' \Eq B'$.
   \end{proposition}
   \begin{proof}[forthel]
-    \begin{case}{$A \SETprod A' \eq B \SETprod B'$.}
+    \begin{case}{$A \SETprod A' \Eq B \SETprod B'$.}
       Then $A$ and $A'$ are nonempty iff $B$ and $B'$ are nonempty.
 
-      Let us show that for all $a \SETin A$ and all $a' \SETin A'$ we have $a \SETin B$ and $a' \SETin B'$.
-        Let $a \SETin A$ and $a' \SETin A'$.
-        Then $(a, a') \SETin A \SETprod A'$.
-        Hence we can take $x \SETin B \SETprod B'$ such that $x \eq (a, a')$.
-        Thus $a \SETin B$ and $a' \SETin B'$.
+      Let us show that for all $a \Elem A$ and all $a' \Elem A'$ we have $a \Elem B$ and $a' \Elem B'$.
+        Let $a \Elem A$ and $a' \Elem A'$.
+        Then $(a, a') \Elem A \SETprod A'$.
+        Hence we can take $x \Elem B \SETprod B'$ such that $x \Eq (a, a')$.
+        Thus $a \Elem B$ and $a' \Elem B'$.
       End.
 
       Therefore $A \SETinclude B$ and $A' \SETinclude B'$.
       Indeed $A$ and $A'$ are nonempty.
 
-      Let us show that for all $b \SETin B$ and all $b' \SETin B'$ we have $b \SETin A$ and $b' \SETin A'$.
-        Let $b \SETin B$ and $b' \SETin B'$.
-        Then $(b, b') \SETin B \SETprod B'$.
-        Hence we can take $x \SETin A \SETprod A'$ such that $x \eq (b, b')$.
-        Thus $(b, b') \SETin A \SETprod A'$.
+      Let us show that for all $b \Elem B$ and all $b' \Elem B'$ we have $b \Elem A$ and $b' \Elem A'$.
+        Let $b \Elem B$ and $b' \Elem B'$.
+        Then $(b, b') \Elem B \SETprod B'$.
+        Hence we can take $x \Elem A \SETprod A'$ such that $x \Eq (b, b')$.
+        Thus $(b, b') \Elem A \SETprod A'$.
       End.
 
       Therefore $B \SETinclude A$ and $B' \SETinclude A'$.
       Indeed $B$ and $B'$ are nonempty.
     \end{case}
 
-    \begin{case}{$A \eq B$ and $A' \eq B'$.} \end{case}
+    \begin{case}{$A \Eq B$ and $A' \Eq B'$.} \end{case}
   \end{proof}
 \end{sfragment}
 
 \begin{sfragment}{Intersections of Products}
   \begin{proposition}[forthel,id=FOUNDATIONS_05_4154592050806784]
     Let $A, A', B, B'$ be classes.
-    Then $(A \SETprod B) \SETintersect (A' \SETprod B') \eq (A \SETintersect A') \SETprod (B \SETintersect B')$.
+    Then $(A \SETprod B) \SETintersect (A' \SETprod B') \Eq (A \SETintersect A') \SETprod (B \SETintersect B')$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $((A \SETprod B) \SETintersect (A' \SETprod B')) \SETinclude (A \SETintersect A') \SETprod (B \SETintersect B')$. %!
-      Let $x \SETin (A \SETprod B) \SETintersect (A' \SETprod B')$.
-      Then $x \SETin A \SETprod B$ and $x \SETin A' \SETprod B'$.
-      Take objects $a, b$ such that $x \eq (a, b)$.
-      Then $a \SETin A, A'$ and $b \SETin B, B'$.
-      Hence $a \SETin A \SETintersect A'$ and $b \SETin B \SETintersect B'$.
-      Thus $x \SETin (A \SETintersect A') \SETprod (B \SETintersect B')$.
+      Let $x \Elem (A \SETprod B) \SETintersect (A' \SETprod B')$.
+      Then $x \Elem A \SETprod B$ and $x \Elem A' \SETprod B'$.
+      Take objects $a, b$ such that $x \Eq (a, b)$.
+      Then $a \Elem A, A'$ and $b \Elem B, B'$.
+      Hence $a \Elem A \SETintersect A'$ and $b \Elem B \SETintersect B'$.
+      Thus $x \Elem (A \SETintersect A') \SETprod (B \SETintersect B')$.
     End.
 
     Let us show that $(A \SETintersect A') \SETprod (B \SETintersect B') \SETinclude (A \SETprod B) \SETintersect (A' \SETprod B')$.
-      Let $x \SETin (A \SETintersect A') \SETprod (B \SETintersect B')$.
-      Take elements $a, b$ such that $x \eq (a, b)$.
-      Then $a \SETin A \SETintersect A'$ and $b \SETin B \SETintersect B'$.
-      Hence $a \SETin A, A'$ and $b \SETin B, B'$.
-      Thus $x \SETin A \SETprod B$ and $x \SETin A' \SETprod B'$.
-      Therefore $x \SETin (A \SETprod B) \SETintersect (A' \SETprod B')$.
+      Let $x \Elem (A \SETintersect A') \SETprod (B \SETintersect B')$.
+      Take elements $a, b$ such that $x \Eq (a, b)$.
+      Then $a \Elem A \SETintersect A'$ and $b \Elem B \SETintersect B'$.
+      Hence $a \Elem A, A'$ and $b \Elem B, B'$.
+      Thus $x \Elem A \SETprod B$ and $x \Elem A' \SETprod B'$.
+      Therefore $x \Elem (A \SETprod B) \SETintersect (A' \SETprod B')$.
     End.
   \end{proof}
 \end{sfragment}
@@ -254,52 +254,52 @@
     Then $(A \SETprod B) \SETunion (A' \SETprod B') \SETinclude (A \SETunion A') \SETprod (B \SETunion B')$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let $x \SETin (A \SETprod B) \SETunion (A' \SETprod B')$.
-    Then $x \SETin A \SETprod B$ or $x \SETin A' \SETprod B'$.
-    Take objects $a, b$ such that $x \eq (a, b)$.
-    Then ($a \SETin A$ or $a \SETin A'$) and ($b \SETin B$ or $b \SETin B'$).
-    Hence $a \SETin A \SETunion A'$ and $b \SETin B \SETunion B'$.
-    Thus $x \SETin (A \SETunion A') \SETprod (B \SETunion B')$.
+    Let $x \Elem (A \SETprod B) \SETunion (A' \SETprod B')$.
+    Then $x \Elem A \SETprod B$ or $x \Elem A' \SETprod B'$.
+    Take objects $a, b$ such that $x \Eq (a, b)$.
+    Then ($a \Elem A$ or $a \Elem A'$) and ($b \Elem B$ or $b \Elem B'$).
+    Hence $a \Elem A \SETunion A'$ and $b \Elem B \SETunion B'$.
+    Thus $x \Elem (A \SETunion A') \SETprod (B \SETunion B')$.
   \end{proof}
 \end{sfragment}
 
 \begin{sfragment}{Complements of Products}
   \begin{proposition}[forthel,id=FOUNDATIONS_05_5552125989879808]
     Let $A, A', B, B'$ be classes.
-    Then $(A \SETprod B) \SETdiff (A' \SETprod B') \eq (A \SETprod (B \SETdiff B')) \SETunion ((A \SETdiff A') \SETprod B)$.
+    Then $(A \SETprod B) \SETdiff (A' \SETprod B') \Eq (A \SETprod (B \SETdiff B')) \SETunion ((A \SETdiff A') \SETprod B)$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $((A \SETprod B) \SETdiff (A' \SETprod B')) \SETinclude (A \SETprod (B \SETdiff B')) \SETunion ((A \SETdiff A') \SETprod B)$.
-      Let $x \SETin (A \SETprod B) \SETdiff (A' \SETprod B')$.
-      Then $x \SETin A \SETprod B$ and $x \SETnotin A' \SETprod B'$.
-      Take $a \SETin A$ and $b \SETin B$ such that $x \eq (a, b)$.
-      Then it is wrong that $a \SETin A'$ and $b \SETin B'$.
-      Hence $a \SETnotin A'$ or $b \SETnotin B'$.
-      Thus $a \SETin A \SETdiff A'$ or $b \SETin B \SETdiff B'$.
-      Therefore $x \SETin A \SETprod (B \SETdiff B')$ or $x \SETin (A \SETdiff A') \SETprod B$.
-      Hence we have $x \SETin (A \SETprod (B \SETdiff B')) \SETunion ((A \SETdiff A') \SETprod B)$.
+      Let $x \Elem (A \SETprod B) \SETdiff (A' \SETprod B')$.
+      Then $x \Elem A \SETprod B$ and $x \NotElem A' \SETprod B'$.
+      Take $a \Elem A$ and $b \Elem B$ such that $x \Eq (a, b)$.
+      Then it is wrong that $a \Elem A'$ and $b \Elem B'$.
+      Hence $a \NotElem A'$ or $b \NotElem B'$.
+      Thus $a \Elem A \SETdiff A'$ or $b \Elem B \SETdiff B'$.
+      Therefore $x \Elem A \SETprod (B \SETdiff B')$ or $x \Elem (A \SETdiff A') \SETprod B$.
+      Hence we have $x \Elem (A \SETprod (B \SETdiff B')) \SETunion ((A \SETdiff A') \SETprod B)$.
     End.
 
     Let us show that $(A \SETprod (B \SETdiff B')) \SETunion ((A \SETdiff A') \SETprod B) \SETinclude (A \SETprod B) \SETdiff (A' \SETprod B')$.
-      Let $x \SETin (A \SETprod (B \SETdiff B')) \SETunion ((A \SETdiff A') \SETprod B)$.
-      Then $x \SETin (A \SETprod (B \SETdiff B'))$ or $x \SETin ((A \SETdiff A') \SETprod B)$.
-      Take elements $a,b$ such that $x \eq (a, b)$ (by \printref{FOUNDATIONS_04_2877806274936832}).
-      Then ($a \SETin A$ and $b \SETin B \SETdiff B'$) or ($a \SETin A \SETdiff A'$ and $b \SETin B$).
+      Let $x \Elem (A \SETprod (B \SETdiff B')) \SETunion ((A \SETdiff A') \SETprod B)$.
+      Then $x \Elem (A \SETprod (B \SETdiff B'))$ or $x \Elem ((A \SETdiff A') \SETprod B)$.
+      Take elements $a,b$ such that $x \Eq (a, b)$ (by \printref{FOUNDATIONS_04_2877806274936832}).
+      Then ($a \Elem A$ and $b \Elem B \SETdiff B'$) or ($a \Elem A \SETdiff A'$ and $b \Elem B$).
 
-      \begin{case}{$a \SETin A$ and $b \SETin B \SETdiff B'$.}
-        Then $a \SETin A$ and $b \SETin B$.
-        Hence $x \SETin A \SETprod B$.
-        We have $b \SETnotin B'$.
-        Thus $x \SETnotin A' \SETprod B'$.
-        Therefore $x \SETin (A \SETprod B) \SETdiff (A' \SETprod B')$.
+      \begin{case}{$a \Elem A$ and $b \Elem B \SETdiff B'$.}
+        Then $a \Elem A$ and $b \Elem B$.
+        Hence $x \Elem A \SETprod B$.
+        We have $b \NotElem B'$.
+        Thus $x \NotElem A' \SETprod B'$.
+        Therefore $x \Elem (A \SETprod B) \SETdiff (A' \SETprod B')$.
       \end{case}
 
-      \begin{case}{$a \SETin A \SETdiff A'$ and $b \SETin B$.}
-        Then $a \SETin A$ and $b \SETin B$.
-        Hence $x \SETin A \SETprod B$.
-        We have $a \SETnotin A'$.
-        Thus $x \SETnotin A' \SETprod B'$.
-        Therefore $x \SETin (A \SETprod B) \SETdiff (A' \SETprod B')$.
+      \begin{case}{$a \Elem A \SETdiff A'$ and $b \Elem B$.}
+        Then $a \Elem A$ and $b \Elem B$.
+        Hence $x \Elem A \SETprod B$.
+        We have $a \NotElem A'$.
+        Thus $x \NotElem A' \SETprod B'$.
+        Therefore $x \Elem (A \SETprod B) \SETdiff (A' \SETprod B')$.
       \end{case}
     End.
   \end{proof}

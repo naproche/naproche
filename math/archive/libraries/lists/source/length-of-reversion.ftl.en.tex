@@ -7,26 +7,26 @@
 \importmodule[libraries/lists]{reversion.ftl}
 
 \begin{proposition}[forthel,id=LISTS_LENGTHREV_4512036658964875]
-  $\LISTlength(\LISTrev(L)) \eq \LISTlength(L)$ for any list $L$.
+  $\LISTlength(\LISTrev(L)) \Eq \LISTlength(L)$ for any list $L$.
 \end{proposition}
 \begin{proof}[forthel,method=induction on $L$]
   Let $L$ be a list.
   
-  \begin{case}{$L \eq \LISTlist{}$.}\end{case}
+  \begin{case}{$L \Eq \LISTlist{}$.}\end{case}
   
-  \begin{case}{$L \eq a \LISTcons L'$ for some object $a$ and some list $L'$.}
-    Take an object $a$ and a list $L'$ such that $L \eq a \LISTcons L'$.
+  \begin{case}{$L \Eq a \LISTcons L'$ for some object $a$ and some list $L'$.}
+    Take an object $a$ and a list $L'$ such that $L \Eq a \LISTcons L'$.
     Then $L' \prec L$.
-    Hence $\LISTlength(\LISTrev(L')) \eq \LISTlength(L')$.
+    Hence $\LISTlength(\LISTrev(L')) \Eq \LISTlength(L')$.
     Thus
     \begin{align*}
       \LISTlength(\LISTrev(L))
-        &\eq \LISTlength(\LISTrev(a \LISTcons L'))\\
-        &\eq \LISTlength(\LISTrev(L') \LISTconcat \LISTlist{a})\\
-        &\eq \LISTlength(\LISTlist{a}) \NATplus \LISTlength(\LISTrev(L'))\\
-        &\eq \NATone \NATplus \LISTlength(\LISTrev(L'))\\
-        &\eq \NATone \NATplus \LISTlength(L')\\
-        &\eq \LISTlength(L)
+        &\Eq \LISTlength(\LISTrev(a \LISTcons L'))\\
+        &\Eq \LISTlength(\LISTrev(L') \LISTconcat \LISTlist{a})\\
+        &\Eq \LISTlength(\LISTlist{a}) \NATplus \LISTlength(\LISTrev(L'))\\
+        &\Eq \NATone \NATplus \LISTlength(\LISTrev(L'))\\
+        &\Eq \NATone \NATplus \LISTlength(L')\\
+        &\Eq \LISTlength(L)
     \end{align*}.
   \end{case}
 \end{proof}

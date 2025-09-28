@@ -1,0 +1,26 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{equality.ftl}
+
+\symdef{Eq}[name=equal]{\mathrel{\comp=}}
+\symdef{NotEq}{\mathrel{\comp{\not=}}}
+\symdecl*{agree}
+\symdecl*{distinct}
+
+\begin{forthel}
+  \begin{convention}
+    Let $x$ and $y$ \emph{agree} stand for $x$ is equal to $y$.
+    Let $x$ \emph{agrees with $y$} stand for $x$ is equal to $y$.
+  \end{convention}
+\end{forthel}
+
+\begin{forthel}
+  \begin{convention}
+    Let $x$ and $y$ are \emph{distinct} stand for $x \NotEq y$.
+  \end{convention}
+\end{forthel}
+
+\end{smodule}
+\end{document}

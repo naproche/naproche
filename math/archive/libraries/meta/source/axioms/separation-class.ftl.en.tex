@@ -1,0 +1,27 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{separation-class.ftl}
+
+\importmodule[libraries/meta]{notions?separation-class.ftl}
+\importmodule[libraries/meta]{relations?equality.ftl}
+\importmodule[libraries/meta]{notions?elements.ftl}
+
+\begin{fakeforthel}
+  \begin{axiom}
+    Let $v_1,\dots,v_n$ be variables, $\tau[v_1,\dots,v_n]$ be a term, $A$ be a class and $\varphi[v_1,\dots,v_n]$ be a formula.
+    Then $x \Elem \SClass{\tau[v_1,\dots,v_n]}{A}{\varphi[v_1,\dots,v_n]}$ iff
+    $x \Elem A$ and there exist $y_1,\dots,y_n$ such that $\varphi[y_1,\dots,y_n]$ and $x \Eq \tau[y_1,\dots,y_n]$.
+  \end{axiom}
+\end{fakeforthel}
+
+\begin{fakeforthel}
+  \begin{corollary}
+    Let $v$ be a variable, $A$ be a class and $\varphi[v]$ be a formula.
+    Then $x \Elem \SClass{v}{A}{\varphi[v]}$ iff $x \Elem A$ and $\varphi[x]$.
+  \end{corollary}
+\end{fakeforthel}
+
+\end{smodule}
+\end{document}

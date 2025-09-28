@@ -1,0 +1,16 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{induction-order.ftl}
+
+\symdef{ILess}[name=inductively less]{\mathrel{\comp\prec}}
+
+\begin{forthel}
+  \begin{convention}
+    Let $x$ is \emph{inductively less than $y$} stand for $x \ILess y$.
+  \end{convention}
+\end{forthel}
+
+\end{smodule}
+\end{document}

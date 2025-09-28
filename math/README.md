@@ -32,7 +32,7 @@ math .................................... Naproche formalizations
 │   │   │
 │   │   ├── cantor-paradox .............. Cantor's paradoxes
 │   │   │
-│   │   ├── cantor-schroeder-bernstein .. classical result in cardinality theory
+│   │   ├── cantor-schroeder-bernstein .. The Cantor-Schröder-Bernstein theorem
 │   │   │
 │   │   ├── cantor ...................... Cantor's diagonal argument
 │   │   │
@@ -46,17 +46,27 @@ math .................................... Naproche formalizations
 │   │   │
 │   │   ├── hilbert-paradox ............. Hilbert's paradox
 │   │   │
+│   │   ├── knaster-tarski .............. the Knaster-Tarski fixed point theorem
+│   │   │
 │   │   ├── koenig ...................... Kőnig's theorem about sequences of cardinals
 │   │   │
-│   │   ├── little-gauss ................ sum of the first *n* positive integers
+│   │   ├── little-gauss ................ sum of the first n positive integers
+│   │   │
+│   │   ├── peano ....................... first paragraph of Peano's "Principles of Arithmetics"
 │   │   │
 │   │   ├── russell-myhill-paradox ...... the Russell-Myhill paradox
 │   │   │
 │   │   ├── russell-paradox ............. Russell's paradox
 │   │   │
+│   │   ├── socrates .................... The "Socrates is mortal" syllogism
+│   │   │
 │   │   ├── transfinite-recursion ....... the transfinite recursion theorem
 │   │   │
 │   │   └── zermelo ..................... Zermelo's well-ordering theorem
+│   │
+│   ├── documentation ................... Documentation of Naproche
+│   │   │
+│   │   ├── ontology .................... The object-level ontology of Naproche
 │   │
 │   ├── libraries ....................... Naproche libraries based on sTeX
 │   │   │
@@ -68,13 +78,15 @@ math .................................... Naproche formalizations
 │   │   │
 │   │   ├── lists ....................... basic notions and results concerning lists
 │   │   │
+│   │   ├── meta ........................ meta content
+│   │   │
 │   │   └── set-theory .................. basic notions and results concerning ordinal and cardinal numbers
 │   │
-│   └── meta-inf ........................ LaTeX files used in math/archive and math/libraries
+│   └── meta-inf ........................ LaTeX files used in math/archive
 │
 └── examples ............................ Stand-alone formalizations
     │
-    ├── lang ............................ ForTheL and LaTeX files used in math/examples and math/TUTORIAL
+    ├── lang ............................ Extensions of the initial ForTheL lexicon
     │
     ├── latex ........................... LaTeX package for example formalizations
     │

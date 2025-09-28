@@ -19,74 +19,74 @@
 \begin{proof}[forthel]
   (1) $\ORDsucc(\alpha)$ is transitive.
   \begin{proof}
-    Let $x \SETin \ORDsucc(\alpha)$ and $y \SETin x$.
-    Then $x \SETin \alpha$ or $x \eq \alpha$.
-    Hence $y \SETin \alpha$.
-    Thus $y \SETin \ORDsucc(\alpha)$.
+    Let $x \Elem \ORDsucc(\alpha)$ and $y \Elem x$.
+    Then $x \Elem \alpha$ or $x \Eq \alpha$.
+    Hence $y \Elem \alpha$.
+    Thus $y \Elem \ORDsucc(\alpha)$.
   \end{proof}
 
   (2) Every element of $\ORDsucc(\alpha)$ is transitive.
   \begin{proof}
-    Let $x \SETin \ORDsucc(\alpha)$.
-    Then $x \SETin \alpha$ or $x \eq \alpha$.
+    Let $x \Elem \ORDsucc(\alpha)$.
+    Then $x \Elem \alpha$ or $x \Eq \alpha$.
     Hence $x$ is transitive.
     Indeed $\alpha$ is transitive and every element of $\alpha$ is transitive.
   \end{proof}
 \end{proof}
 
 \begin{definition}[forthel,id=SET_THEORY_02_7129712109289472]
-  A \emph{successor ordinal} is an ordinal $\alpha$ such that $\alpha \eq \ORDsucc(\beta)$ for some ordinal $\beta$.
+  A \emph{successor ordinal} is an ordinal $\alpha$ such that $\alpha \Eq \ORDsucc(\beta)$ for some ordinal $\beta$.
 \end{definition}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_8651096763400192]
   Let $\alpha, \beta$ be ordinals.
-  If $\ORDsucc(\alpha) \eq \ORDsucc(\beta)$ then $\alpha \eq \beta$.
+  If $\ORDsucc(\alpha) \Eq \ORDsucc(\beta)$ then $\alpha \Eq \beta$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $\ORDsucc(\alpha) \eq \ORDsucc(\beta)$.
+  Assume $\ORDsucc(\alpha) \Eq \ORDsucc(\beta)$.
 
   (1) $\alpha \SETinclude \beta$.
   \begin{proof}
-    Let $\gamma \SETin \alpha$.
-    Then $\gamma \SETin \alpha \SETunion \SETsingleton{\alpha}
-      \eq \ORDsucc(\alpha)
-      \eq \ORDsucc(\beta)
-      \eq \beta \SETunion \SETsingleton{\beta}$.
-    Hence $\gamma \SETin \beta$ or $\gamma \eq \beta$.
-    Assume $\gamma \eq \beta$.
-    Then $\beta \SETin \alpha$.
+    Let $\gamma \Elem \alpha$.
+    Then $\gamma \Elem \alpha \SETunion \SETsingleton{\alpha}
+      \Eq \ORDsucc(\alpha)
+      \Eq \ORDsucc(\beta)
+      \Eq \beta \SETunion \SETsingleton{\beta}$.
+    Hence $\gamma \Elem \beta$ or $\gamma \Eq \beta$.
+    Assume $\gamma \Eq \beta$.
+    Then $\beta \Elem \alpha$.
     Hence $\beta
-      \eq (\beta \SETunion \SETsingleton{\beta}) \SETdiff \SETsingleton{\gamma}
-      \eq (\alpha \SETunion \SETsingleton{\alpha}) \SETdiff \SETsingleton{\gamma}
-      \eq (\alpha \SETdiff \SETsingleton{\gamma}) \SETunion \SETsingleton{\alpha}$.
-    Therefore $\alpha \SETin \beta$.
-    Consequently $\alpha \SETin \beta \SETin \alpha$.
+      \Eq (\beta \SETunion \SETsingleton{\beta}) \SETdiff \SETsingleton{\gamma}
+      \Eq (\alpha \SETunion \SETsingleton{\alpha}) \SETdiff \SETsingleton{\gamma}
+      \Eq (\alpha \SETdiff \SETsingleton{\gamma}) \SETunion \SETsingleton{\alpha}$.
+    Therefore $\alpha \Elem \beta$.
+    Consequently $\alpha \Elem \beta \Elem \alpha$.
     Contradiction.
   \end{proof}
 
   (2) $\beta \SETinclude \alpha$.
   \begin{proof}
-    Let $\gamma \SETin \beta$.
-    Then $\gamma \SETin \beta \SETunion \SETsingleton{\beta}
-      \eq \ORDsucc(\beta)
-      \eq \ORDsucc(\alpha)
-      \eq \alpha \SETunion \SETsingleton{\alpha}$.
-    Hence $\gamma \SETin \alpha$ or $\gamma \eq \alpha$.
-    Assume $\gamma \eq \alpha$.
-    Then $\alpha \SETin \beta$.
+    Let $\gamma \Elem \beta$.
+    Then $\gamma \Elem \beta \SETunion \SETsingleton{\beta}
+      \Eq \ORDsucc(\beta)
+      \Eq \ORDsucc(\alpha)
+      \Eq \alpha \SETunion \SETsingleton{\alpha}$.
+    Hence $\gamma \Elem \alpha$ or $\gamma \Eq \alpha$.
+    Assume $\gamma \Eq \alpha$.
+    Then $\alpha \Elem \beta$.
     Hence $\alpha
-      \eq (\alpha \SETunion \SETsingleton{\alpha}) \SETdiff \SETsingleton{\gamma}
-      \eq (\beta \SETunion \SETsingleton{\beta}) \SETdiff \SETsingleton{\gamma}
-      \eq (\beta \SETdiff \SETsingleton{\gamma}) \SETunion \SETsingleton{\beta}$.
-    Therefore $\beta \SETin \alpha$.
-    Consequently $\beta \SETin \alpha \SETin \beta$.
+      \Eq (\alpha \SETunion \SETsingleton{\alpha}) \SETdiff \SETsingleton{\gamma}
+      \Eq (\beta \SETunion \SETsingleton{\beta}) \SETdiff \SETsingleton{\gamma}
+      \Eq (\beta \SETdiff \SETsingleton{\gamma}) \SETunion \SETsingleton{\beta}$.
+    Therefore $\beta \Elem \alpha$.
+    Consequently $\beta \Elem \alpha \Elem \beta$.
     Contradiction.
   \end{proof}
 \end{proof}
 
 \begin{definition}[forthel,id=SET_THEORY_02_735071524880384]
   Let $\alpha$ be a successor ordinal.
-  $\emph{\ORDpred(\alpha)}$ is the ordinal $\beta$ such that $\alpha \eq \ORDsucc(\beta)$.
+  $\emph{\ORDpred(\alpha)}$ is the ordinal $\beta$ such that $\alpha \Eq \ORDsucc(\beta)$.
 \end{definition}
 \end{smodule}
 \end{document}

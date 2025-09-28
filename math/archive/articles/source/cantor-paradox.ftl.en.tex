@@ -1,10 +1,11 @@
 \documentclass{stex}
 \libusepackage{naproche}
+\libusepackage{copyright}
 \libinput{preamble}
 
 \title{Cantor's Paradoxes in \Naproche}
 \author{Marcel Schütz}
-\date{2024--2025}
+\date{2025}
 
 \begin{document}
 \begin{smodule}{cantor-paradox.ftl}
@@ -30,8 +31,8 @@ proper class \cite[chapter 156]{Cantor1991}.
     Let $\alpha$ be an ordinal.
     Choose an infinite ordinal $\beta$ such that $\beta \ORDgeq \alpha$.
     Choose a cardinal $\kappa$ greater than $\beta$.
-    Then $\alpha \SETin \kappa \SETin \Card$.
-    Hence $\alpha \SETin \SETunionover \Card$.
+    Then $\alpha \Elem \kappa \Elem \Card$.
+    Hence $\alpha \Elem \SETunionover \Card$.
   End.
 
   Therefore $\Ord \SETinclude \SETunionover \Card$.
@@ -57,6 +58,6 @@ powerset \cite[chapter 163]{Cantor1991}.
 \end{proof}
 
 \printbibliography
-\printlicense[CcByNcSa]{2024--2025}{Marcel Schütz}
+\printlicense[CcByNcSa]{Marcel Schütz (2024--2025)}
 \end{smodule}
 \end{document}

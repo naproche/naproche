@@ -25,7 +25,7 @@
   },
   {
     "type": "paper",
-    "title": "The Knaster-Tarski Fixed Point Theorem and The Cantor-Schröder-Bernstein Theorem",
+    "title": "The Cantor-Schröder-Bernstein Theorem",
     "authors": [
       {"name": "Alexander Holz (2018)"},
       {"name": "Marcel Schütz (2018–2025)"}
@@ -85,6 +85,15 @@
   },
   {
     "type": "paper",
+    "title": "The Knaster-Tarski Fixed Point Theorem",
+    "authors": [
+      {"name": "Alexander Holz (2018)"},
+      {"name": "Marcel Schütz (2018–2025)"}
+    ],
+    "file": "knaster-tarski.ftl.en"
+  },
+  {
+    "type": "paper",
     "title": "Kőnig's Theorem",
     "authors": [
       {"name": "Steffen Frerix (2018–2019)"},
@@ -104,6 +113,14 @@
   },
   {
     "type": "paper",
+    "title": "Peano's Principles of Arithmetics",
+    "authors": [
+      {"name": "Marcel Schütz (2025)"}
+    ],
+    "file": "peano.ftl.en"
+  },
+  {
+    "type": "paper",
     "title": "The Russell-Myhill Paradox",
     "authors": [
       {"name": "Marcel Schütz (2024–2025)"}
@@ -117,6 +134,14 @@
       {"name": "Marcel Schütz (2024–2025)"}
     ],
     "file": "russell-paradox.ftl.en"
+  },
+  {
+    "type": "paper",
+    "title": "\"Socrates is Mortal\"",
+    "authors": [
+      {"name": "Marcel Schütz (2025)"}
+    ],
+    "file": "socrates.ftl.en"
   },
   {
     "type": "paper",

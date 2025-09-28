@@ -263,7 +263,7 @@ inputFile = do
   beginPos <- texCommandPos "inputref"
   archivePath <- bracketed path
   (filePathRange, filePath) <- enclosed "{" "}" path
-  let instr = GetRelativeFilePath $ joinPath [archivePath, "source", filePath]
+  let instr = GetRelativeFilePath $ joinPath ["archive", archivePath, "source", filePath]
       endPos = Position.symbol_explode ("}" :: Text) $ snd filePathRange
       pos = Position.range_position (beginPos, endPos)
   Reports.addInstrReport pos

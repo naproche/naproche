@@ -8,18 +8,18 @@
 
 \begin{proposition}[forthel,id=ARITHMETIC_06_8817333933965312]
   Let $n, m, k$ be natural numbers.
-  Assume $k \neq \NATzero$.
+  Assume $k \NotEq \NATzero$.
   Then $n \NATless m$ iff $n \NATmul k \NATless m \NATmul k$.
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$n \NATmul k \NATless m \NATmul k$.}
-    Define $\Phi = \{ n' \in \Nat \mid\text{ if }n' \NATmul k \NATless m \NATmul k\text{ then }n' \NATless m \}$.
+    Define $\Phi = \SClass{n'}{\Nat}{\text{ if }n' \NATmul k \NATless m \NATmul k\text{ then }n' \NATless m}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
-    (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
+    (2) For all $n' \Elem \Phi$ we have $n' \NATplus \NATone \Elem \Phi$.
     \begin{proof}
-      Let $n' \SETin \Phi$.
+      Let $n' \Elem \Phi$.
 
       Let us show that if $(n' \NATplus \NATone) \NATmul k \NATless m \NATmul k$ then $n' \NATplus \NATone \NATless m$.
         Assume $(n' \NATplus \NATone) \NATmul k \NATless m \NATmul k$.
@@ -27,7 +27,7 @@
         Hence $n' \NATmul k \NATless m \NATmul k$.
         Thus $n' \NATless m$.
         Then $n' \NATplus \NATone \NATleq m$.
-        If $n' \NATplus \NATone \eq m$ then $(n' \NATplus \NATone) \NATmul k \eq m \NATmul k$.
+        If $n' \NATplus \NATone \Eq m$ then $(n' \NATplus \NATone) \NATmul k \Eq m \NATmul k$.
         Hence $n' \NATplus \NATone \NATless m$.
       End.
     \end{proof}
@@ -37,8 +37,8 @@
   \end{case}
 
   \begin{case}{$n \NATless m$.}
-    Take a positive natural number $l$ such that $m \eq n \NATplus l$.
-    Then $m \NATmul k \eq (n \NATplus l) \NATmul k \eq (n \NATmul k) \NATplus (l \NATmul k)$.
+    Take a positive natural number $l$ such that $m \Eq n \NATplus l$.
+    Then $m \NATmul k \Eq (n \NATplus l) \NATmul k \Eq (n \NATmul k) \NATplus (l \NATmul k)$.
     $l \NATmul k$ is positive.
     Hence $n \NATmul k \NATless m \NATmul k$.
   \end{case}
@@ -46,7 +46,7 @@
 
 \begin{corollary}[forthel,id=ARITHMETIC_06_5048640368279552]
   Let $n, m, k$ be natural numbers.
-  Assume $k \neq \NATzero$.
+  Assume $k \NotEq \NATzero$.
   Then $n \NATless m$ iff $k \NATmul n \NATless k \NATmul m$.
 \end{corollary}
 \begin{proof}[forthel]
@@ -58,27 +58,27 @@
   If $n, m \NATgtr k$ then $n \NATmul m \NATgtr k$.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $\Phi = \{ n' \in \Nat \mid\text{ if }n', m \NATgtr k\text{ then }n' \NATmul m \NATgtr k \}$.
+  Define $\Phi = \SClass{n'}{\Nat}{\text{ if }n', m \NATgtr k\text{ then }n' \NATmul m \NATgtr k}$.
 
   (1) $\Phi$ contains $\NATzero$.
 
-  (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
+  (2) For all $n' \Elem \Phi$ we have $n' \NATplus \NATone \Elem \Phi$.
   \begin{proof}
-    Let $n' \SETin \Phi$.
+    Let $n' \Elem \Phi$.
 
     Let us show that if $n' \NATplus \NATone, m \NATgtr k$ then $(n' \NATplus \NATone) \NATmul m \NATgtr k$.
       Assume $n' \NATplus \NATone, m \NATgtr k$.
-      Then $(n' \NATplus \NATone) \NATmul m \eq (n' \NATmul m) \NATplus m$.
-      If $n' \eq \NATzero$ then
+      Then $(n' \NATplus \NATone) \NATmul m \Eq (n' \NATmul m) \NATplus m$.
+      If $n' \Eq \NATzero$ then
       $(n' \NATmul m) \NATplus m
-        \eq \NATzero \NATplus m
-        \eq m
+        \Eq \NATzero \NATplus m
+        \Eq m
         \NATgtr k$.
-      If $n' \neq \NATzero$ then
+      If $n' \NotEq \NATzero$ then
       $(n' \NATmul m) \NATplus m
         \NATgtr m
         \NATgtr k$.
-      Indeed if $n' \neq \NATzero$ then $n' \NATmul m \NATgtr \NATzero$.
+      Indeed if $n' \NotEq \NATzero$ then $n' \NATmul m \NATgtr \NATzero$.
       Indeed $m \NATgtr \NATzero$.
       Hence $(n' \NATplus \NATone) \NATmul m \NATgtr k$.
     End.
@@ -95,11 +95,11 @@
 
 \begin{corollary}[forthel,id=ARITHMETIC_06_3965209318260736]
   Let $n, m, k$ be natural numbers.
-  Assume $k \neq \NATzero$.
+  Assume $k \NotEq \NATzero$.
   If $k \NATmul n \NATleq k \NATmul m$ then $n \NATleq m$.
 \end{corollary}
 \begin{proof}[forthel]
-  If $k \NATmul n \eq k \NATmul m$ then $n \eq m$ (by \printref{ARITHMETIC_06_8575191374364672}).
+  If $k \NATmul n \Eq k \NATmul m$ then $n \Eq m$ (by \printref{ARITHMETIC_06_8575191374364672}).
   If $k \NATmul n \NATless k \NATmul m$ then $n \NATless m$ (by \printref{ARITHMETIC_06_5048640368279552}).
 \end{proof}
 
@@ -110,7 +110,7 @@
 
 \begin{corollary}[forthel,id=ARITHMETIC_06_4374428949413888]
   Let $n, m, k$ be natural numbers.
-  Assume $k \neq \NATzero$.
+  Assume $k \NotEq \NATzero$.
   If $n \NATmul k \NATleq m \NATmul k$ then $n \NATleq m$.
 \end{corollary}
 
@@ -120,14 +120,14 @@
   Then $k \NATmul m \NATgtr m$.
 \end{proposition}
 \begin{proof}[forthel]
-  Take a natural number $l$ such that $k \eq l \NATplus \NATtwo$.
+  Take a natural number $l$ such that $k \Eq l \NATplus \NATtwo$.
   Then
   \[  k \NATmul m                       \]
-  \[    \eq (l \NATplus \NATtwo) \NATmul m             \]
-  \[    \eq (l \NATmul m) \NATplus (\NATtwo \NATmul m)   \]
-  \[    \eq (l \NATmul m) \NATplus (m \NATplus m)       \]
-  \[    \eq ((l \NATmul m) \NATplus m) \NATplus m       \]
-  \[    \eq ((l \NATplus \NATone) \NATmul m) \NATplus m       \]
+  \[    \Eq (l \NATplus \NATtwo) \NATmul m             \]
+  \[    \Eq (l \NATmul m) \NATplus (\NATtwo \NATmul m)   \]
+  \[    \Eq (l \NATmul m) \NATplus (m \NATplus m)       \]
+  \[    \Eq ((l \NATmul m) \NATplus m) \NATplus m       \]
+  \[    \Eq ((l \NATplus \NATone) \NATmul m) \NATplus m       \]
   \[    \NATgeq \NATone \NATplus m                    \]
   \[    \NATgtr m.                          \]
   Indeed $((l \NATplus \NATone) \NATmul m) \NATplus m \NATgeq \NATone \NATplus m$.

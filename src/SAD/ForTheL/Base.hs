@@ -178,13 +178,24 @@ addInits dialect state@FState{symbNotionExpr = sn, cfnExpr = cfn, iprExpr = ipr}
         iprExpr = unionBy comparePatterns ipr [ftlInequalityPredicate, ftlInductionPredicate]
       }
     Tex -> state {
-      symbNotionExpr = unionBy comparePatterns sn [texElementOfSymbNotion],
-      cfnExpr = unionBy comparePatterns cfn [texDomFunction],
+      symbNotionExpr = unionBy comparePatterns sn [
+          texElementOfSymbNotion,
+          stexElementOfSymbNotion
+        ],
+      cfnExpr = unionBy comparePatterns cfn [
+          texDomFunction,
+          stexDomFunction
+        ],
       iprExpr = unionBy comparePatterns ipr [
           texInequalityPredicate,
           texInductionPredicate,
           texInPredicate,
-          texNotinPredicate
+          texNotinPredicate,
+          stexEqualityPredicate,
+          stexInequalityPredicate,
+          stexInductionPredicate,
+          stexInPredicate,
+          stexNotinPredicate
         ]
       }
   where
@@ -206,6 +217,20 @@ addInits dialect state@FState{symbNotionExpr = sn, cfnExpr = cfn, iprExpr = ipr}
     texInPredicate = ([Symbol "\\in"], \(x:m:_) -> mkElem x m)
     -- "x \notin X"
     texNotinPredicate = ([Symbol "\\notin"], \(x:m:_) -> Not $ mkElem x m)
+    -- "\Elem x"
+    stexElementOfSymbNotion = ([Symbol "\\Elem", Vr], \(x:m:_) -> mkElem x m)
+    -- "\Dom(f)"
+    stexDomFunction = ([Symbol "\\Dom", Symbol "(", Vr, Symbol ")"], mkDom . head)
+    -- "x \Eq y"
+    stexEqualityPredicate = ([Symbol "\\Eq"], mkTrm EqualityId TermEquality)
+    -- "x \NotEq y"
+    stexInequalityPredicate = ([Symbol "\\NotEq"], Not . mkTrm EqualityId TermEquality)
+    -- "x \ILess y"
+    stexInductionPredicate = ([Symbol "\\ILess"], mkTrm LessId TermLess)
+    -- "x \Elem y"
+    stexInPredicate = ([Symbol "\\Elem"], \(x:m:_) -> mkElem x m)
+    -- "x \NotElem y"
+    stexNotinPredicate = ([Symbol "\\NotElem"], \(x:m:_) -> Not $ mkElem x m)
 
     -- Compare the pattern of two primitive expressions
     comparePatterns p p' = fst p == fst p'

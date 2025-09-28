@@ -1,0 +1,20 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{map-extensionality.ftl}
+
+\importmodule[libraries/meta]{notions?maps.ftl}
+\importmodule[libraries/meta]{notions?domain.ftl}
+\importmodule[libraries/meta]{notions?elements.ftl}
+\importmodule[libraries/meta]{relations?equality.ftl}
+
+\begin{fakeforthel}
+  \begin{axiom}
+    Let $f,g$ be maps.
+    If $\Dom(f) \Eq \Dom(g)$ and $f(a) \Eq g(a)$ for all $a \Elem \Dom(f)$ then $g \Eq g$.
+  \end{axiom}
+\end{fakeforthel}
+
+\end{smodule}
+\end{document}

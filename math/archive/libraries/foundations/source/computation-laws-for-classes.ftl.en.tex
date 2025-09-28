@@ -8,41 +8,41 @@
 \begin{sfragment}{Commutativity of Union and Intersection}
   \begin{proposition}[forthel,id=FOUNDATIONS_02_8446177632583680]
     Let $A, B$ be classes.
-    Then $A \SETunion B \eq B \SETunion A$.
+    Then $A \SETunion B \Eq B \SETunion A$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETunion B \SETinclude B \SETunion A$.
-      Let $x \SETin A \SETunion B$.
-      Then $x \SETin A$ or $x \SETin B$.
-      Hence $x \SETin B$ or $x \SETin A$.
-      Thus $x \SETin B \SETunion A$.
+      Let $x \Elem A \SETunion B$.
+      Then $x \Elem A$ or $x \Elem B$.
+      Hence $x \Elem B$ or $x \Elem A$.
+      Thus $x \Elem B \SETunion A$.
     End.
 
     Let us show that $B \SETunion A \SETinclude A \SETunion B$.
-      Let $x \SETin B \SETunion A$.
-      Then $x \SETin B$ or $x \SETin A$.
-      Hence $x \SETin A$ or $x \SETin B$.
-      Thus $x \SETin A \SETunion B$.
+      Let $x \Elem B \SETunion A$.
+      Then $x \Elem B$ or $x \Elem A$.
+      Hence $x \Elem A$ or $x \Elem B$.
+      Thus $x \Elem A \SETunion B$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_7565102251245568]
     Let $A, B$ be classes.
-    Then $A \SETintersect B \eq B \SETintersect A$.
+    Then $A \SETintersect B \Eq B \SETintersect A$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETintersect B \SETinclude B \SETintersect A$.
-      Let $x \SETin A \SETintersect B$.
-      Then $x \SETin A$ and $x \SETin B$.
-      Hence $x \SETin B$ and $x \SETin A$.
-      Thus $x \SETin B \SETintersect A$.
+      Let $x \Elem A \SETintersect B$.
+      Then $x \Elem A$ and $x \Elem B$.
+      Hence $x \Elem B$ and $x \Elem A$.
+      Thus $x \Elem B \SETintersect A$.
     End.
 
     Let us show that $B \SETintersect A \SETinclude A \SETintersect B$.
-      Let $x \SETin B \SETintersect A$.
-      Then $x \SETin B$ and $x \SETin A$.
-      Hence $x \SETin A$ and $x \SETin B$.
-      Thus $x \SETin A \SETintersect B$.
+      Let $x \Elem B \SETintersect A$.
+      Then $x \Elem B$ and $x \Elem A$.
+      Hence $x \Elem A$ and $x \Elem B$.
+      Thus $x \Elem A \SETintersect B$.
     End.
   \end{proof}
 \end{sfragment}
@@ -50,45 +50,45 @@
 \begin{sfragment}{Associativity of Union and Intersection}
   \begin{proposition}[forthel,id=FOUNDATIONS_02_3854032263184384]
     Let $A, B, C$ be classes.
-    Then $(A \SETunion B) \SETunion C \eq A \SETunion (B \SETunion C)$.
+    Then $(A \SETunion B) \SETunion C \Eq A \SETunion (B \SETunion C)$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $((A \SETunion B) \SETunion C) \SETinclude A \SETunion (B \SETunion C)$. %!
-      Let $x \SETin (A \SETunion B) \SETunion C$.
-      Then $x \SETin A \SETunion B$ or $x \SETin C$.
-      Hence $x \SETin A$ or $x \SETin B$ or $x \SETin C$.
-      Thus $x \SETin A$ or $x \SETin (B \SETunion C)$.
-      Therefore $x \SETin A \SETunion (B \SETunion C)$.
+      Let $x \Elem (A \SETunion B) \SETunion C$.
+      Then $x \Elem A \SETunion B$ or $x \Elem C$.
+      Hence $x \Elem A$ or $x \Elem B$ or $x \Elem C$.
+      Thus $x \Elem A$ or $x \Elem (B \SETunion C)$.
+      Therefore $x \Elem A \SETunion (B \SETunion C)$.
     End.
 
     Let us show that $A \SETunion (B \SETunion C) \SETinclude (A \SETunion B) \SETunion C$.
-      Let $x \SETin A \SETunion (B \SETunion C)$.
-      Then $x \SETin A$ or $x \SETin B \SETunion C$.
-      Hence $x \SETin A$ or $x \SETin B$ or $x \SETin C$.
-      Thus $x \SETin A \SETunion B$ or $x \SETin C$.
-      Therefore $x \SETin (A \SETunion B) \SETunion C$.
+      Let $x \Elem A \SETunion (B \SETunion C)$.
+      Then $x \Elem A$ or $x \Elem B \SETunion C$.
+      Hence $x \Elem A$ or $x \Elem B$ or $x \Elem C$.
+      Thus $x \Elem A \SETunion B$ or $x \Elem C$.
+      Therefore $x \Elem (A \SETunion B) \SETunion C$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_906751977193472]
     Let $A, B, C$ be classes.
-    Then $(A \SETintersect B) \SETintersect C \eq A \SETintersect (B \SETintersect C)$.
+    Then $(A \SETintersect B) \SETintersect C \Eq A \SETintersect (B \SETintersect C)$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $((A \SETintersect B) \SETintersect C) \SETinclude A \SETintersect (B \SETintersect C)$. %!
-      Let $x \SETin (A \SETintersect B) \SETintersect C$.
-      Then $x \SETin A \SETintersect B$ and $x \SETin C$.
-      Hence $x \SETin A$ and $x \SETin B$ and $x \SETin C$.
-      Thus $x \SETin A$ and $x \SETin (B \SETintersect C)$.
-      Therefore$ x \SETin A \SETintersect (B \SETintersect C)$.
+      Let $x \Elem (A \SETintersect B) \SETintersect C$.
+      Then $x \Elem A \SETintersect B$ and $x \Elem C$.
+      Hence $x \Elem A$ and $x \Elem B$ and $x \Elem C$.
+      Thus $x \Elem A$ and $x \Elem (B \SETintersect C)$.
+      Therefore$ x \Elem A \SETintersect (B \SETintersect C)$.
     End.
 
     Let us show that $A \SETintersect (B \SETintersect C) \SETinclude (A \SETintersect B) \SETintersect C$.
-      Let $x \SETin A \SETintersect (B \SETintersect C)$.
-      Then $x \SETin A$ and $x \SETin B \SETintersect C$.
-      Hence $x \SETin A$ and $x \SETin B$ and $x \SETin C$.
-      Thus $x \SETin A \SETintersect B$ and $x \SETin C$.
-      Therefore $x \SETin (A \SETintersect B) \SETintersect C$.
+      Let $x \Elem A \SETintersect (B \SETintersect C)$.
+      Then $x \Elem A$ and $x \Elem B \SETintersect C$.
+      Hence $x \Elem A$ and $x \Elem B$ and $x \Elem C$.
+      Thus $x \Elem A \SETintersect B$ and $x \Elem C$.
+      Therefore $x \Elem (A \SETintersect B) \SETintersect C$.
     End.
   \end{proof}
 \end{sfragment}
@@ -96,49 +96,49 @@
 \begin{sfragment}{Distributivity of Union and Intersection}
   \begin{proposition}[forthel,id=FOUNDATIONS_02_371139087958016]
     Let $A, B, C$ be classes.
-    Then $A \SETintersect (B \SETunion C) \eq (A \SETintersect B) \SETunion (A \SETintersect C)$.
+    Then $A \SETintersect (B \SETunion C) \Eq (A \SETintersect B) \SETunion (A \SETintersect C)$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETintersect (B \SETunion C) \SETinclude (A \SETintersect B) \SETunion (A \SETintersect C)$.
-      Let $x \SETin A \SETintersect (B \SETunion C)$.
-      Then $x \SETin A$ and $x \SETin B \SETunion C$.
-      Hence $x \SETin A$ and ($x \SETin B$ or $x \SETin C$).
-      Thus ($x \SETin A$ and $x \SETin B$) or ($x \SETin A$ and $x \SETin C$).
-      Therefore $x \SETin A \SETintersect B$ or $x \SETin A \SETintersect C$.
-      Hence $x \SETin (A \SETintersect B) \SETunion (A \SETintersect C)$.
+      Let $x \Elem A \SETintersect (B \SETunion C)$.
+      Then $x \Elem A$ and $x \Elem B \SETunion C$.
+      Hence $x \Elem A$ and ($x \Elem B$ or $x \Elem C$).
+      Thus ($x \Elem A$ and $x \Elem B$) or ($x \Elem A$ and $x \Elem C$).
+      Therefore $x \Elem A \SETintersect B$ or $x \Elem A \SETintersect C$.
+      Hence $x \Elem (A \SETintersect B) \SETunion (A \SETintersect C)$.
     End.
 
     Let us show that $((A \SETintersect B) \SETunion (A \SETintersect C)) \SETinclude A \SETintersect (B \SETunion C)$. %!
-      Let $x \SETin (A \SETintersect B) \SETunion (A \SETintersect C)$.
-      Then $x \SETin A \SETintersect B$ or $x \SETin A \SETintersect C$.
-      Hence ($x \SETin A$ and $x \SETin B$) or ($x \SETin A$ and $x \SETin C$).
-      Thus $x \SETin A$ and ($x \SETin B$ or $x \SETin C$).
-      Therefore $x \SETin A$ and $x \SETin B \SETunion C$.
-      Hence$ x \SETin A \SETintersect (B \SETunion C)$.
+      Let $x \Elem (A \SETintersect B) \SETunion (A \SETintersect C)$.
+      Then $x \Elem A \SETintersect B$ or $x \Elem A \SETintersect C$.
+      Hence ($x \Elem A$ and $x \Elem B$) or ($x \Elem A$ and $x \Elem C$).
+      Thus $x \Elem A$ and ($x \Elem B$ or $x \Elem C$).
+      Therefore $x \Elem A$ and $x \Elem B \SETunion C$.
+      Hence$ x \Elem A \SETintersect (B \SETunion C)$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_5937390721957888]
     Let $A, B, C$ be classes.
-    Then $A \SETunion (B \SETintersect C) \eq (A \SETunion B) \SETintersect (A \SETunion C)$.
+    Then $A \SETunion (B \SETintersect C) \Eq (A \SETunion B) \SETintersect (A \SETunion C)$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETunion (B \SETintersect C) \SETinclude (A \SETunion B) \SETintersect (A \SETunion C)$.
-      Let $x \SETin A \SETunion (B \SETintersect C)$.
-      Then $x \SETin A$ or $x \SETin B \SETintersect C$.
-      Hence $x \SETin A$ or ($x \SETin B$ and $x \SETin C$).
-      Thus ($x \SETin A$ or $x \SETin B$) and ($x \SETin$ A or $x \SETin C$).
-      Therefore $x \SETin A \SETunion B$ and $x \SETin A \SETunion C$.
-      Hence $x \SETin (A \SETunion B) \SETintersect (A \SETunion C)$.
+      Let $x \Elem A \SETunion (B \SETintersect C)$.
+      Then $x \Elem A$ or $x \Elem B \SETintersect C$.
+      Hence $x \Elem A$ or ($x \Elem B$ and $x \Elem C$).
+      Thus ($x \Elem A$ or $x \Elem B$) and ($x \Elem$ A or $x \Elem C$).
+      Therefore $x \Elem A \SETunion B$ and $x \Elem A \SETunion C$.
+      Hence $x \Elem (A \SETunion B) \SETintersect (A \SETunion C)$.
     End.
 
     Let us show that $((A \SETunion B) \SETintersect (A \SETunion C)) \SETinclude A \SETunion (B \SETintersect C)$. %!
-      Let $x \SETin (A \SETunion B) \SETintersect (A \SETunion C)$.
-      Then $x \SETin A \SETunion B$ and $x \SETin A \SETunion C$.
-      Hence ($x \SETin A$ or $x \SETin B$) and ($x \SETin A$ or $x \SETin C$).
-      Thus $x \SETin A$ or ($x \SETin B$ and $x \SETin C$).
-      Therefore $x \SETin A$ or $x \SETin B \SETintersect C$.
-      Hence $x \SETin A \SETunion (B \SETintersect C)$.
+      Let $x \Elem (A \SETunion B) \SETintersect (A \SETunion C)$.
+      Then $x \Elem A \SETunion B$ and $x \Elem A \SETunion C$.
+      Hence ($x \Elem A$ or $x \Elem B$) and ($x \Elem A$ or $x \Elem C$).
+      Thus $x \Elem A$ or ($x \Elem B$ and $x \Elem C$).
+      Therefore $x \Elem A$ or $x \Elem B \SETintersect C$.
+      Hence $x \Elem A \SETunion (B \SETintersect C)$.
     End.
   \end{proof}
 \end{sfragment}
@@ -146,77 +146,77 @@
 \begin{sfragment}{Idempocy Laws for Union and Intersection}
   \begin{proposition}[forthel,id=FOUNDATIONS_02_2096996737351680]
     Let $A$ be a class.
-    Then $A \SETunion A \eq A$.
+    Then $A \SETunion A \Eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETunion A = \{x \mid x \SETin A\text{ or }x \SETin A \}$.
-    Hence $A \SETunion A = \{ x \mid x \SETin A \}$.
-    Thus $A \SETunion A \eq A$.
+    $A \SETunion A = \CClass{x}{x \Elem A\text{ or }x \Elem A}$.
+    Hence $A \SETunion A = \CClass{x}{x \Elem A}$.
+    Thus $A \SETunion A \Eq A$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_4053144145231872]
     Let $A$ be a class.
-    Then $A \SETintersect A \eq A$.
+    Then $A \SETintersect A \Eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETintersect A = \{ x \mid x \SETin A\text{ and }x \SETin A \}$.
-    Hence $A \SETintersect A = \{ x \mid x \SETin A \}$.
-    Thus $A \SETintersect A \eq A$.
+    $A \SETintersect A = \CClass{x}{x \Elem A\text{ and }x \Elem A}$.
+    Hence $A \SETintersect A = \CClass{x}{x \Elem A}$.
+    Thus $A \SETintersect A \Eq A$.
   \end{proof}
 \end{sfragment}
 
 \begin{sfragment}{Distributivity of Complement}
   \begin{proposition}[forthel,id=FOUNDATIONS_02_5296031436636160]
     Let $A, B, C$ be classes.
-    Then $A \SETdiff (B \SETintersect C) \eq (A \SETdiff B) \SETunion (A \SETdiff C)$.
+    Then $A \SETdiff (B \SETintersect C) \Eq (A \SETdiff B) \SETunion (A \SETdiff C)$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETdiff (B \SETintersect C) \SETinclude (A \SETdiff B) \SETunion (A \SETdiff C)$.
-      Let $x \SETin A \SETdiff (B \SETintersect C)$.
-      Then $x \SETin A$ and $x \SETnotin B \SETintersect C$.
-      Hence it is wrong that ($x \SETin B$ and $x \SETin C$).
-      Thus $x \SETnotin B$ or $x \SETnotin C$.
-      Therefore $x \SETin A$ and ($x \SETnotin B$ or $x \SETnotin C$).
-      Then ($x \SETin A$ and $x \SETnotin B$) or ($x \SETin A$ and $x \SETnotin C$).
-      Hence $x \SETin A \SETdiff B$ or $x \SETin A \SETdiff C$.
-      Thus $x \SETin (A \SETdiff B) \SETunion (A \SETdiff C)$.
+      Let $x \Elem A \SETdiff (B \SETintersect C)$.
+      Then $x \Elem A$ and $x \NotElem B \SETintersect C$.
+      Hence it is wrong that ($x \Elem B$ and $x \Elem C$).
+      Thus $x \NotElem B$ or $x \NotElem C$.
+      Therefore $x \Elem A$ and ($x \NotElem B$ or $x \NotElem C$).
+      Then ($x \Elem A$ and $x \NotElem B$) or ($x \Elem A$ and $x \NotElem C$).
+      Hence $x \Elem A \SETdiff B$ or $x \Elem A \SETdiff C$.
+      Thus $x \Elem (A \SETdiff B) \SETunion (A \SETdiff C)$.
     End.
 
     Let us show that $((A \SETdiff B) \SETunion (A \SETdiff C)) \SETinclude A \SETdiff (B \SETintersect C)$. %!
-      Let $x \SETin (A \SETdiff B) \SETunion (A \SETdiff C)$.
-      Then $x \SETin A \SETdiff B$ or $x \SETin A \SETdiff C$.
-      Hence ($x \SETin A$ and $x \SETnotin B$) or ($x \SETin A$ and $x \SETnotin C$).
-      Thus $x \SETin A$ and ($x \SETnotin B$ or $x \SETnotin C$).
-      Therefore $x \SETin A$ and not ($x \SETin B$ and $x \SETin C$).
-      Then $x \SETin A$ and not $x \SETin B \SETintersect C$.
-      Hence $x \SETin A \SETdiff (B \SETintersect C)$.
+      Let $x \Elem (A \SETdiff B) \SETunion (A \SETdiff C)$.
+      Then $x \Elem A \SETdiff B$ or $x \Elem A \SETdiff C$.
+      Hence ($x \Elem A$ and $x \NotElem B$) or ($x \Elem A$ and $x \NotElem C$).
+      Thus $x \Elem A$ and ($x \NotElem B$ or $x \NotElem C$).
+      Therefore $x \Elem A$ and not ($x \Elem B$ and $x \Elem C$).
+      Then $x \Elem A$ and not $x \Elem B \SETintersect C$.
+      Hence $x \Elem A \SETdiff (B \SETintersect C)$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_2909554153095168]
     Let $A, B, C$ be classes.
-    Then $A \SETdiff (B \SETunion C) \eq (A \SETdiff B) \SETintersect (A \SETdiff C)$.
+    Then $A \SETdiff (B \SETunion C) \Eq (A \SETdiff B) \SETintersect (A \SETdiff C)$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETdiff (B \SETunion C) \SETinclude (A \SETdiff B) \SETintersect (A \SETdiff C)$.
-      Let $x \SETin A \SETdiff (B \SETunion C)$.
-      Then $x \SETin A$ and $x \SETnotin B \SETunion C$.
-      Hence it is wrong that ($x \SETin B$ or $x \SETin C$).
-      Thus $x \SETnotin B$ and $x \SETnotin C$.
-      Therefore $x \SETin A$ and ($x \SETnotin B$ and $x \SETnotin C$).
-      Then ($x \SETin A$ and $x \SETnotin B$) and ($x \SETin A$ and $x \SETnotin C$).
-      Hence $x \SETin A \SETdiff B$ and $x \SETin A \SETdiff C$.
-      Thus $x \SETin (A \SETdiff B) \SETintersect (A \SETdiff C)$.
+      Let $x \Elem A \SETdiff (B \SETunion C)$.
+      Then $x \Elem A$ and $x \NotElem B \SETunion C$.
+      Hence it is wrong that ($x \Elem B$ or $x \Elem C$).
+      Thus $x \NotElem B$ and $x \NotElem C$.
+      Therefore $x \Elem A$ and ($x \NotElem B$ and $x \NotElem C$).
+      Then ($x \Elem A$ and $x \NotElem B$) and ($x \Elem A$ and $x \NotElem C$).
+      Hence $x \Elem A \SETdiff B$ and $x \Elem A \SETdiff C$.
+      Thus $x \Elem (A \SETdiff B) \SETintersect (A \SETdiff C)$.
     End.
 
     Let us show that $((A \SETdiff B) \SETintersect (A \SETdiff C)) \SETinclude A \SETdiff (B \SETunion C)$. %!
-      Let $x \SETin (A \SETdiff B) \SETintersect (A \SETdiff C)$.
-      Then $x \SETin A \SETdiff B$ and $x \SETin A \SETdiff C$.
-      Hence ($x \SETin A$ and $x \SETnotin B$) and ($x \SETin A$ and $x \SETnotin C$).
-      Thus $x \SETin A$ and ($x \SETnotin B$ and $x \SETnotin C$).
-      Therefore $x \SETin A$ and not ($x \SETin B$ or $x \SETin C$).
-      Then $x \SETin A$ and not $x \SETin B \SETunion C$.
-      Hence $x \SETin A \SETdiff (B \SETunion C)$.
+      Let $x \Elem (A \SETdiff B) \SETintersect (A \SETdiff C)$.
+      Then $x \Elem A \SETdiff B$ and $x \Elem A \SETdiff C$.
+      Hence ($x \Elem A$ and $x \NotElem B$) and ($x \Elem A$ and $x \NotElem C$).
+      Thus $x \Elem A$ and ($x \NotElem B$ and $x \NotElem C$).
+      Therefore $x \Elem A$ and not ($x \Elem B$ or $x \Elem C$).
+      Then $x \Elem A$ and not $x \Elem B \SETunion C$.
+      Hence $x \Elem A \SETdiff (B \SETunion C)$.
     End.
   \end{proof}
 \end{sfragment}
@@ -227,9 +227,9 @@
     Then $A \SETinclude A \SETunion B$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let $x \SETin A$.
-    Then $x \SETin A$ or $x \SETin B$.
-    Hence $x \SETin A \SETunion B$.
+    Let $x \Elem A$.
+    Then $x \Elem A$ or $x \Elem B$.
+    Hence $x \Elem A \SETunion B$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_1591517646946304]
@@ -237,65 +237,65 @@
     Then $A \SETintersect B \SETinclude A$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let $x \SETin A \SETintersect B$.
-    Then $x \SETin A$ and $x \SETin B$.
-    Hence $x \SETin A$.
+    Let $x \Elem A \SETintersect B$.
+    Then $x \Elem A$ and $x \Elem B$.
+    Hence $x \Elem A$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_6657236858306560]
     Let $A, B$ be classes.
-    Then $A \SETinclude B$ iff $A \SETunion B \eq B$.
+    Then $A \SETinclude B$ iff $A \SETunion B \Eq B$.
   \end{proposition}
   \begin{proof}[forthel]
     \begin{case}{$A \SETinclude B$.}
 
       Let us show that $A \SETunion B \SETinclude B$.
-        Let $x \SETin A \SETunion B$.
-        Then $x \SETin A$ or $x \SETin B$.
-        If $x \SETin A$ then $x \SETin B$.
-        Hence $x \SETin B$.
+        Let $x \Elem A \SETunion B$.
+        Then $x \Elem A$ or $x \Elem B$.
+        If $x \Elem A$ then $x \Elem B$.
+        Hence $x \Elem B$.
       End.
 
       Let us show that $B \SETinclude A \SETunion B$.
-        Let $x \SETin B$.
-        Then $x \SETin A$ or $x \SETin B$.
-        Hence $x \SETin A \SETunion B$.
+        Let $x \Elem B$.
+        Then $x \Elem A$ or $x \Elem B$.
+        Hence $x \Elem A \SETunion B$.
       End.
     \end{case}
 
-    \begin{case}{$A \SETunion B \eq B$.}
-      Let $x \SETin A$.
-      Then $x \SETin A$ or $x \SETin B$.
-      Hence $x \SETin A \SETunion B \eq B$.
+    \begin{case}{$A \SETunion B \Eq B$.}
+      Let $x \Elem A$.
+      Then $x \Elem A$ or $x \Elem B$.
+      Hence $x \Elem A \SETunion B \Eq B$.
     \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_2356449346846720]
     Let $A, B$ be classes.
-    Then $A \SETinclude B$ iff $A \SETintersect B \eq A$.
+    Then $A \SETinclude B$ iff $A \SETintersect B \Eq A$.
   \end{proposition}
   \begin{proof}[forthel]
     \begin{case}{$A \SETinclude B$.}
 
       Let us show that $A \SETintersect B \SETinclude A$.
-        Let $x \SETin A \SETintersect B$.
-        Then $x \SETin A$ and $x \SETin B$.
-        Hence $x \SETin A$.
+        Let $x \Elem A \SETintersect B$.
+        Then $x \Elem A$ and $x \Elem B$.
+        Hence $x \Elem A$.
       End.
 
       Let us show that $A \SETinclude A \SETintersect B$.
-        Let $x \SETin A$.
-        Then $x \SETin B$.
-        Hence $x \SETin A$ and $x \SETin B$.
-        Thus $x \SETin A \SETintersect B$.
+        Let $x \Elem A$.
+        Then $x \Elem B$.
+        Hence $x \Elem A$ and $x \Elem B$.
+        Thus $x \Elem A \SETintersect B$.
       End.
     \end{case}
 
-    \begin{case}{$A \SETintersect B \eq A$.}
-      Let $x \SETin A$.
-      Then $x \SETin A \SETintersect B$.
-      Hence $x \SETin A$ and $x \SETin B$.
-      Thus $x \SETin B$.
+    \begin{case}{$A \SETintersect B \Eq A$.}
+      Let $x \Elem A$.
+      Then $x \Elem A \SETintersect B$.
+      Hence $x \Elem A$ and $x \Elem B$.
+      Thus $x \Elem B$.
     \end{case}
   \end{proof}
 \end{sfragment}
@@ -303,55 +303,55 @@
 \begin{sfragment}{Complement Laws}
   \begin{proposition}[forthel,id=FOUNDATIONS_02_7433299337150464]
     Let $A$ be a class.
-    Then $A \SETdiff A \eq \SETempty$.
+    Then $A \SETdiff A \Eq \SETempty$.
   \end{proposition}
   \begin{proof}[forthel]
     $A \SETdiff A$ has no elements.
-    Indeed $A \SETdiff A = \{ x \mid x \SETin A\text{ and }x \SETnotin A \}$.
+    Indeed $A \SETdiff A = \CClass{x}{x \Elem A\text{ and }x \NotElem A}$.
     Hence the thesis.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_3783696985358336]
     Let $A$ be a class.
-    Then $A \SETdiff \SETempty \eq A$.
+    Then $A \SETdiff \SETempty \Eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETdiff \SETempty = \{ x \mid x \SETin A\text{ and }x \SETnotin \SETempty \}$.
+    $A \SETdiff \SETempty = \CClass{x}{x \Elem A\text{ and }x \NotElem \SETempty}$.
     No element is an element of $\SETempty$.
-    Hence $A \SETdiff \SETempty = \{ x \mid x \SETin A \}$.
+    Hence $A \SETdiff \SETempty = \CClass{x}{x \Elem A}$.
     Then we have the thesis.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_7083929257377792]
     Let $A, B$ be classes.
-    Then $A \SETdiff (A \SETdiff B) \eq A \SETintersect B$.
+    Then $A \SETdiff (A \SETdiff B) \Eq A \SETintersect B$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETdiff (A \SETdiff B) \SETinclude A \SETintersect B$.
-      Let $x \SETin A \SETdiff (A \SETdiff B)$.
-      Then $x \SETin A$ and $x \SETnotin A \SETdiff B$.
-      Hence $x \SETnotin A$ or $x \SETin B$.
-      Thus $x \SETin B$.
-      Therefore $x \SETin A \SETintersect B$.
+      Let $x \Elem A \SETdiff (A \SETdiff B)$.
+      Then $x \Elem A$ and $x \NotElem A \SETdiff B$.
+      Hence $x \NotElem A$ or $x \Elem B$.
+      Thus $x \Elem B$.
+      Therefore $x \Elem A \SETintersect B$.
     End.
 
     Let us show that $A \SETintersect B \SETinclude A \SETdiff (A \SETdiff B)$.
-      Let $x \SETin A \SETintersect B$.
-      Then $x \SETin A$ and $x \SETin B$.
-      Hence $x \SETnotin A$ or $x \SETin B$.
-      Thus $x \SETnotin A \SETdiff B$.
-      Therefore $x \SETin A \SETdiff (A \SETdiff B)$.
+      Let $x \Elem A \SETintersect B$.
+      Then $x \Elem A$ and $x \Elem B$.
+      Hence $x \NotElem A$ or $x \Elem B$.
+      Thus $x \NotElem A \SETdiff B$.
+      Therefore $x \Elem A \SETdiff (A \SETdiff B)$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_4938646769631232]
     Let $A, B$ be classes.
-    Then $B \SETinclude A$ iff $A \SETdiff (A \SETdiff B) \eq B$.
+    Then $B \SETinclude A$ iff $A \SETdiff (A \SETdiff B) \Eq B$.
   \end{proposition}
   \begin{proof}[forthel]
     \begin{case}{$B \SETinclude A$.} \end{case}
 
-    \begin{case}{$A \SETdiff (A \SETdiff B) \eq B$.}
+    \begin{case}{$A \SETdiff (A \SETdiff B) \Eq B$.}
       Then every element of $B$ is an element of $A \SETdiff (A \SETdiff B)$.
       Thus every element of $B$ is an element of $A$.
       Then we have the thesis.
@@ -360,25 +360,25 @@
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_5811954316738560]
     Let $A, B, C$ be classes.
-    Then $A \SETintersect (B \SETdiff C) \eq (A \SETintersect B) \SETdiff (A \SETintersect C)$.
+    Then $A \SETintersect (B \SETdiff C) \Eq (A \SETintersect B) \SETdiff (A \SETintersect C)$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETintersect (B \SETdiff C) \SETinclude (A \SETintersect B) \SETdiff (A \SETintersect C)$.
-      Let $x \SETin A \SETintersect (B \SETdiff C)$.
-      Then $x \SETin A$ and $x \SETin B \SETdiff C$.
-      Hence $x \SETin A$ and $x \SETin B$.
-      Thus $x \SETin A \SETintersect B$ and $x \SETnotin C$.
-      Therefore $x \SETnotin A \SETintersect C$.
-      Then we have $x \SETin (A \SETintersect B) \SETdiff (A \SETintersect C)$.
+      Let $x \Elem A \SETintersect (B \SETdiff C)$.
+      Then $x \Elem A$ and $x \Elem B \SETdiff C$.
+      Hence $x \Elem A$ and $x \Elem B$.
+      Thus $x \Elem A \SETintersect B$ and $x \NotElem C$.
+      Therefore $x \NotElem A \SETintersect C$.
+      Then we have $x \Elem (A \SETintersect B) \SETdiff (A \SETintersect C)$.
     End.
 
     Let us show that $((A \SETintersect B) \SETdiff (A \SETintersect C)) \SETinclude A \SETintersect (B \SETdiff C)$. %!
-      Let $x \SETin (A \SETintersect B) \SETdiff (A \SETintersect C)$.
-      Then $x \SETin A$ and $x \SETin B$.
-      $x \SETnotin A \SETintersect C$.
-      Hence $x \SETnotin C$.
-      Thus $x \SETin B \SETdiff C$.
-      Therefore $x \SETin A \SETintersect (B \SETdiff C)$.
+      Let $x \Elem (A \SETintersect B) \SETdiff (A \SETintersect C)$.
+      Then $x \Elem A$ and $x \Elem B$.
+      $x \NotElem A \SETintersect C$.
+      Hence $x \NotElem C$.
+      Thus $x \Elem B \SETdiff C$.
+      Therefore $x \Elem A \SETintersect (B \SETdiff C)$.
     End.
   \end{proof}
 \end{sfragment}

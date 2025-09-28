@@ -10,7 +10,7 @@
 \begin{sfragment}{Surjective Maps}
   \begin{definition}[forthel,id=FOUNDATIONS_08_8681187805495296]
     Let $f$ be a map and $B$ be a class.
-    $f$ is \emph{surjective onto $B$} iff $\FUNrange(f) \eq B$.
+    $f$ is \emph{surjective onto $B$} iff $\FUNrange(f) \Eq B$.
 
     Let $f$ \emph{surjects onto $B$} stand for $f$ is surjective onto $B$.
     Let a \emph{surjective map onto $B$} stand for a map that is surjective onto $B$.
@@ -30,23 +30,23 @@
   \end{proposition}
   \begin{proof}[forthel]
     \begin{case}{$f$ is surjective onto $B$.}
-      Then $B \eq \FUNrange(f)$.
+      Then $B \Eq \FUNrange(f)$.
       Let $b$ be an element of $B$.
-      Then $b \SETin \FUNrange(f)$.
+      Then $b \Elem \FUNrange(f)$.
       Hence $b$ is a value of $f$.
     \end{case}
 
     \begin{case}{every element of $B$ is a value of $f$.}
       Let us show that $B \SETinclude \FUNrange(f)$.
-        Let $b \SETin B$.
+        Let $b \Elem B$.
         Then $b$ is a value of $f$.
-        Hence $b \SETin \FUNrange(f)$.
+        Hence $b \Elem \FUNrange(f)$.
       End.
 
       Let us show that $\FUNrange(f) \SETinclude B$.
-        Let $b \SETin \FUNrange(f)$.
+        Let $b \Elem \FUNrange(f)$.
         Then $b$ is a value of $f$.
-        Hence $b \SETin B$.
+        Hence $b \Elem B$.
       End.
     \end{case}
   \end{proof}
@@ -55,7 +55,7 @@
 \begin{sfragment}{Injective Maps}
   \begin{definition}[forthel,id=FOUNDATIONS_08_605931408719872]
     Let $f$ be a map.
-    $f$ is \emph{injective} iff for all $a, a' \SETin \FUNdom(f)$ if $f(a) \eq f(a')$ then $a \eq a'$.
+    $f$ is \emph{injective} iff for all $a, a' \Elem \Dom(f)$ if $f(a) \Eq f(a')$ then $a \Eq a'$.
 
     Let $\emph{f \FUNfrominto{A}{B}}$ stand for $f$ is an injective map from $A$ to $B$.
   \end{definition}
@@ -94,16 +94,16 @@
 
     (2) $\FUNid{A}$ is surjective onto $A$.
     \begin{proof}
-      Let $a \SETin A$.
-      Then $a \eq \FUNid{A}(a)$.
-      Hence $a \SETin \FUNrange(\FUNid{A})$.
+      Let $a \Elem A$.
+      Then $a \Eq \FUNid{A}(a)$.
+      Hence $a \Elem \FUNrange(\FUNid{A})$.
     \end{proof}
 
     (3) $\FUNid{A}$ is injective.
     \begin{proof}
-      Let $a, a' \SETin A$.
-      Assume $\FUNid{A}(a) \eq \FUNid{A}(a')$.
-      Then $a \eq a'$.
+      Let $a, a' \Elem A$.
+      Assume $\FUNid{A}(a) \Eq \FUNid{A}(a')$.
+      Then $a \Eq a'$.
     \end{proof}
   \end{proof}
 
@@ -115,10 +115,10 @@
     $g \FUNcomp f$ is a map of $A$.
 
     Let us show that $g \FUNcomp f$ is surjective onto $C$.
-      Let $c \SETin C$.
-      Take $b \SETin B$ such that $c \eq g(b)$.
-      Take $a \SETin A$ such that $b \eq f(a)$.
-      Then $c \eq g(f(a)) \eq (g \FUNcomp f)(a)$.
+      Let $c \Elem C$.
+      Take $b \Elem B$ such that $c \Eq g(b)$.
+      Take $a \Elem A$ such that $b \Eq f(a)$.
+      Then $c \Eq g(f(a)) \Eq (g \FUNcomp f)(a)$.
     End.
   \end{proof}
 
@@ -130,12 +130,12 @@
     $g \FUNcomp f$ is a map of $A$.
 
     Let us show that $g \FUNcomp f$ is injective.
-      Let $a, a' \SETin A$.
-      Assume $(g \FUNcomp f)(a) \eq (g \FUNcomp f)(a')$.
-      Then $g(f(a)) \eq g(f(a'))$.
-      Hence $f(a) \eq f(a')$.
-      Indeed $f(a), f(a') \SETin B$.
-      Thus $a \eq a'$.
+      Let $a, a' \Elem A$.
+      Assume $(g \FUNcomp f)(a) \Eq (g \FUNcomp f)(a')$.
+      Then $g(f(a)) \Eq g(f(a'))$.
+      Hence $f(a) \Eq f(a')$.
+      Indeed $f(a), f(a') \Elem B$.
+      Thus $a \Eq a'$.
     End.
   \end{proof}
 
@@ -154,10 +154,10 @@
     Then $f \FUNrest X$ is injective.
   \end{proposition}
   \begin{proof}[forthel]
-    Let $a, a' \SETin X$.
-    Assume $(f \FUNrest X)(a) \eq (f \FUNrest X)(a')$.
-    Then $f(a) \eq f(a')$.
-    Hence $a \eq a'$.
+    Let $a, a' \Elem X$.
+    Assume $(f \FUNrest X)(a) \Eq (f \FUNrest X)(a')$.
+    Then $f(a) \Eq f(a')$.
+    Hence $a \Eq a'$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_08_647446231252992]

@@ -8,19 +8,19 @@
 
 \begin{definition}[forthel,id=SET_THEORY_04_1955917673267200]
   Let $A$ be a class.
-  \[ \emph{\ORDfunspace{A}} = \{f \mid f\text{ is a map from }\alpha\text{ to }A\text{ for some ordinal }\alpha \}. \]
+  \[ \emph{\ORDfunspace{A}} = \CClass{f}{f\text{ is a map from }\alpha\text{ to }A\text{ for some ordinal }\alpha}. \]
 \end{definition}
 
 \begin{proposition}[forthel,id=SET_THEORY_04_7841726894964736]
-  Let $A$ be a class and $f$ be a map to $A$ such that $\FUNdom(f)$ is a transitive subclass of $\Ord$ and $\alpha \SETin \FUNdom(f)$.
-  Then $f \FUNrest \alpha \SETin \ORDfunspace{A}$.
+  Let $A$ be a class and $f$ be a map to $A$ such that $\Dom(f)$ is a transitive subclass of $\Ord$ and $\alpha \Elem \Dom(f)$.
+  Then $f \FUNrest \alpha \Elem \ORDfunspace{A}$.
 \end{proposition}
 
 \inlineforthel{[prover vampire]}
 
 \begin{definition}[forthel,id=SET_THEORY_04_5597213870784512]
   Let $H$ be a map and $G \FUNfromto{\ORDfunspace{A}}{A}$ for some class $A$ such that $H$ is a map to $A$.
-  $H$ is \emph{recursive regarding $G$} iff $\FUNdom(H)$ is a transitive subclass of $\Ord$ and for all $\alpha \SETin \FUNdom(H)$ we have \[ H(\alpha) \eq G(H \FUNrest \alpha). \]
+  $H$ is \emph{recursive regarding $G$} iff $\Dom(H)$ is a transitive subclass of $\Ord$ and for all $\alpha \Elem \Dom(H)$ we have \[ H(\alpha) \Eq G(H \FUNrest \alpha). \]
 \end{definition}
 
 \inlineforthel{[prover eprover]}

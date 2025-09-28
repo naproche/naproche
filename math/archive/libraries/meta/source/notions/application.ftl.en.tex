@@ -1,0 +1,28 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{application.ftl}
+
+\importmodule[libraries/meta]{notions?domain.ftl}
+\importmodule[libraries/meta]{notions?elements.ftl}
+
+\symdecl*{map}
+\symdecl*{value}
+
+\begin{fakeforthel}
+  \begin{signature}
+    Let $f$ be a map and $a \Elem \Dom(f)$.
+    $\emph{f(a)}$ is an object.
+  \end{signature}
+\end{fakeforthel}
+
+\begin{forthel}
+  \begin{convention}
+    Let the \emph{value of $f$ at $x$} stand for $f(x)$.
+    Let $\emph{f(x,y)}$ stand for $f((x,y))$.
+  \end{convention}
+\end{forthel}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,20 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{enumeration-class.ftl}
+
+\importmodule[libraries/meta]{notions?classes.ftl}
+\importmodule[libraries/meta]{notions?objects.ftl}
+
+\symdef{EClass}[args=a,name=enumeration class]{\comp{\left\{\right.}\argsep{#1}{\comp,}\comp{\left.\right\}}}
+
+\begin{fakeforthel}
+  \begin{signature}
+    Let $a_1,\dots,a_n$ be objects.
+    $\emph{\EClass{a1,\dots,a_n}}$ is a class.
+  \end{signature}
+\end{fakeforthel}
+
+\end{smodule}
+\end{document}

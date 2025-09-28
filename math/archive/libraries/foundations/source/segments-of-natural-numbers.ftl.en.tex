@@ -8,38 +8,38 @@
 
 \begin{definition}[forthel,id=FOUNDATIONS_14_3625613501923328]
   Let $n, m$ be natural numbers.
-  $\emph{\NATsegment{n}{m}} = \{ k \in \Nat \mid n \NATleq k \NATleq m \}$.
+  $\emph{\NATsegment{n}{m}} = \SClass{k}{\Nat}{n \NATleq k \NATleq m}$.
 \end{definition}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_14_145331933151232]
   Let $n, m$ be natural numbers.
-  If $\NATsegment{\NATone}{n} \eq \NATsegment{\NATone}{m}$ then $n \eq m$.
+  If $\NATsegment{\NATone}{n} \Eq \NATsegment{\NATone}{m}$ then $n \Eq m$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $\NATsegment{\NATone}{n} \eq \NATsegment{\NATone}{m}$.
+  Assume $\NATsegment{\NATone}{n} \Eq \NATsegment{\NATone}{m}$.
 
-  \begin{case}{$n \eq \NATzero$.}
-    Then $\NATsegment{\NATone}{n} \eq \SETempty$.
-    Thus $\NATsegment{\NATone}{m} \eq \SETempty$.
-    Hence there exists no $k \SETin \Nat$ such that $\NATone \NATleq k \NATleq m$.
-    Therefore $m \eq \NATzero$.
-    Consequently $n \eq m$.
+  \begin{case}{$n \Eq \NATzero$.}
+    Then $\NATsegment{\NATone}{n} \Eq \SETempty$.
+    Thus $\NATsegment{\NATone}{m} \Eq \SETempty$.
+    Hence there exists no $k \Elem \Nat$ such that $\NATone \NATleq k \NATleq m$.
+    Therefore $m \Eq \NATzero$.
+    Consequently $n \Eq m$.
   \end{case}
 
-  \begin{case}{$m \eq \NATzero$.}
-    Then $\NATsegment{\NATone}{m} \eq \SETempty$.
-    Thus $\NATsegment{\NATone}{n} \eq \SETempty$.
-    Hence there exists no $k \SETin \Nat$ such that $\NATone \NATleq k \NATleq n$.
-    Therefore $n \eq \NATzero$.
-    Consequently $n \eq m$.
+  \begin{case}{$m \Eq \NATzero$.}
+    Then $\NATsegment{\NATone}{m} \Eq \SETempty$.
+    Thus $\NATsegment{\NATone}{n} \Eq \SETempty$.
+    Hence there exists no $k \Elem \Nat$ such that $\NATone \NATleq k \NATleq n$.
+    Therefore $n \Eq \NATzero$.
+    Consequently $n \Eq m$.
   \end{case}
 
   \begin{case}{$n, m \NATgeq \NATone$.}
-    For all $k \SETin \Nat$ we have $\NATone \NATleq k \NATleq n$ iff $\NATone \NATleq k \NATleq m$.
-    Hence for all $k \SETin \Nat$ we have $k \NATleq n$ iff $k \NATleq m$.
+    For all $k \Elem \Nat$ we have $\NATone \NATleq k \NATleq n$ iff $\NATone \NATleq k \NATleq m$.
+    Hence for all $k \Elem \Nat$ we have $k \NATleq n$ iff $k \NATleq m$.
 
-    Let us show by contradiction that $n \eq m$.
-      Suppose $n \neq m$.
+    Let us show by contradiction that $n \Eq m$.
+      Suppose $n \NotEq m$.
       Then $n \NATgtr m$ or $m \NATgtr n$.
 
       \begin{case}{$n \NATgtr m$.}
@@ -61,7 +61,7 @@
 
 \begin{proposition}[forthel,id=FOUNDATIONS_14_658708738605056]
   Let $n$ be a natural number.
-  Then $\NATsegment{\NATone}{n \NATplus \NATone} \eq \NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}$.
+  Then $\NATsegment{\NATone}{n \NATplus \NATone} \Eq \NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}$.
 \end{proposition}
 \begin{proof}[forthel]
   We have

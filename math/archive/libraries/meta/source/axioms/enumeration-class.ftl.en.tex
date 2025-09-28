@@ -1,0 +1,19 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{enumeration-class.ftl}
+
+\importmodule[libraries/meta]{notions?enumeration-class.ftl}
+\importmodule[libraries/meta]{relations?equality.ftl}
+\importmodule[libraries/meta]{notions?elements.ftl}
+
+\begin{fakeforthel}
+  \begin{axiom}
+    Let $a_1,\dots,a_n$ be objects.
+    Then $x \Elem \EClass{a_1,\dots,a_n}$ iff $x \Eq a_1$ or \dots{} or $x \Eq a_n$.
+  \end{axiom}
+\end{fakeforthel}
+
+\end{smodule}
+\end{document}

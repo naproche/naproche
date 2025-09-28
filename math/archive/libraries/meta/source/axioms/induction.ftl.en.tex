@@ -1,0 +1,34 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{induction.ftl}
+
+\importmodule[libraries/meta]{notions?elements.ftl}
+\importmodule[libraries/meta]{notions?enumeration-class.ftl}
+\importmodule[libraries/meta]{relations?equality.ftl}
+\importmodule[libraries/meta]{relations?induction-order.ftl}
+
+\begin{fakeforthel}
+  \begin{axiom}
+    Let $v_1,\dots,v_n$ be variables, $\tau[v_1,\dots,v_n]$ be a term and
+    $\psi_1[v_1]$, $\psi_2[v_1,v_2]$, \dots, $\psi_n[v_1,\dots,v_n]$ and $\varphi[v_1,\dots,v_n]$ be formulas.
+    Assume that the following holds for all $x_1,\dots,x_n$ with $\psi_i[x_1,\dots,x_i]$ for all $i \Elem \EClass{1,\dots,n}$:
+    If $\tau[y_1,\dots,y_n] \ILess \tau[x_1,\dots,x_n]$
+    for all $y_1,\dots,y_n$ with $\psi_i[y_1,\dots,y_i]$ for all $i \Elem \EClass{1,\dots,n}$
+    then $\varphi[x_1,\dots,x_n]$.
+    Then $\varphi[x_1,\dots,x_n]$ for all $x_1,\dots,x_n$ with $\psi_i[x_1,\dots,x_i]$ for all $i \Elem \EClass{1,\dots,n}$.
+  \end{axiom}
+\end{fakeforthel}
+
+\begin{fakeforthel}
+  \begin{corollary}
+    Let $A$ be a class, $v$ be a variable and $\varphi[v]$ be a formula.
+    Assume that the following holds for all $x \Elem A$:
+    If $\varphi[y]$ for for all $y \Elem A$ with $y \ILess x$ then $\varphi[x]$.
+    Then $\varphi[x]$ for all $x \Elem A$.
+  \end{corollary}
+\end{fakeforthel}
+
+\end{smodule}
+\end{document}

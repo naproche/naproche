@@ -9,11 +9,11 @@
 \begin{sfragment}{Pairs}
   \begin{axiom}[forthel,id=FOUNDATIONS_04_8464577431863296]
     Let $a, a', b, b'$ be objects.
-    If $(a, b) \eq (a', b')$ then $a \eq a'$ and $b \eq b'$.
+    If $(a, b) \Eq (a', b')$ then $a \Eq a'$ and $b \Eq b'$.
   \end{axiom}
 
   \begin{definition}[forthel,id=FOUNDATIONS_04_4782386822774784]
-    A \emph{pair} is an object $p$ such that $p \eq (a, b)$ for some objects $a, b$.
+    A \emph{pair} is an object $p$ such that $p \Eq (a, b)$ for some objects $a, b$.
 
     Let an \emph{ordered pair} stand for a pair.
   \end{definition}
@@ -22,7 +22,7 @@
 \begin{sfragment}{Cartesian Products}
   \begin{definition}[forthel,id=FOUNDATIONS_04_2877806274936832]
     Let $A, B$ be classes.
-    $\emph{A \SETprod B} = \{ (a, b) \mid a \SETin A\text{ and }b \SETin B \}$.
+    $\emph{A \SETprod B} = \CClass{(a, b)}{a \Elem A\text{ and }b \Elem B}$.
 
     Let the \emph{Cartesian product of $A$ and $B$} stand for $A \SETprod B$.
     Let the \emph{direct product of $A$ and $B$} stand for $A \SETprod B$.
@@ -30,19 +30,19 @@
 
   \begin{proposition}[forthel,id=FOUNDATIONS_04_1581118511906816]
     Let $A, B$ be classes and $a, b$ be objects.
-    Then $(a, b) \SETin A \SETprod B$ iff $a \SETin A$ and $b \SETin B$.
+    Then $(a, b) \Elem A \SETprod B$ iff $a \Elem A$ and $b \Elem B$.
   \end{proposition}
   \begin{proof}[forthel]
-    \begin{case}{$(a, b) \SETin A \SETprod B$.}
-      We can take $a' \SETin A$ and $b' \SETin B$ such that $(a, b) \eq (a', b')$.
-      Then $a \eq a'$ and $b \eq b'$.
-      Hence $a \SETin A$ and $b \SETin B$.
+    \begin{case}{$(a, b) \Elem A \SETprod B$.}
+      We can take $a' \Elem A$ and $b' \Elem B$ such that $(a, b) \Eq (a', b')$.
+      Then $a \Eq a'$ and $b \Eq b'$.
+      Hence $a \Elem A$ and $b \Elem B$.
     \end{case}
 
-    \begin{case}{$a \SETin A$ and $b \SETin B$.}
+    \begin{case}{$a \Elem A$ and $b \Elem B$.}
       $a$ and $a$ are objects.
       Hence $(a, b)$ is an object.
-      Therefore $(a, b) \SETin A \SETprod B$.
+      Therefore $(a, b) \Elem A \SETprod B$.
     \end{case}
   \end{proof}
 
@@ -54,14 +54,14 @@
     \begin{case}{$A \SETprod B$ is empty.}
       Assume that $A$ and $B$ are nonempty.
       Then we can take an element $a$ of $A$ and an element $b$ of $B$.
-      Then $(a, b) \SETin A \SETprod B$.
+      Then $(a, b) \Elem A \SETprod B$.
       Contradiction.
     \end{case}
 
     \begin{case}{$A$ is empty or $B$ is empty.}
       Assume that $A \SETprod B$ is nonempty.
       Then we can take an element $c$ of $A \SETprod B$.
-      Then $c \eq (a, b)$ for some $a \SETin A$ and some $b \SETin B$.
+      Then $c \Eq (a, b)$ for some $a \Elem A$ and some $b \Elem B$.
       Hence $A$ and $B$ are nonempty.
       Contradiction.
     \end{case}
@@ -69,46 +69,46 @@
 
   \begin{proposition}[forthel,id=FOUNDATIONS_04_7971087096741888]
     Let $a, b$ be objects.
-    Then $\SETsingleton{a} \SETprod \SETsingleton{b} \eq \SETsingleton{(a, b)}$.
+    Then $\SETsingleton{a} \SETprod \SETsingleton{b} \Eq \SETsingleton{(a, b)}$.
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $\SETsingleton{a} \SETprod \SETsingleton{b} \SETinclude \SETsingleton{(a, b)}$.
-      Let $c \SETin \SETsingleton{a} \SETprod \SETsingleton{b}$.
-      Take $a' \SETin \SETsingleton{a}$ and $b' \SETin \SETsingleton{b}$ such that $c \eq (a', b')$.
-      We have $a' \eq a$ and $b' \eq b$.
-      Hence $c \eq (a, b)$.
-      Thus $c \SETin \SETsingleton{(a, b)}$.
+      Let $c \Elem \SETsingleton{a} \SETprod \SETsingleton{b}$.
+      Take $a' \Elem \SETsingleton{a}$ and $b' \Elem \SETsingleton{b}$ such that $c \Eq (a', b')$.
+      We have $a' \Eq a$ and $b' \Eq b$.
+      Hence $c \Eq (a, b)$.
+      Thus $c \Elem \SETsingleton{(a, b)}$.
     End.
 
     Let us show that $\SETsingleton{(a, b)} \SETinclude \SETsingleton{a} \SETprod \SETsingleton{b}$.
-      Let $c \SETin \SETsingleton{(a, b)}$.
-      Then $c \eq (a, b)$.
-      We have $a \SETin \SETsingleton{a}$ and $b \SETin \SETsingleton{b}$.
-      Hence $c \SETin \SETsingleton{a} \SETprod \SETsingleton{b}$.
+      Let $c \Elem \SETsingleton{(a, b)}$.
+      Then $c \Eq (a, b)$.
+      We have $a \Elem \SETsingleton{a}$ and $b \Elem \SETsingleton{b}$.
+      Hence $c \Elem \SETsingleton{a} \SETprod \SETsingleton{b}$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_04_7456594440749056]
     Let $A, A', B, B'$ be nonempty classes.
-    If $A \SETprod B \eq A' \SETprod B'$ then $A \eq A'$ and $B \eq B'$.
+    If $A \SETprod B \Eq A' \SETprod B'$ then $A \Eq A'$ and $B \Eq B'$.
   \end{proposition}
   \begin{proof}[forthel]
-    Assume $A \SETprod B \eq A' \SETprod B'$.
+    Assume $A \SETprod B \Eq A' \SETprod B'$.
 
     (1) $A \SETinclude A'$ and $B \SETinclude B'$.
     \begin{proof}
-      Let $a \SETin A$ and $b \SETin B$.
-      Then $(a,b) \SETin A \SETprod B$.
-      Hence $(a,b) \SETin A' \SETprod B'$.
-      Thus $a \SETin A'$ and $b \SETin B'$.
+      Let $a \Elem A$ and $b \Elem B$.
+      Then $(a,b) \Elem A \SETprod B$.
+      Hence $(a,b) \Elem A' \SETprod B'$.
+      Thus $a \Elem A'$ and $b \Elem B'$.
     \end{proof}
 
     (2) $A' \SETinclude A$ and $B' \SETinclude B$.
     \begin{proof}
-      Let $a \SETin A'$ and $b \SETin B'$.
-      Then $(a,b) \SETin A' \SETprod B'$.
-      Hence $(a,b) \SETin A \SETprod B$.
-      Thus $a \SETin A$ and $b \SETin B$.
+      Let $a \Elem A'$ and $b \Elem B'$.
+      Then $(a,b) \Elem A' \SETprod B'$.
+      Hence $(a,b) \Elem A \SETprod B$.
+      Thus $a \Elem A$ and $b \Elem B$.
     \end{proof}
   \end{proof}
 \end{sfragment}

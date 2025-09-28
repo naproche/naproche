@@ -1,0 +1,18 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{existential-quantification.ftl}
+
+\importmodule[libraries/meta]{notions?elements.ftl}
+
+\symdef{Exists}{\mathop\exists}
+
+\begin{fakeforthel}
+  \begin{convention}
+    Let $\emph{\Exists} x \mathrel{R} y : \varphi$ stand for there exists an $x \mathrel{R} y$ such that $\varphi$.
+  \end{convention}
+\end{fakeforthel}
+
+\end{smodule}
+\end{document}

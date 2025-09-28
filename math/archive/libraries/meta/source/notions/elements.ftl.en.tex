@@ -1,0 +1,41 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{elements.ftl}
+
+\importmodule[libraries/meta]{notions?classes.ftl}
+\importmodule[libraries/meta]{notions?objects.ftl}
+
+\symdef{Elem}{\mathrel{\comp\in}}
+\symdef{NotElem}{\mathrel{\comp{\not\in}}}
+\symdecl*{element}
+\symdecl*{member}
+\symdecl*{belong}
+\symdecl*{contain}
+\symdecl*{lie}
+\symdecl*{in}
+
+\begin{fakeforthel}
+  \begin{signature}
+    Let $A$ be a class.
+    A \emph{element of $A$} is an object.
+
+    Let $\emph{a \Elem A}$ stand for $a$ is an element of $A$.
+    Let $\emph{a \NotElem A}$ stand for $a$ is not an element of $A$.
+  \end{signature}
+\end{fakeforthel}
+
+\begin{forthel}
+  \begin{convention}
+    Let a \emph{member of $X$} stand for an element of $X$.
+    Let $x$ \emph{belongs to $X$} stand for $x$ is an element of $X$.
+    Let $X$ \emph{contains $x$} stand for $x$ is an element of $X$.
+    Let $x$ is \emph{contained in $X$} stand for $x$ is an element of $X$.
+    Let $x$ \emph{lies in $X$} stand for $x$ is an element of $X$.
+    Let $x$ is \emph{in $X$} stand for $x$ is an element of $X$.
+  \end{convention}
+\end{forthel}
+
+\end{smodule}
+\end{document}

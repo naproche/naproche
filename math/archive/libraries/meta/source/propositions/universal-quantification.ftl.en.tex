@@ -1,0 +1,18 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{universal-quantification.ftl}
+
+\importmodule[libraries/meta]{notions?elements.ftl}
+
+\symdef{Forall}{\mathop\forall}
+
+\begin{fakeforthel}
+  \begin{convention}
+    Let $\emph{\Forall} x \mathrel{R} y : \varphi$ stand for for all $x \mathrel{R} y$ we have $\varphi$.
+  \end{convention}
+\end{fakeforthel}
+
+\end{smodule}
+\end{document}

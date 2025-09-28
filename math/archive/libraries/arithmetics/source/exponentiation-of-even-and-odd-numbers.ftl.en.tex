@@ -12,15 +12,15 @@
   Then $\NATexp{n}{m}$ is even.
 \end{proposition}
 \begin{proof}[forthel]
-  Take a natural number $k$ such that $n \eq \NATtwo \NATmul k$.
-  Consider a natural number $m'$ such that $m \eq m' \NATplus \NATone$.
+  Take a natural number $k$ such that $n \Eq \NATtwo \NATmul k$.
+  Consider a natural number $m'$ such that $m \Eq m' \NATplus \NATone$.
   Then $\NATexp{n}{m}
-    \eq \NATexp{\NATtwo \NATmul k}{m}
-    \eq (\NATexp{\NATtwo}{m} \NATmul (\NATexp{k}{m}))
-    \eq (\NATexp{\NATtwo}{m' \NATplus \NATone} \NATmul (\NATexp{k}{m}))
-    \eq (\NATexp{\NATtwo}{m'} \NATmul \NATtwo) \NATmul (\NATexp{k}{m})
-    \eq (\NATtwo \NATmul \NATexp{\NATtwo}{m'}) \NATmul (\NATexp{k}{m})
-    \eq \NATtwo \NATmul (\NATexp{\NATtwo}{m'} \NATmul (\NATexp{k}{m}))$.
+    \Eq \NATexp{\NATtwo \NATmul k}{m}
+    \Eq (\NATexp{\NATtwo}{m} \NATmul (\NATexp{k}{m}))
+    \Eq (\NATexp{\NATtwo}{m' \NATplus \NATone} \NATmul (\NATexp{k}{m}))
+    \Eq (\NATexp{\NATtwo}{m'} \NATmul \NATtwo) \NATmul (\NATexp{k}{m})
+    \Eq (\NATtwo \NATmul \NATexp{\NATtwo}{m'}) \NATmul (\NATexp{k}{m})
+    \Eq \NATtwo \NATmul (\NATexp{\NATtwo}{m'} \NATmul (\NATexp{k}{m}))$.
   Hence $\NATexp{n}{m}$ is even.
 \end{proof}
 
@@ -30,26 +30,26 @@
   Then $\NATexp{n}{m}$ is odd.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $\Phi = \{ m' \in \Nat \mid \NATexp{n}{m'}\text{ is odd}\}$.
+  Define $\Phi = \SClass{m'}{\Nat}{\NATexp{n}{m'}\text{ is odd}}$.
 
   (1) $\Phi$ contains $\NATzero$.
-  Indeed $\NATexp{n}{\NATzero} \eq \NATone$ and $\NATone$ is odd.
+  Indeed $\NATexp{n}{\NATzero} \Eq \NATone$ and $\NATone$ is odd.
 
-  (2) For all $m' \SETin \Phi$ we have $m' \NATplus \NATone \SETin \Phi$.
+  (2) For all $m' \Elem \Phi$ we have $m' \NATplus \NATone \Elem \Phi$.
   \begin{proof}
-    Let $m' \SETin \Phi$.
-    We have $\NATexp{n}{m' \NATplus \NATone} \eq \NATexp{n}{m'} \NATmul n$.
+    Let $m' \Elem \Phi$.
+    We have $\NATexp{n}{m' \NATplus \NATone} \Eq \NATexp{n}{m'} \NATmul n$.
     $\NATexp{n}{m'}$ is odd.
-    Hence we can take a natural number $k$ such that $\NATexp{n}{m'} \eq (\NATtwo \NATmul k) \NATplus \NATone$.
+    Hence we can take a natural number $k$ such that $\NATexp{n}{m'} \Eq (\NATtwo \NATmul k) \NATplus \NATone$.
     Then $\NATexp{n}{m' \NATplus \NATone}
-      \eq ((\NATtwo \NATmul k) \NATplus \NATone) \NATmul n
-      \eq ((\NATtwo \NATmul k) \NATmul n) \NATplus (\NATone \NATmul n)
-      \eq ((\NATtwo \NATmul k) \NATmul n) \NATplus n
-      \eq (\NATtwo \NATmul (k \NATmul n)) \NATplus n$.
+      \Eq ((\NATtwo \NATmul k) \NATplus \NATone) \NATmul n
+      \Eq ((\NATtwo \NATmul k) \NATmul n) \NATplus (\NATone \NATmul n)
+      \Eq ((\NATtwo \NATmul k) \NATmul n) \NATplus n
+      \Eq (\NATtwo \NATmul (k \NATmul n)) \NATplus n$.
     $\NATtwo \NATmul (k \NATmul n)$ is even and $n$ is odd.
     Thus $(\NATtwo \NATmul (k \NATmul n)) \NATplus n$ is odd.
     Therefore $\NATexp{n}{m' \NATplus \NATone}$ is odd.
-    Consequently $m' \NATplus \NATone \SETin \Phi$.
+    Consequently $m' \NATplus \NATone \Elem \Phi$.
   \end{proof}
 
   Hence $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).

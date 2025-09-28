@@ -1,5 +1,6 @@
 \documentclass{stex}
 \libusepackage{naproche}
+\libusepackage{copyright}
 \libinput{preamble}
 
 \newcommand{\N}{\mathrm{N}}
@@ -7,8 +8,8 @@
 \newcommand{\Ps}{\mathrm{P}}
 
 \title{Furstenberg's Proof of the Infinitude of Primes in \Naproche}
-\author{Andrei Paskevich (2008), Marcel Schütz (2021--2025)}
-\date{}
+\author{Andrei Paskevich, Marcel Schütz}
+\date{2025}
 
 \begin{document}
 \begin{smodule}{furstenberg.ftl}
@@ -49,7 +50,7 @@ sequences} $\N_{n, q}$ on $\Nat$.
 
 \begin{forthel}
   \begin{definition}
-    $\N_{n, q} = \{ m \in \Nat \mid \NATcong{m}{n}{q} \}$.
+    $\N_{n, q} = \SClass{m}{\Nat}{\NATcong{m}{n}{q}}$.
   \end{definition}
 \end{forthel}
 
@@ -93,7 +94,7 @@ We can show that the open sets indeed form a topology on $\Nat$.
     Let $n \in U \SETintersect V$.
     Take a $q$ such that $\N_{n, q} \SETinclude U$.
     Take a $p$ such that $\N_{n, p} \SETinclude V$.
-    Then $p \NATmul q \neq \NATzero$.
+    Then $p \NATmul q \NotEq \NATzero$.
 
     Let us show that $\N_{n, p \NATmul q} \SETinclude U \SETintersect V$.
       Let $m \in \N_{n, p \NATmul q}$.
@@ -147,7 +148,7 @@ closed under finite unions.
     Then $\SETunionover S$ is closed.
   \end{lemma}
   \begin{proof}
-    Define $C = \{ X \mid X \text{ is a closed subset of } \Nat \}$.
+    Define $C = \CClass{X}{X \text{ is a closed subset of } \Nat}$.
 
     Let us show that $A \SETunion B \in C$ for any $A, B \in C$.
       Let $A, B \in C$.
@@ -193,7 +194,7 @@ $\Ps$ is infinite.
 
 \begin{forthel}
   \begin{definition}
-    $\Ps = \{ \N_{\NATzero, p} \mid p \in \Prime \}$.
+    $\Ps = \CClass{\N_{\NATzero, p}}{p \in \Prime}$.
   \end{definition}
 
   \begin{lemma}
@@ -218,8 +219,8 @@ $\Ps$ is infinite.
         Let $p, q \in \Prime$.
         Assume $f(p) = f(q)$.
         Then $\N_{\NATzero, p} = \N_{\NATzero, q}$.
-        We have $\N_{\NATzero, p} = \{ m \in \Nat \mid \NATcong{m}{\NATzero}{p} \}$ and
-        $\N_{\NATzero, q} = \{ m \in \Nat \mid \NATcong{m}{\NATzero}{q} \}$.
+        We have $\N_{\NATzero, p} = \SClass{m}{\Nat}{\NATcong{m}{\NATzero}{p}}$ and
+        $\N_{\NATzero, q} = \SClass{m}{\Nat}{\NATcong{m}{\NATzero}{q}}$.
 
         We can show that for all $m \in \Nat$ we have $p \NATmid m$ iff $q \NATmid m$.
           Let $m \in \Nat$.
@@ -290,6 +291,6 @@ $\Ps$ is infinite.
 \end{forthel}
 
 \printbibliography
-\printcopyright{2008--2025}{Andrei Paskevich, Marcel Schütz}
+\printcopyright{Andrei Paskevich (2008), Marcel Schütz (2021--2025)}
 \end{smodule}
 \end{document}

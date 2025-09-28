@@ -328,8 +328,10 @@ symbolicFormula  = label "a symbolic formula" $ biimplication
     disjunction   = conjunction >>= binary Or  (symbolicOr >> disjunction)
     conjunction   = nonbinary   >>= binary And (symbolicAnd >> conjunction)
     universal     = liftA2 (quantified dAll Imp) (symbolicAll >> (declared =<< symNotion)) nonbinary
-    existential   = liftA2 (quantified dExi And) (symbolicExists >> (declared =<<symNotion)) nonbinary
-    nonbinary     = universal -|- existential -|- negation -|- separated -|- atomic
+    existential   = liftA2 (quantified dExi And) (symbolicExists >> (declared =<< symNotion)) nonbinary
+    nonbinary     = truth -|- falsity -|- universal -|- existential -|- negation -|- separated -|- atomic
+    truth         = symbolicTruth >> pure Top
+    falsity       = symbolicFalsity >> pure Bot
     negation      = Not <$> (symbolicNot >> nonbinary)
     separated     = token' ":" >> symbolicFormula
 
@@ -337,13 +339,15 @@ symbolicFormula  = label "a symbolic formula" $ biimplication
 
     binary op p f = optLL1 f $ fmap (op f) p
 
-    symbolicIff = symbol "<=>" <|> token "\\iff"
-    symbolicImp = symbol "=>" <|> token "\\implies"
-    symbolicOr = symbol "\\/" <|> token "\\vee"
-    symbolicAnd = symbol "/\\" <|> token "\\wedge"
+    symbolicIff = symbol "<=>" <|> token "\\iff" <|> token "\\Iff"
+    symbolicImp = symbol "=>" <|> token "\\implies" <|> token "\\Implies"
+    symbolicOr = symbol "\\/" <|> token "\\vee" <|> token "\\Or"
+    symbolicAnd = symbol "/\\" <|> token "\\wedge" <|> token "\\And"
     symbolicAll = token' "forall" <|> token "\\forall"
     symbolicExists = token' "exists" <|> token "\\exists"
-    symbolicNot = token' "not" <|> token "\\neg"
+    symbolicNot = token' "not" <|> token "\\neg" <|> token "\\Not"
+    symbolicTruth = token' "true" <|> token "\\top" <|> token "\\True"
+    symbolicFalsity = token' "false" <|> token "\\bot" <|> token "\\False"
 
     atomic = relation -|- parenthesised statement
       where
@@ -476,7 +480,7 @@ collection = label "class definition" $ symbClass <|> classOf
 
 
 symbClassNotation :: FTL (Formula -> Formula, (PosVar, Formula -> Formula))
-symbClassNotation = texClass </> cndClass </> finiteSet
+symbClassNotation = texClass </> cndClass </> finiteSet </> stexEnumerationClass </> stexComprehensionClass </> stexSeparationClass
   where
     -- Finite class, e.g. "{x, f(y), 5}"
     finiteSet = bracedOrTexBraced $ do
@@ -500,6 +504,44 @@ symbClassNotation = texClass </> cndClass </> finiteSet
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
       pure (\tr -> tag $ c tr `blAnd` mkObject tr `blAnd` mbEqu vsDecl tr t st, (nm, mkColl))
+    -- sTeX-style enumeration class, e.g. "\EClass{x, f(y), 5}"
+    stexEnumerationClass = do
+      texCommand "EClass"
+      symbol "{"
+      ts <- sTerm `sepByLL1` token ","
+      h <- hidden
+      symbol "}"
+      pure (\tr -> mkObject tr `And` (foldr1 Or $ map (mkEquality tr) ts), (h, mkSet))
+    -- sTeX-style comprehension class, e.g. "\CClass{x}{x < y}"
+    stexComprehensionClass = do
+      texCommand "CClass"
+      symbol "{"
+      (tag, c, t, mkColl) <- noSep
+      symbol "}"
+      symbol "{"
+      st <- statement <|> optInClasstext statement
+      symbol "}"
+      vs <- freeVars t
+      vsDecl <- makeDecls $ fvToVarSet vs
+      nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
+      pure (\tr -> tag $ c tr `blAnd` mkObject tr `blAnd` mbEqu vsDecl tr t st, (nm, mkColl))
+    -- sTeX-style separation class, e.g. "\SClass{x}{X}{x < y}"
+    stexSeparationClass = do
+      texCommand "SClass"
+      symbol "{"
+      t <- sTerm
+      symbol "}"
+      symbol "{"
+      (tag, c, t, mkColl) <- sep t
+      symbol "}"
+      symbol "{"
+      st <- statement <|> optInClasstext statement
+      symbol "}"
+      vs <- freeVars t
+      vsDecl <- makeDecls $ fvToVarSet vs
+      nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
+      pure (\tr -> tag $ c tr `blAnd` mkObject tr `blAnd` mbEqu vsDecl tr t st, (nm, mkColl))
+
 
     mbEqu :: Set Decl -> Formula -> Formula -> Formula -> Formula
     mbEqu _ tr Var{varName = v} = subst tr v
@@ -511,12 +553,15 @@ symbClassNotation = texClass </> cndClass </> finiteSet
     classSep = do
       t <- sTerm
       token' "in" <|> texCommand "in"
+      sep t
+    noSep  = do
+      t <- sTerm
+      return (Tag Replacement, const Top, t, mkClass)
+    sep t = do
       clssTrm <- (Left <$> sTerm) </> (Right <$> symbClassNotation)
       case clssTrm of
         Left s -> pure (id, flip mkElem s, t, \v -> mkClass v `And` (mkSet s `Imp` mkSet v))
         Right (cls, (_, mkColl)) -> pure (id, cls, t, mkColl)
-    noSep  = do
-      t <- sTerm; return (Tag Replacement, const Top, t, mkClass)
 
 -- -- maps
 

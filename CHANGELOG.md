@@ -27,14 +27,35 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 ## Current development version (for Isabelle 2025-1)
 
-### Changes on the LaTeX Setup
+### Changes on the LaTeX Packages
 
 * **Changed:** `math/examples/lang/naproche.sty` was replaced by a properly
   documented LaTeX package in the `dtx` format at `math/examples/latex/`. See
   `math/examples/latex/README.md` for details.
 
+* **New:** Both LaTeX packages provide a new macro `\ForTheL` that prints the
+  ForTheL logo.
+
 
 ### Changes on the Formalizations
+
+* **New:** A new formalization of the "Socrates is mortal" syllogism:
+  `math/archive/articles/source/socrates.ftl.en.tex`
+
+* **New:** A new formalization of §1 of Peano's *Principles of Arithmetics*:
+  `math/archive/articles/source/peano.ftl.en.tex`
+
+* **New:** Documentation of the object-level ontology of Naproche:
+  `math/archive/documentation/ontology`
+
+* **Changed:** The Knaster-Tarski and the Cantor-Schröder-Bernstein
+  formalizations were split into two separate documents.
+
+* **New:** A new library `math/archive/libraries/meta` that provides semantic
+  macros for the meta theory of Naproche. Moreover, it contains a file
+  `math/archive/libraries/meta/source/preliminaries.ftl.en.tex` that serves as
+  the root node of the depencency tree of the `math/archive/libraries` group
+  (excluding `math/archive/libraries/meta`).
 
 * **Changed:** Better separation between "basic" example formalizations
   (`math/examples`) and "advanced" sTeX-based formalizations (`math/archive`).
@@ -47,7 +68,7 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 * **New:** (TEX) Isabelle/jEdit now recognizes files with the extension
   `.ftl.en.tex` as ForTheL files. (Needed to ensure compatibility with
-  sTeX/FLAMS). Moreover, Naproche expects the formalizations in `marh/archive`
+  sTeX/FLAMS). Moreover, Naproche expects the formalizations in `math/archive`
   to have that file name extension; otherwise importing them via `\importmodule`
   or `\usemodule` will fail.
 

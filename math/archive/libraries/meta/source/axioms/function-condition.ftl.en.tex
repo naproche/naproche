@@ -1,0 +1,19 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{function-condition.ftl}
+
+\importmodule[libraries/meta]{notions?functions.ftl}
+\importmodule[libraries/meta]{notions?domain.ftl}
+\importmodule[libraries/meta]{notions?sets.ftl}
+
+\begin{fakeforthel}
+  \begin{axiom}
+    Let $f$ be a map.
+    $f$ is a function iff $\Dom(f)$ is a set.
+  \end{axiom}
+\end{fakeforthel}
+
+\end{smodule}
+\end{document}
