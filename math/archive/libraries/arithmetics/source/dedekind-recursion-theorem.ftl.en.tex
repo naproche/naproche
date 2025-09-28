@@ -17,7 +17,7 @@
   Then there exists a $\varphi \FUNfromto{\Nat}{A}$ that is recursively defined by $a$ and $f$.
 \end{theorem}
 \begin{proof}[forthel]
-  (a) Define \[ \Phi = \class{H \in \SETpow(\Nat \SETprod A) | \classtext{$(\NATzero, a) \Elem H$ and for all $n \Elem \Nat$ and all $x \Elem A$ if $(n, x) \Elem H$ then $(n \NATplus \NATone, f(x)) \Elem H$}}. \]
+  (a) Define \[ \Phi = \SClass{H}{\SETpow(\Nat \SETprod A)}{\classtext{$(\NATzero, a) \Elem H$ and for all $n \Elem \Nat$ and all $x \Elem A$ if $(n, x) \Elem H$ then $(n \NATplus \NATone, f(x)) \Elem H$}}. \]
 
   Let us show that $\SETintersectover \Phi \Elem \Phi$.
   \begin{proof}
