@@ -2,11 +2,13 @@
 \libusepackage{naproche}
 \libinput{preamble}
 \begin{document}
-\begin{smodule}{eulid-division-theorem.ftl}
+\begin{smodule}{euclid-division-theorem.ftl}
 \importmodule[libraries/arithmetics]{multiplication-and-ordering.ftl}
 \importmodule[libraries/arithmetics]{subtraction.ftl}
 
-\begin{theorem}[forthel,title=Euclid's Division Theorem: Existence,id=euclid_existence]
+\symdecl*{Euclid Division Existence}
+
+\begin{theorem}[forthel,title=Euclid's Division Theorem: Existence,name=Euclid Division Existence]
   Let $n, m$ be natural numbers such that $m \NotEq \NATzero$.
   Then there exist natural numbers $q, r$ such that
   \[n \Eq (m \NATmul q) \NATplus r\]
@@ -54,11 +56,13 @@
     Hence $n' \NATplus \NATone \Elem \Phi$.
   \end{proof}
 
-  Then $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+  Then $\Phi$ contains every natural number (by \sr{induction I}{induction}).
   Thus there exist natural numbers $q, r$ such that $n \Eq (m \NATmul q) \NATplus r$ and $r \NATless m$ (by a).
 \end{proof}
 
-\begin{theorem}[forthel,title=Euclid's Division Theorem: Uniqueness,id=euclid_uniqueness]
+\symdecl*{Euclid Division Uniqueness}
+
+\begin{theorem}[forthel,title=Euclid's Division Theorem: Uniqueness,name=Euclid Division Uniqueness]
   Let $n, m$ be natural numbers such that $m \NotEq \NATzero$.
   Let $q, r$ be natural numbers such that
   \[n \Eq (m \NATmul q) \NATplus r\]
@@ -72,7 +76,7 @@
   We have $(m \NATmul q) \NATplus r \Eq (m \NATmul q') \NATplus r'$.
 
   \begin{case}{$q \NATgeq q'$ and $r \NATgeq r'$.}
-    (1) $((m \NATmul q) \NATplus r) \NATsub r' \Eq (m \NATmul q) \NATplus (r \NATsub r')$ (by \printref{ARITHMETIC_05_7578468875239424}).
+    (1) $((m \NATmul q) \NATplus r) \NATsub r' \Eq (m \NATmul q) \NATplus (r \NATsub r')$ (by \sn{associativity of addition and subtraction}).
     (2) $((m \NATmul q') \NATplus r') \NATsub r'
       \Eq (m \NATmul q') \NATplus (r' \NATsub r')
       \Eq m \NATmul q'$.
@@ -91,17 +95,17 @@
       \Eq (m \NATmul q') \NATplus (r'' \NATplus r)
       \Eq ((m \NATmul q') \NATplus r'') \NATplus r$.
     Hence $(m \NATmul (q' \NATplus q'')) \NATplus r \Eq ((m \NATmul q') \NATplus r'') \NATplus r$.
-    Thus $m \NATmul (q' \NATplus q'') \Eq (m \NATmul q') \NATplus r''$ (by \printref{ARITHMETIC_03_3137702874578944}).
+    Thus $m \NATmul (q' \NATplus q'') \Eq (m \NATmul q') \NATplus r''$ (by \sn{right-cancellability of addition}).
     We have $m \NATmul (q' \NATplus q'') \Eq (m \NATmul q') \NATplus (m \NATmul q'')$.
     Hence $(m \NATmul q') \NATplus (m \NATmul q'') \Eq (m \NATmul q') \NATplus r''$.
-    Thus $m \NATmul q'' \Eq r''$ (by \printref{ARITHMETIC_03_8445946379632640}).
+    Thus $m \NATmul q'' \Eq r''$.
     Then we have $m \NATmul q'' \NATless m \NATmul \NATone$.
     Indeed $m \NATmul q''
       \Eq r''
       \NATleq r'
       \NATless m
       \Eq m \NATmul \NATone$.
-    Therefore $q'' \NATless \NATone$ (by \printref{ARITHMETIC_06_5048640368279552}).
+    Therefore $q'' \NATless \NATone$ (by \sn{preservation of ordering under left-multiplication}).
     Consequently $q \NATsub q' \Eq q'' \Eq \NATzero$.
     Hence $q \Eq q'$.
     Thus $(m \NATmul q) \NATplus r \Eq (m \NATmul q) \NATplus r'$.
@@ -115,17 +119,17 @@
       \Eq (m \NATmul q) \NATplus (r'' \NATplus r')
       \Eq ((m \NATmul q) \NATplus r'') \NATplus r'$.
     Hence $((m \NATmul q) \NATplus r'') \NATplus r' \Eq (m \NATmul (q \NATplus q'')) \NATplus r'$.
-    Thus $(m \NATmul q) \NATplus r'' \Eq m \NATmul (q \NATplus q'')$ (by \printref{ARITHMETIC_03_3137702874578944}).
+    Thus $(m \NATmul q) \NATplus r'' \Eq m \NATmul (q \NATplus q'')$ (by \sn{right-cancellability of addition}).
     We have $m \NATmul (q \NATplus q'') \Eq (m \NATmul q) \NATplus (m \NATmul q'')$.
     Hence $(m \NATmul q) \NATplus r'' \Eq (m \NATmul q) \NATplus (m \NATmul q'')$.
-    Thus $r'' \Eq m \NATmul q''$ (by \printref{ARITHMETIC_03_8445946379632640}).
+    Thus $r'' \Eq m \NATmul q''$.
     Then we have $m \NATmul q'' \NATless m \NATmul \NATone$.
     Indeed $m \NATmul q''
       \Eq r''
       \NATleq r
       \NATless m
       \Eq m \NATmul \NATone$.
-    Therefore $q'' \NATless \NATone$ (by \printref{ARITHMETIC_06_5048640368279552}).
+    Therefore $q'' \NATless \NATone$ (by \sn{preservation of ordering under left-multiplication}).
     Consequently $q' \NATsub q \Eq q'' \Eq \NATzero$.
     Hence $q' \Eq q$.
     Thus $(m \NATmul q) \NATplus r \Eq (m \NATmul q) \NATplus r'$.
@@ -133,7 +137,7 @@
   \end{case}
 
   \begin{case}{$q \NATless q'$ and $r \NATless r'$.}
-    (1) $((m \NATmul q') \NATplus r') \NATsub r \Eq (m \NATmul q') \NATplus (r' \NATsub r)$ (by \printref{ARITHMETIC_05_7578468875239424}).
+    (1) $((m \NATmul q') \NATplus r') \NATsub r \Eq (m \NATmul q') \NATplus (r' \NATsub r)$ (by \sn{associativity of addition and subtraction}).
     (2) $((m \NATmul q) \NATplus r) \NATsub r
       \Eq (m \NATmul q) \NATplus (r \NATsub r)
       \Eq m \NATmul q$.

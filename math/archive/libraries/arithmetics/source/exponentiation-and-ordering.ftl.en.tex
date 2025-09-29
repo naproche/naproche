@@ -6,7 +6,7 @@
 \importmodule[libraries/arithmetics]{multiplication-and-ordering.ftl}
 \importmodule[libraries/arithmetics]{exponentiation.ftl}
 
-\begin{proposition}[forthel,id=ARITHMETIC_09_3373702288769024]
+\begin{proposition}[forthel]
   Let $n, m, k$ be natural numbers.
   Assume $k \NotEq \NATzero$.
   Then $n \NATless m$ iff $\NATexp{n}{k} \NATless \NATexp{m}{k}$.
@@ -88,7 +88,7 @@
       Thus $k' \NATplus \NATone \Elem \Phi$.
     \end{proof}
 
-    Therefore every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+    Therefore every natural number is contained in $\Phi$ (by \sr{induction I}{induction}).
     Consequently $\NATexp{n}{k} \NATless \NATexp{m}{k}$.
   \end{case}
 
@@ -119,13 +119,13 @@
       Hence $k' \NATplus \NATone \Elem \Psi$.
     \end{proof}
 
-    Thus every natural number is contained in $\Psi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+    Thus every natural number is contained in $\Psi$ (by \sr{induction I}{induction}).
     Therefore if $n \NATgeq m$ then $\NATexp{n}{k} \NATgeq \NATexp{m}{k}$.
     Consequently $n \NATless m$.
   \end{case}
 \end{proof}
 
-\begin{corollary}[forthel,id=ARITHMETIC_09_2797602550579200]
+\begin{corollary}[forthel]
   Let $n, m, k$ be natural numbers.
   Assume $k \NotEq \NATzero$.
   Then \[ \NATexp{n}{k} \Eq \NATexp{m}{k} \Implies n \Eq m. \]
@@ -140,7 +140,7 @@
   Contradiction.
 \end{proof}
 
-\begin{corollary}[forthel,id=ARITHMETIC_09_6875081963732992]
+\begin{corollary}[forthel]
   Let $n, m, k$ be natural numbers.
   Assume $k \NotEq \NATzero$.
   Then \[ \NATexp{n}{k} \NATleq \NATexp{m}{k} \Iff n \NATleq m. \]
@@ -153,7 +153,7 @@
   If $n \Eq m$ then $\NATexp{n}{k} \Eq \NATexp{m}{k}$.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_09_3349764703780864]
+\begin{proposition}[forthel]
   Let $n, m, k$ be natural numbers.
   Assume $k \NATgtr \NATone$.
   Then \[ n \NATless m \Iff \NATexp{k}{n} \NATless \NATexp{k}{m}. \]
@@ -198,7 +198,7 @@
       End.
     \end{proof}
 
-    Hence every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+    Hence every natural number is contained in $\Phi$ (by \sr{induction I}{induction}).
     Thus $\NATexp{k}{n} \NATless \NATexp{k}{m}$.
   \end{case}
 
@@ -235,13 +235,13 @@
       End.
     \end{proof}
 
-    Thus every natural number is contained in $\Psi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+    Thus every natural number is contained in $\Psi$ (by \sr{induction I}{induction}).
     Therefore if $n \NATgeq m$ then $\NATexp{k}{n} \NATgeq \NATexp{k}{m}$.
     Consequently $n \NATless m$.
   \end{case}
 \end{proof}
 
-\begin{corollary}[forthel,id=ARITHMETIC_09_6780506905509888]
+\begin{corollary}[forthel]
   Let $n, m, k$ be natural numbers.
   Assume $k \NATgtr \NATone$.
   If $\NATexp{k}{n} \Eq \NATexp{k}{m}$ then $n \Eq m$.
@@ -256,7 +256,7 @@
   Contradiction.
 \end{proof}
 
-\begin{corollary}[forthel,id=ARITHMETIC_09_2876620253691904]
+\begin{corollary}[forthel]
   Let $n, m, k$ be natural numbers.
   Assume $k \NATgtr \NATone$.
   Then $n \NATleq m$ iff $\NATexp{k}{n} \NATleq \NATexp{k}{m}$.
@@ -268,7 +268,7 @@
   If $\NATexp{k}{n} \NATless \NATexp{k}{m}$ then $n \NATless m$.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_09_6984104377581568]
+\begin{proposition}[forthel]
   Let $n$ be a natural number.
   Then $\NATexp{n \NATplus \NATone}{\NATtwo} \Eq (\NATexp{n}{\NATtwo} \NATplus (\NATtwo \NATmul n)) \NATplus \NATone$.
 \end{proposition}
@@ -284,7 +284,7 @@
   \[    \Eq (\NATexp{n}{\NATtwo} \NATplus (\NATtwo \NATmul n)) \NATplus \NATone.    \]
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_09_134060414337024]
+\begin{proposition}[forthel]
   Let $n$ be a natural number.
   Assume $n \NATgeq \NATthree$.
   Then $\NATexp{n}{\NATtwo} \NATgtr (\NATtwo \NATmul n) \NATplus \NATone$.
@@ -304,7 +304,7 @@
     Then $V \NATgtr W$.
     \begin{proof}
       We have $\NATexp{n'}{\NATtwo} \NATgtr (\NATtwo \NATmul n') \NATplus \NATone$.
-      Hence $\NATexp{n'}{\NATtwo} \NATplus (\NATtwo \NATmul n') \NATgtr ((\NATtwo \NATmul n') \NATplus \NATone) \NATplus (\NATtwo \NATmul n')$ (by \printref{ARITHMETIC_04_7354062662008832}).
+      Hence $\NATexp{n'}{\NATtwo} \NATplus (\NATtwo \NATmul n') \NATgtr ((\NATtwo \NATmul n') \NATplus \NATone) \NATplus (\NATtwo \NATmul n')$ (by \sn{preservation of ordering under right-addition}).
     \end{proof}
 
     Take $X = ((\NATtwo \NATmul n') \NATplus (\NATtwo \NATmul n')) \NATplus \NATone$.
@@ -318,7 +318,7 @@
     Then $Y \NATgtr Z$.
     \begin{proof}
       We have $n' \NATplus n' \NATgtr n' \NATplus \NATone$ and $\NATtwo \NotEq \NATzero$.
-      Thus $\NATtwo \NATmul (n' \NATplus n') \NATgtr \NATtwo \NATmul (n' \NATplus \NATone)$ (by \printref{ARITHMETIC_06_5048640368279552}).
+      Thus $\NATtwo \NATmul (n' \NATplus n') \NATgtr \NATtwo \NATmul (n' \NATplus \NATone)$ (by \sn{preservation of ordering under left-multiplication}).
       Indeed $n' \NATplus n'$ and $n' \NATplus \NATone$ are natural numbers.
     \end{proof}
 
@@ -326,11 +326,11 @@
     Hence $\NATexp{n' \NATplus \NATone}{\NATtwo} \NATgtr (\NATtwo \NATmul (n' \NATplus \NATone)) \NATplus \NATone$.
   \end{proof}
 
-  Therefore $\Phi$ contains every element of $\Natgeqthan{\NATthree}$ (by \printref{ARITHMETIC_04_4976599269113856}, 1, 2).
+  Therefore $\Phi$ contains every element of $\Natgeqthan{\NATthree}$ (by \sr{induction III}{induction}, 1, 2).
   Consequently $\NATexp{n}{\NATtwo} \NATgtr (\NATtwo \NATmul n) \NATplus \NATone$ (by a).
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_09_1097950367318016]
+\begin{proposition}[forthel]
   Let $n$ be a natural number.
   Assume $n \NATgeq \NATfive$.
   Then $\NATexp{\NATtwo}{n} \NATgtr \NATexp{n}{\NATtwo}$.
@@ -377,7 +377,7 @@
     Hence $\NATexp{\NATtwo}{n' \NATplus \NATone} \NATgtr \NATexp{n' \NATplus \NATone}{\NATtwo}$.
   \end{proof}
 
-  Therefore $\Phi$ contains every element of $\Natgeqthan{\NATfive}$ (by \printref{ARITHMETIC_04_4976599269113856}).
+  Therefore $\Phi$ contains every element of $\Natgeqthan{\NATfive}$ (by \sr{induction III}{induction}).
   Consequently $\NATexp{\NATtwo}{n} \NATgtr \NATexp{n}{\NATtwo}$ (by a).
 \end{proof}
 \end{smodule}

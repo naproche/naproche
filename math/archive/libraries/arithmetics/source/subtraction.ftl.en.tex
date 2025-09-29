@@ -6,14 +6,13 @@
 \importmodule[libraries/arithmetics]{ordering.ftl}
 \symdef{NATsub}{\,-\,}
 
-\begin{definition}[forthel,id=ARITHMETIC_05_8878757276286976]
+\begin{definition}[forthel]
   Let $n, m$ be natural numbers such that $n \NATgeq m$.
   $\emph{n \NATsub m}$ is the natural number $k$ such that $n \Eq m \NATplus k$.
-
   Let the \emph{difference of $n$ and $m$} stand for $n \NATsub m$.
 \end{definition}
 
-\begin{proposition}[forthel,id=ARITHMETIC_05_874271710642176]
+\begin{proposition}[forthel]
   Let $n, m$ be natural numbers such that $n \NATgeq m$.
   Then $n \NATsub m \Eq \NATzero$ iff $n \Eq m$.
 \end{proposition}
@@ -34,12 +33,12 @@
   \end{case}
 \end{proof}
 
-\begin{corollary}[forthel,id=ARITHMETIC_05_8457713057005568]
+\begin{corollary}[forthel]
   Let $n$ be a natural number.
   Then $n \NATsub n \Eq \NATzero$.
 \end{corollary}
 
-\begin{proposition}[forthel,id=ARITHMETIC_05_8518521570983936]
+\begin{proposition}[forthel]
   Let $n$ be a natural number.
   Then $n \NATsub \NATzero \Eq n$.
 \end{proposition}
@@ -49,7 +48,7 @@
     \Eq n \NATsub \NATzero$.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_05_4222566117933056]
+\begin{proposition}[forthel]
   Let $n, m$ be natural numbers such that $n \NATgeq m$.
   Then $n \NATsub m \NATleq n$.
 \end{proposition}
@@ -58,7 +57,7 @@
   Hence $n \NATsub m \NATleq n$.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_05_1269537257291776]
+\begin{proposition}[forthel]
   Let $n, m$ be natural numbers such that $n \NATgeq m$.
   If $\NATzero \NotEq m \NATless n$ then $n \NATsub m \NATless n$.
 \end{proposition}
@@ -74,7 +73,7 @@
   Contradiction.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_05_4767595811045376]
+\begin{proposition}[forthel]
   Let $n, m, k$ be natural numbers such that $n \NATgeq m$.
   Then $(n \NATsub m) \NATplus k \Eq (n \NATplus k) \NATsub m$.
 \end{proposition}
@@ -88,12 +87,14 @@
   Hence $(n \NATsub m) \NATplus k \Eq (n \NATplus k) \NATsub m$.
 \end{proof}
 
-\begin{corollary}[forthel,id=ARITHMETIC_05_7578468875239424]
+\symdecl*{associativity of addition and subtraction}
+
+\begin{corollary}[forthel,name=associativity of addition and subtraction]
   Let $n, m, k$ be natural numbers such that $n \NATgeq m$.
   Then $k \NATplus (n \NATsub m) \Eq (k \NATplus n) \NATsub m$.
 \end{corollary}
 
-\begin{proposition}[forthel,id=ARITHMETIC_05_7595909347016704]
+\begin{proposition}[forthel]
   Let $n, m, k$ be natural numbers such that $n \NATgeq  m \NATplus k$.
   Then $(n \NATsub m) \NATsub k \Eq n \NATsub (m \NATplus k)$.
 \end{proposition}

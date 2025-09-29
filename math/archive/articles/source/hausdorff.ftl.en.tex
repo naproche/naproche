@@ -16,17 +16,20 @@
 \importmodule[libraries/set-theory]{successor-cardinals.ftl}
 \importmodule[libraries/set-theory]{regular-cardinals.ftl}
 
+\symdecl*{Hessenberg}
+\symdecl*{Hausdorff}
+
 \noindent This is a formalization of a theorem of Felix Hausdorff stating that
 successor cardinals are always regular.
 
 In lack of a formalization in \Naproche of a proof of \emph{Hessenberg's
 Theorem} \cite{Hessenberg1906}, i.e. the fact that
-$\SETcard{X \times X} = \SETcard{X}$ for every
+$\SETcard{X \times X} \Eq \SETcard{X}$ for every
 infinite set $X$, which is required by the subsequent
 proof of Hausdorff's Theorem, we postulate it as an axiom:
 
-\begin{axiom*}[forthel,title=Hessenberg's Theorem,id=hessenberg]
-  $\SETcard{X \SETprod X} = \SETcard{X}$ for every infinite set $X$.
+\begin{axiom*}[forthel,title=Hessenberg's Theorem,name=Hessenberg]
+  $\SETcard{X \SETprod X} \Eq \SETcard{X}$ for every infinite set $X$.
 \end{axiom*}
 
 The following result appears in \cite[p.~443]{Hausdorff1908},
@@ -35,7 +38,7 @@ cardinals is \textit{``ganz einfach''} (\textit{``very simple''})
 and can be skipped.
 
 \begin{forthel}
-  \begin{theorem*}[title=Hausdorff]
+  \begin{theorem*}[title=Hausdorff,name=Hausdorff]
     Let $\kappa$ be a cardinal.
     Then $\CARDsucc{\kappa}$ is regular.
   \end{theorem*}
@@ -46,15 +49,15 @@ and can be skipped.
       Assume the contrary.
       Take a cofinal subset $x$ of $\CARDsucc{\kappa}$ such that $\SETcard{x} \NotEq \CARDsucc{\kappa}$.
       Then $\SETcard{x} \ORDleq \kappa$.
-      Take a surjective map $f$ from $\kappa$ onto $x$ (by \printref{SET_THEORY_06_192336220913664}).
-      Indeed $x$ and $\kappa$ are nonempty and $\SETcard{\kappa} = \kappa$.
-      Then $f(\xi) \in \CARDsucc{\kappa}$ for all $\xi \in \kappa$.
+      Take a surjective map $f$ from $\kappa$ onto $x$ (by \sn{existence condition for surjections}).
+      Indeed $x$ and $\kappa$ are nonempty and $\SETcard{\kappa} \Eq \kappa$.
+      Then $f(\xi) \Elem \CARDsucc{\kappa}$ for all $\xi \Elem \kappa$.
   
-      Let us show that for all $z \in \CARDsucc{\kappa}$ if $z$ is nonempty then there exists a surjective map from $\kappa$ onto $z$.
-        Let $z \in \CARDsucc{\kappa}$.
+      Let us show that for all $z \Elem \CARDsucc{\kappa}$ if $z$ is nonempty then there exists a surjective map from $\kappa$ onto $z$.
+        Let $z \Elem \CARDsucc{\kappa}$.
         Assume that $z$ is nonempty.
         $\kappa$ is nonempty.
-        Hence the thesis (by \printref{SET_THEORY_06_192336220913664}).
+        Hence the thesis (by \sn{existence condition for surjections}).
         Indeed $\SETcard{\kappa} \ORDgeq \SETcard{z}$.
       End.
   
@@ -66,19 +69,19 @@ and can be skipped.
           \text{$\FUNconst{\kappa}{\ORDzero}$}
           & : \text{$z$ has no element}
         \end{cases}
-      \] for $z$ in $\CARDsucc{\kappa}$.
+      \] for $z \Elem \CARDsucc{\kappa}$.
   
-      Let us show that for all $\xi, \zeta \in \kappa$ $g(f(\xi))$ is a map such that $\zeta \in \dom(g(f(\xi)))$.
-        Let $\xi, \zeta \in \kappa$.
+      Let us show that for all $\xi, \zeta \Elem \kappa$ $g(f(\xi))$ is a map such that $\zeta \Elem \Dom(g(f(\xi)))$.
+        Let $\xi, \zeta \Elem \kappa$.
         If $f(\xi)$ has an element then $g(f(\xi))$ is a surjective map from $\kappa$ onto $f(\xi)$.
-        If $f(\xi)$ has no element then $g(f(\xi)) = \FUNconst{\kappa}{\ORDzero}$.
-        Hence $\dom(g(f(\xi))) = \kappa$.
-        Therefore $\zeta \in \dom(g(f(\xi)))$.
+        If $f(\xi)$ has no element then $g(f(\xi)) \Eq \FUNconst{\kappa}{\ORDzero}$.
+        Hence $\Dom(g(f(\xi))) \Eq \kappa$.
+        Therefore $\zeta \Elem \Dom(g(f(\xi)))$.
       End.
   
       [prover vampire]
-      For all objects $\xi, \zeta$ we have $\xi, \zeta \in \kappa$ iff $(\xi, \zeta) \in \kappa \SETprod \kappa$.
-      Define $h(\xi,\zeta) = g(f(\xi))(\zeta)$ for $(\xi,\zeta) \in \kappa \SETprod \kappa$.
+      For all objects $\xi, \zeta$ we have $\xi, \zeta \Elem \kappa$ iff $(\xi, \zeta) \Elem \kappa \SETprod \kappa$.
+      Define $h(\xi,\zeta) = g(f(\xi))(\zeta)$ for $(\xi,\zeta) \Elem \kappa \SETprod \kappa$.
       [prover eprover]
 
       Let us show that $h$ is surjective onto $\CARDsucc{\kappa}$.
@@ -87,39 +90,39 @@ and can be skipped.
         \begin{proof}
           Let $n$ be an element of $\CARDsucc{\kappa}$.
           Take an element $\xi$ of $\kappa$ such that $n \ORDless f(\xi)$.
-          Take an element $\zeta$ of $\kappa$ such that $g(f(\xi))(\zeta) = n$.
+          Take an element $\zeta$ of $\kappa$ such that $g(f(\xi))(\zeta) \Eq n$.
           Indeed $g(f(\xi))$ is a surjective map from $\kappa$ onto $f(\xi)$.
-          Then $n = h(\xi,\zeta)$.
+          Then $n \Eq h(\xi,\zeta)$.
         \end{proof}
   
         Every element of $\FUNim{h}{\kappa \SETprod \kappa}$ is an element of $\CARDsucc{\kappa}$.
         \begin{proof}
           Let $n$ be an element of $\FUNim{h}{\kappa \SETprod \kappa}$.
-          We can take elements $a, b$ of $\kappa$ such that $n = h(a,b)$.
-          Indeed $\FUNim{h}{\kappa \SETprod \kappa} = \CClass{h(a,b)}{a,b \in \kappa}$.
-          Indeed $\kappa \SETprod \kappa = \CClass{(a,b)}{a,b \in \kappa}$.
-          Then $n = g(f(a))(b)$.
-          Indeed $(a,b) \in \kappa \SETprod \kappa$ and $h(a,b) = g(f(a))(b)$.
+          We can take elements $a, b$ of $\kappa$ such that $n \Eq h(a,b)$.
+          Indeed $\FUNim{h}{\kappa \SETprod \kappa} = \CClass{h(a,b)}{a,b \Elem \kappa}$.
+          Indeed $\kappa \SETprod \kappa = \CClass{(a,b)}{a,b \Elem \kappa}$.
+          Then $n \Eq g(f(a))(b)$.
+          Indeed $(a,b) \Elem \kappa \SETprod \kappa$ and $h(a,b) \Eq g(f(a))(b)$.
           $f(a)$ is an element of $\CARDsucc{\kappa}$.
           Every element of $f(a)$ is an element of $\CARDsucc{\kappa}$.
   
           \begin{case}{$f(a)$ has an element.}
             Then $g(f(a))$ is a surjective map from $\kappa$ onto $f(a)$.
-            Hence $n \in f(a) \in \CARDsucc{\kappa}$.
-            Thus $n \in \CARDsucc{\kappa}$.
+            Hence $n \Elem f(a) \Elem \CARDsucc{\kappa}$.
+            Thus $n \Elem \CARDsucc{\kappa}$.
           \end{case}
   
           \begin{case}{$f(a)$ has no element.}
-            Then $g(f(a)) = \FUNconst{\kappa}{\ORDzero}$.
+            Then $g(f(a)) \Eq \FUNconst{\kappa}{\ORDzero}$.
             Hence $n$ is the empty set.
-            Thus $n \in \CARDsucc{\kappa}$.
+            Thus $n \Elem \CARDsucc{\kappa}$.
           \end{case}
         \end{proof}
   
-        Hence $\FUNrange(h) = \FUNim{h}{\kappa \SETprod \kappa} = \CARDsucc{\kappa}$.
+        Hence $\FUNrange(h) \Eq \FUNim{h}{\kappa \SETprod \kappa} \Eq \CARDsucc{\kappa}$.
       End.
   
-      Therefore $\SETcard{\CARDsucc{\kappa}} \ORDleq \SETcard{\kappa \SETprod \kappa}$ (by \printref{SET_THEORY_06_192336220913664}).
+      Therefore $\SETcard{\CARDsucc{\kappa}} \ORDleq \SETcard{\kappa \SETprod \kappa}$ (by \sn{existence condition for surjections}).
       Indeed $\kappa \SETprod \kappa$ and $\CARDsucc{\kappa}$ are nonempty sets and $h$ is a surjective map from $\kappa \SETprod \kappa$ to $\CARDsucc{\kappa}$.
       Consequently $\CARDsucc{\kappa} \ORDleq \kappa$.
       Contradiction.

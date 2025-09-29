@@ -16,12 +16,14 @@
 \importmodule[libraries/set-theory]{zfc.ftl}
 \importmodule[articles]{knaster-tarski.ftl}
 
+\symdecl*{Cantor-Schroeder-Bernstein}
+
 \noindent This is a formalization of the \textit{Cantor-Schröder-Bernstein
 Theorem}, i.e. of the fact that two sets are equinumerous iff they can be
 embedded into each other \cite{Schroeder2012}.
 Its proof of is based on the Knaster-Tarski Fixed Point Theorem.
 
-\begin{theorem}[forthel,title=Cantor-Schröder-Bernstein,id=cantor_schroeder_bernstein]
+\begin{theorem}[forthel,title=Cantor-Schröder-Bernstein,name=Cantor-Schroeder-Bernstein]
   Let $x,y$ be sets.
   $x$ and $y$ are equinumerous iff there exists a injective map from $x$ to $y$ and there exists an injective map from $y$ to $x$.
 \end{theorem}
@@ -54,7 +56,7 @@ Its proof of is based on the Knaster-Tarski Fixed Point Theorem.
       Consequently $\FUNim{h}{u} \SETinclude \FUNim{h}{v}$.
     End.
 
-    Hence we can take a fixed point $c$ of $h$ (by \nameref{knaster_tarski}).
+    Hence we can take a fixed point $c$ of $h$ (by \sn{Knaster-Tarski}).
 
     (2) Define $F(u) = f(u)$ for $u \in c$.
 

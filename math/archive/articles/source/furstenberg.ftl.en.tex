@@ -20,6 +20,8 @@
 \importmodule[libraries/set-theory]{zfc.ftl}
 \importmodule[libraries/foundations]{closure-under-finite-unions.ftl}
 
+\symdecl*{Furstenberg}
+
 \noindent This is a formalization of Furstenberg's topological proof of the
 infinitude of primes \cite[p. 353]{Furstenberg1955}.
 
@@ -239,7 +241,7 @@ $\Ps$ is infinite.
     \end{proof}
   \end{proof}
 
-  \begin{theorem}[title=Furstenberg]
+  \begin{theorem}[title=Furstenberg,name=Furstenberg]
     $\Prime$ is infinite.
   \end{theorem}
   \begin{proof}
@@ -282,7 +284,7 @@ $\Ps$ is infinite.
       Take a $p$ such that $\N_{\NATone, p} \SETinclude (\SETunionover \Ps)^\complement$.
       $\NATone \NATplus p$ is an element of $\N_{\NATone, p}$.
       Indeed $\NATcong{\NATone \NATplus p}{\NATone}{p}$
-      (by \printref{ARITHMETIC_08_5984712287846400}).
+      (by \sn{congruency of sum}).
       $\NATone \NATplus p$ is not equal to $\NATone$.
       Hence $\NATone \NATplus p \notin (\SETunionover \Ps)^\complement$.
       Contradiction.

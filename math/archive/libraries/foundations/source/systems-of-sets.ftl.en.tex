@@ -7,53 +7,52 @@
 \symdef{SETunionover}{\bigcup\,}
 \symdef{SETintersectover}{\bigcap\,}
 
-\begin{definition}[forthel,id=FOUNDATIONS_10_5805323570905088]
+\begin{definition}[forthel]
   A \emph{system of sets} is a class $X$ such that every element of $X$ is a set.
 \end{definition}
 
-\begin{definition}[forthel,id=FOUNDATIONS_10_1631952387964928]
+\begin{definition}[forthel]
   A \emph{system of nonempty sets} is a class $X$ such that every element of $X$ is a nonempty set.
 \end{definition}
 
-\begin{definition}[forthel,id=FOUNDATIONS_10_943381479948288]
+\begin{definition}[forthel]
   Let $A$ be a class.
   A \emph{system of subsets of $A$} is a class $X$ such that every element of $X$ is a subset of $A$.
 \end{definition}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_8268633648136192]
+\begin{proposition}[forthel]
   Let $A$ be a class.
   Then $\SETempty$ is a system of subsets of $A$.
 \end{proposition}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_7546016869908480]
+\begin{proposition}[forthel]
   Let $A$ be a class.
   Then $\SETpow(A)$ is a system of subsets of $A$.
 \end{proposition}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_2794857209384572]
+\begin{proposition}[forthel]
   Let $X, Y$ be systems of sets.
   Then $X \SETunion Y$ is a system of sets.
 \end{proposition}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_1983754920483934]
+\begin{proposition}[forthel]
   Let $X, Y$ be systems of sets.
   Then $X \SETintersect Y$ is a system of sets.
 \end{proposition}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_0928495478392003]
+\begin{proposition}[forthel]
   Let $X, Y$ be systems of sets.
   Then $X \SETdiff Y$ is a system of sets.
 \end{proposition}
 
 \begin{sfragment}{Unions Over Systems of Sets}
-  \begin{definition}[forthel,id=FOUNDATIONS_10_541772562300928]
+  \begin{definition}[forthel]
     Let $X$ be a system of sets.
     $\emph{\SETunionover X} = \CClass{a}{a \Elem x\text{ for some }x \Elem X}$.
-
     Let \emph{union over $X$} stand for $\SETunionover X$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_10_4872701241982976]
+  \begin{proposition}[forthel]
     $\SETunionover \SETempty \Eq \SETempty$.
   \end{proposition}
   \begin{proof}[forthel]
@@ -63,7 +62,7 @@
     Thus $\SETunionover \SETempty \Eq \SETempty$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_10_2559541585641472]
+  \begin{proposition}[forthel]
     Let $x, y$ be sets.
     Then $\SETunionover \SETpair{x}{y} \Eq x \SETunion y$.
   \end{proposition}
@@ -83,21 +82,20 @@
     End.
   \end{proof}
 
-  \begin{corollary}[forthel,id=FOUNDATIONS_10_2157223832715264]
+  \begin{corollary}[forthel]
     Let $x$ be a set.
     Then $\SETunionover \SETsingleton{x} \Eq x$.
   \end{corollary}
 \end{sfragment}
 
 \begin{sfragment}{Intersections Over Systems of Sets}
-  \begin{definition}[forthel,id=FOUNDATIONS_10_2659345095458816]
+  \begin{definition}[forthel]
     Let $X$ be a system of sets.
     $\emph{\SETintersectover X} = \CClass{a}{a \Elem x\text{ for all }x \Elem X}$.
-
     Let the \emph{intersection over $X$} stand for $\SETintersectover X$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_10_2809770322952192]
+  \begin{proposition}[forthel]
     $\SETintersectover \SETempty$ is the class of all objects.
   \end{proposition}
   \begin{proof}[forthel]
@@ -114,7 +112,7 @@
     End.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_10_7851827447988224]
+  \begin{proposition}[forthel]
     Let $x, y$ be sets.
     Then $\SETintersectover \SETpair{x}{y} \Eq x \SETintersect y$.
   \end{proposition}
@@ -134,7 +132,7 @@
     End.
   \end{proof}
 
-  \begin{corollary}[forthel,id=FOUNDATIONS_10_7239895674257408]
+  \begin{corollary}[forthel]
     Let $x$ be a set.
     Then $\SETintersectover \SETsingleton{x} \Eq x$.
   \end{corollary}

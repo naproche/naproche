@@ -14,6 +14,8 @@
 \importmodule[libraries/set-theory]{transfinite-induction.ftl}
 \importmodule[libraries/set-theory]{recursive-maps.ftl}
 
+\symdecl*{coincidence lemma}
+
 \noindent This is a formalization of the \emph{Transfinite Recursion Theorem}
 (cf. \cite{Koepke2018}).
 It states that for any map $G \FUNfromto{\ORDfunspace{A}}{A}$, where
@@ -22,7 +24,7 @@ ordinal $\alpha$, there exists a unique map $F \FUNfromto{\Ord}{A}$ that is
 \emph{recursive regarding} $G$, i.e. \[F(\alpha) \Eq G(F \FUNrest \alpha)\] for
 all ordinals $\alpha$.
 
-\begin{lemma}[forthel,title=Coincidence Lemma,id=transfinite_recursion_coincidence]
+\begin{lemma}[forthel,title=Coincidence Lemma,name=coincidence lemma]
   Let $A$ be a class and $G$ be a map from $\ORDfunspace{A}$ to $A$.
   Let $H, H'$ be maps to $A$ that are recursive regarding $G$.
   Then \[ H(\alpha) \Eq H'(\alpha) \] for all $\alpha \Elem \Dom(H) \SETintersect \Dom(H')$.
@@ -56,11 +58,11 @@ all ordinals $\alpha$.
   \end{proof}
 
   [prover vampire]
-  Then $\Phi$ contains every ordinal (by \printref{SET_THEORY_02_8493935460614144}).
+  Then $\Phi$ contains every ordinal (by \sr{transfinite induction I}{transfinite induction}).
   Therefore we have $H(\alpha) \Eq H'(\alpha)$ for all $\alpha \Elem \Dom(H) \SETintersect \Dom(H')$.
 \end{proof}
 
-\begin{theorem}[forthel,title=Transfinite Recursion Theorem: Existence,id=transfinite_recursion_existence]
+\begin{theorem}[forthel,title=Transfinite Recursion: Existence]
   Let $A$ be a class and $G$ be a map from $\ORDfunspace{A}$ to $A$.
   Then there exists a map $F$ from $\Ord$ to $A$ that is recursive regarding $G$.
 \end{theorem}
@@ -105,7 +107,7 @@ all ordinals $\alpha$.
             Then $H(y) \Eq H'(y)$.
             Choose a map $h'$ to $A$ such that $h'$ is recursive regarding $G$ and $y \Elem \Dom(h')$ and $H'(y) \Eq h'(y)$.
             [prover vampire]
-            Then $h'(y) \Eq h(y)$ (by \nameref{transfinite_recursion_coincidence}).
+            Then $h'(y) \Eq h(y)$ (by \sn{coincidence lemma}).
             Indeed $y \Elem \Dom(h) \SETintersect \Dom(h')$.
           End.
 
@@ -127,7 +129,7 @@ all ordinals $\alpha$.
     End.
 
     [prover vampire]
-    Therefore $\Phi$ contains every ordinal (by \printref{SET_THEORY_02_8493935460614144}).
+    Therefore $\Phi$ contains every ordinal (by \sr{transfinite induction I}{transfinite induction}).
     Consequently every ordinal is contained in the domain of some map $H$ to $A$ such that $H$ is recursive regarding $G$.
   \end{proof}
 
@@ -147,7 +149,7 @@ all ordinals $\alpha$.
         Let $\beta \Elem \alpha$.
         Choose a map $H'$ to $A$ such that $H'$ is recursive regarding $G$ and $\beta \Elem \Dom(H')$ and $F(\beta) \Eq H'(\beta)$.
         [prover vampire]
-        Then $H(\beta) \Eq H'(\beta)$ (by \nameref{transfinite_recursion_coincidence}).
+        Then $H(\beta) \Eq H'(\beta)$ (by \sn{coincidence lemma}).
         Indeed $\beta \Elem \Dom(H) \SETintersect \Dom(H')$.
         Therefore $F(\beta) \Eq H'(\beta)$.
       End.
@@ -161,7 +163,7 @@ all ordinals $\alpha$.
   \end{proof}
 \end{proof}
 
-\begin{theorem}[forthel,title=Transfinite Recursion Theorem: Uniqueness,id=transfinite_recursion_uniqueness]
+\begin{theorem}[forthel,title=Transfinite Recursion: Uniqueness]
   Let $A$ be a class and $G$ be a map from $\ORDfunspace{A}$ to $A$.
   Let $F, F'$ be maps from $\Ord$ to $A$ that are recursive regarding $G$.
   Then $F \Eq F'$.
@@ -169,7 +171,7 @@ all ordinals $\alpha$.
 \begin{proof}[forthel]
   [prover vampire]
   $F$ and $F'$ are recursive regarding $G$.
-  Then $F(\alpha) \Eq F'(\alpha)$ for all $\alpha \Elem \Dom(F) \SETintersect \Dom(F')$ (by \nameref{transfinite_recursion_coincidence}).
+  Then $F(\alpha) \Eq F'(\alpha)$ for all $\alpha \Elem \Dom(F) \SETintersect \Dom(F')$ (by \sn{coincidence lemma}).
   We have $\Dom(F) \Eq \Ord \Eq \Dom(F')$.
   Hence $F(\alpha) \Eq F'(\alpha)$ for all $\alpha \Elem \Ord$.
   Thus $F \Eq F'$.
@@ -187,17 +189,17 @@ can define a map $F \FUNfromto{\Ord}{A}$ by
     for any limit ordinal $\lambda$.
 \end{itemize}
 
-\begin{lemma}[forthel,id=transfinite_recursion_029348573987483]
+\begin{lemma}[forthel]
   Let $A$ be a class and $\alpha$ be an ordinal and $F \FUNfromto{\Ord}{A}$.
   Then $(\alpha, F(\alpha)) \Elem \Ord \SETprod A$.
 \end{lemma}
 
-\begin{lemma}[forthel,id=transfinite_recursion_570293857449281]
+\begin{lemma}[forthel]
   Let $A$ be a class and $\lambda$ be a limit ordinal and $F \FUNfromto{\Ord}{A}$.
   Then $(\lambda, F \FUNrest \lambda) \Elem \Ord \SETprod \ORDfunspace{A}$.
 \end{lemma}
 
-\begin{corollary}[forthel,id=transfinite_recursion_298647309184593]
+\begin{corollary}[forthel]
   Let $A$ be a class.
   Let $a \Elem A$ and $G \FUNfromto{\Ord \SETprod A}{A}$ and $H \FUNfromto{\Ord \SETprod \ORDfunspace{A}}{A}$.
   Then there exists a map $F$ from $\Ord$ to $A$ such that

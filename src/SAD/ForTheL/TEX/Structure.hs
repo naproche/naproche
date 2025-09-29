@@ -343,7 +343,28 @@ optLink = optLL1 [] $ parenthesised $ markupToken Reports.reference "by" >> iden
       <|> texCommandWithArg "nameref" identifier
       <|> texCommandWithArg "cref" identifier
       <|> texCommandWithArg "printref" identifier
+      <|> symname
+      <|> symref
       <|> identifier
+    symname = do
+      texCommand "sn" <|> texCommand "symname"
+      optLL1 () $ do
+        symbol "["
+        (tokenOf ["pre", "post"] >> symbol "=" >> optBraced (chainLL1 notReservedChar)) `sepByLL1` symbol ","
+        symbol "]"
+      symbol "{"
+      symName <- stexSymbolName
+      symbol "}"
+      return symName
+    symref = do
+      texCommand "sr" <|> texCommand "symref"
+      symbol "{"
+      symName <- stexSymbolName
+      symbol "}"
+      symbol "{"
+      chainLL1 notClosingBrace
+      symbol "}"
+      return symName
 
 
 -- ** Labels
@@ -352,18 +373,20 @@ optLink = optLL1 [] $ parenthesised $ markupToken Reports.reference "by" >> iden
 data TlsOption =
     TlsForthel      -- @forthel@
   | TlsTitle Text   -- @title=<title>@
-  | TlsId Text      -- @id=<label>@
+  | TlsName Text    -- @name=<symbol>@
+  | TlsFor [Text]   -- @for={<symbol_1>,...,<symbol_n>}@
   | TLsUnknown
 
--- | Parse an environment label (TEX), i.e. a list of key-value pairs that
--- might contain a pair with an @id@ key and return its value.
+-- | Parse an optional environment argument which is expected to be a list of
+-- key-value pairs that might contain a pair with an @name@ key. If a @name@ key
+-- is found, its value is returned.
 tlsOptions :: FTL (Maybe Text)
 tlsOptions = do
   symbolNotAfterSpace "["
   tlsOptions <- sepBy tlsOption (symbol ",")
-  let mbLabelOption = find (\(key, val) -> key == "id") tlsOptions
+  let mbLabelOption = find (\(key, val) -> key == "name") tlsOptions
   let mbLabel = case mbLabelOption of
-        Just (_, TlsId label) -> Just label
+        Just (_, TlsName symName) -> Just symName
         _ -> Nothing
   symbol "]"
   return mbLabel
@@ -379,13 +402,24 @@ tlsOption = do
       symbol "="
       title <- Text.fromStrict . tokensText <$> optBraced (chainLL1 notReservedChar)
       return (key, TlsTitle title)
-    "id" -> do
+    "name" -> do
       symbol "="
-      label <- identifier
-      return (key, TlsId label)
+      symName <- stexSymbolName
+      return (key, TlsName symName)
+    "for" -> do
+      symbol "="
+      symNames <- optBraced (stexSymbolName `sepByLL1` symbol ",")
+      return (key, TlsFor symNames)
     _ -> return ("", TLsUnknown)
-  where
-    notReservedChar = tokenPrim $ \t -> guard (showToken t `notElem` [",", "]", "="]) >> return t
+
+notReservedChar = tokenPrim $ \t -> guard (showToken t `notElem` [",", "]", "=", "}"]) >> return t
+notClosingBrace = tokenPrim $ \t -> guard (showToken t /= "}") >> return t
+
+-- | Parse an sTeX symbol name and replace all whitespaces and @-@ characters by
+-- @_@ characters, so that, when passed to an ATP, these characters do not
+-- cause the ATP to crash.
+stexSymbolName :: FTL Text
+stexSymbolName = Text.intercalate "_" . filter (/= "-") <$> chainLL1 (word <|> digit <|> (getToken "-"))
 
 
 -- | Parse an optional top-leve section environment label (TEX).

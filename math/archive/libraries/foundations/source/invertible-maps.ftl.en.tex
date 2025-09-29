@@ -7,17 +7,17 @@
 \symdef{FUNinv}[args=1]{#1^{\comp{-1}}}
 
 \begin{sfragment}{Definitions}
-  \begin{definition}[forthel,id=FOUNDATIONS_09_7776974319648768]
+  \begin{definition}[forthel]
     Let $f$ be a map.
     An \emph{inverse of $f$} is a map $g$ from $\FUNrange(f)$ to $\Dom(f)$ such that $f(a) \Eq b \Iff g(b) \Eq a$ for all $a \Elem \Dom(f)$ and all $b \Elem \Dom(g)$.
   \end{definition}
 
-  \begin{definition}[forthel,id=FOUNDATIONS_09_3430350086733824]
+  \begin{definition}[forthel]
     Let $f$ be a map.
     $f$ is \emph{invertible} iff $f$ has an inverse.
   \end{definition}
 
-  \begin{lemma}[forthel,id=FOUNDATIONS_09_5108611793551360]
+  \begin{lemma}[forthel]
     Let $f$ be a map and $g, g'$ be inverses of $f$.
     Then $g \Eq g'$.
   \end{lemma}
@@ -33,17 +33,16 @@
     End.
   \end{proof}
 
-  \begin{definition}[forthel,id=FOUNDATIONS_09_6458627204317184]
+  \begin{definition}[forthel]
     Let $f$ be an invertible map.
     $\emph{\FUNinv{f}}$ is the inverse of $f$.
-
     Let $f$ is \emph{involutory} stand for $f$ is the inverse of $f$.
     Let $f$ is \emph{selfinverse} stand for $f$ is the inverse of $f$.
   \end{definition}
 \end{sfragment}
 
 \begin{sfragment}{Basic Properties}
-  \begin{proposition}[forthel,id=FOUNDATIONS_09_7840743571849216]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $g \FUNfromonto{B}{A}$.
     Then $g$ is the inverse of $f$ iff $g \FUNcomp f \Eq \FUNid{A}$ and $f \FUNcomp g \Eq \FUNid{B}$.
   \end{proposition}
@@ -96,7 +95,7 @@
     \end{case}
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_09_8414736098000896]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes and $f \FUNfromonto{A}{B}$.
     Assume that $f$ is invertible.
     Then $\FUNinv{f}$ is an invertible surjective map from $B$ onto $A$ such that $\FUNinv{(\FUNinv{f})} \Eq f$.
@@ -111,7 +110,7 @@
     Therefore $f$ is the inverse of $\FUNinv{f}$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_09_4577560740495360]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes and $f \FUNfromonto{A}{B}$.
     Assume that $f$ is invertible.
     Then $f \FUNcomp \FUNinv{f} \Eq \FUNid{B}$ and $\FUNinv{f} \FUNcomp f \Eq \FUNid{A}$.
@@ -121,7 +120,7 @@
     $\FUNinv{f}$ is the inverse of $f$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_09_4606651604664320]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $a \Elem A$.
     Assume that $f$ is invertible.
     Then $\FUNinv{f}(f(a)) \Eq a$.
@@ -130,7 +129,7 @@
     We have $\FUNinv{f}(f(a)) \Eq (\FUNinv{f} \FUNcomp f)(a) \Eq \FUNid{A}(a) \Eq a$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_09_6093864386712935]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $b \Elem B$.
     Assume that $f$ is invertible.
     Then $f(\FUNinv{f}(b)) \Eq b$.
@@ -143,7 +142,9 @@
       \Eq b$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_09_7619151963095040]
+  \symdecl*{invertibility of composition of invertible maps}
+
+  \begin{proposition}[forthel,name=invertibility of composition of invertible maps]
     Let $A, B, C$ be classes and $f \FUNfromonto{A}{B}$ and $g \FUNfromonto{B}{C}$.
     Assume that $f$ and $g$ are invertible.
     Then $g \FUNcomp f$ is invertible and $\FUNinv{g \FUNcomp f} \Eq \FUNinv{f} \FUNcomp \FUNinv{g}$.
@@ -152,7 +153,7 @@
     $\FUNinv{f}$ is a surjective map from $B$ onto $A$.
     $\FUNinv{g}$ is a surjective map from $C$ onto $B$.
     Take $h = \FUNinv{f} \FUNcomp \FUNinv{g}$.
-    Then $h$ is a surjective map from $C$ onto $A$ (by \printref{FOUNDATIONS_08_8542698338254848}).
+    Then $h$ is a surjective map from $C$ onto $A$ (by \sn{surjectivity of composition of surjections}).
     $g \FUNcomp f$ is a map from $A$ to $C$.
 
     Let us show that $((g \FUNcomp f) \FUNcomp h) \Eq \FUNid{C}$.
@@ -186,7 +187,7 @@
     Indeed $g \FUNcomp f$ is a surjective map from $A$ onto $C$ and $h$ is a surjective map from $C$ onto $A$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_09_6374884963778560]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $X \SETinclude A$.
     Assume that $f$ is invertible.
     Then $f \FUNrest X$ is invertible and $\FUNinv{f\FUNrest X} \Eq \FUNinv{f} \FUNrest (\FUNim{f}{X})$.
@@ -245,7 +246,7 @@
     Therefore $g$ is the inverse of $f \FUNrest X$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_09_7726021377785856]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $Y \SETinclude B$.
     Assume that $f$ is invertible.
     Then \[ \FUNpreim{f}{Y} \Eq \FUNim{\FUNinv{f}}{Y}. \]
@@ -268,7 +269,7 @@
     End.
   \end{proof}
 
-  \begin{corollary}[forthel,id=FOUNDATIONS_09_8607784268464128]
+  \begin{corollary}[forthel]
     Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $b \Elem B$.
     Assume that $f$ is invertible.
     Then \[ \FUNpreim{f}{\SETsingleton{b}} \Eq \SETsingleton{\FUNinv{f}(b)}. \]
@@ -279,7 +280,7 @@
     Hence $\FUNim{\FUNinv{f}}{\SETsingleton{b}} \Eq \SETsingleton{\FUNinv{f}(b)}$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_09_6777575974109184]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes and $f \FUNfromonto{A}{B}$.
     Then $f$ is invertible iff $f$ is injective.
   \end{proposition}
@@ -302,7 +303,7 @@
     \end{case}
   \end{proof}
 
-  \begin{corollary}[forthel,id=FOUNDATIONS_09_5708971514003456]
+  \begin{corollary}[forthel]
     Let $A, B$ be classes and $f \FUNfromonto{A}{B}$.
     Assume that $f$ is invertible.
     Then $\FUNinv{f}$ is a bijection between $B$ and $A$.
@@ -316,12 +317,12 @@
 \end{sfragment}
 
 \begin{sfragment}{Involutions}
-  \begin{definition}[forthel,id=FOUNDATIONS_09_7282039688527872]
+  \begin{definition}[forthel]
     Let $A$ be a class.
     An \emph{involution on $A$} is a selfinverse map $f$ on $A$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_09_7944474185433088]
+  \begin{proposition}[forthel]
     Let $A$ be a class.
     $\FUNid{A}$ is an involution on $A$.
   \end{proposition}
@@ -330,7 +331,7 @@
     Hence $\FUNid{A}$ is selfinverse.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_09_6897019612299264]
+  \begin{proposition}[forthel]
     Let $A$ be a class and $f, g$ be involutions on $A$.
     Then $g \FUNcomp f$ is an involution on $A$ iff $g \FUNcomp f \Eq f \FUNcomp g$.
   \end{proposition}
@@ -339,7 +340,7 @@
       Then $\FUNinv{g \FUNcomp f}
         \Eq \FUNinv{f} \FUNcomp \FUNinv{g}
         \Eq f \FUNcomp g$
-      (by \printref{FOUNDATIONS_09_7619151963095040}).
+      (by \sn{invertibility of composition of invertible maps}).
       Indeed $f$ and $g$ are invertible and surjective onto $A$.
     \end{case}
 
@@ -357,12 +358,12 @@
     \end{case}
   \end{proof}
 
-  \begin{corollary}[forthel,id=FOUNDATIONS_09_5958206868160512]
+  \begin{corollary}[forthel]
     Let $A$ be a class and $f$ be an involutions on $A$.
     Then $f \FUNcomp f$ is an involution on $A$.
   \end{corollary}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_09_2314262743613440]
+  \begin{proposition}[forthel]
     Let $A$ be a class and $f$ be an involution on $A$.
     Then $f$ is a permutation of $A$.
   \end{proposition}

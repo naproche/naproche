@@ -14,6 +14,15 @@
 
 \begin{document}
 \begin{smodule}{curry-paradox.ftl}
+
+\importmodule[libraries/meta]{preliminaries.ftl}
+
+\symdecl*{beta reduction}
+\symdecl*{reflexivity}
+\symdecl*{modus ponens}
+\symdecl*{strengthening}
+\symdecl*{Curry Paradox}
+
 \maketitle
 
 \noindent \emph{Curry's Paradox} is a paradox described by Haskell Curry in 
@@ -27,8 +36,6 @@ expression that presupposes its own validity.
 untyped $\lambda$-calculus:
 
 \begin{forthel}
-  [synonym expression/-s]
-
   \begin{signature*}
     An expression is a notion.
   \end{signature*}
@@ -43,16 +50,16 @@ untyped $\lambda$-calculus:
     $\varzero$ is a variable.
   \end{signature*}
 
-  \begin{signature*}[title=Abstraction,id=abstraction]
+  \begin{signature*}[title=Abstraction]
     Let $x$ be a variable.
     $\abs{x}{E}$ is an expression.
   \end{signature*}
 
-  \begin{signature*}[title=Application,id=application]
+  \begin{signature*}[title=Application]
     $\app{E}{E'}$ is an expression.
   \end{signature*}
 
-  \begin{signature*}[title=Fixed-point combinator,id=fixed_point_combinator]
+  \begin{signature*}[title=Fixed-point combinator]
     $\fix$ is an expression such that
     \[\app{\fix}{E} = \app{E}{\app{\fix}{E}}\]
     for every expression $E$.
@@ -69,27 +76,27 @@ logic:
   Let $E, E'$ denote expressions.
   Let $x$ denote a variable.
 
-  \begin{signature*}[title=Implication,id=implication]
+  \begin{signature*}[title=Implication]
     $E \rightarrow E'$ is an expression.
   \end{signature*}
 
-  \begin{signature*}[title=Truth,id=truth]
+  \begin{signature*}[title=Truth]
     $E$ is true is a relation.
   \end{signature*}
 
-  \begin{axiom*}[title=$\beta$-reduction,id=beta_reduction]
+  \begin{axiom*}[title=$\beta$-reduction,name=beta reduction]
     $\app{\abs{x}{x \rightarrow E'}}{E} = E \rightarrow E'$.
   \end{axiom*}
 
-  \begin{axiom*}[title=Reflexivity,id=reflexivity]
+  \begin{axiom*}[title=Reflexivity,name=reflexivity]
     $E \rightarrow E$ is true.
   \end{axiom*}
 
-  \begin{axiom*}[title=Modus Ponens,id=modus_ponens]
+  \begin{axiom*}[title=Modus Ponens,name=modus ponens]
     If $E$ is true and $E \rightarrow E'$ is true then $E'$ is true.
   \end{axiom*}
 
-  \begin{axiom*}[title=Strengthening,id=strengthening]
+  \begin{axiom*}[title=Strengthening,name=strengthening]
     If $E \rightarrow (E \rightarrow E')$ is true then $E \rightarrow E'$ is true.
   \end{axiom*}
 \end{forthel}
@@ -105,22 +112,22 @@ From the existence of such an expression $X$ together with the above axioms
 we can then derive that any expression $E$ is true.
 
 \begin{forthel}
-  \begin{theorem*}[title=Curry's Paradox,id=curry_paradox]
+  \begin{theorem*}[title=Curry's Paradox,name=Curry Paradox]
     Every expression is true.
   \end{theorem*}
   \begin{proof}
     Let $E$ be an expression.
     Take $N = \abs{\varzero}{\varzero \rightarrow E}$ and $X = \app{\fix}{N}.$
 
-    (1) Then $X = \app{N}{X} = X \rightarrow E$ (by \nameref{beta_reduction}).
+    (1) Then $X = \app{N}{X} = X \rightarrow E$ (by \sr{beta reduction}{$\beta$-reduction}).
 
-    Hence $X \rightarrow (X \rightarrow E)$ is true (by 1, \nameref{reflexivity}).
+    Hence $X \rightarrow (X \rightarrow E)$ is true (by 1, \sn{reflexivity}).
 
-    (2) Thus $X \rightarrow E$ is true (by \nameref{strengthening}).
+    (2) Thus $X \rightarrow E$ is true (by \sn{strengthening}).
 
     (3) Therefore $X$ is true (by 1, 2).
 
-    Consequently $E$ is true (by \nameref{modus_ponens}, 2, 3).
+    Consequently $E$ is true (by \sn{modus ponens}, 2, 3).
   \end{proof}
 \end{forthel}
 

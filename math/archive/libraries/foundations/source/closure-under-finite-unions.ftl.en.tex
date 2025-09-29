@@ -6,12 +6,12 @@
 \importmodule[libraries/foundations]{systems-of-sets.ftl}
 \importmodule[libraries/foundations]{finite-and-infinite-classes.ftl}
 
-\begin{definition}[forthel,id=FOUNDATIONS_14_7040118193913856]
+\begin{definition}[forthel]
   Let $X$ be a system of sets.
   $X$ is \emph{closed under finite unions} iff $\SETunionover U \Elem X$ for every nonempty finite subclass $U$ of $X$.
 \end{definition}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_17_4164024962908160]
+\begin{proposition}[forthel]
   Let $X$ be a system of sets.
   $X$ is closed under finite unions iff $U \SETunion V \Elem X$ for every $U, V \Elem X$.
 \end{proposition}
@@ -59,7 +59,7 @@
           $V$ is nonempty.
           Indeed $f(\NATone) \Elem \FUNim{f}{\NATsegment{\NATone}{n}}$.
           Indeed $\NATone \Elem \NATsegment{\NATone}{n}$.
-          Hence $f \FUNrest \NATsegment{\NATone}{n}$ is a bijection between $\NATsegment{\NATone}{n}$ and $V$ (by \printref{FOUNDATIONS_08_647446231252992}).
+          Hence $f \FUNrest \NATsegment{\NATone}{n}$ is a bijection between $\NATsegment{\NATone}{n}$ and $V$ (by \sn{bijectivity of restriction of injection}).
           Thus $V$ has $n$ elements.
           Consequently $\SETunionover V \Elem X$.
 
@@ -101,7 +101,7 @@
       End.
     \end{proof}
 
-    Therefore $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+    Therefore $\Phi$ contains every natural number (by \sr{induction I}{induction}).
     Thus $\SETunionover U \Elem X$ for every nonempty finite subclass $U$ of $X$.
     Consequently $X$ is closed under finite unions.
   \end{case}

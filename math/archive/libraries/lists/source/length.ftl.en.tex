@@ -7,16 +7,16 @@
 \importmodule[libraries/arithmetics]{natural-numbers.ftl}
 \symdef{LISTlength}{\textsf{length}}
 
-\begin{signature}[forthel,id=LISTS_LENGTH_4578620297183232]
+\begin{signature}[forthel]
   Let $L$ be a list.
   $\emph{\LISTlength(L)}$ is a natural number.
 \end{signature}
 
-\begin{axiom}[forthel,id=LISTS_LENGTH_3703161885818880]
+\begin{axiom}[forthel]
   $\LISTlength(\LISTlist{}) \Eq \NATzero$.
 \end{axiom}
 
-\begin{axiom}[forthel,id=LISTS_LENGTH_8050301789536256]
+\begin{axiom}[forthel]
   Let $a$ be an object and $L$ be a list.
   Then $\LISTlength(a \LISTcons L) \Eq \LISTlength(L) \NATplus \NATone$.
 \end{axiom}

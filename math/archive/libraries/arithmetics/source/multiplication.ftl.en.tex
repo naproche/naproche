@@ -7,19 +7,18 @@
 \symdef{NATmul}{\,\cdot\,}
 
 \begin{sfragment}{Definition}
-  \begin{signature}[forthel,id=ARITHMETIC_06_6626346484629504]
+  \begin{signature}[forthel]
     Let $n, m$ be natural numbers.
     $\emph{n \NATmul m}$ is a natural number.
-
     Let the \emph{product of $n$ and $m$} stand for $n \NATmul m$.
   \end{signature}
 
-  \begin{axiom}[forthel,id=ARITHMETIC_06_8941041092657152]
+  \begin{axiom}[forthel]
     Let $n$ be a natural number.
     Then $n \NATmul \NATzero \Eq \NATzero$.
   \end{axiom}
 
-  \begin{axiom}[forthel,id=ARITHMETIC_06_2211275408932864]
+  \begin{axiom}[forthel]
     Let $n, m$ be natural numbers.
     Then $n \NATmul (m \NATplus \NATone) \Eq (n \NATmul m) \NATplus n$.
   \end{axiom}
@@ -27,7 +26,10 @@
 
 \begin{sfragment}{Computation Laws}
   \begin{sfragment}{Distributivity}
-    \begin{proposition}[forthel,id=ARITHMETIC_06_9001524774567936]
+
+    \symdecl*{left-distributivity of multiplication over addition}
+
+    \begin{proposition}[forthel,name=left-distributivity of multiplication over addition]
       Let $n, m, k$ be natural numbers.
       Then $n \NATmul (m \NATplus k) \Eq (n \NATmul m) \NATplus (n \NATmul k)$.
     \end{proposition}
@@ -58,7 +60,7 @@
       Therefore $n \NATmul (m \NATplus k) \Eq (n \NATmul m) \NATplus (n \NATmul k)$.
     \end{proof}
 
-    \begin{proposition}[forthel,id=ARITHMETIC_06_5742967566368768]
+    \begin{proposition}[forthel]
       Let $n, m, k$ be natural numbers.
       Then $(n \NATplus m) \NATmul k \Eq (n \NATmul k) \NATplus (m \NATmul k)$.
     \end{proposition}
@@ -93,7 +95,7 @@
   \end{sfragment}
 
   \begin{sfragment}{Multiplication with $1$ and $2$}
-    \begin{proposition}[forthel,id=ARITHMETIC_06_2910559821365248]
+    \begin{proposition}[forthel]
       Let $n$ be a natural number.
       Then $n \NATmul \NATone \Eq n$.
     \end{proposition}
@@ -105,7 +107,7 @@
         \Eq n$.
     \end{proof}
 
-    \begin{corollary}[forthel,id=ARITHMETIC_06_5679541582299136]
+    \begin{corollary}[forthel]
       Let $n$ be a natural number.
       Then $n \NATmul \NATtwo \Eq n \NATplus n$.
     \end{corollary}
@@ -118,7 +120,7 @@
   \end{sfragment}
 
   \begin{sfragment}{Associativity}
-    \begin{proposition}[forthel,id=ARITHMETIC_06_347295585402880]
+    \begin{proposition}[forthel]
       Let $n, m, k$ be natural numbers.
       Then $n \NATmul (m \NATmul k) \Eq (n \NATmul m) \NATmul k$.
     \end{proposition}
@@ -143,13 +145,16 @@
         \[    \Eq (n \NATmul m) \NATmul (k' \NATplus \NATone).                     \]
       \end{proof}
 
-      Hence every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+      Hence every natural number is contained in $\Phi$ (by \sr{induction I}{induction}).
       Thus $n \NATmul (m \NATmul k) \Eq (n \NATmul m) \NATmul k$.
     \end{proof}
   \end{sfragment}
 
   \begin{sfragment}{Commutativity}
-    \begin{proposition}[forthel,id=ARITHMETIC_06_1764759896588288]
+
+    \symdecl*{commutativity of multiplication}
+
+    \begin{proposition}[forthel,name=commutativity of multiplication]
       Let $n, m$ be natural numbers.
       Then \[ n \NATmul m \Eq m \NATmul n. \]
     \end{proposition}
@@ -174,7 +179,7 @@
             \Eq \NATzero \NATmul (n' \NATplus \NATone). \]
         \end{proof}
 
-        Hence every natural number is contained in $\Psi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+        Hence every natural number is contained in $\Psi$ (by \sr{induction I}{induction}).
         Thus $n \NATmul \NATzero \Eq \NATzero \NATmul n$.
       \end{proof}
 
@@ -194,7 +199,7 @@
           \[    \Eq \NATone \NATmul (n' \NATplus \NATone).   \]
         \end{proof}
 
-        Thus every natural number is contained in $\Theta$ (by \printref{ARITHMETIC_01_4764664342773760}).
+        Thus every natural number is contained in $\Theta$ (by \sr{induction I}{induction}).
         Therefore $n \NATmul \NATone \Eq \NATone \NATmul n$.
       \end{proof}
 
@@ -211,13 +216,13 @@
         Indeed $((\NATone \NATmul n) \NATplus (m' \NATmul n)) \Eq (\NATone \NATplus m') \NATmul n$. %!
       \end{proof}
 
-      Hence every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+      Hence every natural number is contained in $\Phi$ (by \sr{induction I}{induction}).
       Thus $n \NATmul m \Eq m \NATmul n$.
     \end{proof}
   \end{sfragment}
 
   \begin{sfragment}{Non-Existence of Zero-Divisors}
-    \begin{proposition}[forthel,id=ARITHMETIC_06_3843962875936768]
+    \begin{proposition}[forthel]
       Let $n, m$ be natural numbers such that $n \NATmul m \Eq \NATzero$.
       Then $n \Eq \NATzero$ or $m \Eq \NATzero$.
     \end{proposition}
@@ -237,7 +242,10 @@
   \end{sfragment}
 
   \begin{sfragment}{Cancellation}
-    \begin{proposition}[forthel,id=ARITHMETIC_06_31055184658432]
+
+    \symdecl*{right-cancellability of multiplication}
+
+    \begin{proposition}[forthel,name=right-cancellability of multiplication]
       Let $n, m, k$ be natural numbers.
       Assume $k \NotEq \NATzero$.
       If $n \NATmul k \Eq m \NATmul k$ then $n \Eq m$.
@@ -277,7 +285,7 @@
               \Eq (l \NATplus \NATone) \NATmul k
               \Eq (l \NATmul k) \NATplus (\NATone \NATmul k)
               \Eq (l \NATmul k) \NATplus k$.
-            Thus $n' \NATmul k \Eq l \NATmul k$ (by \printref{ARITHMETIC_03_3137702874578944}).
+            Thus $n' \NATmul k \Eq l \NATmul k$ (by \sn{right-cancellability of addition}).
             Indeed $n' \NATmul k$ and $l \NATmul k$ are natural numbers.
             Then we have $n' \Eq l$.
             Indeed if $n' \NATmul k \Eq l \NATmul k$ and $k \NotEq \NATzero$ then $n' \Eq l$.
@@ -288,11 +296,13 @@
         Hence $n' \NATplus \NATone \Elem \Phi$.
       \end{proof}
 
-      Thus every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+      Thus every natural number is contained in $\Phi$ (by \sr{induction I}{induction}).
       Therefore if $n \NATmul k \Eq m \NATmul k$ then $n \Eq m$.
     \end{proof}
 
-    \begin{corollary}[forthel,id=ARITHMETIC_06_8575191374364672]
+    \symdecl*{left-cancellability of multiplication}
+
+    \begin{corollary}[forthel,name=left-cancellability of multiplication]
       Let $n, m, k$ be natural numbers.
       Assume $k \NotEq \NATzero$.
       If $k \NATmul n \Eq k \NATmul m$ then $n \Eq m$.
@@ -301,7 +311,7 @@
       Assume $k \NATmul n \Eq k \NATmul m$.
       We have $k \NATmul n \Eq n \NATmul k$ and $k \NATmul m \Eq m \NATmul k$.
       Hence $n \NATmul k \Eq m \NATmul k$.
-      Thus $n \Eq m$ (by \printref{ARITHMETIC_06_31055184658432}).
+      Thus $n \Eq m$ (by \sn{right-cancellability of multiplication}).
     \end{proof}
   \end{sfragment}
 \end{sfragment}

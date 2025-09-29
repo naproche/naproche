@@ -6,7 +6,7 @@
 \importmodule[libraries/set-theory]{omega-is-limit-ordinal.ftl}
 \importmodule[libraries/set-theory]{cardinals.ftl}
 
-\begin{theorem}[forthel,id=SET_THEORY_07_2948332552978432]
+\begin{theorem}[forthel]
   Let $n \Elem \ORDomega$.
   Then $\SETcard{n} \Eq n$.
 \end{theorem}
@@ -34,7 +34,7 @@
       We can show that $\FUNinv{f}(n') \ORDless m$.
         Assume the contrary.
         Then $\FUNinv{f}(n') \Eq m$.
-        $f \FUNrest m$ is a bijection between $m$ and $\FUNim{f}{m}$ (by \printref{FOUNDATIONS_08_647446231252992}).
+        $f \FUNrest m$ is a bijection between $m$ and $\FUNim{f}{m}$ (by \sn{bijectivity of restriction of injection}).
         Indeed $f$ is an injective map from $\SETcard{\ORDsucc(n')}$ to $\ORDsucc(n')$ and
         $m \SETinclude \SETcard{\ORDsucc(n')}$.
         We have $\FUNim{f}{m} \SETinclude n'$ and $n' \SETinclude \FUNim{f}{m}$.
@@ -141,12 +141,12 @@
     End.
   \end{proof}
 
-  Thus $\ORDomega \SETinclude \Phi$ (by \printref{SET_THEORY_03_344585425387520}).
+  Thus $\ORDomega \SETinclude \Phi$ (by \sn{transfinite induction III}).
   Consequently $n \Elem \Phi$.
   Therefore $\SETcard{n} \Eq n$.
 \end{proof}
 
-\begin{corollary}[forthel,id=SET_THEORY_07_7061392098066432]
+\begin{corollary}[forthel]
   Every natural number is a cardinal.
 \end{corollary}
 \end{smodule}

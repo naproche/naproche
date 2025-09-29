@@ -6,31 +6,31 @@
 \importmodule[libraries/foundations]{finite-and-infinite-classes.ftl}
 
 \begin{sfragment}{Countably Infinite Classes}
-  \begin{definition}[forthel,id=FOUNDATIONS_14_6249029537103872]
+  \begin{definition}[forthel]
     Let $X$ be a class.
     $X$ is \emph{countably infinite} iff $X$ is equinumerous to $\Nat$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_14_803449379749888]
+  \begin{proposition}[forthel]
     Let $X, Y$ be classes.
     If $X$ is countably infinite and $Y$ is equinumerous to $X$ then $Y$ is countably infinite.
   \end{proposition}
   \begin{proof}[forthel]
     Assume that $X$ is countably infinite and $Y$ is equinumerous to $X$.
     Take a bijection $f$ between $\Nat$ and $X$ and a bijection $g$ between $X$ and $Y$.
-    Then $g \FUNcomp f$ is a bijection between $\Nat$ and $Y$ (by \printref{FOUNDATIONS_08_6435206693126144}).
+    Then $g \FUNcomp f$ is a bijection between $\Nat$ and $Y$ (by \sn{bijectivity of composition of bijections}).
     Indeed $X, Y$ are classes.
     Hence $Y$ is countably infinite.
   \end{proof}
 \end{sfragment}
 
 \begin{sfragment}{Countable Classes}
-  \begin{definition}[forthel,id=FOUNDATIONS_14_5412969443753984]
+  \begin{definition}[forthel]
     Let $X$ be a class.
     $X$ is \emph{countable} iff $X$ is finite or $X$ is countably infinite.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_14_4182588499427328]
+  \begin{proposition}[forthel]
     Let $X, Y$ be classes.
     If $X$ is countable and $Y$ is equinumerous to $X$ then $Y$ is countable.
   \end{proposition}
@@ -43,12 +43,12 @@
 \end{sfragment}
 
 \begin{sfragment}{Uncountable Classes}
-  \begin{definition}[forthel,id=FOUNDATIONS_14_2411928395710464]
+  \begin{definition}[forthel]
     Let $X$ be a class.
     $X$ is \emph{uncountable} iff $X$ is not countable.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_14_1073385358491648]
+  \begin{proposition}[forthel]
     Let $X, Y$ be classes.
     If $X$ is uncountable and $Y$ is equinumerous to $X$ then $Y$ is uncountable.
   \end{proposition}

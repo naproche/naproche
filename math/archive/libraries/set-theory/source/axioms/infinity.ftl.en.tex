@@ -6,12 +6,14 @@
 \importmodule[libraries/foundations]{maps.ftl}
 \importmodule[libraries/foundations]{sub-and-supersets.ftl}
 
-\begin{definition}[forthel,id=FOUNDATIONS_10_298374925738210]
+\symdecl*{Axiom of Infinity}
+
+\begin{definition}[forthel]
   Let $A$ be a class and $a$ be an object and $f$ be a map such that $A \SETinclude \Dom(f)$.
   $A$ is \emph{inductive regarding $a$ and $f$} iff $a \Elem A$ and for all $x \Elem A$ we have $f(x) \Elem A$.
 \end{definition}
 
-\begin{axiom}[forthel,title=Infinity Axiom,id=FOUNDATIONS_10_367388832825344]
+\begin{axiom}[forthel,title=Axiom,name=Axiom of Infinity]
   Let $A$ be a class and $a \Elem A$ and $f \FUNfromto{A}{A}$.
   Then there exists a subset of $A$ that is inductive regarding $a$ and $f$.
 \end{axiom}

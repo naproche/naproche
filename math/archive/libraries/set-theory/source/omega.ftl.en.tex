@@ -7,22 +7,23 @@
 \importmodule[libraries/set-theory]{successor-ordinals.ftl}
 \symdef{ORDomega}{\omega}
 
-\begin{definition}[forthel,id=SET_THEORY_03_4310076227584000]
+\begin{definition}[forthel]
   \[ \emph{\ORDomega} = \SClass{n}{\Ord}{\classtext{$n \Elem X$ for every $X \SETinclude \Ord$ such that $\ORDzero \Elem X$ and for all $x \Elem X$ we have $\ORDsucc(x) \Elem X$}}. \]
-
-Let a \emph{natural number} stand for an element of $\ORDomega$.
+  Let a \emph{natural number} stand for an element of $\ORDomega$.
 \end{definition}
 
-\begin{proposition}[forthel,id=SET_THEORY_03_3576717620805632]
+\begin{proposition}[forthel]
   $\ORDzero \Elem \ORDomega$.
 \end{proposition}
 
-\begin{proposition}[forthel,id=SET_THEORY_03_8807317141192704]
+\begin{proposition}[forthel]
   Let $n \Elem \ORDomega$.
   Then $\ORDsucc(n) \Elem \ORDomega$.
 \end{proposition}
 
-\begin{proposition}[forthel,id=SET_THEORY_03_344585425387520]
+\symdecl*{transfinite induction III}
+
+\begin{proposition}[forthel,name=transfinite induction III]
   Let $\Phi \SETinclude \ORDomega$.
   Assume that $\ORDzero \Elem \Phi$ and for every $x \Elem \Phi$ we have
   $\ORDsucc(x) \Elem \Phi$.
@@ -58,7 +59,7 @@ Let a \emph{natural number} stand for an element of $\ORDomega$.
   Contradiction.
 \end{proof}
 
-\begin{corollary}[forthel,id=SET_THEORY_03_4847727433220096]
+\begin{corollary}[forthel]
   $\ORDomega$ is a set.
 \end{corollary}
 \begin{proof}[forthel]
@@ -70,7 +71,7 @@ Let a \emph{natural number} stand for an element of $\ORDomega$.
   Therefore $\ORDomega$ is a set.
 \end{proof}
 
-\begin{proposition}[forthel,id=SET_THEORY_03_5885789275684864]
+\begin{proposition}[forthel]
   Let $n \Elem \ORDomega$.
   Then $n \Eq \ORDzero$ or $n \Eq \ORDsucc(m)$ for some $m \Elem \ORDomega$.
 \end{proposition}
@@ -96,7 +97,7 @@ Let a \emph{natural number} stand for an element of $\ORDomega$.
   Contradiction.
 \end{proof}
 
-\begin{proposition}[forthel,id=SET_THEORY_03_5057540872208384]
+\begin{proposition}[forthel]
   Every element of $\ORDomega$ is an ordinal.
 \end{proposition}
 \end{smodule}

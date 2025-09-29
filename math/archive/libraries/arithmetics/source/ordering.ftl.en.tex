@@ -18,10 +18,9 @@
 \symdef{Natgeqthan}[args=1]{\comp{\mathbb{N}}_{\comp\geq#1}}
 
 \begin{sfragment}{Definitions and Immediate Consequences}
-  \begin{definition}[forthel,id=ARITHMETIC_04_1926295512416256]
+  \begin{definition}[forthel]
     Let $n, m$ be natural numbers.
     $\emph{n \NATless m}$ iff there exists a nonzero natural number $k$ such that $m \Eq n \NATplus k$.
-
     Let $n$ is \emph{less than $m$} stand for $n \NATless m$.
     Let $\emph{n \NATgtr m}$ stand for $m \NATless n$.
     Let $n$ is \emph{greater than $m$} stand for $n \NATgtr m$.
@@ -29,25 +28,24 @@
     Let $\emph{n \NATngtr m}$ stand for $n$ is not greater than $m$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_04_3668680374222848]
+  \begin{definition}[forthel]
     Let $n$ be a natural number.
     $\emph{\Natlessthan{n}} = \SClass{k}{\Nat}{k \NATless n}$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_04_3670333934534656]
+  \begin{definition}[forthel]
     Let $n$ be a natural number.
     $\emph{\Natgtrthan{n}} = \SClass{k}{\Nat}{k \NATgtr n}$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_04_7916616566177792]
+  \begin{definition}[forthel]
     Let $n$ be a natural number.
     $n$ is \emph{positive} iff $n \NATgtr \NATzero$.
 \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_04_4593841531256832]
+  \begin{definition}[forthel]
     Let $n, m$ be natural numbers.
     $\emph{n \NATleq m}$ iff there exists a natural number $k$ such that $m \Eq n \NATplus k$.
-
     Let $n$ is \emph{less than or equal to $m$} stand for $n \NATleq m$.
     Let $\emph{n \NATgeq m}$ stand for $m \NATleq n$.
     Let $n$ is \emph{greater than or equal to $m$} stand for $n \NATgeq m$.
@@ -55,17 +53,17 @@
     Let $\emph{n \NATngeq m}$ stand for $n$ is not greater than or equal to $m$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_04_72501526790144]
+  \begin{definition}[forthel]
     Let $n$ be a natural number.
     $\emph{\Natleqthan{n}} = \SClass{k}{\Nat}{k \NATleq n}$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_04_1706933421604864]
+  \begin{definition}[forthel]
     Let $n$ be a natural number.
     $\emph{\Natgeqthan{n}} = \SClass{k}{\Nat}{k \NATgeq n }$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_04_5385415374667776]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers.
     $n \NATleq m$ iff $n \NATless m$ or $n \Eq m$.
   \end{proposition}
@@ -82,17 +80,17 @@
     \end{case}
   \end{proof}
 
-  \begin{definition}[forthel,id=ARITHMETIC_04_6232154608500736]
+  \begin{definition}[forthel]
     Let $n$ be a natural number.
     A \emph{predecessor of $n$} is a natural number that is less than $n$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_04_8147686326796288]
+  \begin{definition}[forthel]
     Let $n$ be a natural number.
     A \emph{successor of $n$} is a natural number that is greater than $n$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_04_4826285599621120]
+  \begin{proposition}[forthel]
     Let $n$ be a natural number.
     Then $n$ is positive iff $n$ is nonzero.
   \end{proposition}
@@ -112,7 +110,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Basic Properties}
-  \begin{proposition}[forthel,id=ARITHMETIC_04_1037693395927040]
+  \begin{proposition}[forthel]
     Let $n$ be a natural number.
     Then \[ n \NATnless n. \]
   \end{proposition}
@@ -123,7 +121,7 @@
     Contradiction.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_04_8266284905005056]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers.
     Then \[ n \NATless m \Implies n \NotEq m. \]
   \end{proposition}
@@ -134,7 +132,7 @@
     Hence $n \NotEq m$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_04_4190604718243840]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers.
     If $n \NATleq m$ and $m \NATleq n$ then $n \Eq m$.
   \end{proposition}
@@ -152,7 +150,7 @@
     Therefore $m \Eq n$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_04_6413905244979200]
+  \begin{proposition}[forthel]
     Let $n, m, k$ be natural numbers.
     If $n \NATless m \NATless k$ then $n \NATless k$.
   \end{proposition}
@@ -168,7 +166,7 @@
     Hence $n \NATless k$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_04_5480385953660928]
+  \begin{proposition}[forthel]
     Let $n, m, k$ be natural numbers.
     If $n \NATleq m \NATleq k$ then $n \NATleq k$.
   \end{proposition}
@@ -180,7 +178,7 @@
     \begin{case}{$n \NATless m \NATless k$.} \end{case}
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_04_5098403656630272]
+  \begin{proposition}[forthel]
     Let $n, m, k$ be natural numbers.
     If $n \NATleq m \NATless k$ then $n \NATless k$.
   \end{proposition}
@@ -190,7 +188,7 @@
     If $n \NATless m$ then $n \NATless k$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_04_4809599527944192]
+  \begin{proposition}[forthel]
     Let $n, m, k$ be natural numbers.
     If $n \NATless m \NATleq k$ then $n \NATless k$.
   \end{proposition}
@@ -200,7 +198,7 @@
     If $m \NATless k$ then $n \NATless k$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_04_8584998051381248]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers.
     If $n \NATless m$ then $n \NATplus \NATone \NATleq m$.
   \end{proposition}
@@ -224,7 +222,7 @@
     \end{case}
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_04_8201937860165632]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers.
     Then $n \NATless m$ or $n \Eq m$ or $n \NATgtr m$.
   \end{proposition}
@@ -254,11 +252,11 @@
       \end{case}
     \end{proof}
 
-    Thus every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+    Thus every natural number is contained in $\Phi$ (by \sr{induction I}{induction}).
     Therefore $n \NATless m$ or $n \Eq m$ or $n \NATgtr m$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_04_6991525988794368]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers.
     Then $n \NATnless m$ iff $n \NATgeq m$.
   \end{proposition}
@@ -278,7 +276,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Ordering and Successors}
-  \begin{proposition}[forthel,id=ARITHMETIC_04_7006203091615744]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers.
     If $n \NATless m \NATleq n \NATplus \NATone$ then $m \Eq n \NATplus \NATone$.
   \end{proposition}
@@ -334,7 +332,7 @@
       \Eq m$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_04_8792330561650688]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers.
     If $n \NATleq m \NATless n \NATplus \NATone$ then $n \Eq m$.
   \end{proposition}
@@ -349,7 +347,7 @@
     \end{case}
   \end{proof}
 
-  \begin{corollary}[forthel,id=ARITHMETIC_04_1802826644717568]
+  \begin{corollary}[forthel]
     Let $n$ be a natural number.
     There is no natural number $m$ such that $n \NATless m \NATless n \NATplus \NATone$.
   \end{corollary}
@@ -362,7 +360,7 @@
     Contradiction.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_04_990407185924096]
+  \begin{proposition}[forthel]
     Let $n$ be a natural number.
     Then $n \NATplus \NATone \NATgeq \NATone$.
   \end{proposition}
@@ -377,7 +375,10 @@
 \end{sfragment}
 
 \begin{sfragment}{Ordering and Addition}
-  \begin{proposition}[forthel,id=ARITHMETIC_04_7354062662008832]
+
+  \symdecl*{preservation of ordering under right-addition}
+
+  \begin{proposition}[forthel,name=preservation of ordering under right-addition]
     Let $n, m, k$ be natural numbers.
     Then $n \NATless m$ iff $n \NATplus k \NATless m \NATplus k$.
   \end{proposition}
@@ -397,12 +398,12 @@
         \Eq n \NATplus (l \NATplus k)
         \Eq (n \NATplus l) \NATplus k$.
       Hence $m \NATplus k \Eq (n \NATplus l) \NATplus k$.
-      Thus $m \Eq n \NATplus l$ (by \printref{ARITHMETIC_03_3137702874578944}).
+      Thus $m \Eq n \NATplus l$ (by \sn{right-cancellability of addition}).
       Therefore $n \NATless m$.
     \end{case}
   \end{proof}
 
-  \begin{corollary}[forthel,id=ARITHMETIC_04_1901366129721344]
+  \begin{corollary}[forthel]
     Let $n, m, k$ be natural numbers.
     Then $n \NATless m$ iff $k \NATplus n \NATless k \NATplus m$.
   \end{corollary}
@@ -411,19 +412,22 @@
     Hence $k \NATplus n \NATless k \NATplus m$ iff $n \NATplus k \NATless m \NATplus k$.
   \end{proof}
 
-  \begin{corollary}[forthel,id=ARITHMETIC_04_4203390999461888]
+  \begin{corollary}[forthel]
     Let $n, m, k$ be natural numbers.
     Then $n \NATleq m$ iff $k \NATplus n \NATleq k \NATplus m$.
   \end{corollary}
 
-  \begin{corollary}[forthel,id=ARITHMETIC_04_5512590832697344]
+  \begin{corollary}[forthel]
     Let $n, m, k$ be natural numbers.
     Then $n \NATleq m$ iff $n \NATplus k \NATleq m \NATplus k$.
   \end{corollary}
 \end{sfragment}
 
 \begin{sfragment}{Induction Revisited}
-  \begin{proposition}[forthel,id=ARITHMETIC_04_272317502455808]
+
+  \symdecl*{wellfoundedness of ordering}
+
+  \begin{proposition}[forthel,name=wellfoundedness of ordering]
     Let $A$ be a nonempty subclass of $\Nat$.
     Then there exists a $m \Elem A$ such that $m \NATleq n$ for all $n \Elem A$.
   \end{proposition}
@@ -457,13 +461,15 @@
       Contradiction.
     \end{proof}
 
-    Then $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+    Then $\Phi$ contains every natural number (by \sr{induction I}{induction}).
     Therefore every natural number is less than any element of $A$.
     Consequently $A$ has no elements.
     Contradiction.
   \end{proof}
 
-  \begin{theorem}[forthel,id=ARITHMETIC_04_3609801697263616]
+  \symdecl*{induction II}
+
+  \begin{theorem}[forthel,name=induction II]
     Let $A$ be a class.
     Assume for all $n \Elem \Nat$ if $A$ contains all predecessors of $n$ then $A$ contains $n$.
     Then $A$ contains every natural number.
@@ -479,7 +485,9 @@
     Contradiction.
   \end{proof}
 
-  \begin{theorem}[forthel,id=ARITHMETIC_04_4976599269113856]
+  \symdecl*{induction III}
+
+  \begin{theorem}[forthel,name=induction III]
     Let $A$ be a class.
     Let $k$ be a natural number such that $k \Elem A$.
     Assume that for all $n \Elem \Natgeqthan{k}$ if $n \Elem A$ then $n \NATplus \NATone \Elem A$.
@@ -512,7 +520,7 @@
       Therefore $n \NATplus \NATone \Elem \Phi$.
     \end{proof}
 
-    Thus $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+    Thus $\Phi$ contains every natural number (by \sr{induction I}{induction}).
     Consequently for all $n \Elem \Natgeqthan{k}$ we have $n \Elem A$.
   \end{proof}
 \end{sfragment}

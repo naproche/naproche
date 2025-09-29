@@ -19,27 +19,22 @@
 \symdef{SETdiff}{\,\setminus\,}
 
 \begin{sfragment}{Sub- and Superclasses}
-  \begin{definition}[forthel,id=FOUNDATIONS_01_3275578358628352]
+  \begin{definition}[forthel]
     Let $A$ be a class.
     A \emph{subclass of $A$} is a class $B$ such that every element of $B$ is an
     element of $A$.
-
     Let $\emph{B \SETinclude A}$ stand for $B$ is a subclass of $A$.
-
     Let a \emph{superclass of $B$} stand for a class $A$ such that $B \SETinclude A$.
     Let $\emph{B \SETniclude A}$ stand for $B$ is a superclass of $A$.
-
     Let a \emph{proper subclass of $A$} stand for a subclass $B$ of $A$ such that $B \NotEq A$.
     Let $\emph{B \SETstrictinclude A}$ stand for $B$ is a proper subclass of $A$.
-
     Let a \emph{proper superclass of $B$} stand for a superclass $A$ of $B$ such that $A \NotEq B$.
     Let $\emph{B \SETstrictniclude A}$ stand for $B$ is a proper superclass of $A$.
-
     Let \emph{$A$ includes $B$} stand for $B \SETinclude A$.
     Let $B$ is \emph{included in $A$} stand for $B \SETinclude A$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_01_5994555614691328]
+  \begin{proposition}[forthel]
     Let $A$ be a class.
     Then $A \SETinclude A$.
   \end{proposition}
@@ -48,7 +43,7 @@
     Therefore $A \SETinclude A$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_01_3939677545431040]
+  \begin{proposition}[forthel]
     Let $A, B, C$ be classes.
     If $A \SETinclude B$ and $B \SETinclude C$ then $A \SETinclude C$.
   \end{proposition}
@@ -59,7 +54,7 @@
     Thus $A \SETinclude C$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_01_7159957847801856]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes.
     If $A \SETinclude B$ and $B \SETinclude A$ then $A \Eq B$.
   \end{proposition}
@@ -71,18 +66,17 @@
 \end{sfragment}
 
 \begin{sfragment}{The Empty Class}
-  \begin{definition}[forthel,id=FOUNDATIONS_01_6252477624090624]
+  \begin{definition}[forthel]
     Let $A$ be a class.
     $A$ is \emph{empty} iff $A$ has no elements.
-
     Let $A$ is \emph{nonempty} stand for $A$ is not empty.
   \end{definition}
 
-  \begin{definition}[forthel,id=FOUNDATIONS_01_7939928493129728]
+  \begin{definition}[forthel]
     $\emph{\SETempty} = \CClass{x}{x \NotEq x}$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_01_2263153161273344]
+  \begin{proposition}[forthel]
     Let $A$ be a class.
     $A$ is empty iff $A \Eq \SETempty$.
   \end{proposition}
@@ -95,11 +89,11 @@
     Thus if $A$ is empty then $A \Eq \SETempty$.
   \end{proof}
 
-  \begin{corollary}[forthel,id=FOUNDATIONS_01_1495141426659328]
+  \begin{corollary}[forthel]
     $\SETempty$ is empty.
   \end{corollary}
 
-  \begin{corollary}[forthel,id=FOUNDATIONS_01_6931785090859008]
+  \begin{corollary}[forthel]
     Let $A$ be a class.
     Then $\SETempty \SETinclude A$.
   \end{corollary}
@@ -110,29 +104,27 @@
 \end{sfragment}
 
 \begin{sfragment}{Unordered Pairs}
-  \begin{definition}[forthel,id=FOUNDATIONS_01_3471035364016128]
+  \begin{definition}[forthel]
     Let $a, b$ be objects.
     $\emph{\SETpair{a}{b}} = \CClass{x}{x \Eq a\text{ or }x \Eq b}$.
-
     Let the \emph{unordered pair of $a$ and $b$} stand for $\SETpair{a}{b}$.
   \end{definition}
 
-  \begin{definition}[forthel,id=FOUNDATIONS_01_605432672419840]
+  \begin{definition}[forthel]
     An \emph{unordered pair} is a class $A$ such that $A \Eq \SETpair{a}{b}$ for some distinct objects $a, b$.
   \end{definition}
 
-  \begin{definition}[forthel,id=FOUNDATIONS_01_1160414603771904]
+  \begin{definition}[forthel]
     Let $a$ be an object.
     $\emph{\SETsingleton{a}} = \CClass{x}{x \Eq a}$.
-
     Let the \emph{singleton class of $a$} stand for $\SETsingleton{a}$.
   \end{definition}
 
-  \begin{definition}[forthel,id=FOUNDATIONS_01_6786618161627136]
+  \begin{definition}[forthel]
     A \emph{singleton class} is a class $A$ such that $A \Eq \SETsingleton{a}$ for some object $a$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_01_6125259604361216]
+  \begin{proposition}[forthel]
     Let $a, a', b, b'$ be objects.
     Assume $\SETpair{a}{b} \Eq \SETpair{a'}{b'}$.
     Then ($a \Eq a'$ and $b \Eq b'$) or ($a \Eq b'$ and $b \Eq a'$).
@@ -144,52 +136,49 @@
     Hence ($a \Eq a'$ and $b \Eq b'$) or ($a \Eq b'$ and $b \Eq a'$).
   \end{proof}
 
-  \begin{corollary}[forthel,id=FOUNDATIONS_01_6954678910713856]
+  \begin{corollary}[forthel]
     Let $a, a'$ be objects.
     If $\SETsingleton{a} \Eq \SETsingleton{a'}$ then $a \Eq a'$.
   \end{corollary}
 
-  \begin{definition}[forthel,id=FOUNDATIONS_01_29867480293464351]
+  \begin{definition}[forthel]
     Let $A$ be a class.
     A \emph{unique element of $A$} is an element $a$ of $A$ such that for each $x \Elem A$ we have $x \Eq a$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_01_0166348647163481]
+  \begin{proposition}[forthel]
     Let $A$ be a class.
     Then $A$ has a unique element iff $A \Eq \SETsingleton{a}$ for some object $a$.
   \end{proposition}
 \end{sfragment}
 
 \begin{sfragment}{Unions, Intersections, Complements}
-  \begin{definition}[forthel,id=FOUNDATIONS_01_2159753924968448]
+  \begin{definition}[forthel]
     Let $A, B$ be classes.
     $\emph{A \SETunion B} = \CClass{x}{x \Elem A\text{ or }x \Elem B}$.
-
     Let the \emph{union of $A$ and $B$} stand for $A \SETunion B$.
   \end{definition}
 
-  \begin{definition}[forthel,id=FOUNDATIONS_01_5744033011859456]
+  \begin{definition}[forthel]
     Let $A, B$ be classes.
     $\emph{A \SETintersect B} = \CClass{x}{x \Elem A\text{ and }x \Elem B}$.
-
     Let the \emph{intersection of $A$ and $B$} stand for $A \SETintersect B$.
   \end{definition}
 
-  \begin{definition}[forthel,id=FOUNDATIONS_01_7620345041256448]
+  \begin{definition}[forthel]
     Let $A, B$ be classes.
     $\emph{A \SETdiff B} = \CClass{x}{x \Elem A\text{ and }x \NotElem B}$.
-
     Let the \emph{complement of $B$ in $A$} stand for $A \SETdiff B$.
   \end{definition}
 \end{sfragment}
 
 \begin{sfragment}{Disjoint Classes}
-  \begin{definition}[forthel,id=FOUNDATIONS_01_4981913324355584]
+  \begin{definition}[forthel]
     Let $A, B$ be classes.
     $A$ and $B$ are \emph{disjoint} iff $A$ and $B$ have no common elements.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_01_1211191546347520]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes.
     Then $A$ and $B$ are disjoint iff $A \SETintersect B$ is empty.
   \end{proposition}

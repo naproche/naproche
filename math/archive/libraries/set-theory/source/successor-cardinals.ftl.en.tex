@@ -7,7 +7,7 @@
 \importmodule[articles]{cantor.ftl}
 \symdef{CARDsucc}[args=1]{#1^{\comp+}}
 
-\begin{lemma}[forthel,id=SET_THEORY_06_489264832709174]
+\begin{lemma}[forthel]
   For every ordinal $\alpha$ there exists a cardinal greater than $\alpha$.
 \end{lemma}
 \begin{proof}[forthel]
@@ -28,16 +28,16 @@
   End.
 \end{proof}
 
-\begin{definition}[forthel,id=SET_THEORY_06_9568425123021254]
+\begin{definition}[forthel]
   Let $\kappa$ be a cardinal.
   $\emph{\CARDsucc{\kappa}}$ is the cardinal such that $\kappa \ORDless \CARDsucc{\kappa}$ and there is no cardinal $\nu$ such that $\kappa \ORDless \nu \ORDless \CARDsucc{\kappa}$.
 \end{definition}
 
-\begin{definition}[forthel,id=SET_THEORY_06_6818986081648640]
+\begin{definition}[forthel]
   A \emph{successor cardinal} is a cardinal number $\kappa$ such that $\kappa \Eq \CARDsucc{\nu}$ for some cardinal number $\nu$.
 \end{definition}
 
-\begin{proposition}[forthel,id=SET_THEORY_06_5231202126545218]
+\begin{proposition}[forthel]
   Let $\kappa$ be a cardinal.
   Then $\SETcard{\alpha} \ORDleq \kappa$ for every $\alpha \Elem \CARDsucc{\kappa}$.
 \end{proposition}

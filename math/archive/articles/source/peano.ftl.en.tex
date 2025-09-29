@@ -76,40 +76,51 @@ number of theorems about addition of natural numbers.
 
 \subsection{Axioms.}
 
+\symdecl*{P1}
+\symdecl*{P2}
+\symdecl*{P3}
+\symdecl*{P4}
+\symdecl*{P5}
+\symdecl*{P6}
+\symdecl*{P7}
+\symdecl*{P8}
+\symdecl*{P9}
+
 \begin{forthel}
-  \begin{axiom*}[title=1,id=P1]
+  \begin{axiom*}[title=1,name=P1]
     $\one \Elem \Nat$.
   \end{axiom*}
 
-  \begin{axiom*}[title=2,id=P2]
+  \begin{axiom*}[title=2,name=P2]
     $a \Elem \Nat \Implies a \Eq a$.
   \end{axiom*}
   
-  \begin{axiom*}[title=3,id=P3]
+  \begin{axiom*}[title=3,name=P3]
     $a,b,c \Elem \Nat \Implies (a \Eq b \Iff b \Eq a)$.
   \end{axiom*}
   
-  \begin{axiom*}[title=4,id=P4]
+  \begin{axiom*}[title=4,name=P4]
     $a,b \Elem \Nat \Implies ((a \Eq b \And b \Eq c) \Implies a \Eq c)$.
   \end{axiom*}
   
-  \begin{axiom*}[title=5,id=P5]
-    $(a \Eq b \And b \Elem \Nat) \Implies a \Elem \Nat$.
+  \begin{axiom*}[title=5,name=P5]
+    $((a \Eq b \And b \Elem \Nat) \Implies a \Elem \Nat)$.
+    % Without the outer parentheses Naproche complains about the "\Implies"
   \end{axiom*}
   
-  \begin{axiom*}[title=6,id=P6]
+  \begin{axiom*}[title=6,name=P6]
     $a \Elem \Nat \Implies \succ{a} \Elem \Nat$.
   \end{axiom*}
   
-  \begin{axiom*}[title=7,id=P7]
+  \begin{axiom*}[title=7,name=P7]
     $a,b \Elem \Nat \Implies (a \Eq b \Iff \succ{a} \Eq \succ{b})$.
   \end{axiom*}
   
-  \begin{axiom*}[title=8,id=P8]
+  \begin{axiom*}[title=8,name=P8]
     $a \Elem \Nat \Implies \succ{a} \NotEq \one$.
   \end{axiom*}
   
-  \begin{axiom*}[title=9,id=P9]
+  \begin{axiom*}[title=9,name=P9]
     Let $k$ be a class.
     Then $(\one \Elem k \And \Forall x \Elem \Nat: x \Elem k \Implies \succ{x} \Elem k) \Implies \Nat \SETinclude k$.
   \end{axiom*}
@@ -119,15 +130,15 @@ number of theorems about addition of natural numbers.
 \subsection{Definitions.}
 
 \begin{forthel}
-  \begin{definition*}[title=10.i,id=P10_1]
+  \begin{definition*}[title=10.i,for=two]
     $\emph{\two} = \succ{\one}$.
   \end{definition*}
 
-  \begin{definition*}[title=10.ii,id=P10_2]
+  \begin{definition*}[title=10.ii,for=three]
     $\emph{\three} = \succ{\two}$.
   \end{definition*}
   
-  \begin{definition*}[title=10.iii,id=P10_3]
+  \begin{definition*}[title=10.iii,for=four]
     $\emph{\four} = \succ{\three}$.
   \end{definition*}
 \end{forthel}
@@ -135,49 +146,59 @@ number of theorems about addition of natural numbers.
 
 \subsection{Theorems.}
 
+\symdecl*{P11}
+\symdecl*{P12}
+\symdecl*{P13}
+\symdecl*{P14}
+\symdecl*{P15}
+\symdecl*{P16}
+\symdecl*{P17}
+
 \begin{forthel}
-  \begin{theorem*}[title=11,id=P11]
+  \begin{theorem*}[title=11,name=P11]
     $\two \Elem \Nat$.
   \end{theorem*}
   \begin{proof}
-    (1) $\one \Elem \Nat$ (by \ref{P1}).
+    (1) $\one \Elem \Nat$ (by \sn{P1}).
 
-    (2) $\one \Elem \Nat \Implies \succ{\one} \Elem \Nat$ (by \ref{P6}).
+    (2) $\one \Elem \Nat \Implies \succ{\one} \Elem \Nat$ (by \sn{P6}).
 
     (3) $\succ{\one} \Elem \Nat$ (by 1, 2).
 
-    (4) $\two \Eq \succ{\one}$ (by \ref{P10_1}).
+    (4) $\two \Eq \succ{\one}$.
 
     Therefore $\two \Elem \Nat$.
   \end{proof}
 
-  \begin{theorem*}[title=12,id=P12]
+  \begin{theorem*}[title=12,name=P12]
     $\three,\four \Elem \Nat$.
   \end{theorem*}
 
-  \begin{theorem*}[title=13,id=P13]
+  \begin{theorem*}[title=13,name=P13]
     $(a,b,c,d \Elem \Nat \And a \Eq b \And b \Eq c \And c \Eq d) \Implies a \Eq d$.
   \end{theorem*}
 
-  \begin{theorem*}[title=14,id=P14]
+  \begin{theorem*}[title=14,name=P14]
     $(a,b,c \Elem \Nat \And a \Eq b \And b \Eq c \And a \NotEq c) \Iff \False$.
   \end{theorem*}
 
-  \begin{theorem*}[title=15,id=P15]
+  \begin{theorem*}[title=15,name=P15]
     $(a,b,c \Elem \Nat \And a \Eq b \And b \NotEq c) \Implies a \NotEq c$.
   \end{theorem*}
 
-  \begin{theorem*}[title=16,id=P16]
+  \begin{theorem*}[title=16,name=P16]
     $(a,b \Elem \Nat \And \succ{a} \Eq \succ{b}) \Implies a \Eq b$.
   \end{theorem*}
 
-  \begin{theorem*}[title=17,id=P17]
+  \begin{theorem*}[title=17,name=P17]
     $a,b \Elem \Nat \Implies (a \NotEq b \Iff \succ{a} \NotEq \succ{b})$.
   \end{theorem*}
 \end{forthel}
 
 
 \subsection{Definition.}
+
+\symdecl*{P18}
 
 \begin{forthel}
   \begin{signature*}
@@ -188,7 +209,7 @@ number of theorems about addition of natural numbers.
     $a \Elem \Nat \Implies a \plus \one \Eq \succ{a}$.
   \end{axiom*}
 
-  \begin{axiom*}[title=18,id=P18]
+  \begin{axiom*}[title=18,name=P18]
     $a,b \Elem \Nat \Implies a \plus (\succ{b}) \Eq \succ{a \plus b}$.
   \end{axiom*}
 \end{forthel}
@@ -196,8 +217,20 @@ number of theorems about addition of natural numbers.
 
 \subsection{Theorems.}
 
+\symdecl*{P19}
+\symdecl*{P20}
+\symdecl*{P21}
+\symdecl*{P22}
+\symdecl*{P23}
+\symdecl*{P24}
+\symdecl*{P24prime}
+\symdecl*{P25}
+\symdecl*{P26}
+\symdecl*{P27}
+\symdecl*{P28}
+
 \begin{forthel}
-  \begin{theorem*}[title=19,id=P19]
+  \begin{theorem*}[title=19,name=P19]
     $a,b \Elem \Nat \Implies a \plus b \Elem \Nat$.
   \end{theorem*}
   \begin{proof}
@@ -205,7 +238,7 @@ number of theorems about addition of natural numbers.
     Define $T = \CClass{b'}{a \plus b' \Elem \Nat}$.
     
     We have $a \Elem \Nat$.
-    Hence $\succ{a} \Elem \Nat$ (by \ref{P6}).
+    Hence $\succ{a} \Elem \Nat$ (by \sn{P6}).
     
     (1) Thus $\one \Elem T$.
 
@@ -214,55 +247,55 @@ number of theorems about addition of natural numbers.
       Let $b' \Elem \Nat$.
       Assume $b' \Elem T$.
       Then $a \plus b' \Elem \Nat$.
-      Hence $\succ{a \plus b'} \Elem \Nat$ (by \ref{P6}).
-      Thus $a \plus \succ{b'} \Elem \Nat$ (by \ref{P18}).
+      Hence $\succ{a \plus b'} \Elem \Nat$ (by \sn{P6}).
+      Thus $a \plus \succ{b'} \Elem \Nat$ (by \sn{P18}).
       Consequently $\succ{b'} \Elem T$.
     \end{proof}
 
-    (3) Therefore $\Nat \SETinclude T$ (by 1, 2, \ref{P9}).
+    (3) Therefore $\Nat \SETinclude T$ (by 1, 2, \sn{P9}).
 
     We have $b \Elem \Nat$.
     Hence $b \Elem T$.
     Thus $a \plus b \Elem \Nat$.
   \end{proof}
 
-  \begin{definition*}[title=20,id=P20]
+  \begin{definition*}[title=20]
     $\emph{\triplus{a}{b}{c}} = (a \plus b) \plus c$.
   \end{definition*}
 
-  \begin{theorem*}[title=21,id=P21]
+  \begin{theorem*}[title=21,name=P21]
     $a,b,c \Elem \Nat \Implies \triplus{a}{b}{c} \Elem \Nat$.
   \end{theorem*}
 
-  \begin{theorem*}[title=22,id=P22]
+  \begin{theorem*}[title=22,name=P22]
     $a,b,c \Elem \Nat \Implies (a \Eq b \Iff a \plus c \Eq b \plus c)$.
   \end{theorem*}
 
-  \begin{theorem*}[title=23,id=P23]
+  \begin{theorem*}[title=23,name=P23]
     $a,b,c \Elem \Nat \Implies (a \plus (b \plus c) \Eq \triplus{a}{b}{c})$.
   \end{theorem*}
 
-  \begin{theorem*}[title=24,id=P24]
+  \begin{theorem*}[title=24,name=P24]
     $a \Elem \Nat \Implies \one \plus a \Eq a \plus \one$.
   \end{theorem*}
 
-  \begin{theorem*}[title=24',id=P24prime]
+  \begin{theorem*}[title=24',name=P24prime]
     $a,b \Elem \Nat \Implies \triplus{\one}{a}{b} \Eq \triplus{a}{\one}{b}$.
   \end{theorem*}
 
-  \begin{theorem*}[title=25,id=P25]
+  \begin{theorem*}[title=25,name=P25]
     $a,b \Elem \Nat \And a \plus b \Eq b \plus a$.
   \end{theorem*}
 
-  \begin{theorem*}[title=26,id=P26]
+  \begin{theorem*}[title=26,name=P26]
     $a,b,c \Elem \Nat \Implies (a \Eq b \Iff c \plus a \Eq c \plus b)$.
   \end{theorem*}
 
-  \begin{theorem*}[title=27,id=P27]
+  \begin{theorem*}[title=27,name=P27]
     $a,b,c \Elem \Nat \Implies \triplus{a}{b}{c} \Eq \triplus{a}{c}{b}$.
   \end{theorem*}
 
-  \begin{theorem*}[title=28,id=P28]
+  \begin{theorem*}[title=28,name=P28]
     $(a,b,c,d \Elem \Nat \And a \Eq b \And c \Eq d) \Implies a \plus c \Eq b \plus d$.
   \end{theorem*}
 \end{forthel}

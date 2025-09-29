@@ -7,34 +7,34 @@
 \importmodule[libraries/foundations]{equinumerosity.ftl}
 
 \begin{sfragment}{Finite Classes}
-  \begin{definition}[forthel,id=FOUNDATIONS_14_3512046897512410]
+  \begin{definition}[forthel]
     Let $X$ be a class and $n$ be a natural number.
     $X$ \emph{has $n$ elements} iff $X$ is equinumerous to $\NATsegment{\NATone}{n}$.
   \end{definition}
 
-  \begin{definition}[forthel,id=FOUNDATIONS_14_3694156977274880]
+  \begin{definition}[forthel]
     Let $X$ be a class.
     $X$ is \emph{finite} iff there exists a natural number $n$ such that $X$ has $n$ elements.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_14_3929085203972096]
+  \begin{proposition}[forthel]
     Let $X, Y$ be classes.
     If $X$ is finite and $Y$ is equinumerous to $X$ then $Y$ is finite.
   \end{proposition}
   \begin{proof}[forthel]
     Assume that $X$ is finite and $Y$ is equinumerous to $X$.
     Take a natural number $n$ and a bijection $f$ between $\NATsegment{\NATone}{n}$ and $X$ and a bijection $g$ between $X$ and $Y$.
-    Then $g \FUNcomp f$ is a bijection between $\NATsegment{\NATone}{n}$ and $Y$ (by \printref{FOUNDATIONS_08_6435206693126144}).
+    Then $g \FUNcomp f$ is a bijection between $\NATsegment{\NATone}{n}$ and $Y$ (by \sn{bijectivity of composition of bijections}).
     Indeed $X, Y$ are classes.
     Hence $Y$ is finite.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_14_5132547854597502]
+  \begin{proposition}[forthel]
     Let $X$ be a class.
     $X$ has zero elements iff $X \Eq \SETempty$.
   \end{proposition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_14_6812054297034125]
+  \begin{proposition}[forthel]
     Let $X$ be a class.
     $X$ has one element iff $X \Eq \SETsingleton{a}$ for some object $a$.
   \end{proposition}
@@ -52,7 +52,7 @@
     \end{case}
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_14_3468912675458910]
+  \begin{proposition}[forthel]
     Let $X$ be a class.
     $X$ has two elements iff $X \Eq \SETpair{a}{b}$ for some distinct objects $a, b$.
   \end{proposition}
@@ -77,7 +77,7 @@
     \end{case}
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_14_0615204230800975]
+  \begin{proposition}[forthel]
     Let $n$ be a natural number and $X$ be a class that has $n$ elements and $a$ be an object such that $a \NotElem X$.
     Then $X \SETunion \SETsingleton{a}$ has $n \NATplus \NATone$ elements.
   \end{proposition}
@@ -129,12 +129,12 @@
 \end{sfragment}
 
 \begin{sfragment}{Infinite Classes}
-  \begin{definition}[forthel,id=FOUNDATIONS_14_6612510618681344]
+  \begin{definition}[forthel]
     Let $X$ be a class.
     $X$ is \emph{infinite} iff $X$ is not finite.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_14_5814530911240192]
+  \begin{proposition}[forthel]
     Let $X, Y$ be classes.
     If $X$ is infinite and $Y$ is equinumerous to $X$ then $Y$ is infinite.
   \end{proposition}

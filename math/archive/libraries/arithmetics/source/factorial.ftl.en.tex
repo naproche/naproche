@@ -6,21 +6,21 @@
 \importmodule[libraries/arithmetics]{multiplication.ftl}
 \symdef{NATfac}[args=1]{#1\comp!}
 
-\begin{signature}[forthel,id=ARITHMETIC_12_0210357812531785]
+\begin{signature}[forthel]
   Let $n$ be a natural number.
   $\emph{\NATfac{n}}$ is a natural number.
 \end{signature}
 
-\begin{axiom}[forthel,id=ARITHMETIC_12_6945210541236989]
+\begin{axiom}[forthel]
   $\NATfac{\NATzero} \Eq \NATone$.
 \end{axiom}
 
-\begin{axiom}[forthel,id=ARITHMETIC_12_2312015846987452]
+\begin{axiom}[forthel]
   Let $n$ be a natural number.
   Then $\NATfac{n \NATplus \NATone} \Eq \NATfac{n} \NATmul (n \NATplus \NATone)$.
 \end{axiom}
 
-\begin{proposition}[forthel,id=ARITHMETIC_12_6123519005949952]
+\begin{proposition}[forthel]
   Let $n$ be a natural number.
   Then $\NATfac{n} \NotEq \NATzero$.
 \end{proposition}
@@ -38,7 +38,7 @@
     Hence $\NATfac{n' \NATplus \NATone} \NotEq \NATzero$.
   \end{proof}
 
-  Thus $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+  Thus $\Phi$ contains every natural number (by \sr{induction I}{induction}).
   Therefore $\NATfac{n} \NotEq \NATzero$.
 \end{proof}
 \end{smodule}

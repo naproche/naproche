@@ -5,26 +5,26 @@
 \begin{smodule}{primes.ftl}
 \importmodule[libraries/arithmetics]{divisibility.ftl}
 \importmodule[libraries/arithmetics]{modular-arithmetics.ftl}
+\importmodule[libraries/arithmetics]{euclid-division-theorem.ftl}
 \symdef{Prime}{\mathbb P}
 
-\begin{definition}[forthel,id=ARITHMETIC_10_5450464558579712]
+\begin{definition}[forthel]
   Let $n$ be a natural number.
   $n$ is \emph{prime} iff $n \NATgtr \NATone$ and $n$ has no nontrivial divisors.
-
   Let $n$ is \emph{compound} stand for $n$ is not prime.
   Let a \emph{prime number} stand for a natural number that is prime.
 \end{definition}
 
-\begin{definition}[forthel,id=ARITHMETIC_10_3834705971511296]
+\begin{definition}[forthel]
   $\emph{\Prime}$ is the class of all prime numbers.
 \end{definition}
 
-\begin{proposition}[forthel,id=ARITHMETIC_10_7801379464675328]
+\begin{proposition}[forthel]
   Let $n$ be a natural number such that $n \NATgtr \NATone$.
   Then $n$ is prime iff every divisor of $n$ is a trivial divisor of $n$.
 \end{proposition}
 
-\begin{proposition}[forthel,id=ARITHMETIC_10_3606185106210816]
+\begin{proposition}[forthel]
   Let $n$ be a natural number such that $n \NATgtr \NATone$.
   Then $n$ has a prime divisor.
 \end{proposition}
@@ -52,19 +52,18 @@
     \end{case}
   End.
 
-  Thus every natural number belongs to $\Phi$ (by \printref{ARITHMETIC_04_3609801697263616}).
+  Thus every natural number belongs to $\Phi$ (by \sr{induction II}{induction}).
 \end{proof}
 
-\begin{definition}[forthel,id=ARITHMETIC_10_463197419077632]
+\begin{definition}[forthel]
   Let $n, m$ be natural numbers.
   $n$ and $m$ are \emph{coprime} iff for all nonzero natural numbers $k$ such that $k \NATmid n$ and $k \NATmid m$ we have $k \Eq \NATone$.
-
   Let $n$ and $m$ are \emph{relatively prime} stand for $n$ and $m$ are coprime.
   Let $n$ and $m$ are \emph{mutually prime} stand for $n$ and $m$ are coprime.
   Let $n$ is \emph{prime to $m$} stand for $n$ and $m$ are coprime.
 \end{definition}
 
-\begin{proposition}[forthel,id=ARITHMETIC_10_5776394594287616]
+\begin{proposition}[forthel]
   Let $n, m$ be natural numbers.
   $n$ and $m$ are coprime iff $n$ and $m$ have no common prime divisor.
 \end{proposition}
@@ -86,7 +85,7 @@
   \end{case}
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_10_7212152851005440]
+\begin{proposition}[forthel]
   Let $n, m$ be natural numbers and $p$ be a prime number.
   If $p$ does not divide $n$ then $p$ and $n$ are coprime.
 \end{proposition}
@@ -99,7 +98,7 @@
   Contradiction.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_10_8313676557713408]
+\begin{proposition}[forthel]
   Let $n, m$ be natural numbers and $p$ be a prime number.
   If $p \NATmid n \NATmul m$ then $p \NATmid n$ or $p \NATmid m$.
 \end{proposition}
@@ -116,7 +115,7 @@
 
     Let us show that $a$ divides all elements of $\Phi$.
       Let $k \Elem \Phi$.
-      Take natural numbers $q, r$ such that $k \Eq (a \NATmul q) \NATplus r$ and $r \NATless a$ (by \printref{ARITHMETIC_08_7743986617810944}).
+      Take natural numbers $q, r$ such that $k \Eq (a \NATmul q) \NATplus r$ and $r \NATless a$ (by \sr{Euclid Division Existence}{Euclid's Division Theorem}).
       Indeed $a$ is nonzero.
       Then $k \NATmul m
         \Eq ((q \NATmul a) \NATplus r) \NATmul m
@@ -130,7 +129,7 @@
         Indeed $((q \NATmul a) \NATmul m) \Eq q \NATmul (a \NATmul m)$. %!
         Take $A = (q \NATmul a) \NATmul m$ and $B = r \NATmul m$. %!
         Then $p \NATmid A \NATplus B$ and $p \NATmid A$.
-        Thus $p \NATmid B$ (by \printref{ARITHMETIC_07_1076947887063040}).
+        Thus $p \NATmid B$ (by \sn{divisibility of summands}).
         Indeed $p, A$ and $B$ are natural numbers.
         Consequently $p \NATmid r \NATmul m$.
       End.

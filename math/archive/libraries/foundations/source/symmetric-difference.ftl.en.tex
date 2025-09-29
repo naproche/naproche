@@ -7,14 +7,13 @@
 \symdef{SETsymdiff}{\,\triangle\,}
 
 \begin{sfragment}{Definitions}
-  \begin{definition}[forthel,id=FOUNDATIONS_03_7457594151010304]
+  \begin{definition}[forthel]
     Let $A, B$ be classes.
     $\emph{A \SETsymdiff B} = (A \SETunion B) \SETdiff (A \SETintersect B)$.
-
     Let the \emph{symmetric difference of $A$ and $B$} stand for $A \SETsymdiff B$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_03_4886447211413504]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes.
     Then $A \SETsymdiff B \Eq (A \SETdiff B) \SETunion (B \SETdiff A)$.
   \end{proposition}
@@ -44,7 +43,7 @@
 
 \begin{sfragment}{Computation Laws}
   \begin{sfragment}{Commutativity}
-    \begin{proposition}[forthel,id=FOUNDATIONS_03_4518372049944576]
+    \begin{proposition}[forthel]
       Let $A, B$ be classes.
       Then $A \SETsymdiff B \Eq B \SETsymdiff A$.
     \end{proposition}
@@ -57,7 +56,7 @@
   \end{sfragment}
 
   \begin{sfragment}{Associativity}
-    \begin{proposition}[forthel,id=FOUNDATIONS_03_8680845204258816]
+    \begin{proposition}[forthel]
       Let $A, B, C$ be classes.
       Then $(A \SETsymdiff B) \SETsymdiff C \Eq A \SETsymdiff (B \SETsymdiff C)$.
     \end{proposition}
@@ -163,7 +162,7 @@
   \end{sfragment}
 
   \begin{sfragment}{Distributivity}
-    \begin{proposition}[forthel,id=FOUNDATIONS_03_4119141910839296]
+    \begin{proposition}[forthel]
       Let $A, B, C$ be classes.
       Then $A \SETintersect (B \SETsymdiff C) \Eq (A \SETintersect B) \SETsymdiff (A \SETintersect C)$.
     \end{proposition}
@@ -182,7 +181,7 @@
   \end{sfragment}
 
   \begin{sfragment}{Miscellaneous Rules}
-    \begin{proposition}[forthel,id=FOUNDATIONS_03_7383417205293056]
+    \begin{proposition}[forthel]
       Let $A, B$ be classes.
       Then $A \SETinclude B \Iff A \SETsymdiff B \Eq B \SETdiff A$.
     \end{proposition}
@@ -204,7 +203,7 @@
       \end{case}
     \end{proof}
 
-    \begin{proposition}[forthel,id=FOUNDATIONS_03_4490230937681920]
+    \begin{proposition}[forthel]
       Let $A, B, C$ be classes.
       Then $A \SETsymdiff B \Eq A \SETsymdiff C \Iff B \Eq C$.
     \end{proposition}
@@ -255,7 +254,7 @@
       \end{case}
     \end{proof}
 
-    \begin{proposition}[forthel,id=FOUNDATIONS_03_4578696040022016]
+    \begin{proposition}[forthel]
       Let $A$ be a class.
       Then $A \SETsymdiff A \Eq \SETempty$.
     \end{proposition}
@@ -266,7 +265,7 @@
         \Eq \SETempty$.
     \end{proof}
 
-    \begin{proposition}[forthel,id=FOUNDATIONS_03_6698730398941184]
+    \begin{proposition}[forthel]
       Let $A$ be a class.
       Then $A \SETsymdiff \SETempty \Eq A$.
     \end{proposition}
@@ -277,7 +276,7 @@
         \Eq A$.
     \end{proof}
 
-    \begin{proposition}[forthel,id=FOUNDATIONS_03_6111806917443584]
+    \begin{proposition}[forthel]
       Let $A, B$ be classes.
       Then $A \Eq B \Iff A \SETsymdiff B \Eq \SETempty$.
     \end{proposition}

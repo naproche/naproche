@@ -8,21 +8,21 @@
 \importmodule[libraries/foundations]{equinumerosity.ftl}
 \symdef{SETcard}[args=1]{\comp|#1\comp|}
 
-\begin{definition}[forthel,id=SET_THEORY_06_8286266038681600]
+\begin{definition}[forthel]
   Let $x$ be a set.
   $\emph{\SETcard{x}}$ is the ordinal $\kappa$ such that $\kappa$ is equinumerous to $x$ and every ordinal that is equinumerous to $x$ is greater than or equal to $\kappa$.
-
   Let the \emph{cardinality of $x$} stand for $\SETcard{x}$.
 \end{definition}
 
-\begin{definition}[forthel,id=SET_THEORY_06_6818986081648640]
+\begin{definition}[forthel]
   A \emph{cardinal number} is an ordinal $\kappa$ such that $\kappa \Eq \SETcard{x}$ for some
   set $x$.
-
   Let a \emph{cardinal} stand for a cardinal number.
 \end{definition}
 
-\begin{proposition}[forthel,id=SET_THEORY_06_2820082336006144]
+\symdecl*{cardinality of cardinal number}
+
+\begin{proposition}[forthel,name=cardinality of cardinal number]
   Let $\kappa$ be a cardinal.
   Then $\SETcard{\kappa} \Eq \kappa$.
 \end{proposition}
@@ -35,7 +35,7 @@
   Thus $\SETcard{\kappa} \Eq \kappa$.
 \end{proof}
 
-\begin{proposition}[forthel,id=SET_THEORY_06_6920913721229312]
+\begin{proposition}[forthel]
   Let $x, y$ be sets.
   Then $x$ and $y$ are equinumerous iff $\SETcard{x} \Eq \SETcard{y}$.
 \end{proposition}
@@ -43,13 +43,13 @@
   \begin{case}{$x$ and $y$ are equinumerous.}
     Take a bijection $f$ between $x$ and $y$.
     Consider a bijection $g$ between $y$ and $\SETcard{y}$.
-    Then $g \FUNcomp f$ is a bijection between $x$ and $\SETcard{y}$ (by \printref{FOUNDATIONS_08_6435206693126144}).
+    Then $g \FUNcomp f$ is a bijection between $x$ and $\SETcard{y}$ (by \sn{bijectivity of composition of bijections}).
     Hence $x$ and $\SETcard{y}$ are equinumerous.
     Thus $\SETcard{y} \ORDgeq \SETcard{x}$.
 
     $\FUNinv{f}$ is a bijection between $y$ and $x$.
     Consider a bijection $h$ between $x$ and $\SETcard{x}$.
-    Then $h \FUNcomp \FUNinv{f}$ is a bijection between $y$ and $\SETcard{x}$ (by \printref{FOUNDATIONS_08_6435206693126144}).
+    Then $h \FUNcomp \FUNinv{f}$ is a bijection between $y$ and $\SETcard{x}$ (by \sn{bijectivity of composition of bijections}).
     Hence $y$ and $\SETcard{x}$ are equinumerous.
     Thus $\SETcard{x} \ORDgeq \SETcard{y}$.
 

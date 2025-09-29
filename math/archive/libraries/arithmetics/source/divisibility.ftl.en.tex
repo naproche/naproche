@@ -7,43 +7,41 @@
 \symdef{NATmid}{\,\mid\,}
 \symdef{NATnmid}{\,\nmid\,}
 
-\begin{definition}[forthel,id=ARITHMETIC_07_4239998993825792]
+\begin{definition}[forthel]
   Let $n, m$ be natural numbers.
   $\emph{n \NATmid m}$ iff there exists a natural number $k$ such that $n \NATmul k \Eq m$.
-
   Let $m$ is \emph{divisible by $n$} stand for $n \NATmid m$.
   Let $n$ \emph{divides $m$} stand for $n \NATmid m$.
   Let $\emph{n \NATnmid m}$ stand for not $n \NATmid m$.
 \end{definition}
 
-\begin{lemma}[forthel,id=ARITHMETIC_07_1478855118290944]
+\begin{lemma}[forthel]
   Let $n, m$ be natural numbers.
   $n$ divides $m$ iff there exists a natural number $k$ such that $k \NATmul n \Eq m$.
 \end{lemma}
 
-\begin{definition}[forthel,id=ARITHMETIC_07_1311437490225152]
+\begin{definition}[forthel]
   Let $n$ be a natural number.
   A \emph{factor of $n$} is a natural number that divides $n$.
-
   Let a \emph{divisor of $n$} stand for a factor of $n$.
 \end{definition}
 
-\begin{definition}[forthel,id=ARITHMETIC_10_5438991513944064]
+\begin{definition}[forthel]
   Let $n$ be a natural number.
   A \emph{trivial divisor of $n$} is a divisor $m$ of $n$ such that $m \Eq \NATone$ or $m \Eq n$.
 \end{definition}
 
-\begin{definition}[forthel,id=ARITHMETIC_10_8768240253665280]
+\begin{definition}[forthel]
   Let $n$ be a natural number.
   A \emph{nontrivial divisor of $n$} is a divisor $m$ of $n$ such that $m \NotEq \NATone$ and $m \NotEq n$.
 \end{definition}
 
-\begin{definition}[forthel,id=ARITHMETIC_10_8020087063707648]
+\begin{definition}[forthel]
   Let $n$ be a natural number.
   $n$ is \emph{composite} iff $n \NATgtr \NATone$ and $n$ has a nontrivial divisor.
 \end{definition}
 
-\begin{proposition}[forthel,id=ARITHMETIC_07_2242720387039232]
+\begin{proposition}[forthel]
   Let $n$ be a natural number.
   Then $n \NATmid \NATzero$.
 \end{proposition}
@@ -52,7 +50,7 @@
   Hence $n \NATmid \NATzero$.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_07_8611150130315264]
+\begin{proposition}[forthel]
   Let $n$ be a natural number.
   If $\NATzero \NATmid n$ then $n \Eq \NATzero$.
 \end{proposition}
@@ -62,7 +60,7 @@
   Then $n \Eq \NATzero$.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_07_1259086070939648]
+\begin{proposition}[forthel]
   Let $n$ be a natural number.
   Then $\NATone \NATmid n$.
 \end{proposition}
@@ -71,7 +69,7 @@
   Hence $\NATone \NATmid n$.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_07_3944887330275328]
+\begin{proposition}[forthel]
   Let $n$ be a natural number.
   Then $n \NATmid n$.
 \end{proposition}
@@ -80,7 +78,7 @@
   Hence $n \NATmid n$.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_07_6917446193643520]
+\begin{proposition}[forthel]
   Let $n$ be a natural number.
   If $n \NATmid \NATone$ then $n \Eq \NATone$.
 \end{proposition}
@@ -118,7 +116,7 @@
   \end{case}
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_07_7463519983239168]
+\begin{proposition}[forthel]
   Let $n, m, k$ be natural numbers.
   If $n \NATmid m$ then $n \NATmid m \NATmul k$.
 \end{proposition}
@@ -131,12 +129,12 @@
   Hence $n \NATmid m \NATmul k$.
 \end{proof}
 
-\begin{corollary}[forthel,id=ARITHMETIC_07_1588185794609152]
+\begin{corollary}[forthel]
   Let $n, m, k$ be natural numbers.
   If $n \NATmid m$ then $n \NATmid k \NATmul m$.
 \end{corollary}
 
-\begin{proposition}[forthel,id=ARITHMETIC_07_7863858316181504]
+\begin{proposition}[forthel]
   Let $n, m, k$ be natural numbers.
   If $n \NATmid m \NATmid k$ then $n \NATmid k$.
 \end{proposition}
@@ -150,7 +148,7 @@
   Hence $n \NATmid k$.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_07_4933275640397824]
+\begin{proposition}[forthel]
   Let $n, m$ be natural numbers such that $n \NotEq \NATzero$.
   If $n \NATmid m$ and $m \NATmid n$ then $n \Eq m$.
 \end{proposition}
@@ -166,7 +164,7 @@
   Therefore $n \Eq m$.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_07_1283495225720832]
+\begin{proposition}[forthel]
   Let $n, m, k$ be natural numbers.
   If $n \NATmid m$ then $k \NATmul n \NATmid k \NATmul m$.
 \end{proposition}
@@ -179,7 +177,7 @@
   Hence $k \NATmul n \NATmid k \NATmul m$.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_07_6469492028735488]
+\begin{proposition}[forthel]
   Let $n, m, k$ be natural numbers.
   Assume $k \NotEq \NATzero$.
   If $k \NATmul n \NATmid k \NATmul m$ then $n \NATmid m$.
@@ -188,11 +186,11 @@
   Assume $k \NATmul n \NATmid k \NATmul m$.
   Take a natural number $l$ such that $(k \NATmul n) \NATmul l \Eq k \NATmul m$.
   Then $k \NATmul (n \NATmul l) \Eq k \NATmul m$.
-  Hence $n \NATmul l \Eq m$ (by \printref{ARITHMETIC_06_8575191374364672}).
+  Hence $n \NATmul l \Eq m$ (by \sn{left-cancellability of multiplication}).
   Thus $n \NATmid m$.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_07_4700711333920768]
+\begin{proposition}[forthel]
   Let $n, m, k$ be natural numbers.
   If $k \NATmid n$ and $k \NATmid m$ then $k \NATmid (n' \NATmul n) \NATplus (m' \NATmul m)$
   for all natural numbers $n', m'$.
@@ -209,7 +207,7 @@
   \[    \Eq (n' \NATmul n) \NATplus (m' \NATmul m).                      \]
 \end{proof}
 
-\begin{corollary}[forthel,id=ARITHMETIC_07_1556786209357824]
+\begin{corollary}[forthel]
   Let $n, m, k$ be natural numbers.
   If $k \NATmid n$ and $k \NATmid m$ then $k \NATmid n \NATplus m$.
 \end{corollary}
@@ -221,7 +219,9 @@
   Hence $k \NATmid n \NATplus m$.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_07_1076947887063040]
+\symdecl*{divisibility of summands}
+
+\begin{proposition}[forthel,name=divisibility of summands]
   Let $n, m, k$ be natural numbers.
   If $k \NATmid n$ and $k \NATmid n \NATplus m$ then $k \NATmid m$.
 \end{proposition}
@@ -239,20 +239,20 @@
     $n \NATplus m
       \Eq k \NATmul l'
       \NATless k \NATmul l
-      \Eq n$ (by \printref{ARITHMETIC_06_5048640368279552}).
+      \Eq n$ (by \sn{preservation of ordering under left-multiplication}).
     Hence we can take a natural number $l''$ such that $l' \Eq l \NATplus l''$.
     Then $(k \NATmul l) \NATplus m
       \Eq k \NATmul l'
       \Eq k \NATmul (l \NATplus l'')
       \Eq (k \NATmul l) \NATplus (k \NATmul l'')$.
-    Indeed $k \NATmul (l \NATplus l'') \Eq (k \NATmul l) \NATplus (k \NATmul l'')$ (by \printref{ARITHMETIC_06_9001524774567936}).
-    Thus $m \Eq (k \NATmul l'')$ (by \printref{ARITHMETIC_03_8445946379632640}).
+    Indeed $k \NATmul (l \NATplus l'') \Eq (k \NATmul l) \NATplus (k \NATmul l'')$ (by \sn{left-distributivity of multiplication over addition}).
+    Thus $m \Eq (k \NATmul l'')$ (by \sn{left-cancellability of addition}).
     Indeed $k \NATmul l$ and $k \NATmul l''$ are natural numbers.
     Therefore $k \NATmid m$.
   \end{case}
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_07_2187144577679360]
+\begin{proposition}[forthel]
   Let $n, m$ be natural numbers such that $n, m \NotEq \NATzero$.
   If $m \NATmid n$ then $m \NATleq n$.
 \end{proposition}

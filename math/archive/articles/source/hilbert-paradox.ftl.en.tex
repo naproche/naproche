@@ -16,11 +16,13 @@
 \importmodule[libraries/foundations]{closure-under-powersets.ftl}
 \importmodule[libraries/foundations]{universal-class.ftl}
 
+\symdecl*{Hilbert Paradox}
+
 \noindent \emph{Hilbert's Paradox}, discovered around 1900 by David Hilbert, 
 demonstates that there cannot exists a set that is closed under powersets and 
 under unions of arbitrary subsets \cite{PeckhausKahl2002}.
 
-\begin{theorem}[forthel,title=Hilbert's Paradox,id=hilbert_paradox]
+\begin{theorem}[forthel,title=Hilbert's Paradox,name=Hilbert Paradox]
   There exists no system of sets that is closed under powersets and closed under unions.
 \end{theorem}
 \begin{proof}[forthel]
@@ -35,13 +37,13 @@ under unions of arbitrary subsets \cite{PeckhausKahl2002}.
 \noindent Using Hilbert's Paradox it can further be shown that there exists 
 no universal set, i.e. that the class $\Set$ of all sets is a proper class:
 
-\begin{proposition}[forthel,id=hilbert_paradox_corollary]
+\begin{corollary}[forthel]
   $\Set$ is not a set.
-\end{proposition}
+\end{corollary}
 \begin{proof}[forthel]
   Assume the contrary.
   Then $\Set$ is closed under powersets and closed under unions.
-  Contradiction (by \nameref{hilbert_paradox}).
+  Contradiction (by \sr{Hilbert Paradox}{Hilbert's Paradox}).
 \end{proof}
 
 \printbibliography

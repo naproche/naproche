@@ -6,13 +6,15 @@
 \importmodule[libraries/arithmetics]{nat-is-a-set.ftl}
 \importmodule[libraries/set-theory]{zfc.ftl}
 
-\begin{definition}[forthel,id=dedekind_209358491059836]
+\begin{definition}[forthel]
   Let $a$ be an object and $f$ be a map.
   Let $\varphi$ be a map from $\Nat$ to $\Dom(f)$.
   $\varphi$ is \emph{recursively defined by $a$ and $f$} iff $\varphi(\NATzero) = a$ and $\varphi(n \NATplus \NATone) = f(\varphi(n))$ for every $n \Elem \Nat$.
 \end{definition}
 
-\begin{theorem}[forthel,title=Dedekind's Recursion Theorem: Existence,id=dedekind_existence]
+\symdecl*{Dedekind Recursion Existence}
+
+\begin{theorem}[forthel,title=Dedekind's Recursion Theorem: Existence,name=Dedekind Recursion Existence]
   Let $A$ be a set and $a \Elem A$ and $f \FUNfromto{A}{A}$.
   Then there exists a $\varphi \FUNfromto{\Nat}{A}$ that is recursively defined by $a$ and $f$.
 \end{theorem}
@@ -79,7 +81,7 @@
       Indeed $f(x) \Elem A$.
     \end{proof}
 
-    Therefore $n \Elem \Psi$ for every $n \Elem \Nat$ (by \printref{ARITHMETIC_01_4764664342773760}).
+    Therefore $n \Elem \Psi$ for every $n \Elem \Nat$ (by \sr{induction I}{induction}).
   \end{proof}
 
   Let us show that for all $n \Elem \Nat$ and all $x, y \Elem A$ if
@@ -114,7 +116,7 @@
                 Let $n \Elem \Nat$ and $b \Elem A$.
                 Assume $(n,b) \Elem H$.
                 Then $(n \NATplus \NATone, f(b)) \Elem \SETintersectover \Phi$.
-                We have $(n \NATplus \NATone, f(b)) \NotEq (\NATzero,x)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+                We have $(n \NATplus \NATone, f(b)) \NotEq (\NATzero,x)$.
                 Indeed $n \NATplus \NATone \NotEq \NATzero$.
                 Hence $(n \NATplus \NATone, f(b)) \Elem H$.
               \end{proof}
@@ -145,7 +147,7 @@
                 Let $n \Elem \Nat$ and $b \Elem A$.
                 Assume $(n,b) \Elem H$.
                 Then $(n \NATplus \NATone, f(b)) \Elem \SETintersectover \Phi$.
-                We have $(n \NATplus \NATone, f(b)) \NotEq (\NATzero,y)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+                We have $(n \NATplus \NATone, f(b)) \NotEq (\NATzero,y)$.
                 Indeed $n \NATplus \NATone \NotEq \NATzero$.
                 Hence $(n \NATplus \NATone, f(b)) \Elem H$.
               \end{proof}
@@ -185,7 +187,7 @@
           \begin{proof}
             $(\NATzero,a) \Elem \SETintersectover \Phi$.
             $(\NATzero,a) \NotElem \SETsingleton{(n \NATplus \NATone,x)}$.
-            Indeed $(\NATzero,a) \NotEq (n \NATplus \NATone,x)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+            Indeed $(\NATzero,a) \NotEq (n \NATplus \NATone,x)$.
             Indeed $\NATzero \NotEq n \NATplus \NATone$.
           \end{proof}
 
@@ -195,8 +197,8 @@
             Assume $(m,z) \Elem H$.
             Then $(m,z) \Elem \SETintersectover \Phi$.
             Hence $(m \NATplus \NATone,f(z)) \Elem \SETintersectover \Phi$.
-            $(m \NATplus \NATone,f(z)) \NotEq (n \NATplus \NATone,x)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
-            Indeed if $(m \NATplus \NATone,f(z)) \Eq (n \NATplus \NATone,x)$ then $m \Eq n$ and $f(z) \Eq x$ (by \printref{FOUNDATIONS_04_8464577431863296}, \printref{ARITHMETIC_01_3604163883696128}).
+            $(m \NATplus \NATone,f(z)) \NotEq (n \NATplus \NATone,x)$.
+            Indeed if $(m \NATplus \NATone,f(z)) \Eq (n \NATplus \NATone,x)$ then $m \Eq n$ and $f(z) \Eq x$ (by \sn{injectivity of successor function}).
             Thus $(m \NATplus \NATone,f(z)) \NotElem \SETsingleton{(n \NATplus \NATone,x)}$.
             Therefore $(m \NATplus \NATone,f(z)) \Elem H$.
           \end{proof}
@@ -218,7 +220,7 @@
           \begin{proof}
             $(\NATzero,a) \Elem \SETintersectover \Phi$.
             $(\NATzero,a) \NotElem \SETsingleton{(n \NATplus \NATone,y)}$.
-            Indeed $(\NATzero,a) \NotEq (n \NATplus \NATone,y)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+            Indeed $(\NATzero,a) \NotEq (n \NATplus \NATone,y)$.
             Indeed $\NATzero \NotEq n \NATplus \NATone$.
           \end{proof}
 
@@ -228,8 +230,8 @@
             Assume $(m,z) \Elem H$.
             Then $(m,z) \Elem \SETintersectover \Phi$.
             Hence $(m \NATplus \NATone,f(z)) \Elem \SETintersectover \Phi$.
-            $(m \NATplus \NATone,f(z)) \NotEq (n \NATplus \NATone,y)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
-            Indeed if $(m \NATplus \NATone,f(z)) \Eq (n \NATplus \NATone,y)$ then $m \Eq n$ and $f(z) \Eq y$ (by \printref{FOUNDATIONS_04_8464577431863296}, \printref{ARITHMETIC_01_3604163883696128}).
+            $(m \NATplus \NATone,f(z)) \NotEq (n \NATplus \NATone,y)$.
+            Indeed if $(m \NATplus \NATone,f(z)) \Eq (n \NATplus \NATone,y)$ then $m \Eq n$ and $f(z) \Eq y$ (by \sn{injectivity of successor function}).
             Thus $(m \NATplus \NATone,f(z)) \NotElem \SETsingleton{(n \NATplus \NATone,y)}$.
             Therefore $(m \NATplus \NATone,f(z)) \Elem H$.
           \end{proof}
@@ -249,7 +251,7 @@
       Therefore $n \NATplus \NATone \Elem \Theta$ (by a).
     \end{proof}
 
-    Consequently $n \Elem \Theta$ for every $n \Elem \Nat$ (by \printref{ARITHMETIC_01_4764664342773760}).
+    Consequently $n \Elem \Theta$ for every $n \Elem \Nat$ (by \sr{induction I}{induction}).
   \end{proof}
 
   Define $\varphi(n) =$ ``choose $x \Elem A$ such that $(n, x) \Elem
@@ -269,7 +271,9 @@
   \end{proof}
 \end{proof}
 
-\begin{theorem}[forthel,title=Dedekind's Recursion Theorem: Uniqueness,id=dedekind_uniqueness]
+\symdecl*{Dedekind Recursion Uniqueness}
+
+\begin{theorem}[forthel,title=Dedekind's Recursion Theorem: Uniqueness,name=Dedekind Recursion Uniqueness]
   Let $A$ be a set and $a \Elem A$ and $f \FUNfromto{A}{A}$.
   Let $\varphi, \varphi' \FUNfromto{\Nat}{A}$.
   Assume that $\varphi$ and $\varphi'$ are recursively defined by $a$ and
@@ -292,7 +296,7 @@
       \Eq \varphi'(n \NATplus \NATone)$.
     \end{proof}
 
-  Thus $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+  Thus $\Phi$ contains every natural number (by \sr{induction I}{induction}).
   Consequently $\varphi(n) \Eq \varphi'(n)$ for each $n \Elem \Nat$.
 \end{proof}
 \end{smodule}

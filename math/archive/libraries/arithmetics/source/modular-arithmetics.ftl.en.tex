@@ -9,30 +9,27 @@
 \symdef{NATcong}[args=3]{#1\mathrel{\comp\equiv}#2\;\comp{(\textrm{mod}}\,#3\comp)}
 
 \begin{sfragment}{Quotients and Remainders}
-  \begin{definition}[forthel,id=ARITHMETIC_08_8621463798022144]
+  \begin{definition}[forthel]
     Let $n, m$ be natural numbers such that $m \NotEq \NATzero$.
     $\emph{n \NATdiv m}$ is the natural number $q$ such that $n \Eq (m \NATmul q) \NATplus r$ for some natural number $r$ that is less than $m$.
-
     Let the \emph{quotient of $n$ over $m$} stand for $n \NATdiv m$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_08_3560980160184320]
+  \begin{definition}[forthel]
     Let $n, m$ be natural numbers such that $m \NotEq \NATzero$.
     $\emph{n \NATmod m}$ is the natural number $r$ such that $r \NATless m$ and there exists a natural number $q$ such that $n \Eq (m \NATmul q) \NATplus r$.
-
     Let the \emph{remainder of $n$ over $m$} stand for $n \NATmod m$.
   \end{definition}
 \end{sfragment}
 
 \begin{sfragment}{Basic Properties}
-  \begin{definition}[forthel,id=ARITHMETIC_08_5448561831444480]
+  \begin{definition}[forthel]
     Let $n, m, k$ be natural numbers such that $k \NotEq \NATzero$.
     $\emph{\NATcong{n}{m}{k}}$ iff $n \NATmod k \Eq m \NATmod k$.
-
     Let $n$ and $m$ are \emph{congruent modulo $k$} stand for $\NATcong{n}{m}{k}$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_08_3818318544764928]
+  \begin{proposition}[forthel]
     Let $n, k$ be natural numbers such that $k \NotEq \NATzero$.
     Then $\NATcong{n}{n}{k}$.
   \end{proposition}
@@ -41,7 +38,7 @@
     Hence $\NATcong{n}{n}{k}$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_08_2337210737098752]
+  \begin{proposition}[forthel]
     Let $n, m, k$ be natural numbers such that $k \NotEq \NATzero$.
     If $\NATcong{n}{m}{k}$ then $\NATcong{m}{n}{k}$.
   \end{proposition}
@@ -52,7 +49,7 @@
     Thus $\NATcong{m}{n}{k}$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_08_7464329746055168]
+  \begin{proposition}[forthel]
     Let $n, m, k$ be natural numbers such that $k \NotEq \NATzero$.
     If $\NATcong{n}{m}{k}$ and $\NATcong{m}{\NATone}{k}$ then $\NATcong{n}{\NATone}{k}$.
   \end{proposition}
@@ -63,7 +60,7 @@
     Thus $\NATcong{n}{\NATone}{k}$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_08_2034122983735296]
+  \begin{proposition}[forthel]
     Let $n, m, k$ be natural numbers such that $k \NotEq \NATzero$.
     Assume $n \NATgeq m$.
     Then $\NATcong{n}{m}{k}$ iff $n \Eq (k \NATmul x) \NATplus m$ for some natural number $x$.
@@ -80,7 +77,7 @@
         Assume the contrary.
         Then $q \NATless q'$.
         Hence $q \NATmul k \NATless q' \NATmul k$.
-        Thus $(q \NATmul k) \NATplus r \NATless (q' \NATmul k) \NATplus r$ (by \printref{ARITHMETIC_04_7354062662008832}).
+        Thus $(q \NATmul k) \NATplus r \NATless (q' \NATmul k) \NATplus r$ (by \sn{preservation of ordering under right-addition}).
         Indeed $q \NATmul k$ and $q' \NATmul k$ are natural numbers.
         Therefore $n \NATless m$.
         Contradiction.
@@ -118,7 +115,7 @@
     \end{case}
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_08_2988318228742144]
+  \begin{proposition}[forthel]
     Let $n, m, k, k'$ be natural numbers such that $k, k' \NotEq \NATzero$.
     If $\NATcong{n}{m}{k \NATmul k'}$ then $\NATcong{n}{m}{k}$.
   \end{proposition}
@@ -140,7 +137,7 @@
     \end{case}
   \end{proof}
 
-  \begin{corollary}[forthel,id=ARITHMETIC_08_5895145169879040]
+  \begin{corollary}[forthel]
     Let $n, m, k, k'$ be natural numbers such that $k, k' \NotEq \NATzero$.
     If $\NATcong{n}{m}{k \NATmul k'}$ then $\NATcong{n}{m}{k'}$.
   \end{corollary}
@@ -150,7 +147,9 @@
     Hence $\NATcong{n}{m}{k'}$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_08_5984712287846400]
+  \symdecl*{congruency of sum}
+  
+  \begin{proposition}[forthel,name=congruency of sum]
     Let $n, k$ be natural numbers such that $k \NotEq \NATzero$.
     Then $\NATcong{n \NATplus k}{n}{k}$.
   \end{proposition}

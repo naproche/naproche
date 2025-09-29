@@ -5,12 +5,14 @@
 \begin{smodule}{pairing.ftl}
 \importmodule[libraries/foundations]{classes.ftl}
 
-\begin{axiom}[forthel,title=Pairing Axiom,id=FOUNDATIONS_10_7376893816864768]
+\symdecl*{Pairing Axiom}
+
+\begin{axiom}[forthel,title=Pairing,name=Pairing Axiom]
   Let $a, b$ be objects.
   Then $\SETpair{a}{b}$ is a set.
 \end{axiom}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_7556516257202176]
+\begin{proposition}[forthel]
   Let $a$ be an object.
   Then $\SETsingleton{a}$ is a set.
 \end{proposition}
@@ -20,7 +22,7 @@
   Let a singleton set stand for a singleton class.
 \end{convention}
 
-\begin{corollary}[forthel,id=FOUNDATIONS_10_8408517115379712]
+\begin{corollary}[forthel]
   Let $A$ be a class that has a unique element.
   Then $A$ is a set.
 \end{corollary}
