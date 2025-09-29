@@ -7,17 +7,17 @@
 \importmodule[libraries/arithmetics]{subtraction.ftl}
 
 \begin{sfragment}{Definition}
-  \begin{definition}[forthel,id=ARITHMETIC_15_4521358965847512]
+  \begin{definition}[forthel]
     Let $n$ be a natural number.
     $n$ is \emph{even} iff $n$ is divisible by $\NATtwo$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_15_1023652125874596]
+  \begin{definition}[forthel]
     Let $n$ be a natural number.
     $n$ is \emph{odd} iff $n$ is not divisible by $\NATtwo$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_15_0236985458752156]
+  \begin{proposition}[forthel]
     Let $n$ be a natural number.
     $n$ is even iff $n \Eq \NATtwo \NATmul m$ for some natural number $m$.
   \end{proposition}
@@ -33,7 +33,7 @@
     \end{case}
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_15_1023512547854265]
+  \begin{proposition}[forthel]
     Let $n$ be a natural number.
     $n$ is odd iff $n \Eq (\NATtwo \NATmul m) \NATplus \NATone$ for some natural number $m$.
   \end{proposition}
@@ -70,7 +70,7 @@
         End.
       \end{proof}
 
-      Then $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+      Then $\Phi$ contains every natural number (by \sr{induction I}{induction}).
       Hence $n$ is odd iff $n \Eq (\NATtwo \NATmul m) \NATplus  \NATone$ for some natural number $m$ (by a).
     \end{case}
 
@@ -86,7 +86,7 @@
     \end{case}
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_15_1023652154254789]
+  \begin{proposition}[forthel]
     Let $n$ be a natural number.
     $n$ is odd iff $n \Eq (\NATtwo \NATmul m) \NATsub  \NATone$ for some positive natural number $m$.
   \end{proposition}
@@ -125,7 +125,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Addition of Even and Odd Numbers}
-  \begin{proposition}[forthel,id=ARITHMETIC_15_7845441256365256]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers.
     Assume that $n$ and $m$ are even.
     Then $n \NATplus m$ is even.
@@ -138,7 +138,7 @@
     Hence $n \NATplus m$ is even.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_15_1023655256985478]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers.
     Assume that $n$ is even and $m$ is odd.
     Then $n \NATplus m$ is odd.
@@ -152,13 +152,13 @@
     Hence $n \NATplus m$ is odd.
   \end{proof}
 
-  \begin{corollary}[forthel,id=ARITHMETIC_15_0125412589658745]
+  \begin{corollary}[forthel]
     Let $n, m$ be natural numbers.
     Assume that $n$ is odd and $m$ is even.
     Then $n \NATplus m$ is odd.
   \end{corollary}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_15_1023659854785412]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers.
     Assume that $n$ and $m$ are odd.
     Then $n \NATplus m$ is even.
@@ -180,7 +180,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Subtraction of even and odd numbers}
-  \begin{proposition}[forthel,id=ARITHMETIC_15_8748569852145203]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers such that $n \NATgeq m$.
     Assume that $n, m$ are even.
     Then $n \NATsub m$ is even.
@@ -194,7 +194,7 @@
     Thus $n \NATsub m$ is even.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_15_0125412036589958]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers such that $n \NATgeq m$.
     Assume that $n$ is even and $m$ is odd.
     Then $n \NATsub m$ is odd.
@@ -209,7 +209,7 @@
     Thus $n \NATsub m$ is odd.
   \end{proof}
 
-  \begin{corollary}[forthel,id=ARITHMETIC_15_1021458745896523]
+  \begin{corollary}[forthel]
     Let $n, m$ be natural numbers such that $n \NATgeq m$.
     Assume that $n$ is odd and $m$ is even.
     Then $n \NATsub m$ is odd.
@@ -227,7 +227,7 @@
     Thus $n \NATsub m$ is odd.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_15_0125478854587412]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers such that $n \NATgeq m$.
     Assume that $n, m$ are odd.
     Then $n \NATsub m$ is even.
@@ -250,7 +250,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Multiplication of Even and Odd Numbers}
-  \begin{proposition}[forthel,id=ARITHMETIC_15_0125698547589652]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers.
     Assume that $n$ is even or $n$ is even.
     Then $n \NATmul m$ is even.
@@ -275,7 +275,7 @@
     \end{case}
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_15_0236596587452145]
+  \begin{proposition}[forthel]
     Let $n, m$ be natural numbers.
     Assume that $n$ and $m$ are odd.
     Then $n \NATmul m$ is odd.

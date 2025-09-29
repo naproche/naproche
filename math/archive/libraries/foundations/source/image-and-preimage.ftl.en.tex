@@ -5,32 +5,32 @@
 \begin{smodule}{image-and-preimage.ftl}
 \importmodule[libraries/foundations]{maps.ftl}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_5919649206108160]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
   Then $\FUNim{f}{X} = \CClass{f(x)}{x \Elem X}$.
 \end{proposition}
 
-\begin{corollary}[forthel,id=FOUNDATIONS_07_5543924730953728]
+\begin{corollary}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
   Then $\FUNim{f}{A} \Eq \FUNrange(f)$.
 \end{corollary}
 
-\begin{corollary}[forthel,id=FOUNDATIONS_07_1818812171157504]
+\begin{corollary}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
   Then $\FUNim{f}{X} \Eq \FUNrange(f \FUNrest X)$.
 \end{corollary}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_911395830890496]
+\begin{proposition}[forthel]
   Let $A$ be a class and $X \SETinclude A$.
   Then $\FUNim{\FUNid{A}}{X} \Eq X$.
 \end{proposition}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_3349817830932480]
+\begin{proposition}[forthel]
   Let $B$ be a class and $Y \SETinclude B$.
   Then $\FUNpreim{\FUNid{B}}{Y} \Eq Y$.
 \end{proposition}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_6362984433582080]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y \SETinclude B$ and $a \Elem A$.
   Then $f(a) \Elem Y$ iff $a \Elem \FUNpreim{f}{Y}$.
 \end{proposition}
@@ -40,7 +40,7 @@
   Then we have the thesis.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_6730546254184448]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
   Then $\FUNim{f}{A} \SETinclude B$.
 \end{proposition}
@@ -51,7 +51,7 @@
     \SETinclude B$.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_6541963008409600]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
   Then $\FUNpreim{f}{B} \Eq A$.
 \end{proposition}
@@ -61,7 +61,7 @@
   Hence the thesis.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_1913313581596672]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
   Then $\FUNim{f}{\FUNpreim{f}{B}} \Eq \FUNim{f}{A}$.
 \end{proposition}
@@ -84,7 +84,7 @@
   End.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_3819758101200896]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
   Then $\FUNpreim{f}{\FUNim{f}{A}} \Eq A$.
 \end{proposition}
@@ -95,7 +95,7 @@
   Thus $\FUNpreim{f}{\FUNim{f}{A}} \Eq A$.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_7760514696347648]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y \SETinclude B$.
   Then $\FUNim{f}{\FUNpreim{f}{Y}} \Eq Y \SETintersect \FUNim{f}{A}$.
 \end{proposition}
@@ -115,12 +115,12 @@
   End.
 \end{proof}
 
-\begin{corollary}[forthel,id=FOUNDATIONS_07_5585105345052672]
+\begin{corollary}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y \SETinclude B$.
   Then $\FUNim{f}{\FUNpreim{f}{Y}} \SETinclude Y$.
 \end{corollary}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_4890896170483712]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
   Then $\FUNpreim{f}{\FUNim{f}{X}} \SETniclude X$.
 \end{proposition}
@@ -131,7 +131,7 @@
   Indeed $\FUNim{f}{X} \SETinclude B$.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_3318372355801088]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
   Then $\FUNim{f}{X} \Eq \SETempty$ iff $X \Eq \SETempty$.
 \end{proposition}
@@ -149,7 +149,7 @@
   \end{case}
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_8597874786959360]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y \SETinclude B$.
   Then $\FUNpreim{f}{Y} \Eq \SETempty$ iff $Y \SETinclude B \SETdiff \FUNim{f}{A}$.
 \end{proposition}
@@ -179,7 +179,7 @@
   \end{case}
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_6295504988143616]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$ and $Y \SETinclude B$.
   Then $\FUNim{f}{X} \SETintersect Y \Eq \SETempty$ iff $X \SETintersect \FUNpreim{f}{Y} \Eq \SETempty$.
 \end{proposition}
@@ -203,7 +203,7 @@
   \end{case}
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_5628919411638272]
+\begin{proposition}[forthel]
   Let $A, B, C$ be classes and $f \FUNfromto{A}{B}$ and $g \FUNfromto{B}{C}$ and $X \SETinclude A$.
   Then $\FUNim{g \FUNcomp f}{X} \Eq \FUNim{g}{\FUNim{f}{X}}$.
 \end{proposition}
@@ -215,7 +215,7 @@
   Therefore $\FUNim{g \FUNcomp f}{X} \Eq \FUNim{g}{\FUNim{f}{X}}$.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_6824917886566400]
+\begin{proposition}[forthel]
   Let $A, B, C$ be classes and $f \FUNfromto{A}{B}$ and $g \FUNfromto{B}{C}$ and $Z \SETinclude C$.
   Then $\FUNpreim{g \FUNcomp f}{Z} \Eq \FUNpreim{f}{\FUNpreim{g}{Z}}$.
 \end{proposition}
@@ -226,7 +226,7 @@
   Thus $\FUNpreim{g \FUNcomp f}{Z} \Eq \FUNpreim{f}{\FUNpreim{g}{Z}}$.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_7396318576115712]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X, X' \SETinclude A$.
   If $X \SETinclude X'$ then $\FUNim{f}{X} \SETinclude \FUNim{f}{X'}$.
 \end{proposition}
@@ -238,7 +238,7 @@
   Hence $b \Eq f(a) \Elem \FUNim{f}{X'}$.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_8376448628817920]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y, Y' \SETinclude B$.
   If $Y \SETinclude Y'$ then $\FUNpreim{f}{Y} \SETinclude \FUNpreim{f}{Y'}$.
 \end{proposition}
@@ -250,7 +250,7 @@
   Thus $a \Elem \FUNpreim{f}{Y'}$.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_4448961469349888]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X, X' \SETinclude A$.
   Then $\FUNim{f}{X \SETunion X'} \Eq \FUNim{f}{X} \SETunion \FUNim{f}{X'}$.
 \end{proposition}
@@ -280,7 +280,7 @@
   End.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_1547089051910144]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y, Y' \SETinclude B$.
   Then $\FUNpreim{f}{Y \SETunion Y'} \Eq \FUNpreim{f}{Y} \SETunion \FUNpreim{f}{Y'}$.
 \end{proposition}
@@ -304,7 +304,7 @@
   End.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_3966130473402368]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X, X' \SETinclude A$.
   Then $\FUNim{f}{X \SETintersect X'} \SETinclude \FUNim{f}{X} \SETintersect \FUNim{f}{X'}$.
 \end{proposition}
@@ -316,7 +316,7 @@
   Thus $b \Elem \FUNim{f}{X} \SETintersect \FUNim{f}{X}$.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_4021844428455936]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y, Y' \SETinclude B$.
   Then $\FUNpreim{f}{Y \SETintersect Y'} \Eq \FUNpreim{f}{Y} \SETintersect \FUNpreim{f}{Y'}$.
 \end{proposition}
@@ -338,7 +338,7 @@
   End.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_8372256617005056]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X, X' \SETinclude A$.
   Then $\FUNim{f}{X \SETdiff X'} \SETniclude \FUNim{f}{X} \SETdiff \FUNim{f}{X'}$.
 \end{proposition}
@@ -352,7 +352,7 @@
   Therefore $b \Eq f(a) \Elem \FUNim{f}{X \SETdiff X'}$.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_07_6552168641331200]
+\begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y, Y' \SETinclude B$.
   Then $\FUNpreim{f}{Y \SETdiff Y'} \Eq \FUNpreim{f}{Y} \SETdiff \FUNpreim{f}{Y'}$.
 \end{proposition}

@@ -6,7 +6,9 @@
 \importmodule[libraries/arithmetics]{multiplication.ftl}
 \importmodule[libraries/arithmetics]{ordering.ftl}
 
-\begin{proposition}[forthel,id=ARITHMETIC_06_8817333933965312]
+\symdecl*{preservation of ordering under right-multiplication}
+
+\begin{proposition}[forthel,name=preservation of ordering under right-multiplication]
   Let $n, m, k$ be natural numbers.
   Assume $k \NotEq \NATzero$.
   Then $n \NATless m$ iff $n \NATmul k \NATless m \NATmul k$.
@@ -32,7 +34,7 @@
       End.
     \end{proof}
 
-    Therefore every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+    Therefore every natural number is contained in $\Phi$ (by \sr{induction I}{induction}).
     Consequently $n \NATless m$.
   \end{case}
 
@@ -44,16 +46,18 @@
   \end{case}
 \end{proof}
 
-\begin{corollary}[forthel,id=ARITHMETIC_06_5048640368279552]
+\symdecl*{preservation of ordering under left-multiplication}
+
+\begin{corollary}[forthel,name=preservation of ordering under left-multiplication]
   Let $n, m, k$ be natural numbers.
   Assume $k \NotEq \NATzero$.
   Then $n \NATless m$ iff $k \NATmul n \NATless k \NATmul m$.
 \end{corollary}
 \begin{proof}[forthel]
-  The thesis (by \printref{ARITHMETIC_06_8817333933965312}, \printref{ARITHMETIC_06_1764759896588288}).
+  The thesis (by \sn{preservation of ordering under right-multiplication}, \sn{commutativity of multiplication}).
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_06_1826268599287808]
+\begin{proposition}[forthel]
   Let $n, m, k$ be natural numbers.
   If $n, m \NATgtr k$ then $n \NATmul m \NATgtr k$.
 \end{proposition}
@@ -84,37 +88,37 @@
     End.
   \end{proof}
 
-  Thus every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+  Thus every natural number is contained in $\Phi$ (by \sr{induction I}{induction}).
   Therefore if $n, m \NATgtr k$ then $n \NATmul m \NATgtr k$.
 \end{proof}
 
-\begin{corollary}[forthel,id=ARITHMETIC_06_1751605544222720]
+\begin{corollary}[forthel]
   Let $n, m, k$ be natural numbers.
   If $n \NATleq m$ then $k \NATmul n \NATleq k \NATmul m$.
 \end{corollary}
 
-\begin{corollary}[forthel,id=ARITHMETIC_06_3965209318260736]
+\begin{corollary}[forthel]
   Let $n, m, k$ be natural numbers.
   Assume $k \NotEq \NATzero$.
   If $k \NATmul n \NATleq k \NATmul m$ then $n \NATleq m$.
 \end{corollary}
 \begin{proof}[forthel]
-  If $k \NATmul n \Eq k \NATmul m$ then $n \Eq m$ (by \printref{ARITHMETIC_06_8575191374364672}).
-  If $k \NATmul n \NATless k \NATmul m$ then $n \NATless m$ (by \printref{ARITHMETIC_06_5048640368279552}).
+  If $k \NATmul n \Eq k \NATmul m$ then $n \Eq m$ (by \sn{left-cancellability of multiplication}).
+  If $k \NATmul n \NATless k \NATmul m$ then $n \NATless m$ (by \sn{preservation of ordering under left-multiplication}).
 \end{proof}
 
-\begin{corollary}[forthel,id=ARITHMETIC_06_8946886668976128]
+\begin{corollary}[forthel]
   Let $n, m, k$ be natural numbers.
   If $n \NATleq m$ then $n \NATmul k \NATleq m \NATmul k$.
 \end{corollary}
 
-\begin{corollary}[forthel,id=ARITHMETIC_06_4374428949413888]
+\begin{corollary}[forthel]
   Let $n, m, k$ be natural numbers.
   Assume $k \NotEq \NATzero$.
   If $n \NATmul k \NATleq m \NATmul k$ then $n \NATleq m$.
 \end{corollary}
 
-\begin{proposition}[forthel,id=ARITHMETIC_06_8813409145454592]
+\begin{proposition}[forthel]
   Let $n, m, k$ be natural numbers.
   Assume $m \NATgtr \NATzero$ and $k \NATgtr \NATone$.
   Then $k \NATmul m \NATgtr m$.

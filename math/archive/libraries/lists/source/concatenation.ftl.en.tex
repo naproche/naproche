@@ -6,22 +6,22 @@
 \importmodule[libraries/lists]{lists.ftl}
 \symdef{LISTconcat}[op=+\mkern-10mu+]{\,\comp+\mkern-10mu\comp+\,}
 
-\begin{signature}[forthel,id=LISTS_CONCAT_4578620297183232]
+\begin{signature}[forthel]
   Let $L, L'$ be lists.
   $\emph{L \LISTconcat L'}$ is a list.
 \end{signature}
 
-\begin{axiom}[forthel,id=LISTS_CONCAT_3703161885818880]
+\begin{axiom}[forthel]
   Let $L$ be a list.
   Then $\LISTlist{} \LISTconcat L \Eq L$.
 \end{axiom}
 
-\begin{axiom}[forthel,id=LISTS_CONCAT_8050301789536256]
+\begin{axiom}[forthel]
   Let $a$ be an object and $L, L'$ be lists.
   Then $(a \LISTcons L) \LISTconcat L' \Eq a \LISTcons (L \LISTconcat L')$.
 \end{axiom}
 
-\begin{proposition}[forthel,id=LISTS_CONCAT_4512036658964875]
+\begin{proposition}[forthel]
   $L \LISTconcat \LISTlist{} \Eq L$ for every list $L$.
 \end{proposition}
 \begin{proof}[forthel,method=induction on $L$]
@@ -44,7 +44,9 @@
   \end{case}
 \end{proof}
 
-\begin{proposition}[forthel,id=LISTS_CONCAT_1021563255448756]
+\symdecl*{associativity of concatenation}
+
+\begin{proposition}[forthel,name=associativity of concatenation]
   $L \LISTconcat (L' \LISTconcat L'') \Eq (L \LISTconcat L') \LISTconcat L''$ for any lists $L, L', L''$.
 \end{proposition}
 \begin{proof}[forthel,method=induction on $L$]

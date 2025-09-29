@@ -18,6 +18,8 @@
 \importmodule[libraries/foundations]{proper-classes.ftl}
 \importmodule[articles]{transfinite-recursion.ftl}
 
+\symdecl*{Zermelo}
+
 \noindent This is a formalization of \textit{Zermelo's Well-ordering Theorem},
 i.e. of the assertion that under the assumption of the axiom of choice every
 set is equinumerous to some ordinal number, where an ordinal number is
@@ -32,7 +34,7 @@ $F \FUNfromto{\Ord}{A}$, where $\Ord$ denotes the class of all ordinals, is
 recursive regarding $G$ if $F(\alpha) = G(F \FUNrest \alpha)$ for all
 $\alpha \in \Ord$.
 
-\begin{theorem}[forthel,title=Zermelo's Well-Ordering Theorem,id=zermelo]
+\begin{theorem}[forthel,title=Zermelo's Well-Ordering Theorem,name=Zermelo]
   Every set is equinumerous to some ordinal.
 \end{theorem}
 \begin{proof}[forthel]
@@ -127,7 +129,7 @@ $\alpha \in \Ord$.
   Define $\Phi = \SClass{\alpha}{\Ord}{F(\alpha) \Eq x}$.
   $\Phi$ is nonempty.
   Let us show that we can take an $\alpha \Elem \Phi$ such that $\alpha \ORDleq \beta$ for all $\beta \Elem \Phi$.
-    Take an $\alpha \Elem \Phi$ such that for no $\beta \Elem \Phi$ we have $\beta \ORDless \alpha$ (by \printref{FOUNDATIONS_10_9532145874510315}).
+    Take an $\alpha \Elem \Phi$ such that for no $\beta \Elem \Phi$ we have $\beta \ORDless \alpha$ (by \sn{wellfoundedness of membership relation}).
     Then $\alpha \ORDleq \beta$ for all $\beta \Elem \Phi$.
   End.
   Take $f = F \FUNrest \alpha$.

@@ -36,6 +36,22 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 * **New:** Both LaTeX packages provide a new macro `\ForTheL` that prints the
   ForTheL logo.
 
+* **New:** An expl3-based LaTeX style file `math/archive/meta-inf/lib/copyright`
+  to insert copyright and license information into a document. This is
+  essentially the same as the old `math/latex/lib/license.tex`.
+
+* **New:** The "advanced" LaTeX package allows to annotate top-level section
+  environments with `for` and `name` parameters which behave much like sTeX's
+  `for` and `name` parameters: `for` paramters are intended to be used with
+  `definition`, `signature` and `convention` environments to provide on-hover
+  information for the notions and macros declared therein. `name` parameters are
+  intended to be used with `axiom` and `theorem` environments to provide
+  on-hover information for the assertions declared therein. Moreover, the
+  values of the `name` parameters can be used to reference the respective
+  top-level section via sTeX's `\sn` and `\sr` commands (see below). Note that
+  for each symbol name that occurs as a value of a `for` or `name` parameter a
+  symbol with that name must be declared, e.g. via `\symdef` or `\symdecl`.
+
 
 ### Changes on the Formalizations
 
@@ -62,6 +78,14 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 * **New:** The formalizations in `math/archive` now have associated
   `archive.json` files to list them on the landing page of the FLAMS dashboard.
+
+
+### Changes on the Parser
+
+* **New:** (TEX) Top-level sections can now contain `for` and `name` parameters.
+  The `for` parameters are ignored by Naproche while the `name` parameters
+  replace the (now obsolete) `id` parameters. Moreover, top-level sections can
+  be referenced via sTeX's `\sn` and `\sr` commands.
 
 
 ### Misc

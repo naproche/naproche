@@ -7,28 +7,21 @@
 \symdef{SETprod}{\,\times\,}
 
 \begin{sfragment}{Pairs}
-  \begin{axiom}[forthel,id=FOUNDATIONS_04_8464577431863296]
-    Let $a, a', b, b'$ be objects.
-    If $(a, b) \Eq (a', b')$ then $a \Eq a'$ and $b \Eq b'$.
-  \end{axiom}
-
-  \begin{definition}[forthel,id=FOUNDATIONS_04_4782386822774784]
+  \begin{definition}[forthel]
     A \emph{pair} is an object $p$ such that $p \Eq (a, b)$ for some objects $a, b$.
-
     Let an \emph{ordered pair} stand for a pair.
   \end{definition}
 \end{sfragment}
 
 \begin{sfragment}{Cartesian Products}
-  \begin{definition}[forthel,id=FOUNDATIONS_04_2877806274936832]
+  \begin{definition}[forthel]
     Let $A, B$ be classes.
     $\emph{A \SETprod B} = \CClass{(a, b)}{a \Elem A\text{ and }b \Elem B}$.
-
     Let the \emph{Cartesian product of $A$ and $B$} stand for $A \SETprod B$.
     Let the \emph{direct product of $A$ and $B$} stand for $A \SETprod B$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_04_1581118511906816]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes and $a, b$ be objects.
     Then $(a, b) \Elem A \SETprod B$ iff $a \Elem A$ and $b \Elem B$.
   \end{proposition}
@@ -46,7 +39,7 @@
     \end{case}
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_04_2198552029691904]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes.
     Then $A \SETprod B$ is empty iff $A$ is empty or $B$ is empty.
   \end{proposition}
@@ -67,7 +60,7 @@
     \end{case}
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_04_7971087096741888]
+  \begin{proposition}[forthel]
     Let $a, b$ be objects.
     Then $\SETsingleton{a} \SETprod \SETsingleton{b} \Eq \SETsingleton{(a, b)}$.
   \end{proposition}
@@ -88,7 +81,7 @@
     End.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_04_7456594440749056]
+  \begin{proposition}[forthel]
     Let $A, A', B, B'$ be nonempty classes.
     If $A \SETprod B \Eq A' \SETprod B'$ then $A \Eq A'$ and $B \Eq B'$.
   \end{proposition}

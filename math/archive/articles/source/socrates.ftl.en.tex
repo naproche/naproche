@@ -13,6 +13,10 @@
 
 \importmodule[libraries/everyday-ontology]{individuals?socrates.ftl}
 \importmodule[libraries/everyday-ontology]{axioms?all-humans-are-mortal.ftl}
+\importmodule[libraries/everyday-ontology]{classes?animal.ftl}
+
+\symdecl*{Mill Syllogism}
+\symdecl*{Sextus Empiricus Syllogism}
 
 \noindent Probably one of the most famous logical arguments is the following
 syllogism, mentioned the first time by John Stuart Mill in 1843
@@ -29,7 +33,7 @@ syllogism, mentioned the first time by John Stuart Mill in 1843
 We can formalize this syllogism in \Naproche without changing its wording:
 
 \begin{forthel}
-  \begin{theorem}[title=Mill's Syllogism,id=mill_syllogism]
+  \begin{theorem}[title=Mill's Syllogism,name=Mill Syllogism]
     Socrates is mortal.
   \end{theorem}
   \begin{proof}
@@ -52,7 +56,7 @@ Pyrrhonism} \cite{SextusEmpiricus1933}:
 Again, this syllogism can be adopted word-by-word to \Naproche:
 
 \begin{forthel}
-  \begin{theorem}[title=Sextus Empiricus' Syllogism,id=sextus_empiricus_syllogism]
+  \begin{theorem}[title=Sextus Empiricus' Syllogism,name=Sextus Empiricus Syllogism]
     Socrates is an animal.
   \end{theorem}
   \begin{proof}

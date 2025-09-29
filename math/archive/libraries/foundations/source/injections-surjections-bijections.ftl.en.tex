@@ -8,23 +8,21 @@
 \symdef{FUNfrominto}[args=2]{\mathbin{\comp:}#1\mathbin{\comp\hookrightarrow}#2}
 
 \begin{sfragment}{Surjective Maps}
-  \begin{definition}[forthel,id=FOUNDATIONS_08_8681187805495296]
+  \begin{definition}[forthel]
     Let $f$ be a map and $B$ be a class.
     $f$ is \emph{surjective onto $B$} iff $\FUNrange(f) \Eq B$.
-
     Let $f$ \emph{surjects onto $B$} stand for $f$ is surjective onto $B$.
     Let a \emph{surjective map onto $B$} stand for a map that is surjective onto $B$.
   \end{definition}
 
-  \begin{definition}[forthel,id=FOUNDATIONS_08_4195237329108992]
+  \begin{definition}[forthel]
     Let $A, B$ be classes.
     A \emph{surjective map from $A$ to $B$} is a map of $A$ that is surjective onto $B$.
-
     Let a \emph{surjective map from $A$ onto $B$} stand for a surjective map from $A$ to $B$.
     Let $\emph{f \FUNfromonto{A}{B}}$ stand for $f$ is a surjective map from $A$ onto $B$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_08_1974205941809152]
+  \begin{proposition}[forthel]
     Let $B$ be a class and $f$ be a map to $B$.
     $f$ is surjective onto $B$ iff every element of $B$ is a value of $f$.
   \end{proposition}
@@ -53,23 +51,21 @@
 \end{sfragment}
 
 \begin{sfragment}{Injective Maps}
-  \begin{definition}[forthel,id=FOUNDATIONS_08_605931408719872]
+  \begin{definition}[forthel]
     Let $f$ be a map.
     $f$ is \emph{injective} iff for all $a, a' \Elem \Dom(f)$ if $f(a) \Eq f(a')$ then $a \Eq a'$.
-
     Let $\emph{f \FUNfrominto{A}{B}}$ stand for $f$ is an injective map from $A$ to $B$.
   \end{definition}
 \end{sfragment}
 
 \begin{sfragment}{Bijective Maps}
-  \begin{definition}[forthel,id=FOUNDATIONS_08_3356670992318464]
+  \begin{definition}[forthel]
     Let $A, B$ be classes.
     A \emph{bijection between $A$ and $B$} is an injective map from $A$ to $B$ that is surjective onto $B$.
-
     Let a \emph{bijection from $A$ to $B$} stand for a bijection between $A$ and $B$.
   \end{definition}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_08_60881194975232]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes and $f \FUNfrominto{A}{B}$.
     Then $f$ is a bijection between $A$ and $\FUNrange(f)$.
   \end{proposition}
@@ -78,14 +74,14 @@
     Hence $f$ is a bijection between $A$ and $\FUNrange(f)$.
   \end{proof}
 
-  \begin{definition}[forthel,id=FOUNDATIONS_08_8188451318923264]
+  \begin{definition}[forthel]
     Let $A$ be a class.
     A \emph{permutation of $A$} is a bijection between $A$ and $A$.
   \end{definition}
 \end{sfragment}
 
 \begin{sfragment}{Basic Properties}
-  \begin{proposition}[forthel,id=FOUNDATIONS_08_7883784041005056]
+  \begin{proposition}[forthel]
     Let $A$ be a class.
     Then $\FUNid{A}$ is a permutation of $A$.
   \end{proposition}
@@ -107,7 +103,9 @@
     \end{proof}
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_08_8542698338254848]
+  \symdecl*{surjectivity of composition of surjections}
+
+  \begin{proposition}[forthel,name=surjectivity of composition of surjections]
     Let $A, B, C$ be classes and $f \FUNfromonto{A}{B}$ and $g \FUNfromonto{B}{C}$.
     Then $g \FUNcomp f$ is a surjective map from $A$ onto $C$.
   \end{proposition}
@@ -122,7 +120,9 @@
     End.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_08_3367836856614912]
+  \symdecl*{injectivity of composition of injections}
+
+  \begin{proposition}[forthel,name=injectivity of composition of injections]
     Let $A, B, C$ be classes and $f \FUNfrominto{A}{B}$ and $g \FUNfrominto{B}{C}$.
     Then $g \FUNcomp f$ is an injective map from $A$ to $C$.
   \end{proposition}
@@ -139,17 +139,19 @@
     End.
   \end{proof}
 
-  \begin{corollary}[forthel,id=FOUNDATIONS_08_6435206693126144]
+  \symdecl*{bijectivity of composition of bijections}
+
+  \begin{corollary}[forthel,name=bijectivity of composition of bijections]
     Let $A, B, C$ be classes.
     Let $f$ be a bijection between $A$ and $B$ and $g$ be a bijection between $B$ and $C$.
     Then $g \FUNcomp f$ is a bijection between $A$ and $C$.
   \end{corollary}
   \begin{proof}[forthel]
-    $g \FUNcomp f$ is an injective map from $A$ to $C$ (by \printref{FOUNDATIONS_08_3367836856614912}).
-    $g \FUNcomp f$ is a surjective map from $A$ onto $C$ (by \printref{FOUNDATIONS_08_8542698338254848}).
+    $g \FUNcomp f$ is an injective map from $A$ to $C$ (by \sn{injectivity of composition of injections}).
+    $g \FUNcomp f$ is a surjective map from $A$ onto $C$ (by \sn{surjectivity of composition of surjections}).
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_08_2621531811217408]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes and $f \FUNfrominto{A}{B}$ and $X \SETinclude A$.
     Then $f \FUNrest X$ is injective.
   \end{proposition}
@@ -160,12 +162,14 @@
     Hence $a \Eq a'$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_08_647446231252992]
+  \symdecl*{bijectivity of restriction of injection}
+  
+  \begin{proposition}[forthel,name=bijectivity of restriction of injection]
     Let $A, B$ be classes and $f \FUNfrominto{A}{B}$ and $X \SETinclude A$.
     Then $f \FUNrest X$ is a bijection between $X$ and $\FUNim{f}{X}$.
   \end{proposition}
 
-  \begin{corollary}[forthel,id=FOUNDATIONS_08_8159443759923200]
+  \begin{corollary}[forthel]
     Let $A, B$ be classes and $f \FUNfrominto{A}{B}$.
     Then $f$ is a bijection between $A$ and $\FUNim{f}{A}$.
   \end{corollary}

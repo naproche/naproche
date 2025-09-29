@@ -6,12 +6,12 @@
 \importmodule[libraries/arithmetics]{ordering.ftl}
 \symdef{NATsegment}[args=2]{\comp{\{}#1\comp{,\dots,}#2\comp{\}}}
 
-\begin{definition}[forthel,id=FOUNDATIONS_14_3625613501923328]
+\begin{definition}[forthel]
   Let $n, m$ be natural numbers.
   $\emph{\NATsegment{n}{m}} = \SClass{k}{\Nat}{n \NATleq k \NATleq m}$.
 \end{definition}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_14_145331933151232]
+\begin{proposition}[forthel]
   Let $n, m$ be natural numbers.
   If $\NATsegment{\NATone}{n} \Eq \NATsegment{\NATone}{m}$ then $n \Eq m$.
 \end{proposition}
@@ -59,7 +59,7 @@
   \end{case}
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_14_658708738605056]
+\begin{proposition}[forthel]
   Let $n$ be a natural number.
   Then $\NATsegment{\NATone}{n \NATplus \NATone} \Eq \NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}$.
 \end{proposition}

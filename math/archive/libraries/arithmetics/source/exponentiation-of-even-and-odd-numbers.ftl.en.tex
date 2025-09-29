@@ -6,7 +6,7 @@
 \importmodule[libraries/arithmetics]{exponentiation.ftl}
 \importmodule[libraries/arithmetics]{even-and-odd-numbers.ftl}
 
-\begin{proposition}[forthel,id=ARITHMETIC_15_1023659658745214]
+\begin{proposition}[forthel]
   Let $n, m$ be natural numbers such that $m \NATgtr \NATzero$.
   Assume that $n$ is even.
   Then $\NATexp{n}{m}$ is even.
@@ -24,7 +24,7 @@
   Hence $\NATexp{n}{m}$ is even.
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_15_0021200236556985]
+\begin{proposition}[forthel]
   Let $n, m$ be natural numbers.
   Assume that $n$ is odd.
   Then $\NATexp{n}{m}$ is odd.
@@ -52,7 +52,7 @@
     Consequently $m' \NATplus \NATone \Elem \Phi$.
   \end{proof}
 
-  Hence $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+  Hence $\Phi$ contains every natural number (by \sr{induction I}{induction}).
   Thus $\NATexp{n}{m}$ is odd.
 \end{proof}
 \end{smodule}

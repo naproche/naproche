@@ -6,17 +6,17 @@
 \importmodule[libraries/foundations]{injections-surjections-bijections.ftl}
 \symdef{FUNconst}[args=2]{\textrm{const}_{#1}^{#2}}
 
-\begin{definition}[forthel,id=FOUNDATIONS_10_8421025698547475]
+\begin{definition}[forthel]
   Let $f$ be a map.
   $f$ is \emph{constant} iff there exists an object $a$ such that $f(x) \Eq a$ for all $x \Elem \Dom(f)$.
 \end{definition}
 
-\begin{definition}[forthel,id=FOUNDATIONS_10_8915236485710212]
+\begin{definition}[forthel]
   Let $A$ be a class and $a$ be an object.
   $\emph{\FUNconst{A}{a}}$ is the map $f$ such that $\Dom(f) \Eq A$ and $f(x) \Eq a$ for all $x \Elem A$.
 \end{definition}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_2031520012658454]
+\begin{proposition}[forthel]
   Let $A$ be a nonempty class and $a$ be an object.
   $\FUNconst{A}{a}$ is a surjective map from $A$ onto $\SETsingleton{a}$.
 \end{proposition}

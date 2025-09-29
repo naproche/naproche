@@ -5,7 +5,10 @@
 \begin{smodule}{transfinite-induction.ftl}
 \importmodule[libraries/set-theory]{ordering.ftl}
 
-\begin{theorem}[forthel,id=SET_THEORY_02_8493935460614144]
+\symdecl*{transfinite induction I}
+\symdecl*{transfinite induction II}
+
+\begin{theorem}[forthel,title=Transfinite Induction I,name=transfinite induction I]
   Let $\Phi$ be a class.
   Assume that for all ordinals $\alpha$ if $\Phi$ contains all $\beta \Elem \alpha$ then $\Phi$ contains $\alpha$.
   Then $\Phi$ contains every ordinal.
@@ -27,20 +30,16 @@
   End.
 
   [prover vampire]
-  Hence $B$ contains every set (by \printref{FOUNDATIONS_11_2812087589928960}).
+  Hence $B$ contains every set (by \sr{epsilon induction}{$\in$-induction}).
   [prover eprover]
   Thus $\Phi$ contains every ordinal.
 \end{proof}
 
-\begin{theorem}[forthel,id=SET_THEORY_02_7892040431960064]
+\begin{theorem}[forthel,title=Transfinite Induction II,name=transfinite induction II]
   Let $\Phi$ be a class.
-  
   (Initial case) Assume that $\Phi$ contains $\ORDzero$.
-  
   (Successor step) Assume that for all ordinals $\alpha$ if $\alpha \Elem \Phi$ then $\ORDsucc(\alpha) \Elem \Phi$.
-  
   (Limit step) Assume that for all limit ordinals $\lambda$ if every $\alpha \Elem \lambda$ is contained in $\Phi$ then $\lambda \Elem \Phi$.
-  
   Then $\Phi$ contains every ordinal.
 \end{theorem}
 \begin{proof}[forthel]
@@ -66,7 +65,7 @@
   End.
 
   [prover vampire]
-  Thus $\Phi$ contains every ordinal (by \printref{SET_THEORY_02_8493935460614144}).
+  Thus $\Phi$ contains every ordinal (by \sn{transfinite induction I}).
   [prover eprover]
 \end{proof}
 \end{smodule}

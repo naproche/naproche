@@ -7,17 +7,17 @@
 \symdef{NATexp}[args=2]{{#1}^{#2}}
 
 \begin{sfragment}{Definition}
-  \begin{signature}[forthel,id=ARITHMETIC_09_3663815629602816]
+  \begin{signature}[forthel]
     Let $n, m$ be natural numbers.
     $\emph{\NATexp{n}{m}}$ is a natural number.
   \end{signature}
 
-  \begin{axiom}[forthel,id=ARITHMETIC_09_5368818025103360]
+  \begin{axiom}[forthel]
     Let $n$ be a natural number.
     Then $\NATexp{n}{\NATzero} \Eq \NATone$.
   \end{axiom}
 
-  \begin{axiom}[forthel,id=ARITHMETIC_09_4140498660884480]
+  \begin{axiom}[forthel]
     Let $n, m$ be natural numbers.
     Then $\NATexp{n}{m \NATplus \NATone} \Eq \NATexp{n}{m} \NATmul n$.
   \end{axiom}
@@ -25,7 +25,7 @@
 
 \begin{sfragment}{Computation Laws}
   \begin{sfragment}{Exponentiation with $0$, $1$ and $2$}
-    \begin{proposition}[forthel,id=ARITHMETIC_09_4673644676513792]
+    \begin{proposition}[forthel]
       Let $n$ be a natural number.
       Assume $n \NotEq \NATzero$.
       Then $\NATexp{\NATzero}{n} \Eq \NATzero$.
@@ -39,7 +39,7 @@
       Indeed $\NATexp{\NATzero}{m \NATplus \NATone} \Eq \NATexp{\NATzero}{m} \NATmul \NATzero$.
     \end{proof}
 
-    \begin{proposition}[forthel,id=ARITHMETIC_09_7376849881530368]
+    \begin{proposition}[forthel]
       Let $n$ be a natural number.
       Then $\NATexp{\NATone}{n} \Eq \NATone$.
     \end{proposition}
@@ -57,11 +57,11 @@
           \Eq \NATone$.
       \end{proof}
 
-      Hence every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+      Hence every natural number is contained in $\Phi$ (by \sr{induction I}{induction}).
       Thus $\NATexp{\NATone}{n} \Eq \NATone$.
     \end{proof}
 
-    \begin{proposition}[forthel,id=ARITHMETIC_09_4975279749464064]
+    \begin{proposition}[forthel]
       Let $n$ be a natural number.
       Then $\NATexp{n}{\NATone} \Eq n$.
     \end{proposition}
@@ -73,7 +73,7 @@
         \Eq n$.
     \end{proof}
 
-    \begin{proposition}[forthel,id=ARITHMETIC_09_8513812055457792]
+    \begin{proposition}[forthel]
       Let $n$ be a natural number.
       Then $\NATexp{n}{\NATtwo} \Eq n \NATmul n$.
     \end{proposition}
@@ -86,7 +86,7 @@
   \end{sfragment}
 
   \begin{sfragment}{Sums as Exponents}
-    \begin{proposition}[forthel,id=ARITHMETIC_09_8152207530655744]
+    \begin{proposition}[forthel]
       Let $n, m, k$ be natural numbers.
       Then $\NATexp{k}{n \NATplus m} \Eq \NATexp{k}{n} \NATmul \NATexp{k}{m}$.
     \end{proposition}
@@ -111,13 +111,13 @@
         \[    \Eq \NATexp{k}{n} \NATmul \NATexp{k}{m' \NATplus \NATone}.       \]
       \end{proof}
 
-      Hence every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+      Hence every natural number is contained in $\Phi$ (by \sr{induction I}{induction}).
       Thus $\NATexp{k}{n \NATplus m} \Eq \NATexp{k}{n} \NATmul \NATexp{k}{m}$.
     \end{proof}
   \end{sfragment}
 
   \begin{sfragment}{Products as Exponents}
-    \begin{proposition}[forthel,id=ARITHMETIC_09_7827956571308032]
+    \begin{proposition}[forthel]
       Let $n, m, k$ be natural numbers.
       Then $\NATexp{n}{m \NATmul k} \Eq \NATexp{\NATexp{n}{m}}{k}$.
     \end{proposition}
@@ -141,13 +141,13 @@
         \[    \Eq \NATexp{n}{m \NATmul (k' \NATplus \NATone)}.       \]
       \end{proof}
 
-      Therefore every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+      Therefore every natural number is contained in $\Phi$ (by \sr{induction I}{induction}).
       Consequently $\NATexp{n}{m \NATmul k} \Eq \NATexp{\NATexp{n}{m}}{k}$.
     \end{proof}
   \end{sfragment}
 
   \begin{sfragment}{Products as Base}
-    \begin{proposition}[forthel,id=ARITHMETIC_09_2563032276271104]
+    \begin{proposition}[forthel]
       Let $n, m, k$ be natural numbers.
       Then $\NATexp{n \NATmul m}{k} \Eq \NATexp{n}{k} \NATmul \NATexp{m}{k}$.
     \end{proposition}
@@ -181,13 +181,13 @@
         \[    \Eq \NATexp{n}{k' \NATplus \NATone} \NATmul \NATexp{m}{k' \NATplus \NATone}.              \]
       \end{proof}
 
-      Therefore every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+      Therefore every natural number is contained in $\Phi$ (by \sr{induction I}{induction}).
       Consequently $\NATexp{n \NATmul m}{k} \Eq \NATexp{n}{k} \NATmul \NATexp{m}{k}$.
     \end{proof}
   \end{sfragment}
 
   \begin{sfragment}{Zeroes of Exponentiation}
-    \begin{proposition}[forthel,id=ARITHMETIC_09_3860221447372800]
+    \begin{proposition}[forthel]
       Let $n, m$ be natural numbers.
       Then $\NATexp{n}{m} \Eq \NATzero$ iff $n \Eq \NATzero$ and $m \NotEq \NATzero$.
     \end{proposition}
@@ -211,7 +211,7 @@
           End.
         \end{proof}
 
-        Thus every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+        Thus every natural number is contained in $\Phi$ (by \sr{induction I}{induction}).
         Consequently $m \Elem \Phi$.
         Therefore $n \Eq \NATzero$ and $m \NotEq \NATzero$.
       \end{case}

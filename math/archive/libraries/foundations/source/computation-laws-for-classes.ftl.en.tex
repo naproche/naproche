@@ -6,7 +6,7 @@
 \importmodule[libraries/foundations]{classes.ftl}
 
 \begin{sfragment}{Commutativity of Union and Intersection}
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_8446177632583680]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes.
     Then $A \SETunion B \Eq B \SETunion A$.
   \end{proposition}
@@ -26,7 +26,7 @@
     End.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_7565102251245568]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes.
     Then $A \SETintersect B \Eq B \SETintersect A$.
   \end{proposition}
@@ -48,7 +48,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Associativity of Union and Intersection}
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_3854032263184384]
+  \begin{proposition}[forthel]
     Let $A, B, C$ be classes.
     Then $(A \SETunion B) \SETunion C \Eq A \SETunion (B \SETunion C)$.
   \end{proposition}
@@ -70,7 +70,7 @@
     End.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_906751977193472]
+  \begin{proposition}[forthel]
     Let $A, B, C$ be classes.
     Then $(A \SETintersect B) \SETintersect C \Eq A \SETintersect (B \SETintersect C)$.
   \end{proposition}
@@ -94,7 +94,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Distributivity of Union and Intersection}
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_371139087958016]
+  \begin{proposition}[forthel]
     Let $A, B, C$ be classes.
     Then $A \SETintersect (B \SETunion C) \Eq (A \SETintersect B) \SETunion (A \SETintersect C)$.
   \end{proposition}
@@ -118,7 +118,7 @@
     End.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_5937390721957888]
+  \begin{proposition}[forthel]
     Let $A, B, C$ be classes.
     Then $A \SETunion (B \SETintersect C) \Eq (A \SETunion B) \SETintersect (A \SETunion C)$.
   \end{proposition}
@@ -144,7 +144,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Idempocy Laws for Union and Intersection}
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_2096996737351680]
+  \begin{proposition}[forthel]
     Let $A$ be a class.
     Then $A \SETunion A \Eq A$.
   \end{proposition}
@@ -154,7 +154,7 @@
     Thus $A \SETunion A \Eq A$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_4053144145231872]
+  \begin{proposition}[forthel]
     Let $A$ be a class.
     Then $A \SETintersect A \Eq A$.
   \end{proposition}
@@ -166,7 +166,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Distributivity of Complement}
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_5296031436636160]
+  \begin{proposition}[forthel]
     Let $A, B, C$ be classes.
     Then $A \SETdiff (B \SETintersect C) \Eq (A \SETdiff B) \SETunion (A \SETdiff C)$.
   \end{proposition}
@@ -193,7 +193,7 @@
     End.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_2909554153095168]
+  \begin{proposition}[forthel]
     Let $A, B, C$ be classes.
     Then $A \SETdiff (B \SETunion C) \Eq (A \SETdiff B) \SETintersect (A \SETdiff C)$.
   \end{proposition}
@@ -222,7 +222,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Subclass Laws}
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_3793981508943872]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes.
     Then $A \SETinclude A \SETunion B$.
   \end{proposition}
@@ -232,7 +232,7 @@
     Hence $x \Elem A \SETunion B$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_1591517646946304]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes.
     Then $A \SETintersect B \SETinclude A$.
   \end{proposition}
@@ -242,7 +242,7 @@
     Hence $x \Elem A$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_6657236858306560]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes.
     Then $A \SETinclude B$ iff $A \SETunion B \Eq B$.
   \end{proposition}
@@ -270,7 +270,7 @@
     \end{case}
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_2356449346846720]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes.
     Then $A \SETinclude B$ iff $A \SETintersect B \Eq A$.
   \end{proposition}
@@ -301,7 +301,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Complement Laws}
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_7433299337150464]
+  \begin{proposition}[forthel]
     Let $A$ be a class.
     Then $A \SETdiff A \Eq \SETempty$.
   \end{proposition}
@@ -311,7 +311,7 @@
     Hence the thesis.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_3783696985358336]
+  \begin{proposition}[forthel]
     Let $A$ be a class.
     Then $A \SETdiff \SETempty \Eq A$.
   \end{proposition}
@@ -322,7 +322,7 @@
     Then we have the thesis.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_7083929257377792]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes.
     Then $A \SETdiff (A \SETdiff B) \Eq A \SETintersect B$.
   \end{proposition}
@@ -344,7 +344,7 @@
     End.
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_4938646769631232]
+  \begin{proposition}[forthel]
     Let $A, B$ be classes.
     Then $B \SETinclude A$ iff $A \SETdiff (A \SETdiff B) \Eq B$.
   \end{proposition}
@@ -358,7 +358,7 @@
     \end{case}
   \end{proof}
 
-  \begin{proposition}[forthel,id=FOUNDATIONS_02_5811954316738560]
+  \begin{proposition}[forthel]
     Let $A, B, C$ be classes.
     Then $A \SETintersect (B \SETdiff C) \Eq (A \SETintersect B) \SETdiff (A \SETintersect C)$.
   \end{proposition}

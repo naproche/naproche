@@ -343,8 +343,8 @@ symbolicFormula  = label "a symbolic formula" $ biimplication
     symbolicImp = symbol "=>" <|> token "\\implies" <|> token "\\Implies"
     symbolicOr = symbol "\\/" <|> token "\\vee" <|> token "\\Or"
     symbolicAnd = symbol "/\\" <|> token "\\wedge" <|> token "\\And"
-    symbolicAll = token' "forall" <|> token "\\forall"
-    symbolicExists = token' "exists" <|> token "\\exists"
+    symbolicAll = token' "forall" <|> token "\\forall" <|> token "\\Forall"
+    symbolicExists = token' "exists" <|> token "\\exists" <|> token "\\Exists"
     symbolicNot = token' "not" <|> token "\\neg" <|> token "\\Not"
     symbolicTruth = token' "true" <|> token "\\top" <|> token "\\True"
     symbolicFalsity = token' "false" <|> token "\\bot" <|> token "\\False"
@@ -573,7 +573,7 @@ mapNotion = sVar <**> (wordMap <|> (token "=" >> lambda))
     token "="
     vs <- fvToVarSet <$> freeVars t
     def <- addDecl (Set.map posVarName vs) lambdaBody
-    (_, _, dom) <- token' "for" >> lambdaIn;
+    (_, _, dom) <- token' "for" >> classIn
     vsDecl <- makeDecls vs
     --let body f = foldr dAll (Imp (t `mkElem` mkDom f) $ def $ mkApp f t) vsDecl
     let body f = foldr (\x g -> dAll x (mkObject (mkVar (declName x)) `Imp` g)) (Imp (t `mkElem` mkDom f) $ def $ mkApp f t) vsDecl
@@ -650,24 +650,63 @@ lambda = do
   df <- addDecl vs lambdaBody
   return $ \f -> mkMap f `And` Tag Domain (dom f) `And` (df_head f $ df $ mkApp f t)
   where
-    ld_head = finish $ (symbol "\\" <|> token "\\fun") >> lambdaIn
+    ld_head = ftl_ld_head <|> tex_ld_head <|> stex_ld_head
+    ftl_ld_head = finish $ symbol "\\" >> ftl_lambdaIn
+    tex_ld_head = finish $ token "\\fun" >> tex_lambdaIn
+    stex_ld_head = token "\\Map" >> stex_lambdaIn
 
-lambdaIn :: FTL (Formula, Formula -> Formula -> Formula, Formula -> Formula)
-lambdaIn = do
+ftl_lambdaIn :: FTL (Formula, Formula -> Formula -> Formula, Formula -> Formula)
+ftl_lambdaIn = do
   t <- oneArgument </> parenthesised twoArguments
   vs <- fvToVarSet <$> freeVars t
   vsDecl <- makeDecls vs
-  token' "in" <|> texCommand "in"
+  token' "in"
   dom <- ld_dom
   let df_head f = foldr ((.) . (\x g -> dAll x (mkObject (mkVar (declName x)) `Imp` g))) (Imp (t `mkElem` mkDom f)) vsDecl
   return (t, df_head, \f -> dom f t vsDecl)
-  where
-    ld_dom = trm <|> setTrm
-    trm = do
-      t <- sTerm; return $ \f _ _ -> mkDom f `mkEquality` t
-    setTrm = do
-      (ap, _) <- symbClassNotation
-      return $ \f t -> foldr dAll (Iff (t `mkElem` mkDom f) (ap t))
+
+tex_lambdaIn :: FTL (Formula, Formula -> Formula -> Formula, Formula -> Formula)
+tex_lambdaIn = do
+  t <- oneArgument </> parenthesised twoArguments
+  vs <- fvToVarSet <$> freeVars t
+  vsDecl <- makeDecls vs
+  texCommand "in"
+  dom <- ld_dom
+  let df_head f = foldr ((.) . (\x g -> dAll x (mkObject (mkVar (declName x)) `Imp` g))) (Imp (t `mkElem` mkDom f)) vsDecl
+  return (t, df_head, \f -> dom f t vsDecl)
+
+stex_lambdaIn :: FTL (Formula, Formula -> Formula -> Formula, Formula -> Formula)
+stex_lambdaIn = do
+  symbol "{"
+  t <- oneArgument </> parenthesised twoArguments
+  symbol "}"
+  vs <- fvToVarSet <$> freeVars t
+  vsDecl <- makeDecls vs
+  symbol "{"
+  dom <- ld_dom
+  symbol "}"
+  let df_head f = foldr ((.) . (\x g -> dAll x (mkObject (mkVar (declName x)) `Imp` g))) (Imp (t `mkElem` mkDom f)) vsDecl
+  return (t, df_head, \f -> dom f t vsDecl)
+
+ld_dom = trm <|> setTrm
+
+trm = do
+  t <- sTerm; return $ \f _ _ -> mkDom f `mkEquality` t
+
+setTrm = do
+  (ap, _) <- symbClassNotation
+  return $ \f t -> foldr dAll (Iff (t `mkElem` mkDom f) (ap t))
+
+
+classIn :: FTL (Formula, Formula -> Formula -> Formula, Formula -> Formula)
+classIn = do
+  t <- oneArgument </> parenthesised twoArguments
+  vs <- fvToVarSet <$> freeVars t
+  vsDecl <- makeDecls vs
+  token' "in" <|> texCommand "in" <|> texCommand "Elem"
+  dom <- ld_dom
+  let df_head f = foldr ((.) . (\x g -> dAll x (mkObject (mkVar (declName x)) `Imp` g))) (Imp (t `mkElem` mkDom f)) vsDecl
+  return (t, df_head, \f -> dom f t vsDecl)
 
 -- | Parse a single variable
 oneArgument :: FTL Formula

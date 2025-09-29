@@ -14,11 +14,13 @@
 \importmodule[libraries/set-theory]{cardinals-and-maps.ftl}
 \importmodule[libraries/foundations]{cantor.ftl}
 
+\symdecl*{Cantor II}
+
 \noindent This is a formalization of \emph{Cantor's Theorem}
 \cite{Cantor1891}, i.e. of the assertion that any set $x$ is strictly smaller
 than its powerset $\SETpow(x)$:
 
-\begin{theorem}[forthel,title=Cantor's Theorem,id=cantor_389275382172394]
+\begin{theorem}[forthel,title=Cantor's Theorem,name=Cantor II]
   Let $x$ be a set.
   Then $\SETcard{x} \ORDless \SETcard{\SETpow(x)}$.
 \end{theorem}
@@ -28,9 +30,9 @@ than its powerset $\SETpow(x)$:
   \begin{case}{$x$ is nonempty.}
     Assume the contrary.
     Then $\SETcard{x} \ORDgeq \SETcard{\SETpow(x)}$.
-    Hence there exists a surjective map from $x$ onto $\SETpow(x)$ (by \printref{SET_THEORY_06_192336220913664}).
+    Hence there exists a surjective map from $x$ onto $\SETpow(x)$ (by \sn{existence condition for surjections}).
     Indeed $\SETpow(x)$ is a nonempty set.
-    Contradiction (by \nameref{cantor_017529138285230}).
+    Contradiction (by \sr{Cantor I}{Cantor (elementary version)}).
   \end{case}
 \end{proof}
 

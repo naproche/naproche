@@ -6,7 +6,7 @@
 \importmodule[libraries/arithmetics]{factorial.ftl}
 \importmodule[libraries/arithmetics]{exponentiation-and-ordering.ftl}
 
-\begin{proposition}[forthel,id=ARITHMETIC_12_8113296594960384]
+\begin{proposition}[forthel]
   Let $n$ be a natural number.
   Assume $n \NATgeq \NATtwo$.
   Then $\NATexp{n}{n} \NATgtr \NATfac{n}$.
@@ -38,11 +38,11 @@
     Thus $\NATexp{n' \NATplus \NATone}{n' \NATplus \NATone} \NATgtr \NATfac{n' \NATplus \NATone}$.
   \end{proof}
 
-  Therefore $\Phi$ contains every element of $\Natgeqthan{\NATtwo}$ (by \printref{ARITHMETIC_04_4976599269113856}).
+  Therefore $\Phi$ contains every element of $\Natgeqthan{\NATtwo}$ (by \sr{induction III}{induction}).
   Consequently $\NATexp{n}{n} \NATgtr \NATfac{n}$ (by a).
 \end{proof}
 
-\begin{proposition}[forthel,id=ARITHMETIC_12_5413271156817920]
+\begin{proposition}[forthel]
   Let $n$ be a natural number.
   Assume $n \NATgeq \NATfour$.
   Then $\NATfac{n} \NATgtr \NATexp{\NATtwo}{n}$.
@@ -69,14 +69,14 @@
     Then $X \NATgtr Y$.
 
     Take $Z = \NATexp{\NATtwo}{n'} \NATmul \NATtwo$.
-    Then $Y \NATgtr Z$ (by \printref{ARITHMETIC_06_5048640368279552}).
+    Then $Y \NATgtr Z$ (by \sn{preservation of ordering under left-multiplication}).
     Indeed $n' \NATplus \NATone \NATgtr \NATtwo$ and $\NATexp{\NATtwo}{n'} \NotEq \NATzero$.
 
     Hence $\NATfac{n' \NATplus \NATone} = X \NATgtr Y \NATgtr Z = \NATexp{\NATtwo}{n' \NATplus \NATone}$.
     Thus $\NATfac{n' \NATplus \NATone} \NATgtr \NATexp{\NATtwo}{n' \NATplus \NATone}$.
   \end{proof}
 
-  Therefore $\Phi$ contains every element of $\Natgeqthan{\NATfour}$ (by \printref{ARITHMETIC_04_4976599269113856}).
+  Therefore $\Phi$ contains every element of $\Natgeqthan{\NATfour}$ (by \sr{induction III}{induction}).
   Consequently $\NATfac{n} \NATgtr \NATexp{\NATtwo}{n}$ (by a).
 \end{proof}
 \end{smodule}

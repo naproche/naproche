@@ -1,63 +1,29 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{naproche}[2025/03/08 package naproche]
+\ProvidesPackage{naproche}[2025-09-28 v1.0.0 Advanced LaTeX package for Naproche formalization]
 
 \RequirePackage{stex}
 \RequirePackage{amsmath,amssymb,amsfonts}
 \RequirePackage{etoolbox}
 \RequirePackage{xcolor}
 \RequirePackage{keyval}
-\RequirePackage{environ}
 \RequirePackage{marginnote}
 \RequirePackage{mdframed}
 \RequirePackage{url}
-
-
-% Predefined symbols
-% ------------------
-
-\newcommand{\dom}{\operatorname{dom}}
-\newcommand{\fun}{\mathrm{\lambda}}
+\RequirePackage{xspace}
+\RequirePackage{linegoal}
 
 
 % Logos
 % -----
 
-\RequirePackage{xspace}
-\newcommand{\Naproche}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
-\newcommand{\ForTheL}{\mbox{ForTheL}\xspace}
+\NewDocumentCommand{\Naproche}{}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
+\NewDocumentCommand{\ForTheL}{}{\mbox{ForTheL}\xspace}
 
 
 % Comprehension terms
 % -------------------
 
-\RequirePackage{linegoal}
-
-% Gets the left-hand and right-hand side, resp., of an expression of the form
-% "foo|bar"
-\def\getfirst#1|#2\relax{#1}
-\def\getsecond#1|#2\relax{#2}
-
-% Comprehension term: "\class{... | ...}".
-% Naproche allows to enclose the RHS within "\text{...}", e.g.
-% "\class{x | \text{$x$ is greater than $y$}}".
-% Use "\classtext{...}" instead of "\text{...}" to enable automatic line breaks
-% in the RHS.
-\newcommand{\class}[1]{%
-  \left\{%
-  \getfirst#1\relax%
-  ~\middle\vert~%
-  \linebreak[1]%
-  \getsecond#1\relax%
-  \right\}%
-}
-
 \newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
-
-
-% Printing labels
-% ---------------
-
-\newcommand{\printref}[1]{\path{#1}}
 
 
 % Top-level sections
@@ -75,63 +41,67 @@
 \newcommand\hidetlsnumbers{\setbool{showtlsnumber}{false}}
 
 \newcommand\tlstitle{}
-\newcommand\tlsid{}
-\newcommand\tlsidname{}
-\newcommand\tlsidlabel{}
+\newcommand\tlsname{}
+\newcommand\tlsfor{}
 
 \makeatletter
 \define@key{tlskeys}{forthel}[true]{\setbool{forthel}{\if\relax{#1}{false}\else#1\fi}}
 \define@key{tlskeys}{title}{\def\tlstitle{#1}}
-\define@key{tlskeys}{id}{\def\tlsid{#1}\def\tlsidname{\path{#1}\def\tlsidlabel{\label{#1}}}}
+\define@key{tlskeys}{name}{\def\tlsname{#1}}
+\define@key{tlskeys}{for}{\def\tlsfor{#1}}
 \makeatother
 
-\NewEnviron{definition}[1][]{\begin{tls}[#1]{Definition}\BODY\end{tls}}
-\NewEnviron{definition*}[1][]{\begin{tls*}[#1]{Definition}\BODY\end{tls*}}
-\NewEnviron{signature}[1][]{\begin{tls}[#1]{Signature}\BODY\end{tls}}
-\NewEnviron{signature*}[1][]{\begin{tls*}[#1]{Signature}\BODY\end{tls*}}
-\NewEnviron{axiom}[1][]{\begin{tls}[#1]{Axiom}\BODY\end{tls}}
-\NewEnviron{axiom*}[1][]{\begin{tls*}[#1]{Axiom}\BODY\end{tls*}}
-\NewEnviron{theorem}[1][]{\begin{tls}[#1]{Theorem}\BODY\end{tls}}
-\NewEnviron{theorem*}[1][]{\begin{tls*}[#1]{Theorem}\BODY\end{tls*}}
-\NewEnviron{proposition}[1][]{\begin{tls}[#1]{Proposition}\BODY\end{tls}}
-\NewEnviron{proposition*}[1][]{\begin{tls*}[#1]{Proposition}\BODY\end{tls*}}
-\NewEnviron{lemma}[1][]{\begin{tls}[#1]{Lemma}\BODY\end{tls}}
-\NewEnviron{lemma*}[1][]{\begin{tls*}[#1]{Lemma}\BODY\end{tls*}}
-\NewEnviron{corollary}[1][]{\begin{tls}[#1]{Corollary}\BODY\end{tls}}
-\NewEnviron{corollary*}[1][]{\begin{tls*}[#1]{Corollary}\BODY\end{tls*}}
-\NewEnviron{convention}[1][]{\begin{tls}[#1]{Convention}\BODY\end{tls}}
-\NewEnviron{convention*}[1][]{\begin{tls*}[#1]{Convention}\BODY\end{tls*}}
 
-\newenvironment{tls*}[2][]{%
+\ExplSyntaxOn
+
+% Create a new starred and a new unstarred top-level section environment.
+% #1: environment name (e.g. "axiom")
+% #2: header (e.g. "Axiom")
+\cs_new:Npn \naproche_new_tls_env:nn #1 #2 {
+  \NewDocumentEnvironment{#1}{O{} +b}{
+    \setkeys{tlskeys}{##1}
+    \exp_args:Nne \naproche_tls_env:nnnn {#2} {\tlsfor,\tlsname} {##2} \c_false_bool
+  }{}
+  \NewDocumentEnvironment{#1*}{O{} +b}{
+    \setkeys{tlskeys}{##1}
+    \exp_args:Nne \naproche_tls_env:nnnn {#2} {\tlsfor,\tlsname} {##2} \c_true_bool
+  }{}
+}
+
+% A top-level section environment.
+% #1: header (e.g. "Axiom")
+% #2: "for"-list
+% #3: environment body
+% #4: Boolean value that determines whether the environment is starred or not
+\cs_new:Npn \naproche_tls_env:nnnn #1 #2 #3 #4 {%
+  \bool_set:Nn \l_is_starred_env {#4}
   \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
-  \setkeys{tlskeys}{#1}%
   \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
-  \if\relax\tlsid\else\tlsidlabel\fi%
-  \noindent\textbf{#2\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
-  \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
-}{%
+  \bool_if:NF \l_is_starred_env
+    {\refstepcounter{theoremcount}}
+  \bool_if:NTF \l_is_starred_env
+    {\noindent\textbf{#1\if\relax\tlstitle\else{~(\tlstitle)}\fi.~}}
+    {\noindent\textbf{#1\ifbool{showtlsnumber}{~\thetheoremcount}{}\if\relax\tlstitle\else{~(\tlstitle)}\fi.~}}
+  \inlinedef[for={#2}]{#3}
   \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
   \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
   \renewcommand\tlstitle{}%
-  \renewcommand\tlsidname{}%
-  \renewcommand\tlsidlabel{}%
+  \renewcommand\tlsname{}%
+  \renewcommand\tlsfor{}%
 }
 
-\newenvironment{tls}[2][]{%
-  \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
-  \setkeys{tlskeys}{#1}%
-  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
-  \refstepcounter{theoremcount}%
-  \if\relax\tlsid\else\tlsidlabel\fi%
-  \noindent\textbf{#2\ifbool{showtlsnumber}{ \thetheoremcount}{}\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
-  \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
-}{%
-  \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
-  \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
-  \renewcommand\tlstitle{}%
-  \renewcommand\tlsidname{}%
-  \renewcommand\tlsidlabel{}%
-}
+% Create new (starred and unstarred) environments for each top-level section:
+\naproche_new_tls_env:nn {definition} {Definition}
+\naproche_new_tls_env:nn {signature} {Signature}
+\naproche_new_tls_env:nn {axiom} {Axiom}
+\naproche_new_tls_env:nn {theorem} {Theorem}
+\naproche_new_tls_env:nn {lemma} {Lemma}
+\naproche_new_tls_env:nn {proposition} {Proposition}
+\naproche_new_tls_env:nn {corollary} {Corollary}
+\naproche_new_tls_env:nn {convention} {Convention}
+
+\ExplSyntaxOff
+
 
 \newcommand\proofmethod{}
 

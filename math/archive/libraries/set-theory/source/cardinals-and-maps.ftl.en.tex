@@ -6,7 +6,9 @@
 \importmodule[libraries/set-theory]{cardinals.ftl}
 \importmodule[articles]{cantor-schroeder-bernstein.ftl}
 
-\begin{proposition}[forthel,id=SET_THEORY_06_5513850721927168]
+\symdecl*{cardinality of image under injection}
+
+\begin{proposition}[forthel,name=cardinality of image under injection]
   Let $x, y$ be sets and $f \FUNfrominto{x}{y}$ and $a \SETinclude x$.
   Then $\SETcard{\FUNim{f}{a}} \Eq \SETcard{a}$.
 \end{proposition}
@@ -16,7 +18,7 @@
   Hence $\SETcard{a} \Eq \SETcard{\FUNim{f}{a}}$.
 \end{proof}
 
-\begin{proposition}[forthel,id=SET_THEORY_06_6702394681735923]
+\begin{proposition}[forthel]
   Let $\kappa$ be a cardinal and $x \SETinclude \kappa$.
   Then $\SETcard{x} \ORDleq \kappa$.
 \end{proposition}
@@ -26,13 +28,15 @@
   Take a bijection $f$ between $\SETcard{x}$ and $x$.
   Then $f \FUNrest \kappa$ is an injective map from $\kappa$ to $x$.
   $\FUNid{x}$ is an injective map from $x$ to $\kappa$.
-  Hence $x$ and $\kappa$ are equinumerous (by \printref{cantor_schroeder_bernstein}).
+  Hence $x$ and $\kappa$ are equinumerous (by \sr{Cantor-Schroeder-Bernstein}{Cantor-Schöder-Bernstein}).
   Indeed $x$ is a set.
   Thus $\SETcard{x} \Eq \kappa$.
   Contradiction.
 \end{proof}
 
-\begin{proposition}[forthel,id=SET_THEORY_06_407116133171200]
+\symdecl*{existence condition for injections}
+
+\begin{proposition}[forthel,name=existence condition for injections]
   Let $x, y$ be sets.
   Then there exists an injective map from $x$ to $y$ iff $\SETcard{x} \ORDleq \SETcard{y}$.
 \end{proposition}
@@ -46,7 +50,7 @@
     Therefore $\SETcard{x}
       \Eq \SETcard{\SETcard{x}}
       \Eq \SETcard{\FUNim{(h \FUNcomp f) \FUNcomp g}{\SETcard{x}}}$
-    (by \printref{SET_THEORY_06_2820082336006144}, \printref{SET_THEORY_06_5513850721927168}).
+    (by \sn{cardinality of cardinal number}, \sn{cardinality of image under injection}).
     We have $\FUNim{(h \FUNcomp f) \FUNcomp g}{\SETcard{x}} \SETinclude \SETcard{y}$.
     Hence $\SETcard{x} \ORDleq \SETcard{y}$.
   \end{case}
@@ -62,7 +66,7 @@
   \end{case}
 \end{proof}
 
-\begin{corollary}[forthel,id=SET_THEORY_06_4944303633727488]
+\begin{corollary}[forthel]
   Let $x$ be a set and $y \SETinclude x$.
   Then $\SETcard{y} \ORDleq \SETcard{x}$.
 \end{corollary}
@@ -72,7 +76,7 @@
   Hence $\SETcard{y} \ORDleq \SETcard{x}$.
 \end{proof}
 
-\begin{corollary}[forthel,id=SET_THEORY_06_7746592696172544]
+\begin{corollary}[forthel]
   Let $x, y$ be sets such that $\SETcard{y} \ORDless \SETcard{x}$.
   Then $x \SETdiff y$ is nonempty.
 \end{corollary}
@@ -83,7 +87,9 @@
   Contradiction.
 \end{proof}
 
-\begin{proposition}[forthel,id=SET_THEORY_06_192336220913664]
+\symdecl*{existence condition for surjections}
+
+\begin{proposition}[forthel,name=existence condition for surjections]
   Let $x, y$ be nonempty sets.
   Then there exists a surjective map from $x$ onto $y$ iff $\SETcard{x} \ORDgeq \SETcard{y}$.
 \end{proposition}
@@ -126,17 +132,19 @@
   \end{case}
 \end{proof}
 
-\begin{proposition}[forthel,id=SET_THEORY_06_5843717288099840]
+\begin{proposition}[forthel]
   Let $x, y$ be nonempty sets.
   $\SETcard{x} \ORDless \SETcard{y}$ iff there exists an injective map from $x$ to $y$ and there exists no surjective map from $x$ onto $y$.
 \end{proposition}
 \begin{proof}[forthel]
-  There exists an injective map from $x$ to $y$ and there exists no surjective map from $x$ onto $y$ iff $\SETcard{x} \ORDleq \SETcard{y}$ and $\SETcard{x} \ORDngeq \SETcard{y}$ (by \printref{SET_THEORY_06_407116133171200}, \printref{SET_THEORY_06_192336220913664}).
+  There exists an injective map from $x$ to $y$ and there exists no surjective map from $x$ onto $y$ iff $\SETcard{x} \ORDleq \SETcard{y}$ and $\SETcard{x} \ORDngeq \SETcard{y}$ (by \sn{existence condition for injections}, \sn{existence condition for surjections}).
   $\SETcard{x} \ORDleq \SETcard{y}$ and $\SETcard{x} \ORDngeq \SETcard{y}$ iff $\SETcard{x} \ORDleq \SETcard{y}$ and $\SETcard{x} \neq \SETcard{y}$.
   $\SETcard{x} \ORDleq \SETcard{y}$ and $\SETcard{x} \neq \SETcard{y}$ iff $\SETcard{x} \ORDless \SETcard{y}$.
 \end{proof}
 
-\begin{proposition}[forthel,id=SET_THEORY_06_8113916590686208]
+\symdecl*{cardinality of image}
+
+\begin{proposition}[forthel,name=cardinality of image]
   Let $x, y$ be sets and $f \FUNfromto{x}{y}$ and $a \SETinclude x$.
   Then $\SETcard{\FUNim{f}{a}} \ORDleq \SETcard{a}$.
 \end{proposition}
@@ -146,7 +154,7 @@
   \begin{case}{$a$ is nonempty.}
     $f \FUNrest a$ is a surjective map from $a$ onto $\FUNim{f}{a}$.
     $\FUNim{f}{a}$ is nonempty.
-    Hence $\SETcard{\FUNim{f}{a}} \ORDleq \SETcard{a}$ (by \printref{SET_THEORY_06_192336220913664}).
+    Hence $\SETcard{\FUNim{f}{a}} \ORDleq \SETcard{a}$ (by \sn{existence condition for surjections}).
     Indeed $a$ and $\FUNim{f}{a}$ are sets.
   \end{case}
 \end{proof}

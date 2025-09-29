@@ -11,54 +11,53 @@
 \importmodule[libraries/set-theory]{axioms?infinity.ftl}
 \importmodule[libraries/set-theory]{axioms?replacement.ftl}
 \importmodule[libraries/set-theory]{axioms?foundation.ftl}
-\importmodule[libraries/set-theory]{axioms?function.ftl}
 \importmodule[libraries/set-theory]{axioms?choice.ftl}
 \importmodule[libraries/foundations]{pairs-and-products.ftl}
 \importmodule[libraries/foundations]{invertible-maps.ftl}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_5891530432708608]
+\begin{proposition}[forthel]
   $\SETempty$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  Take a set $x$ (by \printref{FOUNDATIONS_10_2362039748001792}).
+  Take a set $x$ (by \sn{Set Existence Axiom}).
   Define $A = \SClass{y}{x}{y \neq y}$.
-  Then $A$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
+  Then $A$ is a set (by \sn{Separation Axiom}).
   We have $A \Eq \SETempty$.
   Hence $\SETempty$ is a set.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_4052198354845696]
+\begin{proposition}[forthel]
   Let $x, y$ be sets.
   Then $x \SETunion y$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
   Take $X = \SETpair{x}{y}$.
   Then $X$ is a set.
-  Hence $\SETunionover X$ is a set (by \printref{FOUNDATIONS_10_5536459412996096}).
+  Hence $\SETunionover X$ is a set (by \sn{Union Axiom}).
   Indeed $X$ is a system of sets.
   We have $x \SETunion y \Eq \SETunionover X$.
   Thus $x \SETunion y$ is a set.
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_4475839687163904]
+\begin{proposition}[forthel]
   Let $x, y$ be sets.
   Then $x \SETintersect y$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
   We have $x \SETintersect y \SETinclude x$.
-  Hence $x \SETintersect y$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
+  Hence $x \SETintersect y$ is a set (by \sn{Separation Axiom}).
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_7795203882614784]
+\begin{proposition}[forthel]
   Let $x, y$ be sets.
   Then $x \SETdiff y$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
   We have $x \SETdiff y \SETinclude x$.
-  Hence $x \SETdiff y$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
+  Hence $x \SETdiff y$ is a set (by \sn{Separation Axiom}).
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_4458706448154624]
+\begin{proposition}[forthel]
   Let $x, y$ be sets.
   Then $x \SETprod y$ is a set.
 \end{proposition}
@@ -77,8 +76,8 @@
     End.
 
     $x \SETunion y$ is a set.
-    Consequently $\SETpow(\SETpow(x \SETunion y))$ is a set (by \printref{FOUNDATIONS_10_5862230203564032}).
-    Therefore $P$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
+    Consequently $\SETpow(\SETpow(x \SETunion y))$ is a set (by \sn{Powerset Axiom}).
+    Therefore $P$ is a set (by \sn{Separation Axiom}).
   \end{proof}
 
   Define $l(p) =$ ``choose $a \Elem x$, choose $b \Elem y$ such that $p \Eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $a$'' for $p \in P$.
@@ -164,29 +163,29 @@
   \end{proof}
 
   Thus $x \SETprod y$ is the image of some set under some map.
-  Therefore $x \SETprod y$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
+  Therefore $x \SETprod y$ is a set (by \sn{Replacement Axiom}).
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_5486815207227392]
+\begin{proposition}[forthel]
   Let $X$ be a nonempty system of sets.
   Then $\SETintersectover X$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
   Take an element $x$ of $X$.
   Then $\SETintersectover X \SETinclude x$.
-  Hence $\SETintersectover X$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
+  Hence $\SETintersectover X$ is a set (by \sn{Separation Axiom}).
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_7598384349184000]
+\begin{proposition}[forthel]
   Let $f$ be a map such that $\Dom(f)$ is a set.
   Then $\FUNrange(f)$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
   $\FUNrange(f) \Eq \FUNim{f}{\Dom(f)}$ and $\FUNim{f}{\Dom(f)}$ is a set.
-  Hence $\FUNrange(f)$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
+  Hence $\FUNrange(f)$ is a set (by \sn{Replacement Axiom}).
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_8631339572002816]
+\begin{proposition}[forthel]
   Let $A$ be a class and $x$ be a set.
   Assume that there exists an injective map from $A$ to $x$.
   Then $A$ is a set.
@@ -196,16 +195,16 @@
   Then $\FUNinv{f}$ is a bijection between $\FUNrange(f)$ and $A$.
   $\FUNrange(f)$ is a set and $A$ is the image of $\FUNrange(f)$ under $\FUNinv{f}$.
   Indeed $\FUNrange(f) \SETinclude x$.
-  Thus $A$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
+  Thus $A$ is a set (by \sn{Replacement Axiom}).
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_8812282138066944]
+\begin{proposition}[forthel]
   There exist no sets $x, y$ such that $x \Elem y$ and $y \Elem x$.
 \end{proposition}
 \begin{proof}[forthel]
   Assume the contrary.
   Take sets $x,y$ such that $x \Elem y$ and $y \Elem x$.
-  Consider an element $z$ of $\SETpair{x}{y}$ such that $\SETpair{x}{y}$ and $z$ are disjoint (by \printref{FOUNDATIONS_10_1320008569323520}).
+  Consider an element $z$ of $\SETpair{x}{y}$ such that $\SETpair{x}{y}$ and $z$ are disjoint (by \sn{Foundation Axiom}).
   Indeed $\SETpair{x}{y}$ is a nonempty system of sets.
   Then we have $z \Eq x$ or $z \Eq y$.
 
@@ -222,18 +221,18 @@
   \end{case}
 \end{proof}
 
-\begin{corollary}[forthel,id=FOUNDATIONS_10_3086917813927936]
+\begin{corollary}[forthel]
   Let $x$ be a set.
   Then $x \NotElem x$.
 \end{corollary}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_4589652321021547]
+\begin{proposition}[forthel]
   Let $f, g$ be functions.
   Assume that $\Dom(f) \Eq \Dom(g)$ and $f(a) \Eq g(a)$ for all $a \Elem \Dom(f)$.
   Then $f \Eq g$.
 \end{proposition}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_10_4105036244189184]
+\begin{proposition}[forthel]
   Let $x, y$ be sets.
   Then $\FUNfunspace{x}{y}$ is a set.
 \end{proposition}
@@ -242,7 +241,7 @@
 
   [prover vampire]
   Every element of $R$ is a set. % Needed for ontological checking
-  Define $h(F) = \fun a \in x.$ ``choose $b \Elem y$ such that $(a,b) \Elem F$ in $b$'' for $F \in R$.
+  Define $h(F) = \Map{a}{x}$ ``choose $b \Elem y$ such that $(a,b) \Elem F$ in $b$'' for $F \Elem R$.
   [prover eprover]
 
   Let us show that $\FUNfunspace{x}{y} \SETinclude \FUNrange(h)$.

@@ -14,11 +14,13 @@
 \importmodule[libraries/foundations]{maps-and-systems-of-sets.ftl}
 \importmodule[libraries/set-theory]{zfc.ftl}
 
+\symdecl*{Knaster-Tarski}
+
 \noindent This is a formalization of the \textit{Knaster-Tarski Fixed Point
 Theorem}, i.e. of the assertion that every subset-preserving map has a fixed
 point \cite{Schroeder2012}.
 
-\begin{theorem}[forthel,title=Knaster-Tarski,id=knaster_tarski]
+\begin{theorem}[forthel,title=Knaster-Tarski,name=Knaster-Tarski]
   Let $x$ be a set.
   Let $h$ be a map from $\SETpow(x)$ to $\SETpow(x)$ that preserves subsets.
   Then $h$ has a fixed point.
