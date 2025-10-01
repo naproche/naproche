@@ -4,9 +4,9 @@
 \begin{document}
 \begin{smodule}{ordering.ftl}
 \importmodule[libraries/arithmetics]{natural-numbers.ftl}
-\symdef{NATless}{\;<\;}
+\symdef{NATless}[name=less]{\;<\;}
 \symdef{NATnless}{\;\not<\;}
-\symdef{NATgtr}{\;>\;}
+\symdef{NATgtr}[name=greater]{\;>\;}
 \symdef{NATngtr}{\;\not>\;}
 \symdef{NATleq}{\;\leq\;}
 \symdef{NATnleq}{\;\not\leq\;}
@@ -16,9 +16,12 @@
 \symdef{Natgtrthan}[args=1]{\comp[\mathbb{N}]_{\comp>#1}}
 \symdef{Natleqthan}[args=1]{\comp{\mathbb{N}}_{\comp\leq#1}}
 \symdef{Natgeqthan}[args=1]{\comp{\mathbb{N}}_{\comp\geq#1}}
+\symdecl*{positive}
+\symdecl*{predecessor}
+\symdecl*{successor}
 
 \begin{sfragment}{Definitions and Immediate Consequences}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={less,NATnless,greater,NATngtr}]
     Let $n, m$ be natural numbers.
     $\emph{n \NATless m}$ iff there exists a nonzero natural number $k$ such that $m \Eq n \NATplus k$.
     Let $n$ is \emph{less than $m$} stand for $n \NATless m$.
@@ -28,22 +31,22 @@
     Let $\emph{n \NATngtr m}$ stand for $n$ is not greater than $m$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=Natlessthan]
     Let $n$ be a natural number.
     $\emph{\Natlessthan{n}} = \SClass{k}{\Nat}{k \NATless n}$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=Natgtrthan]
     Let $n$ be a natural number.
     $\emph{\Natgtrthan{n}} = \SClass{k}{\Nat}{k \NATgtr n}$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=positive]
     Let $n$ be a natural number.
     $n$ is \emph{positive} iff $n \NATgtr \NATzero$.
 \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={NATleq,NATgeq,NATnleq,NATngeq}]
     Let $n, m$ be natural numbers.
     $\emph{n \NATleq m}$ iff there exists a natural number $k$ such that $m \Eq n \NATplus k$.
     Let $n$ is \emph{less than or equal to $m$} stand for $n \NATleq m$.
@@ -53,12 +56,12 @@
     Let $\emph{n \NATngeq m}$ stand for $n$ is not greater than or equal to $m$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=Natleqthan]
     Let $n$ be a natural number.
     $\emph{\Natleqthan{n}} = \SClass{k}{\Nat}{k \NATleq n}$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=Natgeqthan]
     Let $n$ be a natural number.
     $\emph{\Natgeqthan{n}} = \SClass{k}{\Nat}{k \NATgeq n }$.
   \end{definition}
@@ -80,12 +83,12 @@
     \end{case}
   \end{proof}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=predecessor]
     Let $n$ be a natural number.
     A \emph{predecessor of $n$} is a natural number that is less than $n$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=successor]
     Let $n$ be a natural number.
     A \emph{successor of $n$} is a natural number that is greater than $n$.
   \end{definition}

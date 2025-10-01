@@ -6,7 +6,9 @@
 \importmodule[libraries/arithmetics]{nat-is-a-set.ftl}
 \importmodule[libraries/set-theory]{zfc.ftl}
 
-\begin{definition}[forthel]
+\symdecl*{recursively defined}
+
+\begin{definition}[forthel,for=recursively defined]
   Let $a$ be an object and $f$ be a map.
   Let $\varphi$ be a map from $\Nat$ to $\Dom(f)$.
   $\varphi$ is \emph{recursively defined by $a$ and $f$} iff $\varphi(\NATzero) = a$ and $\varphi(n \NATplus \NATone) = f(\varphi(n))$ for every $n \Elem \Nat$.

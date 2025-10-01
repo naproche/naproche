@@ -5,10 +5,11 @@
 \begin{smodule}{infinity.ftl}
 \importmodule[libraries/foundations]{maps.ftl}
 \importmodule[libraries/foundations]{sub-and-supersets.ftl}
+\symdecl*{inductive}
 
 \symdecl*{Axiom of Infinity}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=inductive]
   Let $A$ be a class and $a$ be an object and $f$ be a map such that $A \SETinclude \Dom(f)$.
   $A$ is \emph{inductive regarding $a$ and $f$} iff $a \Elem A$ and for all $x \Elem A$ we have $f(x) \Elem A$.
 \end{definition}

@@ -6,8 +6,9 @@
 \importmodule[libraries/set-theory]{ordinals.ftl}
 \symdef{ORDsucc}{\textrm{succ}}
 \symdef{ORDpred}{\textrm{pred}}
+\symdecl*{successor ordinal}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=ORDsucc]
   Let $\alpha$ be an ordinal.
   $\emph{\ORDsucc(\alpha)} = \alpha \SETunion \SETsingleton{\alpha}$.
 \end{definition}
@@ -34,7 +35,7 @@
   \end{proof}
 \end{proof}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=successor ordinal]
   A \emph{successor ordinal} is an ordinal $\alpha$ such that $\alpha \Eq \ORDsucc(\beta)$ for some ordinal $\beta$.
 \end{definition}
 
@@ -84,7 +85,7 @@
   \end{proof}
 \end{proof}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=ORDpred]
   Let $\alpha$ be a successor ordinal.
   $\emph{\ORDpred(\alpha)}$ is the ordinal $\beta$ such that $\alpha \Eq \ORDsucc(\beta)$.
 \end{definition}

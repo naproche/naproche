@@ -4,21 +4,21 @@
 \begin{document}
 \begin{smodule}{multiplication.ftl}
 \importmodule[libraries/arithmetics]{natural-numbers.ftl}
-\symdef{NATmul}{\,\cdot\,}
+\symdef{NATmul}[name=product]{\,\cdot\,}
 
 \begin{sfragment}{Definition}
-  \begin{signature}[forthel]
+  \begin{signature}[forthel,for=NATmul]
     Let $n, m$ be natural numbers.
     $\emph{n \NATmul m}$ is a natural number.
     Let the \emph{product of $n$ and $m$} stand for $n \NATmul m$.
   \end{signature}
 
-  \begin{axiom}[forthel]
+  \begin{axiom}[forthel,for=NATmul]
     Let $n$ be a natural number.
     Then $n \NATmul \NATzero \Eq \NATzero$.
   \end{axiom}
 
-  \begin{axiom}[forthel]
+  \begin{axiom}[forthel,for=NATmul]
     Let $n, m$ be natural numbers.
     Then $n \NATmul (m \NATplus \NATone) \Eq (n \NATmul m) \NATplus n$.
   \end{axiom}

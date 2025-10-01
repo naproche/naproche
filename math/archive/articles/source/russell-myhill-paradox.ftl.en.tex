@@ -12,6 +12,10 @@
 
 \usemodule[libraries/meta]{preliminaries.ftl}
 
+\symdef{LogProd}[name=logical product]{\mathop{\sqcap}}
+\symdecl*{proposition}
+\symdecl*{true}
+\symdecl*{system of propositions}
 \symdecl*{Russell-Myhill Paradox}
 
 \maketitle
@@ -24,39 +28,36 @@ It was discussed in Russell's 1903 \emph{Principles of Mathematics}
 \cite{Myhill1958}.
 
 \begin{forthel}
-  \begin{signature*}
-    A proposition is an object.
+  \begin{signature*}[for=proposition]
+    A \emph{proposition} is an object.
   \end{signature*}
 
-  \begin{signature*}
+  \begin{signature*}[for=true]
     Let $p$ be a proposition.
-    $p$ is true is an atom.
+    $p$ is \emph{true} is an atom.
   \end{signature*}
 
-  [synonym system/-s]
-
-  \begin{definition*}
-    A system of propositions is a class $P$ such that every element of $P$ is a proposition.
+  \begin{definition*}[for=system of propositions]
+    A \emph{system of propositions} is a class $P$ such that every element of $P$ is a proposition.
   \end{definition*}
 
-  \begin{signature*}
+  \begin{signature*}[for=logical product]
     Let $P$ be a system of propositions.
-    The logical product of $P$ is a proposition $p$ such that $p$ is true iff every element of $P$ is true.
+    The \emph{logical product of $P$} is a proposition $p$ such that $p$ is true iff every element of $P$ is true.
+    Let $\emph{\LogProd P}$ denote the logical product of $P$.
   \end{signature*}
-  
-  Let $\sqcap P$ denote the logical product of $P$.
   
   \begin{theorem*}[title=Russell-Myhill Paradox,name=Russell-Myhill Paradox]
     It is wrong that
-    \[ \sqcap P = \sqcap Q \Implies P = Q \]
+    \[ \LogProd P \Eq \LogProd Q \Implies P \Eq Q \]
     for all systems of propositions $P, Q$.
   \end{theorem*}
   \begin{proof}
     Assume the contrary.
-    Define $Q = \CClass{q}{\text{there exists a system of propositions } P \text{ such that } q = \sqcap P \text{ and } q \notin P}$.
-    Consider $q = \sqcap Q$.
-    Then for any system of propositions $P$ such that $\sqcap P = q$ we have $P = Q$.
-    Hence $q \in Q$ iff $q \notin Q$.
+    Define $Q = \CClass{q}{\text{there exists a system of propositions } P \text{ such that } q \Eq \LogProd P \text{ and } q \NotElem P}$.
+    Consider $q = \LogProd Q$.
+    Then for any system of propositions $P$ such that $\LogProd P \Eq q$ we have $P \Eq Q$.
+    Hence $q \Elem Q$ iff $q \NotElem Q$.
     Contradiction.
   \end{proof}
 \end{forthel}

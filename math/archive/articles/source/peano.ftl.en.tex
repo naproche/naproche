@@ -26,6 +26,7 @@
 \symdef{succ}[args=1]{\comp{\textsf{succ}}\dobrackets{#1}}
 \symdef{plus}{\mathrel{\comp+}}
 \symdef{triplus}[args=3]{#1\mathrel{\comp+}#2\mathrel{\comp+}#3}
+\symdecl*{number}
 
 % (An approximation to) Peano's original notation:
 \notation*{True}[peano]{\mathrm V}
@@ -56,19 +57,19 @@ number of theorems about addition of natural numbers.
 \begin{forthel}
   Let $a,b,c,d$ denote mathematical objects.
 
-  \begin{signature*}
+  \begin{signature*}[for=number]
     A \emph{number} is a mathematical object.
   \end{signature*}
 
-  \begin{definition*}
+  \begin{definition*}[for=Nat]
     $\emph{\Nat}$ is the class of all numbers.
   \end{definition*}
 
-  \begin{signature*}
+  \begin{signature*}[for=one]
     $\emph{\one}$ is a mathematical object.
   \end{signature*}
 
-  \begin{signature*}
+  \begin{signature*}[for=succ]
     $\emph{\succ{a}}$ is a mathematical object.
   \end{signature*}
 \end{forthel}
@@ -201,7 +202,7 @@ number of theorems about addition of natural numbers.
 \symdecl*{P18}
 
 \begin{forthel}
-  \begin{signature*}
+  \begin{signature*}[for=plus]
     $\emph{a \plus b}$ is a mathematical object.
   \end{signature*}
 
@@ -259,7 +260,7 @@ number of theorems about addition of natural numbers.
     Thus $a \plus b \Elem \Nat$.
   \end{proof}
 
-  \begin{definition*}[title=20]
+  \begin{definition*}[title=20,for=triplus]
     $\emph{\triplus{a}{b}{c}} = (a \plus b) \plus c$.
   \end{definition*}
 

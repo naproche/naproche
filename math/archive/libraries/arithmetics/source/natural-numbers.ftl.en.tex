@@ -5,81 +5,84 @@
 \begin{smodule}{natural-numbers.ftl}
 \importmodule[libraries/foundations]{classes.ftl}
 \symdef{Nat}{\mathbb N}
-\symdef{NATplus}{\,+\,}
-\symdef{NATzero}{0}
-\symdef{NATone}{1}
-\symdef{NATtwo}{2}
-\symdef{NATthree}{3}
-\symdef{NATfour}{4}
-\symdef{NATfive}{5}
-\symdef{NATsix}{6}
-\symdef{NATseven}{7}
-\symdef{NATeight}{8}
-\symdef{NATnine}{9}
+\symdef{NATplus}[name=sum]{\,+\,}
+\symdef{NATzero}[name=zero]{0}
+\symdef{NATone}[name=one]{1}
+\symdef{NATtwo}[name=two]{2}
+\symdef{NATthree}[name=three]{3}
+\symdef{NATfour}[name=four]{4}
+\symdef{NATfive}[name=five]{5}
+\symdef{NATsix}[name=six]{6}
+\symdef{NATseven}[name=seven]{7}
+\symdef{NATeight}[name=eight]{8}
+\symdef{NATnine}[name=nine]{9}
+\symdecl*{natural number}
+\symdecl*{nonzero}
+\symdecl*{direct successor}
 
 \begin{sfragment}{The Language of Natural Number Arithmetic}
-  \begin{signature}[forthel]
+  \begin{signature}[forthel,for=natural number]
     A \emph{natural number} is an object.
   \end{signature}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=Nat]
     $\emph{\Nat}$ is the class of natural numbers.
   \end{definition}
 
-  \begin{signature}[forthel]
+  \begin{signature}[forthel,for=sum]
     Let $n, m$ be natural numbers.
     $\emph{n \NATplus m}$ is a natural number.
     Let the \emph{sum of $n$ and $m$} stand for $n \NATplus m$.
   \end{signature}
 
-  \begin{signature}[forthel]
+  \begin{signature}[forthel,for={zero,nonzero}]
     $\emph{\NATzero}$ is a natural number.
     Let \emph{zero} stand for $\NATzero$.
     Let $n$ is \emph{nonzero} stand for $n \NotEq \NATzero$.
   \end{signature}
 
-  \begin{signature}[forthel]
+  \begin{signature}[forthel,for={one,direct successor}]
     $\emph{\NATone}$ is a natural number.
     Let \emph{one} stand for $\NATone$.
     Let the \emph{direct successor of $n$} stand for $n \NATplus \NATone$.
   \end{signature}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=two]
     $\emph{\NATtwo} = \NATone \NATplus \NATone$.
     Let \emph{two} stand for $\NATtwo$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=three]
     $\emph{\NATthree} = \NATtwo \NATplus \NATone$.
     Let \emph{three} stand for $\NATthree$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=four]
     $\emph{\NATfour} = \NATthree \NATplus \NATone$.
     Let \emph{four} stand for $\NATfour$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=five]
     $\emph{\NATfive} = \NATfour \NATplus \NATone$.
     Let \emph{five} stand for $\NATfive$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=six]
     $\emph{\NATsix} = \NATfive \NATplus \NATone$.
     Let \emph{six} stand for $\NATsix$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=seven]
     $\emph{\NATseven} = \NATsix \NATplus \NATone$.
     Let \emph{seven} stand for $\NATseven$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=eight]
     $\emph{\NATeight} = \NATseven \NATplus \NATone$.
     Let \emph{eight} stand for $\NATeight$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=nine]
     $\emph{\NATnine} = \NATeight \NATplus \NATone$.
     Let \emph{nine} stand for $\NATnine$.
   \end{definition}

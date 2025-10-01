@@ -31,8 +31,8 @@ denote the collection of all maps $f \FUNfromto{\alpha}{A}$ for some ordinal
 $\alpha$.
 Moreover, for any map $G \FUNfromto{\ORDfunspace{A}}{A}$ we say that a map
 $F \FUNfromto{\Ord}{A}$, where $\Ord$ denotes the class of all ordinals, is
-recursive regarding $G$ if $F(\alpha) = G(F \FUNrest \alpha)$ for all
-$\alpha \in \Ord$.
+recursive regarding $G$ if $F(\alpha) \Eq G(F \FUNrest \alpha)$ for all
+$\alpha \Elem \Ord$.
 
 \begin{theorem}[forthel,title=Zermelo's Well-Ordering Theorem,name=Zermelo]
   Every set is equinumerous to some ordinal.
@@ -52,7 +52,7 @@ $\alpha \in \Ord$.
       x
       & : x \SETdiff \FUNrange(F) \Eq \SETempty
     \end{cases} \]
-  for $F \in \ORDfunspace{A}$.
+  for $F \Elem \ORDfunspace{A}$.
   We can show that for any $F \Elem \ORDfunspace{A}$ if $x \SETdiff \FUNrange(F) \NotEq \SETempty$ then $G(F) \Elem x \SETdiff \FUNrange(F)$.
     Let $F \Elem \ORDfunspace{A}$.
     Assume $x \SETdiff \FUNrange(F) \NotEq \SETempty$.  

@@ -5,14 +5,19 @@
 \begin{smodule}{invertible-maps.ftl}
 \importmodule[libraries/foundations]{injections-surjections-bijections.ftl}
 \symdef{FUNinv}[args=1]{#1^{\comp{-1}}}
+\symdecl*{inverse}
+\symdecl*{invertible}
+\symdecl*{involutory}
+\symdecl*{selfinverse}
+\symdecl*{involution}
 
 \begin{sfragment}{Definitions}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=inverse]
     Let $f$ be a map.
     An \emph{inverse of $f$} is a map $g$ from $\FUNrange(f)$ to $\Dom(f)$ such that $f(a) \Eq b \Iff g(b) \Eq a$ for all $a \Elem \Dom(f)$ and all $b \Elem \Dom(g)$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=invertible]
     Let $f$ be a map.
     $f$ is \emph{invertible} iff $f$ has an inverse.
   \end{definition}
@@ -33,7 +38,7 @@
     End.
   \end{proof}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={FUNinv,involutory,selfinverse}]
     Let $f$ be an invertible map.
     $\emph{\FUNinv{f}}$ is the inverse of $f$.
     Let $f$ is \emph{involutory} stand for $f$ is the inverse of $f$.
@@ -317,7 +322,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Involutions}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=involution]
     Let $A$ be a class.
     An \emph{involution on $A$} is a selfinverse map $f$ on $A$.
   \end{definition}

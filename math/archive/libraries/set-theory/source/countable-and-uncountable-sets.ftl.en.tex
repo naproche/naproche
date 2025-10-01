@@ -5,18 +5,21 @@
 \begin{smodule}{countable-and-uncountable-sets.ftl}
 \importmodule[libraries/set-theory]{omega-is-limit-ordinal.ftl}
 \importmodule[libraries/set-theory]{cardinals.ftl}
+\symdecl*{countable}
+\symdecl*{uncountable}
+\symdecl*{countably infinite}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=countable]
   Let $x$ be a set.
   $x$ is \emph{countable} iff $\SETcard{x} \ORDleq \ORDomega$.
 \end{definition}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=uncountable]
   Let $x$ be a set.
   $x$ is \emph{uncountable} iff $x$ is not countable.
 \end{definition}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=countably infinite]
   Let $x$ be a set.
   $x$ is \emph{countably infinite} iff $\SETcard{x} \Eq \ORDomega$.
 \end{definition}

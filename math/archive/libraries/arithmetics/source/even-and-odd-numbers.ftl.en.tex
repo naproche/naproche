@@ -5,14 +5,16 @@
 \begin{smodule}{even-and-odd-numbers.ftl}
 \importmodule[libraries/arithmetics]{divisibility.ftl}
 \importmodule[libraries/arithmetics]{subtraction.ftl}
+\symdecl*{even}
+\symdecl*{odd}
 
 \begin{sfragment}{Definition}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=even]
     Let $n$ be a natural number.
     $n$ is \emph{even} iff $n$ is divisible by $\NATtwo$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=odd]
     Let $n$ be a natural number.
     $n$ is \emph{odd} iff $n$ is not divisible by $\NATtwo$.
   \end{definition}

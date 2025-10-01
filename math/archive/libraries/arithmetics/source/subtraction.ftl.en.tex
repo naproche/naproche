@@ -4,9 +4,9 @@
 \begin{document}
 \begin{smodule}{subtraction.ftl}
 \importmodule[libraries/arithmetics]{ordering.ftl}
-\symdef{NATsub}{\,-\,}
+\symdef{NATsub}[name=difference]{\,-\,}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=difference]
   Let $n, m$ be natural numbers such that $n \NATgeq m$.
   $\emph{n \NATsub m}$ is the natural number $k$ such that $n \Eq m \NATplus k$.
   Let the \emph{difference of $n$ and $m$} stand for $n \NATsub m$.

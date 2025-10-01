@@ -4,8 +4,10 @@
 \begin{document}
 \begin{smodule}{transitive-classes.ftl}
 \importmodule[libraries/set-theory]{zfc.ftl}
+\symdecl*{transitive}
+\symdecl*{system of transitive sets}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=transitive]
   Let $A$ be a class.
   $A$ is \emph{transitive} iff every element of $A$ is a subset of $A$.
 \end{definition}
@@ -15,7 +17,7 @@
   Then $X$ is transitive iff for every $x \Elem X$ and every $y \Elem x$ we have $y \Elem X$.
 \end{proposition}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=system of transitive sets]
   A \emph{system of transitive sets} is a system of sets $X$ such that every member of $X$ is a transitive set.
 \end{definition}
 

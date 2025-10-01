@@ -5,6 +5,8 @@
 \begin{smodule}{finite-and-infinite-classes.ftl}
 \importmodule[libraries/foundations]{segments-of-natural-numbers.ftl}
 \importmodule[libraries/foundations]{equinumerosity.ftl}
+\symdecl*{finite}
+\symdecl*{infinite}
 
 \begin{sfragment}{Finite Classes}
   \begin{definition}[forthel]
@@ -12,7 +14,7 @@
     $X$ \emph{has $n$ elements} iff $X$ is equinumerous to $\NATsegment{\NATone}{n}$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=finite]
     Let $X$ be a class.
     $X$ is \emph{finite} iff there exists a natural number $n$ such that $X$ has $n$ elements.
   \end{definition}
@@ -129,7 +131,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Infinite Classes}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=infinite]
     Let $X$ be a class.
     $X$ is \emph{infinite} iff $X$ is not finite.
   \end{definition}

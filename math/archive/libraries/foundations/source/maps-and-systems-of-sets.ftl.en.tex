@@ -5,12 +5,15 @@
 \begin{smodule}{maps-and-systems-of-sets.ftl}
 \importmodule[libraries/foundations]{maps.ftl}
 \importmodule[libraries/foundations]{systems-of-sets.ftl}
+\symdecl*{map between systems of sets}
+\symdecl*{subset preserving}
+\symdecl*{preserve subsets}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=map between systems of sets]
   A \emph{map between systems of sets} is a map from some system of sets to some system of sets.
 \end{definition}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for={subset preserving,preserve subsets}]
   Let $f$ be a map between systems of sets.
   $f$ is \emph{subset preserving} iff $x \SETinclude y \Implies f(x) \SETinclude f(y)$ for all $x, y \Elem \Dom(f)$.
   Let $f$ \emph{preserves subsets} stand for $f$ is subset preserving.

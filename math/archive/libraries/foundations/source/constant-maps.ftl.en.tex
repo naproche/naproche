@@ -5,13 +5,14 @@
 \begin{smodule}{constant-maps.ftl}
 \importmodule[libraries/foundations]{injections-surjections-bijections.ftl}
 \symdef{FUNconst}[args=2]{\textrm{const}_{#1}^{#2}}
+\symdecl*{constant}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=constant]
   Let $f$ be a map.
   $f$ is \emph{constant} iff there exists an object $a$ such that $f(x) \Eq a$ for all $x \Elem \Dom(f)$.
 \end{definition}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=FUNconst]
   Let $A$ be a class and $a$ be an object.
   $\emph{\FUNconst{A}{a}}$ is the map $f$ such that $\Dom(f) \Eq A$ and $f(x) \Eq a$ for all $x \Elem A$.
 \end{definition}

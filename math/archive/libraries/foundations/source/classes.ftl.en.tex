@@ -17,9 +17,23 @@
 \symdef{SETunion}{\,\cup\,}
 \symdef{SETintersect}{\,\cap\,}
 \symdef{SETdiff}{\,\setminus\,}
+\symdecl*{subclass}
+\symdecl*{superclass}
+\symdecl*{proper subclass}
+\symdecl*{proper superclass}
+\symdecl*{include}
+\symdecl*{empty}
+\symdecl*{nonempty}
+\symdecl*{unordered pair}
+\symdecl*{singleton class}
+\symdecl*{unique element}
+\symdecl*{union}
+\symdecl*{intersection}
+\symdecl*{complement}
+\symdecl*{disjoint}
 
 \begin{sfragment}{Sub- and Superclasses}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={subclass,SETinclude,superclass,SETniclude,proper subclass,SETstrictinclude,proper superclass,SETstrictniclude,include}]
     Let $A$ be a class.
     A \emph{subclass of $A$} is a class $B$ such that every element of $B$ is an
     element of $A$.
@@ -66,13 +80,13 @@
 \end{sfragment}
 
 \begin{sfragment}{The Empty Class}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={empty,nonempty}]
     Let $A$ be a class.
     $A$ is \emph{empty} iff $A$ has no elements.
     Let $A$ is \emph{nonempty} stand for $A$ is not empty.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=SETempty]
     $\emph{\SETempty} = \CClass{x}{x \NotEq x}$.
   \end{definition}
 
@@ -104,23 +118,23 @@
 \end{sfragment}
 
 \begin{sfragment}{Unordered Pairs}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={SETpair,unordered pair}]
     Let $a, b$ be objects.
     $\emph{\SETpair{a}{b}} = \CClass{x}{x \Eq a\text{ or }x \Eq b}$.
     Let the \emph{unordered pair of $a$ and $b$} stand for $\SETpair{a}{b}$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=unordered pair]
     An \emph{unordered pair} is a class $A$ such that $A \Eq \SETpair{a}{b}$ for some distinct objects $a, b$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={SETsingleton,singleton class}]
     Let $a$ be an object.
     $\emph{\SETsingleton{a}} = \CClass{x}{x \Eq a}$.
     Let the \emph{singleton class of $a$} stand for $\SETsingleton{a}$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=singleton class]
     A \emph{singleton class} is a class $A$ such that $A \Eq \SETsingleton{a}$ for some object $a$.
   \end{definition}
 
@@ -141,7 +155,7 @@
     If $\SETsingleton{a} \Eq \SETsingleton{a'}$ then $a \Eq a'$.
   \end{corollary}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=unique element]
     Let $A$ be a class.
     A \emph{unique element of $A$} is an element $a$ of $A$ such that for each $x \Elem A$ we have $x \Eq a$.
   \end{definition}
@@ -153,19 +167,19 @@
 \end{sfragment}
 
 \begin{sfragment}{Unions, Intersections, Complements}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={SETunion,union}]
     Let $A, B$ be classes.
     $\emph{A \SETunion B} = \CClass{x}{x \Elem A\text{ or }x \Elem B}$.
     Let the \emph{union of $A$ and $B$} stand for $A \SETunion B$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={SETintersect,intersection}]
     Let $A, B$ be classes.
     $\emph{A \SETintersect B} = \CClass{x}{x \Elem A\text{ and }x \Elem B}$.
     Let the \emph{intersection of $A$ and $B$} stand for $A \SETintersect B$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={SETdiff,complement}]
     Let $A, B$ be classes.
     $\emph{A \SETdiff B} = \CClass{x}{x \Elem A\text{ and }x \NotElem B}$.
     Let the \emph{complement of $B$ in $A$} stand for $A \SETdiff B$.
@@ -173,7 +187,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Disjoint Classes}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=disjoint]
     Let $A, B$ be classes.
     $A$ and $B$ are \emph{disjoint} iff $A$ and $B$ have no common elements.
   \end{definition}
