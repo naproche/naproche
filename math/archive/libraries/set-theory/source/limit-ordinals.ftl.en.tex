@@ -6,8 +6,9 @@
 \importmodule[libraries/set-theory]{zero.ftl}
 \importmodule[libraries/set-theory]{successor-ordinals.ftl}
 \symdef{ORDlim}{\mathop{\textsf{lim}}}
+\symdecl*{limit ordinal}
 
-\begin{convention}[forthel]
+\begin{convention}[forthel,for=ORDlim]
   Let $\ORDlim x$ stand for $\SETunionover x$.
 \end{convention}
 
@@ -37,7 +38,7 @@
   \end{proof}
 \end{proof}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=limit ordinal]
   A \emph{limit ordinal} is an ordinal $\lambda$ such that neither $\lambda$ is a successor ordinal nor $\lambda \Eq \ORDzero$.
 \end{definition}
 \end{smodule}

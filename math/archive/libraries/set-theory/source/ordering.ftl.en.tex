@@ -4,16 +4,16 @@
 \begin{document}
 \begin{smodule}{ordering.ftl}
 \importmodule[libraries/set-theory]{limit-ordinals.ftl}
-\symdef{ORDless}{\;<\;}
+\symdef{ORDless}[name=less]{\;<\;}
 \symdef{ORDnless}{\;\not<\;}
 \symdef{ORDleq}{\;\leq\;}
 \symdef{ORDnleq}{\;\not\leq\;}
-\symdef{ORDgtr}{\;>\;}
+\symdef{ORDgtr}[name=greater]{\;>\;}
 \symdef{ORDngtr}{\;\not>\;}
 \symdef{ORDgeq}{\;\geq\;}
 \symdef{ORDngeq}{\;\not\geq\;}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for={less,ORDnless,greater,ORDngtr}]
   Let $\alpha, \beta$ be ordinals.
   $\emph{\alpha \ORDless \beta}$ iff $\alpha \Elem \beta$.
   Let $\alpha$ is \emph{less than $\beta$} stand for $\alpha \ORDless \beta$.
@@ -23,7 +23,7 @@
   Let $\emph{\alpha \ORDngtr \beta}$ stand for not $\alpha \ORDgtr \beta$.
 \end{definition}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for={ORDleq,ORDnleq,ORDgeq,ORDngeq}]
   Let $\alpha, \beta$ be ordinals.
   $\emph{\alpha \ORDleq \beta}$ iff $\alpha \ORDless \beta$ or $\alpha \Eq \beta$.
   Let $\alpha$ is \emph{less than or equal to $\beta$} stand for $\alpha \ORDleq \beta$.

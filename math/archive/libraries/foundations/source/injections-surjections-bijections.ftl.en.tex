@@ -6,16 +6,20 @@
 \importmodule[libraries/foundations]{maps.ftl}
 \symdef{FUNfromonto}[args=2]{\mathbin{\comp:}#1\mathbin{\comp\twoheadrightarrow}#2}
 \symdef{FUNfrominto}[args=2]{\mathbin{\comp:}#1\mathbin{\comp\hookrightarrow}#2}
+\symdecl*{surjective}
+\symdecl*{injective}
+\symdecl*{bijection}
+\symdecl*{permutation}
 
 \begin{sfragment}{Surjective Maps}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=surjective]
     Let $f$ be a map and $B$ be a class.
     $f$ is \emph{surjective onto $B$} iff $\FUNrange(f) \Eq B$.
     Let $f$ \emph{surjects onto $B$} stand for $f$ is surjective onto $B$.
     Let a \emph{surjective map onto $B$} stand for a map that is surjective onto $B$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={surjective,FUNfromonto}]
     Let $A, B$ be classes.
     A \emph{surjective map from $A$ to $B$} is a map of $A$ that is surjective onto $B$.
     Let a \emph{surjective map from $A$ onto $B$} stand for a surjective map from $A$ to $B$.
@@ -51,7 +55,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Injective Maps}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={injective,FUNfrominto}]
     Let $f$ be a map.
     $f$ is \emph{injective} iff for all $a, a' \Elem \Dom(f)$ if $f(a) \Eq f(a')$ then $a \Eq a'$.
     Let $\emph{f \FUNfrominto{A}{B}}$ stand for $f$ is an injective map from $A$ to $B$.
@@ -59,7 +63,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Bijective Maps}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=bijection]
     Let $A, B$ be classes.
     A \emph{bijection between $A$ and $B$} is an injective map from $A$ to $B$ that is surjective onto $B$.
     Let a \emph{bijection from $A$ to $B$} stand for a bijection between $A$ and $B$.
@@ -74,7 +78,7 @@
     Hence $f$ is a bijection between $A$ and $\FUNrange(f)$.
   \end{proof}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=permutation]
     Let $A$ be a class.
     A \emph{permutation of $A$} is a bijection between $A$ and $A$.
   \end{definition}

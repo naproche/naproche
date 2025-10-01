@@ -28,9 +28,9 @@ Not every class is a set.
   \end{theorem}
   \begin{proof}[forthel]
     Assume the contrary.
-    Define $R = \CClass{x}{x \text{ is a set such that } x \notin x}$.
+    Define $R = \CClass{x}{x \text{ is a set such that } x \NotElem x}$.
     Then $R$ is a set.
-    Hence $R \in R$ iff $R \notin R$.
+    Hence $R \Elem R$ iff $R \NotElem R$.
     Contradiction.
   \end{proof}
 \end{forthel}

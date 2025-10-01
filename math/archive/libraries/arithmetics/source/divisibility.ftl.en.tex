@@ -6,8 +6,14 @@
 \importmodule[libraries/arithmetics]{multiplication-and-ordering.ftl}
 \symdef{NATmid}{\,\mid\,}
 \symdef{NATnmid}{\,\nmid\,}
+\symdecl*{divisible}
+\symdecl*{divide}
+\symdecl*{factor}
+\symdecl*{divisor}
+\symdecl*{trivial divisor}
+\symdecl*{nontrivial divisor}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for={divisible,divide}]
   Let $n, m$ be natural numbers.
   $\emph{n \NATmid m}$ iff there exists a natural number $k$ such that $n \NATmul k \Eq m$.
   Let $m$ is \emph{divisible by $n$} stand for $n \NATmid m$.
@@ -20,18 +26,18 @@
   $n$ divides $m$ iff there exists a natural number $k$ such that $k \NATmul n \Eq m$.
 \end{lemma}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for={factor,divisor}]
   Let $n$ be a natural number.
   A \emph{factor of $n$} is a natural number that divides $n$.
   Let a \emph{divisor of $n$} stand for a factor of $n$.
 \end{definition}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=trivial divisor]
   Let $n$ be a natural number.
   A \emph{trivial divisor of $n$} is a divisor $m$ of $n$ such that $m \Eq \NATone$ or $m \Eq n$.
 \end{definition}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=nontrivial divisor]
   Let $n$ be a natural number.
   A \emph{nontrivial divisor of $n$} is a divisor $m$ of $n$ such that $m \NotEq \NATone$ and $m \NotEq n$.
 \end{definition}

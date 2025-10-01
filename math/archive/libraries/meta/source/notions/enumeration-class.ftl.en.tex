@@ -7,10 +7,10 @@
 \importmodule[libraries/meta]{notions?classes.ftl}
 \importmodule[libraries/meta]{notions?objects.ftl}
 
-\symdef{EClass}[args=a,name=enumeration class]{\comp{\left\{\right.}\argsep{#1}{\comp,}\comp{\left.\right\}}}
+\symdef{EClass}[args=a]{\comp{\left\{\right.}\argsep{#1}{\comp,}\comp{\left.\right\}}}
 
 \begin{fakeforthel}
-  \begin{signature}
+  \begin{signature}[for=EClass]
     Let $a_1,\dots,a_n$ be objects.
     $\emph{\EClass{a1,\dots,a_n}}$ is a class.
   \end{signature}

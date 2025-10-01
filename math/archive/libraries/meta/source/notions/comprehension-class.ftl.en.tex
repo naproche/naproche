@@ -7,10 +7,10 @@
 \importmodule[libraries/meta]{notions?classes.ftl}
 \importmodule[libraries/meta]{notions?objects.ftl}
 
-\symdef{CClass}[args=2,name=comprehension class]{\comp{\left\{\right.}#1\,\comp{\left.\middle|\right.}\,#2\comp{\left.\right\}}}
+\symdef{CClass}[args=2]{\comp{\left\{\right.}#1\,\comp{\left.\middle|\right.}\,#2\comp{\left.\right\}}}
 
 \begin{fakeforthel}
-  \begin{signature}
+  \begin{signature}[for=CClass]
     Let $\tau$ be a term and $\varphi$ be a formula.
     $\emph{\CClass{\tau}{\varphi}}$ is a class.
   \end{signature}

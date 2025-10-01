@@ -5,8 +5,9 @@
 \begin{smodule}{recursive-maps.ftl}
 \importmodule[libraries/set-theory]{ordering.ftl}
 \symdef{ORDfunspace}[args=1]{#1^{\comp{<\infty}}}
+\symdecl*{recursive}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=ORDfunspace]
   Let $A$ be a class.
   \[ \emph{\ORDfunspace{A}} = \CClass{f}{f\text{ is a map from }\alpha\text{ to }A\text{ for some ordinal }\alpha}. \]
 \end{definition}
@@ -18,7 +19,7 @@
 
 \inlineforthel{[prover vampire]}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=recursive]
   Let $H$ be a map and $G \FUNfromto{\ORDfunspace{A}}{A}$ for some class $A$ such that $H$ is a map to $A$.
   $H$ is \emph{recursive regarding $G$} iff $\Dom(H)$ is a transitive subclass of $\Ord$ and for all $\alpha \Elem \Dom(H)$ we have \[ H(\alpha) \Eq G(H \FUNrest \alpha). \]
 \end{definition}

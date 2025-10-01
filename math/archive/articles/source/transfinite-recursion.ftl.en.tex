@@ -75,7 +75,7 @@ all ordinals $\alpha$.
       Let $\alpha$ be an ordinal.
       Assume that every ordinal less than $\alpha$ lies in $\Phi$.
       Then for all $y \Elem \alpha$ there exists a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \Elem \Dom(h)$.
-      Define $H'(y) =$ ``choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \Elem \Dom(h)$ in $h(y)$'' for $y \in \alpha$.
+      Define $H'(y) =$ ``choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \Elem \Dom(h)$ in $h(y)$'' for $y \Elem \alpha$.
       Then $H'$ is a map from $\alpha$ to $A$.
       We have $H' \Eq H' \FUNrest \alpha$.
       Define \[ H(\beta) =
@@ -83,7 +83,7 @@ all ordinals $\alpha$.
           H'(\beta)                 & : \beta \ORDless \alpha \\
           G(H' \FUNrest \beta)  & : \beta \Eq \alpha
         \end{cases} \]
-      for $\beta \in \ORDsucc(\alpha)$.
+      for $\beta \Elem \ORDsucc(\alpha)$.
       
       Let us show that $H \FUNrest \beta \Elem \ORDfunspace{A}$ for all $\beta \Elem \Dom(H)$.
         Let $\beta \Elem \Dom(H)$.
@@ -133,7 +133,7 @@ all ordinals $\alpha$.
     Consequently every ordinal is contained in the domain of some map $H$ to $A$ such that $H$ is recursive regarding $G$.
   \end{proof}
 
-  Define $F(\alpha) =$ ``choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \Elem \Dom(H)$ in $H(\alpha)$'' for $\alpha \in \Ord$.
+  Define $F(\alpha) =$ ``choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \Elem \Dom(H)$ in $H(\alpha)$'' for $\alpha \Elem \Ord$.
   Then $F$ is a map from $\Ord$ to $A$.
 
   $F$ is recursive regarding $G$.
@@ -180,7 +180,7 @@ all ordinals $\alpha$.
 As a corollary of the transfinite recursion theorem we get that we can
 define maps recursively on the ordinals by case distinction:
 For given maps $G \FUNfromto{\Ord \SETprod A}{A}$ and
-$H \FUNfromto{\Ord \SETprod \ORDfunspace{A}}{A}$ and an element $a \in A$ we
+$H \FUNfromto{\Ord \SETprod \ORDfunspace{A}}{A}$ and an element $a \Elem A$ we
 can define a map $F \FUNfromto{\Ord}{A}$ by
 \begin{itemize}
   \item $F(\ORDzero) = a$,
@@ -223,7 +223,7 @@ can define a map $F \FUNfromto{\Ord}{A}$ by
       H(\Dom(f), f)
       & : \text{$\Dom(f)$ is a limit ordinal}
     \end{cases} \]
-  for $f \in \ORDfunspace{A}$.
+  for $f \Elem \ORDfunspace{A}$.
 
   Then $J$ is a map from $\ORDfunspace{A}$ to $A$.
   Indeed we can show that for any $f \Elem \ORDfunspace{A}$ we have $J(f) \Elem A$.

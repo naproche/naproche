@@ -4,13 +4,15 @@
 \begin{document}
 \begin{smodule}{finite-and-infinite-sets.ftl}
 \importmodule[libraries/set-theory]{omega-is-cardinal.ftl}
+\symdecl*{finite}
+\symdecl*{infinite}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=finite]
   Let $x$ be a set.
   $x$ is \emph{finite} iff $\SETcard{x} \ORDless \ORDomega$.
 \end{definition}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=infinite]
   Let $x$ be a set.
   $x$ is \emph{infinite} iff $x$ is not finite.
 \end{definition}

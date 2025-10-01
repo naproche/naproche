@@ -6,8 +6,9 @@
 \importmodule[libraries/set-theory]{zero.ftl}
 \importmodule[libraries/set-theory]{successor-ordinals.ftl}
 \symdef{ORDomega}{\omega}
+\symdecl*{natural number}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for={ORDomega,natural number}]
   \[ \emph{\ORDomega} = \SClass{n}{\Ord}{\classtext{$n \Elem X$ for every $X \SETinclude \Ord$ such that $\ORDzero \Elem X$ and for all $x \Elem X$ we have $\ORDsucc(x) \Elem X$}}. \]
   Let a \emph{natural number} stand for an element of $\ORDomega$.
 \end{definition}

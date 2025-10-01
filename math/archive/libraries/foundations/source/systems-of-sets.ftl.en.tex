@@ -4,18 +4,21 @@
 \begin{document}
 \begin{smodule}{systems-of-sets.ftl}
 \importmodule[libraries/foundations]{sub-and-supersets.ftl}
-\symdef{SETunionover}{\bigcup\,}
-\symdef{SETintersectover}{\bigcap\,}
+\symdef{SETunionover}[name=union over]{\bigcup\,}
+\symdef{SETintersectover}[name=intersection over]{\bigcap\,}
+\symdecl*{system of sets}
+\symdecl*{system of nonempty sets}
+\symdecl*{system of subsets}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=system of sets]
   A \emph{system of sets} is a class $X$ such that every element of $X$ is a set.
 \end{definition}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=system of nonempty sets]
   A \emph{system of nonempty sets} is a class $X$ such that every element of $X$ is a nonempty set.
 \end{definition}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=system of subsets]
   Let $A$ be a class.
   A \emph{system of subsets of $A$} is a class $X$ such that every element of $X$ is a subset of $A$.
 \end{definition}
@@ -46,7 +49,7 @@
 \end{proposition}
 
 \begin{sfragment}{Unions Over Systems of Sets}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=union over]
     Let $X$ be a system of sets.
     $\emph{\SETunionover X} = \CClass{a}{a \Elem x\text{ for some }x \Elem X}$.
     Let \emph{union over $X$} stand for $\SETunionover X$.
@@ -89,7 +92,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Intersections Over Systems of Sets}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=intersection over]
     Let $X$ be a system of sets.
     $\emph{\SETintersectover X} = \CClass{a}{a \Elem x\text{ for all }x \Elem X}$.
     Let the \emph{intersection over $X$} stand for $\SETintersectover X$.

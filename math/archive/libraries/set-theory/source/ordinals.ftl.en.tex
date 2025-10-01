@@ -5,13 +5,15 @@
 \begin{smodule}{ordinals.ftl}
 \importmodule[libraries/set-theory]{transitive-classes.ftl}
 \symdef{Ord}{\mathbb O}
+\symdecl*{ordinal number}
+\symdecl*{ordinal}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for={ordinal number,ordinal}]
   An \emph{ordinal number} is a transitive set $\alpha$ such that every element of $\alpha$ is a transitive set.
   Let an \emph{ordinal} stand for an ordinal number.
 \end{definition}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=Ord]
   $\emph{\Ord}$ is the class of all ordinals.
 \end{definition}
 

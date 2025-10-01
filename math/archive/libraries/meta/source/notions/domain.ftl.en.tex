@@ -10,16 +10,18 @@
 \symdef{Dom}[name=domain]{\comp{\textrm{dom}}}
 \symdecl*{defined}
 
+\STEXinvisible{\inlineforthel{Let the domain of $f$ stand for $\Dom(f)$.}}
+
 \begin{fakeforthel}
-  \begin{signature}
+  \begin{signature}[for=Dom]
     Let $f$ be a map.
     $\emph{\Dom(f)}$ is a class.
+    Let the \emph{domain of $f$} stand for $\Dom(f)$.
   \end{signature}
 \end{fakeforthel}
 
 \begin{forthel}
-  \begin{convention}
-    Let the \emph{domain of $f$} stand for $\Dom(f)$.
+  \begin{convention}[for=defined]
     Let $f$ is \emph{defined on $X$} stand for $\Dom(f) = X$.
   \end{convention}
 \end{forthel}

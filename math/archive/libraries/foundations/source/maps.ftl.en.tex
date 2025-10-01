@@ -4,26 +4,30 @@
 \begin{document}
 \begin{smodule}{maps.ftl}
 \importmodule[libraries/foundations]{classes.ftl}
-\symdef{FUNid}[args=1]{\comp{\textrm{id}}_{#1}}
-\symdef{FUNrange}{\textrm{range}}
-\symdef{FUNcomp}{\,\circ\,}
-\symdef{FUNrest}{\,\restriction\,}
-\symdef{FUNim}[args=2]{#1\comp[#2\comp]}
+\symdef{FUNid}[name=identity map,args=1]{\comp{\textrm{id}}_{#1}}
+\symdef{FUNrange}[name=range]{\textrm{range}}
+\symdef{FUNcomp}[name=composition]{\,\circ\,}
+\symdef{FUNrest}[name=restriction]{\,\restriction\,}
+\symdef{FUNim}[name=image,args=2]{#1\comp[#2\comp]}
 \notation{FUNim}[parens]{#1\dobrackets{#2}}
 \notation{FUNim}[star]{#1_{\comp*}\dobrackets{#2}}
-\symdef{FUNpreim}[args=2]{#1^{\comp{-1}}\comp[#2\comp]}
+\symdef{FUNpreim}[name=preimage,args=2]{#1^{\comp{-1}}\comp[#2\comp]}
 \notation{FUNpreim}[parens]{#1^{\comp{-1}}\dobrackets{#2}}
 \notation{FUNpreim}[star]{#1^{\comp*}\dobrackets{#2}}
 \symdef{FUNfromto}[args=2]{\mathbin{\comp:}#1\mathbin{\comp\rightarrow}#2}
 \symdef{FUNfunspace}[args=2]{\comp[#1\mathbin{\comp\rightarrow}#2\comp]}
+\symdecl*{value}
+\symdecl*{direct image}
+\symdecl*{inverse image}
+\symdecl*{fixed point}
 
 \begin{sfragment}{Range}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=value]
     Let $f$ be a map.
     A \emph{value of $f$} is an object $b$ such that $b \Eq f(a)$ for some $a \Elem \Dom(f)$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={range}]
     Let $f$ be a map.
     $\emph{\FUNrange(f)} = \CClass{f(a)}{a \Elem \Dom(f)}$.
     Let the \emph{range of $f$} stand for $\FUNrange(f)$.
@@ -48,7 +52,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Identity Map}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={identity map}]
     Let $A$ be a class.
     $\emph{\FUNid{A}}$ is the map defined on $A$ such that $\FUNid{A}(a) \Eq a$ for all $a \Elem A$.
     Let the \emph{identity map on $A$} stand for $\FUNid{A}$.
@@ -56,7 +60,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Composition}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=composition]
     Let $f, g$ be maps.
     Assume $\FUNrange(f) \SETinclude \Dom(g)$.
     $\emph{g \FUNcomp f}$ is the map defined on $\Dom(f)$ such that $(g \FUNcomp f)(a) \Eq g(f(a))$ for all $a \Elem \Dom(f)$.
@@ -65,7 +69,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Restriction}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=restriction]
     Let $f$ be a map and $X \SETinclude \Dom(f)$.
     $\emph{f \FUNrest X}$ is the map defined on $X$ such that $(f \FUNrest X)(a) \Eq f(a)$ for all $a \Elem X$.
     Let the \emph{restriction of $f$ to $X$} stand for $f \FUNrest X$.
@@ -78,14 +82,14 @@
 \end{sfragment}
 
 \begin{sfragment}{Image and Preimage}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={FUNim,image,direct image}]
     Let $f$ be a map and $A$ be a class.
     $\emph{\FUNim{f}{A}} = \CClass{f(a)}{a \Elem \Dom(f) \SETintersect A}$.
     Let the \emph{image of $A$ under $f$} stand for $\FUNim{f}{A}$.
     Let the \emph{direct image of $A$ under $f$} stand for $\FUNim{f}{A}$.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={preimage,inverse image}]
     Let $f$ be a map and $B$ be a class.
     $\emph{\FUNpreim{f}{B}} = \SClass{a}{\Dom(f)}{f(a) \Elem B}$.
     Let the \emph{preimage of $B$ under $f$} stand for $\FUNpreim{f}{B}$.
@@ -94,26 +98,26 @@
 \end{sfragment}
 
 \begin{sfragment}{Maps Between Classes}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={map,function}]
     Let $A$ be a class.
     A \emph{map of $A$} is a map $f$ such that $\Dom(f) \Eq A$.
     Let a \emph{function of $A$} stand for a map of $A$ that is a function.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={map,function}]
     Let $B$ be a class.
     A \emph{map to $B$} is a map $f$ such that $f(a) \Elem B$ for each $a \Elem \Dom(f)$.
     Let a \emph{function to $B$} stand for a map to $B$ that is a function.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={map,FUNfromto,function}]
     Let $A, B$ be classes.
     A \emph{map from $A$ to $B$} is a map $f$ such that $\Dom(f) \Eq A$ and $f(a) \Elem B$ for each $a \Elem A$.
     Let $\emph{f \FUNfromto{A}{B}}$ stand for $f$ is a map from $A$ to $B$.
     Let a \emph{function from $A$ to $B$} stand for a map from $A$ to $B$ that is a function.
   \end{definition}
 
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={map,function}]
     Let $A$ be a class.
     A \emph{map on $A$} is a map from $A$ to $A$.
     Let a \emph{function on $A$} stand for a map on $A$ that is a function.
@@ -200,14 +204,14 @@
 \end{sfragment}
 
 \begin{sfragment}{Classes of Functions}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=FUNfunspace]
     Let $A, B$ be classes.
     $\emph{\FUNfunspace{A}{B}}$ is the class of all functions from $A$ to $B$.
   \end{definition}
 \end{sfragment}
 
 \begin{sfragment}{Fixed Points}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=fixed point]
     Let $f$ be a map.
     A \emph{fixed point of $f$} is an element $x$ of $\Dom(f)$ such that $f(x) \Eq x$.
   \end{definition}

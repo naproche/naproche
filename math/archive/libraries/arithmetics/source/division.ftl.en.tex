@@ -5,8 +5,9 @@
 \begin{smodule}{division.ftl}
 \importmodule[libraries/arithmetics]{divisibility.ftl}
 \symdef{NATfrac}[args=2]{\frac{#1}{#2}}
+\symdecl*{quotient}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=quotient]
   Let $n$ be a natural number and $m$ be a nonzero divisor of $n$.
   $\emph{\NATfrac{n}{m}}$ is the natural number $k$ such that $k \NATmul m \Eq n$.
   Let the \emph{quotient of $n$ and $m$} stand for $\NATfrac{n}{m}$.

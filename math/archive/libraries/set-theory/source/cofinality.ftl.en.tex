@@ -5,8 +5,10 @@
 \begin{smodule}{cofinality.ftl}
 \importmodule[libraries/set-theory]{cardinals.ftl}
 \importmodule[libraries/set-theory]{finite-and-infinite-sets.ftl}
+\symdecl*{cofinal}
+\symdecl*{cofinal subset}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for={cofinal,cofinal subset}]
   Let $\kappa$ be a cardinal and $Y \SETinclude \kappa$.
   $Y$ is \emph{cofinal in $\kappa$} iff for every $x \Elem \kappa$ there exists a $y \Elem Y$ such that $x \ORDless y$.
   Let a \emph{cofinal subset of $\kappa$} stand for a subset of $\kappa$ that is cofinal in $\kappa$.

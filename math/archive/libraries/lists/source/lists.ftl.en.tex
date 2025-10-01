@@ -4,18 +4,18 @@
 \begin{document}
 \begin{smodule}{lists.ftl}
 \importmodule[libraries/foundations]{classes.ftl}
-\symdef{LISTlist}[args=a,op=[\,]]{\comp[\argsep{#1}{\comp,}\comp]}
+\symdef{LISTlist}[name=list,args=a,op=[\,]]{\comp[\argsep{#1}{\comp,}\comp]}
 \symdef{LISTcons}[op=::]{\,{::}\,}
 
-\begin{signature}[forthel]
+\begin{signature}[forthel,for=LISTlist]
   A \emph{list} is an object.
 \end{signature}
 
-\begin{signature}[forthel]
+\begin{signature}[forthel,for=LISTlist]
   $\emph{\LISTlist{}}$ is a list.
 \end{signature}
 
-\begin{signature}[forthel]
+\begin{signature}[forthel,for=LISTlist]
   Let $a$ be an object and $L$ be a list.
   $\emph{a \LISTcons L}$ is a list.
   Let $\emph{\LISTlist{a}}$ stand for $a \LISTcons \LISTlist{}$.
@@ -23,12 +23,12 @@
   Let $\emph{\LISTlist{a,b,c}}$ stand for $a \LISTcons \LISTlist{b,c}$.
 \end{signature}
 
-\begin{axiom}[forthel]
+\begin{axiom}[forthel,for=LISTlist]
   Let $L$ be a list.
   Then $L \Eq \LISTlist{}$ or $L \Eq a \LISTcons L'$ for some object $a$ and some list $L'$.
 \end{axiom}
 
-\begin{axiom}[forthel]
+\begin{axiom}[forthel,for=LISTlist]
   Let $a$ be an object and $L$ be a list.
   Then $L \prec a \LISTcons L$.
 \end{axiom}

@@ -5,16 +5,19 @@
 \begin{smodule}{pairs-and-products.ftl}
 \importmodule[libraries/foundations]{classes.ftl}
 \symdef{SETprod}{\,\times\,}
+\symdecl*{ordered pai}
+\symdecl*{Cartesian product}
+\symdecl*{direct product}
 
 \begin{sfragment}{Pairs}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for=ordered pair]
     A \emph{pair} is an object $p$ such that $p \Eq (a, b)$ for some objects $a, b$.
     Let an \emph{ordered pair} stand for a pair.
   \end{definition}
 \end{sfragment}
 
 \begin{sfragment}{Cartesian Products}
-  \begin{definition}[forthel]
+  \begin{definition}[forthel,for={SETprod,Cartesian product,direct product}]
     Let $A, B$ be classes.
     $\emph{A \SETprod B} = \CClass{(a, b)}{a \Elem A\text{ and }b \Elem B}$.
     Let the \emph{Cartesian product of $A$ and $B$} stand for $A \SETprod B$.

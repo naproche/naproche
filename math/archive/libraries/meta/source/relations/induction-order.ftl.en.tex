@@ -4,13 +4,13 @@
 \begin{document}
 \begin{smodule}{induction-order.ftl}
 
-\symdef{ILess}[name=inductively less]{\mathrel{\comp\prec}}
+\symdef{ILess}{\mathrel{\comp\prec}}
 
-\begin{forthel}
-  \begin{convention}
-    Let $x$ is \emph{inductively less than $y$} stand for $x \ILess y$.
+\begin{fakeforthel}
+  \begin{convention}[for=ILess]
+    Let $\emph{x \ILess y}$ stand for $x$ is inductively less than $y$.
   \end{convention}
-\end{forthel}
+\end{fakeforthel}
 
 \end{smodule}
 \end{document}

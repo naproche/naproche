@@ -6,15 +6,17 @@
 \importmodule[libraries/set-theory]{axioms?choice.ftl}
 \importmodule[libraries/set-theory]{ordering.ftl}
 \importmodule[libraries/foundations]{equinumerosity.ftl}
-\symdef{SETcard}[args=1]{\comp|#1\comp|}
+\symdef{SETcard}[name=cardinality,args=1]{\comp|#1\comp|}
+\symdecl*{cardinal number}
+\symdecl*{cardinal}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for=cardinality]
   Let $x$ be a set.
   $\emph{\SETcard{x}}$ is the ordinal $\kappa$ such that $\kappa$ is equinumerous to $x$ and every ordinal that is equinumerous to $x$ is greater than or equal to $\kappa$.
   Let the \emph{cardinality of $x$} stand for $\SETcard{x}$.
 \end{definition}
 
-\begin{definition}[forthel]
+\begin{definition}[forthel,for={cardinal number,cardinal}]
   A \emph{cardinal number} is an ordinal $\kappa$ such that $\kappa \Eq \SETcard{x}$ for some
   set $x$.
   Let a \emph{cardinal} stand for a cardinal number.

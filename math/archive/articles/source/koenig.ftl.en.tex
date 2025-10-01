@@ -8,11 +8,6 @@
 \author{Steffen Frerix, Peter Koepke, Marcel Schütz}
 \date{2025}
 
-\newcommand{\SumSet}[2]{\bigsqcup_{i \Elem #2} #1_{i}}
-\newcommand{\Sum}[2]{\sum_{i \Elem #2} #1_{i}}
-\newcommand{\ProdSet}[2]{\bigtimes_{i \Elem #2} #1_{i}}
-\newcommand{\Prod}[2]{\prod_{i \Elem #2} #1_{i}}
-
 
 \begin{document}
 \begin{smodule}{koenig.ftl}
@@ -22,6 +17,11 @@
 \importmodule[libraries/set-theory]{cardinals-and-maps.ftl}
 \importmodule[libraries/set-theory]{two.ftl}
 
+\symdef{SumSet}[args=2]{\comp\bigsqcup_{\comp i\mathrel{\comp\in}#2}#1_{\comp i}}
+\symdef{Sum}[args=2]{\comp\sum_{i\mathrel{\comp\in}#2}#1_{\comp i}}
+\symdef{ProdSet}[args=2]{\comp\bigtimes_{\comp i\mathrel{\comp\in}#2}#1_{\comp i}}
+\symdef{Prod}[args=2]{\comp\prod_{\comp i\mathrel{\comp\in}#2}#1_{\comp i}}
+\symdecl*{sequence of cardinals}
 \symdecl*{Koenig}
 
 \noindent Kőnig's Theorem is an important set-theoretical result about the
@@ -39,12 +39,12 @@ $\kappa \ORDless \ORDtwo^\kappa$.
 
   [synonym sequence/-s]
 
-  \begin{definition*}
+  \begin{definition*}[for=sequence of cardinals]
     A sequence of cardinals on $D$ is a function $\kappa$ such that
     $\Dom(\kappa) \Eq D$ and $\kappa_{i}$ is a cardinal for every element $i$ of $D$.
   \end{definition*}
 
-  \begin{definition*}
+  \begin{definition*}[for=SumSet]
     Let $\kappa$ be a sequence of cardinals on $D$.
     \[ \SumSet{\kappa}{D} = \CClass{(n,i)}{\text{$i$ is an element of $D$ and $n$ is an element of $\kappa_{i}$}}. \]
   \end{definition*}
@@ -54,12 +54,12 @@ $\kappa \ORDless \ORDtwo^\kappa$.
     Then $\SumSet{\kappa}{D}$ is a set.
   \end{axiom*}
 
-  \begin{definition*}
+  \begin{definition*}[for=Sum]
     Let $\kappa$ be a sequence of cardinals on $D$.
     \[ \Sum{\kappa}{D} = \SETcard{ \SumSet{\kappa}{D} }. \]
   \end{definition*}
 
-  \begin{definition*}
+  \begin{definition*}[for=ProdSet]
     Let $\kappa$ be a sequence of cardinals on $D$.
     \[ \ProdSet{\kappa}{D} = \CClass{f}{\classtext{$f$ is a function and $\Dom(f) \Eq D$ and $f(i)$ is an element of $\kappa_{i}$ for every element $i$ of $D$}}. \]
   \end{definition*}
@@ -69,7 +69,7 @@ $\kappa \ORDless \ORDtwo^\kappa$.
     Then $\ProdSet{\kappa}{D}$ is a set.
   \end{axiom*}
 
-  \begin{definition*}
+  \begin{definition*}[for=Prod]
     Let $\kappa$ be a sequence of cardinals on $D$.
     \[ \Prod{\kappa}{D} = \SETcard{ \ProdSet{\kappa}{D} }. \]
   \end{definition*}

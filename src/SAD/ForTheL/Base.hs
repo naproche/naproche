@@ -111,7 +111,11 @@ initFState = FState
   0 0 0
   []
   where
-    primAdjs = [equalAdj, nonequalAdj]
+    primAdjs = [
+        equalAdj,
+        nonequalAdj,
+        inductivelyLessAdj
+      ]
     primNotions = [
         mapNotion,
         functionNotion,
@@ -130,6 +134,8 @@ initFState = FState
     equalAdj = ([Word ["equal"], Word ["to"], Vr], mkTrm EqualityId TermEquality)
     -- "nonequal to x"
     nonequalAdj = ([Word ["nonequal"], Word ["to"], Vr], Not . mkTrm EqualityId TermEquality)
+    -- "inductively less than x"
+    inductivelyLessAdj = ([Word ["inductively"], Word ["less"], Word ["than"], Vr], mkTrm LessId TermLess)
     -- "a map f"
     mapNotion = ([Word ["map", "maps"], Nm], mkMap . head)
     -- "a function f"
