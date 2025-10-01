@@ -43,28 +43,28 @@ We can formalize this syllogism in \Naproche without changing its wording:
   \end{proof}
 \end{forthel}
 
-A similar syllogism was given by Sextus Empiricus in his \textit{Outlines of
-Pyrrhonism} \cite{SextusEmpiricus1933}:
-\begin{center}
-  \begin{tabular}{c}
-    Socrates is human. \\
-    Every human being is an animal. \\
-    \hline
-    Therefore Socrates is an animal.
-  \end{tabular}
-\end{center}
-Again, this syllogism can be adopted word-by-word to \Naproche:
-
-\begin{forthel}
-  \begin{theorem}[title=Sextus Empiricus' Syllogism,name=Sextus Empiricus Syllogism]
-    Socrates is an animal.
-  \end{theorem}
-  \begin{proof}
-    Socrates is human.
-    Every human being is an animal.
-    Therefore Socrates is an animal.
-  \end{proof}
-\end{forthel}
+%A similar syllogism was given by Sextus Empiricus in his \textit{Outlines of
+%Pyrrhonism} \cite{SextusEmpiricus1933}:
+%\begin{center}
+%  \begin{tabular}{c}
+%    Socrates is human. \\
+%    Every human being is an animal. \\
+%    \hline
+%    Therefore Socrates is an animal.
+%  \end{tabular}
+%\end{center}
+%Again, this syllogism can be adopted word-by-word to \Naproche:
+%
+%\begin{forthel}
+%  \begin{theorem}[title=Sextus Empiricus' Syllogism,name=Sextus Empiricus Syllogism]
+%    Socrates is an animal.
+%  \end{theorem}
+%  \begin{proof}
+%    Socrates is human. % AMBIGUITY ERROR!
+%    Every human being is an animal. % AMBIGUITY ERROR!
+%    Therefore Socrates is an animal.
+%  \end{proof}
+%\end{forthel}
 
 \printbibliography
 \printlicense[CcByNcSa]{Marcel Schütz (2025)}
