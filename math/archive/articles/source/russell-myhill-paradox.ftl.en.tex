@@ -12,7 +12,7 @@
 
 \usemodule[libraries/meta]{preliminaries.ftl}
 
-\symdef{LogProd}[name=logical product]{\mathop{\sqcap}}
+\symdef{LogProd}[name=logical product]{\sqcap\,}
 \symdecl*{proposition}
 \symdecl*{true}
 \symdecl*{system of propositions}
@@ -54,7 +54,9 @@ It was discussed in Russell's 1903 \emph{Principles of Mathematics}
   \end{theorem*}
   \begin{proof}
     Assume the contrary.
-    Define $Q = \CClass{q}{\text{there exists a system of propositions } P \text{ such that } q \Eq \LogProd P \text{ and } q \NotElem P}$.
+    Define
+    \[ Q = \CClass{q}{\classtext{there exists a system of propositions $P$ such
+    that $q \Eq \LogProd P$  and $q \NotElem P$}}. \]
     Consider $q = \LogProd Q$.
     Then for any system of propositions $P$ such that $\LogProd P \Eq q$ we have $P \Eq Q$.
     Hence $q \Elem Q$ iff $q \NotElem Q$.
