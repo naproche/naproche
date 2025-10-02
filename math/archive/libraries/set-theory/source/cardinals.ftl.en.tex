@@ -6,7 +6,7 @@
 \importmodule[libraries/set-theory]{axioms?choice.ftl}
 \importmodule[libraries/set-theory]{ordering.ftl}
 \importmodule[libraries/foundations]{equinumerosity.ftl}
-\symdef{SETcard}[name=cardinality,args=1]{\comp|#1\comp|}
+\symdef{SETcard}[name=cardinality,args=1]{\ifstexhtml\comp{\left|\right.}\else\left|\fi#1\ifstexhtml\comp{\left.\right|}\else\right|\fi}
 \symdecl*{cardinal number}
 \symdecl*{cardinal}
 

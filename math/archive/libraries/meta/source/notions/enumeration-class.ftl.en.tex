@@ -7,7 +7,7 @@
 \importmodule[libraries/meta]{notions?classes.ftl}
 \importmodule[libraries/meta]{notions?objects.ftl}
 
-\symdef{EClass}[args=a]{\comp{\left\{\right.}\argsep{#1}{\comp,}\comp{\left.\right\}}}
+\symdef{EClass}[args=a]{\ifstexhtml\comp{\left\{\right.}\else\left\{\fi\argsep{#1}{\comp,}\ifstexhtml\comp{\left.\right\}}\else\right\}\fi}
 
 \begin{fakeforthel}
   \begin{signature}[for=EClass]
