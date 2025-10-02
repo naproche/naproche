@@ -1,7 +1,8 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{naproche}[2025-09-28 v1.0.0 Advanced LaTeX package for Naproche formalization]
+\ProvidesExplPackage{naproche}{2025-09-28}{v1.0.0}{Advanced LaTeX package for Naproche formalization}
 
 \RequirePackage{stex}
+\RequirePackage{stex-highlighting}
 \RequirePackage{amsmath,amssymb,amsfonts}
 \RequirePackage{etoolbox}
 \RequirePackage{xcolor}
@@ -11,62 +12,110 @@
 \RequirePackage{url}
 \RequirePackage{xspace}
 \RequirePackage{linegoal}
+\RequirePackage{soul}
+
+
+% Preliminary Setup
+% -----------------
+
+\bool_new:N \c_naproche_forthel_bool
+\bool_set_false:N \c_naproche_forthel_bool
+
+\bool_new:N \c_naproche_show_tls_numbers_bool
+\bool_set_true:N \c_naproche_show_tls_numbers_bool
+
+\bool_new:N \c_naproche_numbers_within_section_bool
+\bool_set_false:N \c_naproche_numbers_within_section_bool
+
+\bool_new:N \c_naproche_numbers_within_subsection_bool
+\bool_set_false:N \c_naproche_numbers_within_subsection_bool
+
+\newcounter {theoremcount}
+
+\colorlet {forthelgray} {lightgray!30}
+
+\colorlet {defcolor} {violet}
+\colorlet {refcolor} {teal}
+
+
+% Package Options
+% ---------------
+
+\keys_define:nn {naproche/package}
+  {
+    numberswithinsection    .bool_set:N = \c_naproche_numbers_within_section_bool,
+    numberswithinsubsection .bool_set:N = \c_naproche_numbers_within_subsection_bool,
+    unknown                 .code:n     = {
+      \PackageError {naproche} {Unknown~package~option~"#1"}
+        {
+          The~following~options~are~supported:\MessageBreak
+          -~"numberswithinsection"\MessageBreak
+          -~"numberswithinsubsection"
+        }
+    }
+  }
+
+\ProcessKeysOptions {naproche/package}
 
 
 % Logos
 % -----
 
-\NewDocumentCommand{\Naproche}{}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
-\NewDocumentCommand{\ForTheL}{}{\mbox{ForTheL}\xspace}
+\NewDocumentCommand \Naproche {} {\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
+\NewDocumentCommand \ForTheL {} {\mbox{ForTheL}\xspace}
 
 
 % Comprehension terms
 % -------------------
 
-\newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
+\NewDocumentCommand \classtext {m} {\parbox{\linegoal}{#1}}
 
 
-% Top-level sections
-% ------------------
-
-\newcounter{theoremcount}
-
-\newbool{printid}
-\setbool{printid}{false} % Set to true in naproche-library.cls
-\newbool{showtlsnumber}
-\setbool{showtlsnumber}{true}
+% Top-level Section Environments
+% ------------------------------
 
 % Show/hide TLS numbers:
-\newcommand\showtlsnumbers{\setbool{showtlsnumber}{true}}
-\newcommand\hidetlsnumbers{\setbool{showtlsnumber}{false}}
+\NewDocumentCommand \ShowTlsNumbers {} {\bool_set_true:N \c_naproche_show_tls_numbers_bool}
+\NewDocumentCommand \HideTlsNumbers {} {\bool_set_false:N \c_naproche_show_tls_numbers_bool}
 
-\newcommand\tlstitle{}
-\newcommand\tlsname{}
-\newcommand\tlsfor{}
-
-\makeatletter
-\define@key{tlskeys}{forthel}[true]{\setbool{forthel}{\if\relax{#1}{false}\else#1\fi}}
-\define@key{tlskeys}{title}{\def\tlstitle{#1}}
-\define@key{tlskeys}{name}{\def\tlsname{#1}}
-\define@key{tlskeys}{for}{\def\tlsfor{#1}}
-\makeatother
-
-
-\ExplSyntaxOn
+\keys_define:nn {naproche/tls} {
+  forthel .default:n  = {true},
+  forthel .bool_set:N = \l_naproche_tls_key_forthel_bool,
+  title   .default:n  = {},
+  title   .tl_set:N   = \l_naproche_tls_key_title_tl,
+  name    .default:n  = {},
+  name    .tl_set:N   = \l_naproche_tls_key_name_tl,
+  for     .default:n  = {},
+  for     .tl_set:N   = \l_naproche_tls_key_for_tl,s
+  unknown .code:n     = {
+    \PackageError {naproche} {Unknown~key~"#1"~in~top-level~section~environment} {
+      The~following~keys~are~supported:\MessageBreak
+      -~"forthel"\MessageBreak
+      -~"title"\MessageBreak
+      -~"name"\MessageBreak
+      -~"for"
+    }
+  }
+}
 
 % Create a new starred and a new unstarred top-level section environment.
 % #1: environment name (e.g. "axiom")
 % #2: header (e.g. "Axiom")
 \cs_new:Npn \naproche_new_tls_env:nn #1 #2 {
-  \NewDocumentEnvironment{#1}{O{} +b}{
-    \setkeys{tlskeys}{##1}
-    \exp_args:Nne \naproche_tls_env:nnnn {#2} {\tlsfor,\tlsname} {##2} \c_false_bool
-  }{}
-  \NewDocumentEnvironment{#1*}{O{} +b}{
-    \setkeys{tlskeys}{##1}
-    \exp_args:Nne \naproche_tls_env:nnnn {#2} {\tlsfor,\tlsname} {##2} \c_true_bool
-  }{}
+  \NewDocumentEnvironment {#1} {O{} +b} {
+    \keys_set:nn {naproche/tls} {##1}
+    \tl_put_left:Nn \l_naproche_tls_key_for_tl \l_naproche_tls_key_name_tl
+    \exp_args:Nne \naproche_tls_env:nnnn {#2} \l_naproche_tls_key_for_tl {##2} \c_false_bool
+  } {}
+  \NewDocumentEnvironment {#1*} {O{} +b} {
+    \keys_set:nn {naproche/tls} {##1}
+    \tl_put_left:Nn \l_naproche_tls_key_for_tl \l_naproche_tls_key_name_tl
+    \exp_args:Nne \naproche_tls_env:nnnn {#2} \l_naproche_tls_key_for_tl {##2} \c_true_bool
+  } {}
 }
+
+\bool_new:N \l_naproche_is_starred_env_bool
+\bool_new:N \l_naproche_forthel_before_env_bool
 
 % A top-level section environment.
 % #1: header (e.g. "Axiom")
@@ -74,20 +123,42 @@
 % #3: environment body
 % #4: Boolean value that determines whether the environment is starred or not
 \cs_new:Npn \naproche_tls_env:nnnn #1 #2 #3 #4 {%
-  \bool_set:Nn \l_is_starred_env {#4}
-  \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
-  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
-  \bool_if:NF \l_is_starred_env
-    {\refstepcounter{theoremcount}}
-  \bool_if:NTF \l_is_starred_env
-    {\noindent\textbf{#1\if\relax\tlstitle\else{~(\tlstitle)}\fi.~}}
-    {\noindent\textbf{#1\ifbool{showtlsnumber}{~\thetheoremcount}{}\if\relax\tlstitle\else{~(\tlstitle)}\fi.~}}
-  \inlinedef[for={#2}]{#3}
-  \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
-  \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
-  \renewcommand\tlstitle{}%
-  \renewcommand\tlsname{}%
-  \renewcommand\tlsfor{}%
+  \bool_set:Nn \l_naproche_is_starred_env_bool {#4}
+  \bool_set:Nn \l_naproche_forthel_before_env_bool \c_naproche_forthel_bool
+  \bool_if:NF \l_naproche_forthel_before_env_bool {
+    \bool_if:NTF \l_naproche_tls_key_forthel_bool {
+      \begin {forthel}
+    } {
+      \par
+      \addvspace \baselineskip
+    }
+  }
+  \bool_if:NF \l_naproche_is_starred_env_bool {
+    \bool_if:NT \c_naproche_show_tls_numbers_bool {
+      \refstepcounter {theoremcount}
+    }
+  }
+  \noindent
+  \group_begin:
+  \bfseries
+  {#1}
+  \bool_if:NF \l_naproche_is_starred_env_bool {
+    \bool_if:NT \c_naproche_show_tls_numbers_bool {~\thetheoremcount}
+  }
+  \tl_if_empty:NF  \l_naproche_tls_key_title_tl {~(\l_naproche_tls_key_title_tl)}
+  {.~}
+  \group_end:
+  \inlinedef [for={#2}] {#3}
+  \bool_if:NF \l_naproche_forthel_before_env_bool {
+    \par
+    \bool_if:NTF \l_naproche_tls_key_forthel_bool {
+      \end {forthel} % Sets \c_naproche_forthel_bool to false!
+    } {
+      \par
+      \addvspace \baselineskip
+    }
+  }
+  \bool_set:Nn \c_naproche_forthel_bool \l_naproche_forthel_before_env_bool % Rest \c_naproche_forthel_bool if it was changed by \end{forthel} above
 }
 
 % Create new (starred and unstarred) environments for each top-level section:
@@ -100,147 +171,164 @@
 \naproche_new_tls_env:nn {corollary} {Corollary}
 \naproche_new_tls_env:nn {convention} {Convention}
 
-\ExplSyntaxOff
 
+% The Proof Environment
+% ---------------------
 
-\newcommand\proofmethod{}
-
-\makeatletter
-\define@key{proofkeys}{forthel}[true]{\setbool{forthel}{\if\relax{#1}{false}\else#1\fi}}
-\define@key{proofkeys}{method}{\def\proofmethod{#1}}
-\makeatother
-
-\newcounter{proofdepth}
-
-\newenvironment{proof}[1][]{%
-  \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
-  \setkeys{proofkeys}{#1}%
-  \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
-  \noindent\textit{Proof\if\relax\proofmethod\else\ by \proofmethod\fi. }%
-  \relax%
-  % Reset the proof method so that it is not reused by subproofs:
-  \def\proofmethod{}%
-  \stepcounter{proofdepth}%
-}
-{%
-  \ifnum\value{proofdepth}>1\ensuremath\square\else\strut\hfill\ensuremath\blacksquare\fi%
-  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
-  \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
-  % Reset the proof method so that it is not reused by following proofs:
-  \def\proofmethod{}%
-  \addtocounter{proofdepth}{-1}%
-}
-
-\makeatletter
-% to prevent \list from being redefined, e.g. by a \symdef:
-\let\@latexlist\list
-\let\@endlatexlist\endlist
-\newenvironment{case}[1]{%
-  \@latexlist{}{
-    \setlength\leftmargin{1em}
-    \setlength\topsep{0cm}
+\keys_define:nn {naproche/proof} {
+  forthel .default:n  = {true},
+  forthel .bool_set:N = \l_naproche_proof_key_forthel_bool,
+  method  .default:n  = {},
+  method  .tl_set:N   = \l_naproche_proof_key_method_tl,
+  unknown .code:n     = {
+    \PackageError {naproche/proof} {Unknown~key~"#1"~in~proof~environment} {
+      The~following~keys~are~supported:\MessageBreak
+      -~"forthel"\MessageBreak
+      -~"method"
+    }
   }
-  \item\textit{Case #1}%
 }
-{%
-  \ensuremath\square%
-  \@endlatexlist
+
+\int_zero_new:N \l_naproche_proof_depth_int
+
+\NewDocumentEnvironment {proof} {O{}} {
+  \keys_set:nn {naproche/proof} {#1}
+  \bool_set:Nn \l_naproche_forthel_before_env_bool \c_naproche_forthel_bool
+  \bool_if:NTF \l_naproche_forthel_before_env_bool {
+    \par
+  } {
+    \bool_if:NTF \l_naproche_proof_key_forthel_bool {
+      \begin {forthel}
+    } {
+      \par
+      \addvspace \baselineskip
+    }
+  }
+  \noindent
+  \group_begin:
+  \itshape
+  Proof
+  \tl_if_empty:NF \l_naproche_proof_key_method_tl {~by~\l_naproche_proof_key_method_tl}
+  {.~}
+  \group_end:
+  \int_incr:N \l_naproche_proof_depth_int
 }
-\makeatother
+{
+  \int_compare:nNnTF \l_naproche_proof_depth_int > 1 {
+    \ensuremath \square
+  } {
+    \strut
+    \hfill
+    \ensuremath \blacksquare
+  }
+  \bool_if:NF \l_naproche_forthel_before_env_bool {
+    \bool_if:NTF \l_naproche_proof_key_forthel_bool {
+      \end {forthel}  % Sets \c_naproche_forthel_bool to false!
+    }{
+      \par
+      \addvspace \baselineskip
+    }
+  }
+  \bool_set:Nn \c_naproche_forthel_bool \l_naproche_forthel_before_env_bool % Rest \c_naproche_forthel_bool if it was changed by \end{forthel} above
+  \int_decr:N \l_naproche_proof_depth_int
+}
 
 
-% ForTheL Environment
-% -------------------
+% The Case Environment
+% --------------------
 
-\colorlet{forthelgray}{lightgray!30}
+\NewCommandCopy \naproche@list \list
+\NewCommandCopy \naproche@endlist \endlist
 
-% Space between paragraphs in forthel environments
-\newlength{\ftlparskip}
-\setlength{\ftlparskip}{0.5em}
+\NewDocumentEnvironment {case} {m} {
+  \naproche@list {} {
+    \setlength \leftmargin {1em}
+    \setlength \topsep {0cm}
+  }
+  \item \textit {Case~#1}
+} {
+  \ensuremath \square
+  \naproche@endlist
+}
 
-\newbool{forthel}
-\setbool{forthel}{false}
 
-\newbool{forthelBeforeEnv}
-\newbool{forthelInEnv}
+% The ForTheL Environment
+% -----------------------
 
-% ForTheL environment
-\newenvironment{forthel}{%
-  \par\addvspace{\baselineskip}
+\NewDocumentEnvironment {forthel} {} {
+  \par
+  \addvspace \baselineskip
   \ifstexhtml
-    \begin{stex_annotate_env}{style:class=forthel,rustex:block=true,rustex:sized=-20}
+    \begin {stex_annotate_env} {style:class=forthel,rustex:block=true,rustex:sized=-20}
   \else
-    \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]%
+    \begin {mdframed} [backgroundcolor=forthelgray,linecolor=forthelgray]
   \fi
-  \rmfamily%
-  \setbool{forthel}{true}%
-  \setlength{\parindent}{0pt}%
-  \setlength{\parskip}{\ftlparskip}%
-}{%
+  \rmfamily
+  \bool_set_true:N \c_naproche_forthel_bool
+  \setlength \parindent {0pt}
+  \setlength \parskip {0.5em}
+}{
   \ifstexhtml
-    \end{stex_annotate_env}%
+    \end {stex_annotate_env}
   \else
-    \end{mdframed}
+    \end {mdframed}
   \fi
-  \rmfamily%
-  \setbool{forthel}{false}%
-  \par\addvspace{\baselineskip}
+  \rmfamily
+  \bool_set_false:N \c_naproche_forthel_bool
+  \par
+  \addvspace \baselineskip
 }
 
 
-% Inline ForTheL Command
-% ----------------------
+% The Inline ForTheL Command
+% --------------------------
 
-\RequirePackage{tcolorbox}
-\RequirePackage{soulpos}
-
-\newtcbox\ftlbox{
-  on line,
-  arc=0pt,
-  outer arc=0pt,
-  colback=forthelgray,
-  colframe=forthelgray,
-  boxsep=0pt,
-  left=.2em,
-  right=.2em,
-  top=.2em,
-  bottom=.4em,
-  boxrule=0pt,
-  height=1.4em    
-}
-
-\ulposdef\inlineforthelbox[xoffset-start=.2em]{%
-  \ftlbox{\rule\ulwidth{0pt}}%
-}
-
-\newcommand\inlineforthel[1]{%
-  \setbool{forthel}{true}%
-  \inlineforthelbox{#1}%
-  \setbool{forthel}{false}%
+\NewDocumentCommand \inlineforthel {m} {
+  \ifstexhtml
+    #1
+  \else
+    \group_begin:
+    \sethlcolor {forthelgray}
+    \hl {#1}
+    \group_end:
+  \fi
 }
 
 
-% \emph
-% -----
+% Highlighting Definientia and Symbol References
+% ----------------------------------------------
 
-\RequirePackage{stex-highlighting}
-\newbool{emph}
-\setbool{emph}{false}
-\colorlet{emphcolor}{violet}
-\let\oldemph\emph
-\renewcommand\emph[1]{\setbool{emph}{true}\ifbool{forthel}{\textcolor{emphcolor}{\ifmmode#1\else\itshape#1\fi}}{\oldemph{#1}}\setbool{emph}{false}}
-\renewcommand\varemph[1]{\ifbool{emph}{\textcolor{emphcolor}{#1}}{\textcolor{teal}{#1}}}
-\renewcommand\compemph[1]{\ifbool{emph}{\textcolor{emphcolor}{#1}}{\textcolor{teal}{#1}}}
+\bool_new:N \c_naproche_emph_bool
+\bool_set_false:N \c_naproche_emph_bool
 
+\NewCommandCopy \naproche@oldemph \emph
 
-% Options
-% -------
-
-\DeclareOption{numberswithinsection}{%
-  \counterwithin{theoremcount}{section}
+\RenewDocumentCommand \emph {m} {
+  \bool_set_true:N \c_naproche_emph_bool
+  \bool_if:NTF \c_naproche_forthel_bool {
+    \group_begin:
+    \color {defcolor}
+    \ifmmode \else \itshape \fi
+    #1
+    \group_end:
+  } {
+    \naproche@oldemph {#1}
+  }
+  \bool_set_false:N \c_naproche_emph_bool
 }
-\DeclareOption{numberswithinsubsection}{%
-  \counterwithin{theoremcount}{subsection}
+
+\RenewDocumentCommand \varemph {m} {
+  \bool_if:NTF \c_naproche_emph_bool {
+    \textcolor {defcolor} {#1}
+  } {
+    \textcolor {refcolor} {#1}
+  }
 }
-\DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
-\ProcessOptions\relax
+
+\RenewDocumentCommand \compemph {m} {
+  \bool_if:NTF \c_naproche_emph_bool {
+    \textcolor {defcolor} {#1}
+  } {
+    \textcolor {refcolor} {#1}
+  }
+}
