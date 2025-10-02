@@ -24,21 +24,21 @@
 \symdef{three}{\comp3}
 \symdef{four}{\comp4}
 \symdef{succ}[args=1]{\comp{\textsf{succ}}\dobrackets{#1}}
-\symdef{plus}{\mathrel{\comp+}}
-\symdef{triplus}[args=3]{#1\mathrel{\comp+}#2\mathrel{\comp+}#3}
+\symdef{plus}{\,\comp+\,}
+\symdef{triplus}[args=3]{#1\,\comp+\,#2\,\comp+\,#3}
 \symdecl*{number}
 
 % (An approximation to) Peano's original notation:
 \notation*{True}[peano]{\mathrm V}
 \notation*{False}[peano]{\Uplambda}
-\notation*{And}[peano]{\mathrel{\comp{.\raisebox{1ex}..}}}
-\notation*{Implies}[peano]{\mathrel{\comp{.\reflectbox c.}}}
-\notation*{Iff}[peano]{\mathrel{\comp{.{=}.}}}
-\notation*{Not}[peano]{\mathrel{\comp{-{=}}}}
-\notation*{Elem}[peano]{\mathrel{\comp\epsilon}}
-\notation*{SETinclude}[peano]{\mathrel{\comp{\reflectbox c}}}
+\notation*{And}[peano]{\;\comp{.\raisebox{1ex}..}\;}
+\notation*{Implies}[peano]{\;\comp{.\reflectbox c.}\;}
+\notation*{Iff}[peano]{\;\comp{.{=}.}\;}
+\notation*{Not}[peano]{\;\comp{-{=}}\;}
+\notation*{Elem}[peano]{\;\comp\epsilon\;}
+\notation*{SETinclude}[peano]{\;\comp{\reflectbox c}\;}
 \notation*{Nat}[peano]{\comp{\mathrm N}}
-\notation*{succ}[peano]{#1\mathbin{\comp+}\comp1}
+\notation*{succ}[peano]{#1\,\comp+\,\comp1}
 
 \maketitle
 
@@ -123,7 +123,7 @@ number of theorems about addition of natural numbers.
   
   \begin{axiom*}[title=9,name=P9]
     Let $k$ be a class.
-    Then $(\one \Elem k \And \Forall x \Elem \Nat: x \Elem k \Implies \succ{x} \Elem k) \Implies \Nat \SETinclude k$.
+    Then $(\one \Elem k \And \Forall x \Elem \Nat: x \Elem k \Implies \succ{x} \Elem k) \Implies\linebreak \Nat \SETinclude k$.
   \end{axiom*}
 \end{forthel}
 

@@ -43,9 +43,9 @@ all ordinals $\alpha$.
       Suppose $\alpha \Elem \Dom(H) \SETintersect \Dom(H')$.
       Then $\alpha \SETinclude \Dom(H), \Dom(H')$.
       Indeed $\Dom(H)$ and $\Dom(H')$ are transitive classes.
-      Hence for all $y \Elem \alpha$ we have $y \Elem \Dom(H) \SETintersect \Dom(H')$.
+      Hence for all $y \Elem \alpha$ we have $y \Elem\linebreak \Dom(H) \SETintersect \Dom(H')$.
       Thus $H(y) \Eq H'(y)$ for all $y \Elem \alpha$.
-      Therefore $H \FUNrest \alpha \Eq H' \FUNrest \alpha$.
+      Therefore $H \FUNrest \alpha \Eq\linebreak H' \FUNrest \alpha$.
       $H$ and $H'$ are recursive regarding $G$.
       We have $H \FUNrest \alpha, H' \FUNrest \alpha \Elem \ORDfunspace{A}$.
       Hence $H(\alpha)
@@ -201,7 +201,7 @@ can define a map $F \FUNfromto{\Ord}{A}$ by
 
 \begin{corollary}[forthel]
   Let $A$ be a class.
-  Let $a \Elem A$ and $G \FUNfromto{\Ord \SETprod A}{A}$ and $H \FUNfromto{\Ord \SETprod \ORDfunspace{A}}{A}$.
+  Let $a \Elem A$ and $G \FUNfromto{\Ord \SETprod A}{A}$ and\linebreak $H \FUNfromto{\Ord \SETprod \ORDfunspace{A}}{A}$.
   Then there exists a map $F$ from $\Ord$ to $A$ such that
   \[ F(\ORDzero) \Eq a \]
   and for all ordinals $\alpha$ we have
@@ -230,8 +230,7 @@ can define a map $F \FUNfromto{\Ord}{A}$ by
     Let $f \Elem \ORDfunspace{A}$.
     Take $\alpha \Elem \Ord$ such that $f \FUNfromto{\alpha}{A}$.
     If $\alpha \Eq \ORDzero$ then $J(f) \Eq a \Elem A$.
-    If $\alpha$ is a successor ordinal then $J(f) \Eq
-    G(\ORDpred(\alpha), f(\ORDpred(\alpha))) \Elem A$.
+    If $\alpha$ is a successor ordinal then $J(f) \Eq\linebreak G(\ORDpred(\alpha), f(\ORDpred(\alpha))) \Elem A$.
     [prover vampire]
     If $\alpha$ is a limit ordinal then $J(f) \Eq H(\alpha, f) \Elem A$.
   End.
@@ -251,9 +250,9 @@ can define a map $F \FUNfromto{\Ord}{A}$ by
     Let $\alpha$ be an ordinal.
     Then $F(\ORDsucc(\alpha))
       \Eq J(F \FUNrest \ORDsucc(\alpha))
-      \Eq G(\ORDpred(\ORDsucc(\alpha)), (F \FUNrest \ORDsucc(\alpha))(\ORDpred(\ORDsucc(\alpha))))
+      \Eq\linebreak G(\ORDpred(\ORDsucc(\alpha)), (F \FUNrest \ORDsucc(\alpha))(\ORDpred(\ORDsucc(\alpha))))
       \Eq G(\alpha, (F \FUNrest \ORDsucc(\alpha))(\alpha))
-      \Eq G(\alpha, F(\alpha))$.
+      \Eq\linebreak G(\alpha, F(\alpha))$.
   \end{proof}
 
   (3) $F(\lambda) \Eq H(\lambda, F \FUNrest \lambda)$ for all limit ordinals $\lambda$.

@@ -163,7 +163,8 @@ ignoredCommand = do
       controlWord "newline",
       controlWord "left",
       controlWord "middle",
-      controlWord "right"
+      controlWord "right",
+      controlWord "linebreak"
     ]
   return (tokens, [])
 

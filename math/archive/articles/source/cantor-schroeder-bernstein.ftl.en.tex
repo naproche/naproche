@@ -50,9 +50,9 @@ Its proof of is based on the Knaster-Tarski Fixed Point Theorem.
       Assume $u \SETinclude v$.
       Then $\FUNim{f}{u} \SETinclude \FUNim{f}{v}$.
       Hence $y \SETdiff \FUNim{f}{v} \SETinclude y \SETdiff \FUNim{f}{u}$.
-      Thus $\FUNim{g}{y \SETdiff \FUNim{f}{v}} \SETinclude \FUNim{g}{y \SETdiff \FUNim{f}{u}}$.
+      Thus $\FUNim{g}{y \SETdiff \FUNim{f}{v}} \SETinclude\linebreak \FUNim{g}{y \SETdiff \FUNim{f}{u}}$.
       Indeed $y \SETdiff \FUNim{f}{v}$ and $y \SETdiff \FUNim{f}{u}$ are subsets of $y$.
-      Therefore $x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{u}} \SETinclude x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{v}}$.
+      Therefore\linebreak $x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{u}} \SETinclude x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{v}}$.
       Consequently $\FUNim{h}{u} \SETinclude \FUNim{h}{v}$.
     End.
 
@@ -101,7 +101,7 @@ Its proof of is based on the Knaster-Tarski Fixed Point Theorem.
       \begin{case}{$v \NotElem \FUNim{f}{c}$.}
         Then $v \Elem y \SETdiff \FUNim{f}{c}$.
         Hence $g(v) \Elem \FUNim{g}{y \SETdiff \FUNim{f}{c}}$.
-        Thus $g(v) \Elem x \SETdiff h(c)$.
+        Thus $g(v) \Elem\linebreak x \SETdiff h(c)$.
         We have $g(v) \Elem x \SETdiff c$.
         Therefore we can take $u \Elem x \SETdiff c$ such that $G(u) \Eq v$.
         Then $v \Eq H(u)$.
@@ -115,13 +115,13 @@ Its proof of is based on the Knaster-Tarski Fixed Point Theorem.
 
       \begin{case}{$u,v \Elem c$.}
         Then $H(u) \Eq F(u)$ and $H(v) \Eq F(v)$.
-        We have $F(u) \NotEq F(v)$.
+        We have $F(u) \NotEq\linebreak F(v)$.
         Hence $H(u) \NotEq H(v)$.
       \end{case}
 
       \begin{case}{$u,v \NotElem c$.}
         Then $H(u) \Eq G(u)$ and $H(v) \Eq G(v)$.
-        We have $G(u) \NotEq G(v)$.
+        We have $G(u) \NotEq\linebreak G(v)$.
         Hence $H(u) \NotEq H(v)$.
       \end{case}
 

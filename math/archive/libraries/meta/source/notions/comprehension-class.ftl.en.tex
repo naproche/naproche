@@ -7,7 +7,7 @@
 \importmodule[libraries/meta]{notions?classes.ftl}
 \importmodule[libraries/meta]{notions?objects.ftl}
 
-\symdef{CClass}[args=2]{\comp{\left\{\right.}#1\,\comp{\left.\middle|\right.}\,#2\comp{\left.\right\}}}
+\symdef{CClass}[args=2]{\ifstexhtml\comp{\left\{\right.}\else\left\{\fi#1\,\ifstexhtml\comp{\left.\middle|\right.}\else\middle|\fi\,#2\ifstexhtml\comp{\left.\right\}}\else\right\}\fi}
 
 \begin{fakeforthel}
   \begin{signature}[for=CClass]
