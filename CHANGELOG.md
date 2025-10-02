@@ -52,6 +52,9 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   for each symbol name that occurs as a value of a `for` or `name` parameter a
   symbol with that name must be declared, e.g. via `\symdef` or `\symdecl`.
 
+* **Changed:** The "advanced" LaTeX package was completely rewritten in expl3
+  syntax.
+
 
 ### Changes on the Formalizations
 
