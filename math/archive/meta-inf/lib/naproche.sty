@@ -32,10 +32,14 @@
 
 \newcounter {theoremcount}
 
-\colorlet {forthelgray} {lightgray!30}
+\definecolor {ForTheLGray} {RGB} {220,220,220}
+\definecolor {sTeXMediumVioletRed} {RGB} {199,21,133}
 
-\colorlet {defcolor} {violet}
-\colorlet {refcolor} {teal}
+\ifstexhtml
+  \colorlet{defcolor}{sTeXMediumVioletRed}
+\else
+  \colorlet{defcolor}{violet}
+\fi
 
 
 % Package Options
@@ -138,17 +142,30 @@
       \refstepcounter {theoremcount}
     }
   }
-  \noindent
-  \group_begin:
-  \bfseries
-  {#1}
-  \bool_if:NF \l_naproche_is_starred_env_bool {
-    \bool_if:NT \c_naproche_show_tls_numbers_bool {~\thetheoremcount}
+  \begin {stex_annotate_env} {
+    style=
+      display: block;
+      margin-top: 10px;
+      --rustex-this-width: calc(var(--rustex-curr-width) - 30px);
   }
-  \tl_if_empty:NF  \l_naproche_tls_key_title_tl {~(\l_naproche_tls_key_title_tl)}
-  {.~}
-  \group_end:
-  \inlinedef [for={#2}] {#3}
+  \stex_annotate:nn {
+    data-naproche=tls
+  } {
+    \begin {sparagraph} [style=symdoc,for={#2}]
+    \stex_reactivate_macro:N \defnotation
+    \group_begin:
+    \bfseries
+    {#1}
+    \bool_if:NF \l_naproche_is_starred_env_bool {
+      \bool_if:NT \c_naproche_show_tls_numbers_bool {~\thetheoremcount}
+    }
+    \tl_if_empty:NF  \l_naproche_tls_key_title_tl {\,(\l_naproche_tls_key_title_tl)}
+    {.~}
+    \group_end:
+    #3
+  }
+  \end {sparagraph}
+  \end {stex_annotate_env}
   \bool_if:NF \l_naproche_forthel_before_env_bool {
     \par
     \bool_if:NTF \l_naproche_tls_key_forthel_bool {
@@ -161,6 +178,11 @@
   \bool_set:Nn \c_naproche_forthel_bool \l_naproche_forthel_before_env_bool % Rest \c_naproche_forthel_bool if it was changed by \end{forthel} above
 }
 
+\stex_css_literal:n {
+  [data-naproche="tls"]~.rustex-paragraph{
+    display: inline;
+  }
+}
 % Create new (starred and unstarred) environments for each top-level section:
 \naproche_new_tls_env:nn {definition} {Definition}
 \naproche_new_tls_env:nn {signature} {Signature}
@@ -204,6 +226,14 @@
       \addvspace \baselineskip
     }
   }
+  \begin {stex_annotate_env} {
+    style=
+      display: block;
+      margin-top: 5px;
+      --rustex-this-width: calc(var(--rustex-curr-width) - 30px);,
+    data-naproche=
+      proof
+  }
   \noindent
   \group_begin:
   \itshape
@@ -221,6 +251,7 @@
     \hfill
     \ensuremath \blacksquare
   }
+  \end {stex_annotate_env}
   \bool_if:NF \l_naproche_forthel_before_env_bool {
     \bool_if:NTF \l_naproche_proof_key_forthel_bool {
       \end {forthel}  % Sets \c_naproche_forthel_bool to false!
@@ -233,6 +264,11 @@
   \int_decr:N \l_naproche_proof_depth_int
 }
 
+\stex_css_literal:n {
+  [data-naproche="proof"]~.rustex-paragraph{
+    display: inline;
+  }
+}
 
 % The Case Environment
 % --------------------
@@ -259,9 +295,16 @@
   \par
   \addvspace \baselineskip
   \ifstexhtml
-    \begin {stex_annotate_env} {style:class=forthel,rustex:block=true,rustex:sized=-20}
+    \begin {stex_annotate_env} {style=
+      display: block;
+      border: 2px solid gainsboro;
+      background-color: gainsboro;
+      padding: 15px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
   \else
-    \begin {mdframed} [backgroundcolor=forthelgray,linecolor=forthelgray]
+    \begin {mdframed} [backgroundcolor=ForTheLGray,linecolor=ForTheLGray]
   \fi
   \rmfamily
   \bool_set_true:N \c_naproche_forthel_bool
@@ -288,7 +331,7 @@
     #1
   \else
     \group_begin:
-    \sethlcolor {forthelgray}
+    \sethlcolor {ForTheLGray}
     \hl {#1}
     \group_end:
   \fi
@@ -304,13 +347,19 @@
 \NewCommandCopy \naproche@oldemph \emph
 
 \RenewDocumentCommand \emph {m} {
+  \colorlet {currentcolor} .
   \bool_set_true:N \c_naproche_emph_bool
   \bool_if:NTF \c_naproche_forthel_bool {
     \group_begin:
     \color {defcolor}
-    \ifmmode \else \itshape \fi
+    \ifmmode
+      \defnotation
+    \else
+      \itshape
+    \fi
     #1
     \group_end:
+    \color {currentcolor}
   } {
     \naproche@oldemph {#1}
   }
@@ -321,7 +370,7 @@
   \bool_if:NTF \c_naproche_emph_bool {
     \textcolor {defcolor} {#1}
   } {
-    \textcolor {refcolor} {#1}
+    \textcolor {black} {#1}
   }
 }
 
@@ -329,6 +378,22 @@
   \bool_if:NTF \c_naproche_emph_bool {
     \textcolor {defcolor} {#1}
   } {
-    \textcolor {refcolor} {#1}
+    \textcolor {black} {#1}
+  }
+}
+
+\RenewDocumentCommand \symrefemph {m} {
+  \bool_if:NTF \c_naproche_emph_bool {
+    \textcolor {defcolor} {#1}
+  } {
+    \textcolor {black} {#1}
+  }
+}
+
+\RenewDocumentCommand \defemph {m} {
+  \bool_if:NTF \c_naproche_emph_bool {
+    \textcolor {defcolor} {#1}
+  } {
+    \textcolor {black} {#1}
   }
 }
