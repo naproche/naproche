@@ -93,6 +93,8 @@ object Naproche_Component {
         text = File.read(file)
         if text.containsSlice("\\documentclass")
       } {
+        val archive_pdf = math_pdf + Path.explode("archive")
+        val mathhub_pdf = archive_pdf.absolute.implode
         val tex_path = relative(file)
         val tex_dir = File.path(file).dir
         val tex_name = tex_path.base.implode
@@ -100,11 +102,11 @@ object Naproche_Component {
           split_lines(text).collectFirst({ case TeX_Program(prg) => prg }).getOrElse("pdflatex")
         val bibtex_program = "bibtex"
         val bibtex_env =
-          List("TEXINPUTS" -> Naproche.TEXINPUTS)
+          List()
         val tex_env_writesms =
-          List("TEXINPUTS" -> Naproche.TEXINPUTS, "MATHHUB" -> math_pdf.absolute.implode, "STEX_WRITESMS" -> "true")
+          List("MATHHUB" -> mathhub_pdf, "STEX_WRITESMS" -> "true")
         val tex_env_usesms =
-          List("TEXINPUTS" -> Naproche.TEXINPUTS, "MATHHUB" -> math_pdf.absolute.implode, "STEX_USESMS" -> "true")
+          List("MATHHUB" -> mathhub_pdf, "STEX_USESMS" -> "true")
 
         val pdf_path = Path.explode(Library.try_unsuffix(".tex", tex_path.implode).get).pdf
         val raw_file = Library.try_unsuffix(".tex", tex_name).get
