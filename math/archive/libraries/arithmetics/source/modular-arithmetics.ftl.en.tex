@@ -12,13 +12,13 @@
 \symdecl*{congruent}
 
 \begin{sfragment}{Quotients and Remainders}
-  \begin{definition}[forthel,for=quotient]
+  \begin{definition}[forthel,for={NATdiv,quotient}]
     Let $n, m$ be natural numbers such that $m \NotEq \NATzero$.
     $\emph{n \NATdiv m}$ is the natural number $q$ such that $n \Eq (m \NATmul q) \NATplus r$ for some natural number $r$ that is less than $m$.
     Let the \emph{quotient of $n$ over $m$} stand for $n \NATdiv m$.
   \end{definition}
 
-  \begin{definition}[forthel,for=remainder]
+  \begin{definition}[forthel,for={NATmod,remainder}]
     Let $n, m$ be natural numbers such that $m \NotEq \NATzero$.
     $\emph{n \NATmod m}$ is the natural number $r$ such that $r \NATless m$ and there exists a natural number $q$ such that $n \Eq (m \NATmul q) \NATplus r$.
     Let the \emph{remainder of $n$ over $m$} stand for $n \NATmod m$.
@@ -26,7 +26,7 @@
 \end{sfragment}
 
 \begin{sfragment}{Basic Properties}
-  \begin{definition}[forthel,for=congruent]
+  \begin{definition}[forthel,for={NATcong,congruent}]
     Let $n, m, k$ be natural numbers such that $k \NotEq \NATzero$.
     $\emph{\NATcong{n}{m}{k}}$ iff $n \NATmod k \Eq m \NATmod k$.
     Let $n$ and $m$ are \emph{congruent modulo $k$} stand for $\NATcong{n}{m}{k}$.
