@@ -108,6 +108,7 @@ mainTerminal initInstrs nonInstrArgs = do
               let dialect = case reverse fileNameExtensions of
                     "ftl" : _ -> Ftl
                     "tex" : "ftl" : _ -> Tex
+                    "tex" : "en" : "ftl" : _ -> Tex
                     _ -> error $ "Invalid file name extension: " ++ fileNameExteisionStr
               inputText <- make_bytes <$> File.read filePath
               return (dialect, inputText, Just filePath)
