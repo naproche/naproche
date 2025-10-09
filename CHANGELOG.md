@@ -99,6 +99,8 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   to have that file name extension; otherwise importing them via `\importmodule`
   or `\usemodule` will fail.
 
+* **Changed:** Change required GHC version from LTS 22.43 to LTS 22.44.
+
 
 --------------------------------------------------------------------------------
 
