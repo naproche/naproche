@@ -339,21 +339,19 @@ renderInputFile context inputPath = do
   let pdflatexBin = "pdflatex"
       bibtexBin = "bibtex"
       mathhubVar = formalizationsDirectoryPath
-      texinputsVar = formalizationsDirectoryPath </> "latex" </> "lib//;" 
   putStrLn $ "[Info] Path to pdflatex:   " ++ pdflatexBin
   putStrLn $ "[Info] Path to bibtex:     " ++ bibtexBin
   putStrLn $ "[Info] MATHHUB variable:   " ++ mathhubVar
-  putStrLn $ "[Info] TEXINPUTS variable: " ++ texinputsVar
 
   -- Render the input file as PDF:
   let inputDir = takeDirectory inputPath
       inputFile = takeFileName inputPath
       inputFileBase = takeBaseName inputFile
   setCurrentDirectory inputDir
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile
   callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
 
   return 0
 
