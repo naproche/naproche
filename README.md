@@ -174,8 +174,3 @@ You can find more resources in our [CONTRIBUTING.md](CONTRIBUTING.md).
 [andrei-paskevich]: <http://www.tertium.org/>
 [isabelle-jedit]: <https://isabelle.in.tum.de/dist/doc/jedit.pdf>
 [gpl-3]: <https://www.gnu.org/licenses/gpl-3.0.en.html>
-[e]: <https://wwwlehre.dhbw-stuttgart.de/~sschulz/E/E.html>
-[spass]: <https://www.mpi-inf.mpg.de/departments/automation-of-logic/software/spass-workbench>
-[vampire]: <https://vprover.github.io/>
-[cygwin]: <https://cygwin.com/>
-[wsl]: <https://learn.microsoft.com/en-us/windows/wsl/>
