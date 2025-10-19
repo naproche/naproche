@@ -137,55 +137,18 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
 
 ### Command Line Interface
 
-#### Prerequisites
+Set the environment variables listed in the first column of the below table to
+the output of the commands listed in its second column.
 
-* Supported OS platforms: Linux, macOS, Windows (e.g. with a [Cygwin][cygwin]
-  terminal or with [Windows Subsystem for Linux][wsl])
+Environment Variable      | Command
+--------------------------|-----------------------------------------------------
+`NAPROCHE_FORMALIZATIONS` | `isabelle getenv -b NAPROCHE_FORMALIZATIONS`
+`NAPROCHE_EPROVER`        | `isabelle getenv -b NAPROCHE_EPROVER`
+`NAPROCHE_VAMPIRE`        | `isabelle getenv -b NAPROCHE_VAMPIRE`
+`NAPROCHE_SPASS`          | `isabelle getenv -b NAPROCHE_SPASS`
 
-* Set the environment variables `NAPROCHE_EPROVER`, `NAPROCHE_SPASS` and
-  `NAPROCHE_VAMPIRE` to the locations of the respective executables of [E][e],
-  [SPASS][spass] and [Vampire][vampire] that are bundled with
-  Isabelle:
-
-  ```shell
-  export NAPROCHE_EPROVER="$(isabelle getenv -b NAPROCHE_EPROVER)"
-  export NAPROCHE_SPASS="$(isabelle getenv -b NAPROCHE_SPASS)"
-  export NAPROCHE_VAMPIRE="$(isabelle getenv -b NAPROCHE_VAMPIRE)"
-  ```
-
-* Initialize the environment variable `NAPROCHE_FORMALIZATIONS`:
-
-  ```shell
-  export NAPROCHE_FORMALIZATIONS="$(isabelle getenv -b NAPROCHE_FORMALIZATIONS)"
-  ```
-
-
-#### Build
-
-* Build Naproche:
-
-  ```shell
-  isabelle naproche_build
-  ```
-
-* Add Naproche to your path:
-
-  ```shell
-  export PATH="$PATH:$(isabelle getenv -b NAPROCHE_EXE_DIR)"
-  ```
-
-
-#### Run
-
-```shell
-Naproche [<options>] [<file>]
-```
-
-* `<options>`: A list of options. Run `Naproche -h` for a list of all options.
-
-* `<file>`: A `.ftl` or `.ftl.tex` file. If no file is given, `stdin` is used
-  (where by default a ForTheL text in the FTL dialect is expected; to enter a
-  text in the TEX dialect, provide the option `--tex=on`).
+Run `isabelle getenv -b NAPROCHE_EXE` to find the location of the
+executable of command line interface of Naproche.
 
 
 ## Changelog
