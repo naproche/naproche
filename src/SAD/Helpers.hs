@@ -26,9 +26,7 @@ module SAD.Helpers (
   failWithMessage,
 
   getNaprocheDirectoryPath,
-  getFormalizationsDirectoryPath,
-  getTexDirectoryPath,
-  getTexliveDirectoryPath
+  getFormalizationsDirectoryPath
 ) where
 
 import Control.Arrow
@@ -181,17 +179,3 @@ getFormalizationsDirectoryPath context = if Program.is_pide context
    else do
         naprocheDirectoryPath <- getNaprocheDirectoryPath context
         return $ naprocheDirectoryPath </> "math"
-
--- | Get the path to the TeX directory.
-getTexDirectoryPath :: Program.Context -> IO FilePath
-getTexDirectoryPath context = if Program.is_pide context
-   then make_string <$> getenv (make_bytes "NAPROCHE_TEX")
-   else do
-        naprocheDirectoryPath <- getNaprocheDirectoryPath context
-        return $ naprocheDirectoryPath </> "tex"
-
--- | Get the path to the TeX Live directory.
-getTexliveDirectoryPath :: Program.Context -> IO FilePath
-getTexliveDirectoryPath context = do
-    texDirectoryPath <- getTexDirectoryPath context
-    return $ texDirectoryPath </> "texlive"

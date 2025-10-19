@@ -37,7 +37,7 @@ import SAD.Parser.TEX.Lexer qualified as TEX
 import SAD.Parser.FTL.Token qualified as FTL
 import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.Token (renderTokens)
-import SAD.Helpers (getFormalizationsDirectoryPath, getTexDirectoryPath, getTexliveDirectoryPath)
+import SAD.Helpers (getFormalizationsDirectoryPath)
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
