@@ -23,11 +23,11 @@ object Naproche_Test {
   ): Unit = {
     val file_format = new Naproche_File_Format
 
-    def relative(file: JFile): Path = File.relative_path(Naproche.math, File.path(file)).get
+    def relative(file: JFile): Path = File.relative_path(Naproche.NAPROCHE_FORMALIZATIONS, File.path(file)).get
     def relative_name(file: JFile): String = relative(file).implode
     def contains_flams_dir(path: String): Boolean = path.containsSlice("/.flams/")
     val tests =
-      File.find_files(Naproche.math.file, file => file_format.detect(file.getName) && !contains_flams_dir(relative(file).implode))
+      File.find_files(Naproche.NAPROCHE_FORMALIZATIONS.file, file => file_format.detect(file.getName) && !contains_flams_dir(relative(file).implode))
         .sortBy(relative_name)
 
     val bad = Synchronized(List.empty[Path])

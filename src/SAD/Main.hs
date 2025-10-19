@@ -37,7 +37,7 @@ import SAD.Parser.TEX.Lexer qualified as TEX
 import SAD.Parser.FTL.Token qualified as FTL
 import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.Token (renderTokens)
-import SAD.Helpers (getFormalizationsDirectoryPath, getTexDirectoryPath, getTexliveDirectoryPath)
+import SAD.Helpers (getNaprocheFormalizations, getNaprocheMathhub)
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
@@ -89,48 +89,44 @@ mainTerminal initInstrs nonInstrArgs = do
       let locatedInitInstrs = reverse $ map (Position.none,) initInstrs
           initInstrProofTexts = map (uncurry ProofTextInstr) locatedInitInstrs
           mode = getInstr modeParam initInstrs
+          texExe = getInstr texExeParam initInstrs
+          bibtexExe = getInstr bibtexExeParam initInstrs
       -- Get the input text (either via a given file path or if no file path is
       -- provided via the stdin stream) as a proof text:
-      (dialect, inputText, mbInputPath) <- case mode of
-        -- In "render_setup" or "render_setup_c" mode we do not need any other
-        -- argument and in particular do not want to open the text input
-        -- interface.
-        "render_setup" -> return (Ftl, "", Nothing)
-        "render_setup_c" -> return (Ftl, "", Nothing)
-        _ -> do
-          case nonInstrArgs of
-            -- If a single non-instruction command line argument is given, regard it
-            -- as the path to the input text file and determine the ForTheL dialect
-            -- of its contents via its file name extension:
-            [filePath] -> do
-              let fileNameExteisionStr = takeExtensions filePath
-                  fileNameExtensions = wordsBy isExtSeparator fileNameExteisionStr
-              let dialect = case reverse fileNameExtensions of
-                    "ftl" : _ -> Ftl
-                    "tex" : "ftl" : _ -> Tex
-                    "tex" : "en" : "ftl" : _ -> Tex
-                    _ -> error $ "Invalid file name extension: " ++ fileNameExteisionStr
-              inputText <- make_bytes <$> File.read filePath
-              return (dialect, inputText, Just filePath)
-            -- If no non-instruction command line argument is given, regard the
-            -- content of the stdin stream as the input text. Determind the ForTheL
-            -- dialect of the text by whether the @tex@ flag is set in the command
-            -- line arguments or not.
-            [] -> do
-              let tex = getInstr texParam initInstrs
-                  dialect = if tex then Tex else Ftl
-                  dialectStr = case dialect of
-                    Tex -> "TEX"
-                    Ftl -> "FTL"
-              hSetBuffering stdout LineBuffering
-              putStrLn $ "Enter a ForTheL text (in the " ++ dialectStr ++ " dialect)."
-                ++ " Type CTRL+D to finish your input.\n"
-              inputText <- make_bytes <$> getContents'
-              putStr "\n"
-              return (dialect, inputText, Nothing)
-            -- If more than one non-instruction command line arguments are given,
-            -- throw an error:
-            _ -> error "More than one file argument"
+      (dialect, inputText, mbInputPath) <- do
+        case nonInstrArgs of
+          -- If a single non-instruction command line argument is given, regard it
+          -- as the path to the input text file and determine the ForTheL dialect
+          -- of its contents via its file name extension:
+          [filePath] -> do
+            let fileNameExteisionStr = takeExtensions filePath
+                fileNameExtensions = wordsBy isExtSeparator fileNameExteisionStr
+            let dialect = case reverse fileNameExtensions of
+                  "ftl" : _ -> Ftl
+                  "tex" : "ftl" : _ -> Tex
+                  "tex" : "en" : "ftl" : _ -> Tex
+                  _ -> error $ "Invalid file name extension: " ++ fileNameExteisionStr
+            inputText <- make_bytes <$> File.read filePath
+            return (dialect, inputText, Just filePath)
+          -- If no non-instruction command line argument is given, regard the
+          -- content of the stdin stream as the input text. Determind the ForTheL
+          -- dialect of the text by whether the @tex@ flag is set in the command
+          -- line arguments or not.
+          [] -> do
+            let tex = getInstr texParam initInstrs
+                dialect = if tex then Tex else Ftl
+                dialectStr = case dialect of
+                  Tex -> "TEX"
+                  Ftl -> "FTL"
+            hSetBuffering stdout LineBuffering
+            putStrLn $ "Enter a ForTheL text (in the " ++ dialectStr ++ " dialect)."
+              ++ " Type CTRL+D to finish your input.\n"
+            inputText <- make_bytes <$> getContents'
+            putStr "\n"
+            return (dialect, inputText, Nothing)
+          -- If more than one non-instruction command line arguments are given,
+          -- throw an error:
+          _ -> error "More than one file argument"
       -- Append the input text proof text to the instruction proof texts:
       let inputTextProofTexts = [ProofTextInstr Position.none $ GetText inputText]
           proofTexts = initInstrProofTexts ++ inputTextProofTexts
@@ -147,7 +143,7 @@ mainTerminal initInstrs nonInstrArgs = do
             Nothing -> putStrLn "Unable to render input text: No input file given." >> return 1
             Just inputPath -> case dialect of
               Ftl -> putStrLn "Unable to render input text: No \".ftl.tex\" file given." >> return 1
-              Tex -> renderInputFile context inputPath
+              Tex -> renderInputFile context inputPath (make_string texExe) (make_string bibtexExe)
           modeArg -> putStrLn ("Invalid mode: " ++ make_string modeArg) >> return 1)
         `catch` (\Exception.UserInterrupt -> do
           Program.exit_thread
@@ -330,30 +326,32 @@ verifyInputText dialect mesonCache proverCache proofTexts = do
     then 0
     else 1
 
-renderInputFile :: Program.Context -> FilePath -> IO Int
-renderInputFile context inputPath = do
+renderInputFile :: Program.Context -> FilePath -> FilePath -> FilePath -> IO Int
+renderInputFile context inputPath texExe bibtexExe = do
   putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
-  formalizationsDirectoryPath <- getFormalizationsDirectoryPath context
 
-  -- set the paths to pdflatex and bibtex, and the MATHHUB and TEXINPUTS variable:
-  let pdflatexBin = "pdflatex"
-      bibtexBin = "bibtex"
-      mathhubVar = formalizationsDirectoryPath
-      texinputsVar = formalizationsDirectoryPath </> "latex" </> "lib//;" 
-  putStrLn $ "[Info] Path to pdflatex:   " ++ pdflatexBin
-  putStrLn $ "[Info] Path to bibtex:     " ++ bibtexBin
+  -- set the MATHHUB variable:
+  mathhubVar <- getNaprocheMathhub context
+
+  putStrLn $ "[Info] Path to pdflatex:   " ++ texExe
+  putStrLn $ "[Info] Path to bibtex:     " ++ bibtexExe
   putStrLn $ "[Info] MATHHUB variable:   " ++ mathhubVar
-  putStrLn $ "[Info] TEXINPUTS variable: " ++ texinputsVar
 
-  -- Render the input file as PDF:
-  let inputDir = takeDirectory inputPath
-      inputFile = takeFileName inputPath
-      inputFileBase = takeBaseName inputFile
-  setCurrentDirectory inputDir
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-  callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+  putStr $ "\nReady to render \"" ++ inputPath ++ "\" to PDF. Continue? (Y/n) "
+  hFlush stdout
+  answer <- getLine
+  putStr "\n"
+
+  when (answer `elem` ["Y", "y", ""]) $ do
+    -- Render the input file as PDF:
+    let inputDir = takeDirectory inputPath
+        inputFile = takeFileName inputPath
+        inputFileBase = takeBaseName inputFile
+    setCurrentDirectory inputDir
+    callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_WRITESMS=true " ++ texExe ++ " " ++ inputFile
+    callCommand $ bibtexExe ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
+    callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_USESMS=true " ++ texExe ++ " " ++ inputFile
+    callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_USESMS=true " ++ texExe ++ " " ++ inputFile
 
   return 0
 
@@ -400,6 +398,8 @@ options = [
   optFlag "" translationParam,
   optSwitch "" serverParam True "",
   optArgument "P" proverParam "NAME",
+  optArgument "" texExeParam "EXE",
+  optArgument "" bibtexExeParam "EXE",
   optNat "t" timelimitParam,
   optNat "m" memorylimitParam,
   optNat "" depthlimitParam,

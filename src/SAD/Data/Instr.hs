@@ -20,7 +20,7 @@ module SAD.Data.Instr (
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
   translationParam, texParam,
   helpParam, serverParam, onlytranslateParam, onlytokenizeParam,
-  modeParam, proverParam, initParam, theoryParam,
+  modeParam, proverParam, texExeParam, bibtexExeParam, initParam, theoryParam,
   keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument, keywordsModule,
   keywordsDropLimit, keywordsDropFlag
 ) where
@@ -147,10 +147,12 @@ textFlags@[proveParam, checkParam, checkconsistencyParam, symsignParam, infoPara
     Param.flag "tex" "parse passed file with forthel tex parser" False]
 
 textArgs :: [Param.T Bytes]
-modeParam, proverParam :: Param.T Bytes
-textArgs@[modeParam, proverParam] =
+modeParam, proverParam, texExeParam, bibtexExeParam :: Param.T Bytes
+textArgs@[modeParam, proverParam, texExeParam, bibtexExeParam] =
    [Param.bytes "mode" "run Naproche in mode MODE" "verify",
-    Param.bytes "prover" "use prover NAME" (Prover.get_name Prover.eprover)]
+    Param.bytes "prover" "use prover NAME" (Prover.get_name Prover.eprover),
+    Param.bytes "tex-exe" "TeX executable EXE" "pdflatex",
+    Param.bytes "bibtex-exe" "BibTeX executable EXE" "bibtex"]
 
 initParam, theoryParam :: Param.T Bytes
 initParam = Param.bytes "init" "init file, empty to skip" "init.opt"
