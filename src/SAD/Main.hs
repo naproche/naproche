@@ -89,6 +89,8 @@ mainTerminal initInstrs nonInstrArgs = do
       let locatedInitInstrs = reverse $ map (Position.none,) initInstrs
           initInstrProofTexts = map (uncurry ProofTextInstr) locatedInitInstrs
           mode = getInstr modeParam initInstrs
+          texExe = getInstr texExeParam initInstrs
+          bibtexExe = getInstr bibtexExeParam initInstrs
       -- Get the input text (either via a given file path or if no file path is
       -- provided via the stdin stream) as a proof text:
       (dialect, inputText, mbInputPath) <- case mode of
@@ -147,7 +149,7 @@ mainTerminal initInstrs nonInstrArgs = do
             Nothing -> putStrLn "Unable to render input text: No input file given." >> return 1
             Just inputPath -> case dialect of
               Ftl -> putStrLn "Unable to render input text: No \".ftl.tex\" file given." >> return 1
-              Tex -> renderInputFile context inputPath
+              Tex -> renderInputFile context inputPath (make_string texExe) (make_string bibtexExe)
           modeArg -> putStrLn ("Invalid mode: " ++ make_string modeArg) >> return 1)
         `catch` (\Exception.UserInterrupt -> do
           Program.exit_thread
@@ -330,30 +332,32 @@ verifyInputText dialect mesonCache proverCache proofTexts = do
     then 0
     else 1
 
-renderInputFile :: Program.Context -> FilePath -> IO Int
-renderInputFile context inputPath = do
+renderInputFile :: Program.Context -> FilePath -> FilePath -> FilePath -> IO Int
+renderInputFile context inputPath texExe bibtexExe = do
   putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
-
-  -- set the paths to pdflatex and bibtex:
-  let pdflatexBin = "pdflatex"
-      bibtexBin = "bibtex"
 
   -- set the MATHHUB variable:
   mathhubVar <- getNaprocheMathhub context
 
-  putStrLn $ "[Info] Path to pdflatex:   " ++ pdflatexBin
-  putStrLn $ "[Info] Path to bibtex:     " ++ bibtexBin
+  putStrLn $ "[Info] Path to pdflatex:   " ++ texExe
+  putStrLn $ "[Info] Path to bibtex:     " ++ bibtexExe
   putStrLn $ "[Info] MATHHUB variable:   " ++ mathhubVar
 
-  -- Render the input file as PDF:
-  let inputDir = takeDirectory inputPath
-      inputFile = takeFileName inputPath
-      inputFileBase = takeBaseName inputFile
-  setCurrentDirectory inputDir
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-  callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+  putStr $ "\nReady to render \"" ++ inputPath ++ "\" to PDF. Continue? (Y/n) "
+  hFlush stdout
+  answer <- getLine
+  putStr "\n"
+
+  when (answer `elem` ["Y", "y", ""]) $ do
+    -- Render the input file as PDF:
+    let inputDir = takeDirectory inputPath
+        inputFile = takeFileName inputPath
+        inputFileBase = takeBaseName inputFile
+    setCurrentDirectory inputDir
+    callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_WRITESMS=true " ++ texExe ++ " " ++ inputFile
+    callCommand $ bibtexExe ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
+    callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_USESMS=true " ++ texExe ++ " " ++ inputFile
+    callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_USESMS=true " ++ texExe ++ " " ++ inputFile
 
   return 0
 
@@ -400,6 +404,8 @@ options = [
   optFlag "" translationParam,
   optSwitch "" serverParam True "",
   optArgument "P" proverParam "NAME",
+  optArgument "" texExeParam "EXE",
+  optArgument "" bibtexExeParam "EXE",
   optNat "t" timelimitParam,
   optNat "m" memorylimitParam,
   optNat "" depthlimitParam,

@@ -101,6 +101,19 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 * **Changed:** Change required GHC version from LTS 22.43 to LTS 22.44.
 
+* **New:** In the command line interface there are two new optional arguments:
+
+    - `--tex-exe=<TeX executable>` (default value: `pdflatex`)
+    - `--bibtex-exe=<BibTeX executable>` (default value: `bibtex`)
+
+  When `--mode=render` is given, then `<TeX executable>` and
+  `<BibTeX executable>` are used as TeX and BibTeX executables, resp,
+  provided they are in the PATH.
+
+  Example:
+
+  `Naproche --mode=render --tex-exe=/usr/local/texlive/2025/bin/x86_64-linux/pdflatex cantor.ftl.tex
+
 
 --------------------------------------------------------------------------------
 
