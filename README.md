@@ -90,7 +90,7 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
     ```
   - Open Isabelle development environment with ForTheL examples, e.g.
     ```shell
-    isabelle jedit -l Pure Isabelle/Test.thy
+    isabelle jedit -l Pure Isabelle/Test/Test.thy
     ```
 
 * Using a recent E Theorem Prover:
