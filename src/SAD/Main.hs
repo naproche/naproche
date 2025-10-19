@@ -93,46 +93,40 @@ mainTerminal initInstrs nonInstrArgs = do
           bibtexExe = getInstr bibtexExeParam initInstrs
       -- Get the input text (either via a given file path or if no file path is
       -- provided via the stdin stream) as a proof text:
-      (dialect, inputText, mbInputPath) <- case mode of
-        -- In "render_setup" or "render_setup_c" mode we do not need any other
-        -- argument and in particular do not want to open the text input
-        -- interface.
-        "render_setup" -> return (Ftl, "", Nothing)
-        "render_setup_c" -> return (Ftl, "", Nothing)
-        _ -> do
-          case nonInstrArgs of
-            -- If a single non-instruction command line argument is given, regard it
-            -- as the path to the input text file and determine the ForTheL dialect
-            -- of its contents via its file name extension:
-            [filePath] -> do
-              let fileNameExteisionStr = takeExtensions filePath
-                  fileNameExtensions = wordsBy isExtSeparator fileNameExteisionStr
-              let dialect = case reverse fileNameExtensions of
-                    "ftl" : _ -> Ftl
-                    "tex" : "ftl" : _ -> Tex
-                    "tex" : "en" : "ftl" : _ -> Tex
-                    _ -> error $ "Invalid file name extension: " ++ fileNameExteisionStr
-              inputText <- make_bytes <$> File.read filePath
-              return (dialect, inputText, Just filePath)
-            -- If no non-instruction command line argument is given, regard the
-            -- content of the stdin stream as the input text. Determind the ForTheL
-            -- dialect of the text by whether the @tex@ flag is set in the command
-            -- line arguments or not.
-            [] -> do
-              let tex = getInstr texParam initInstrs
-                  dialect = if tex then Tex else Ftl
-                  dialectStr = case dialect of
-                    Tex -> "TEX"
-                    Ftl -> "FTL"
-              hSetBuffering stdout LineBuffering
-              putStrLn $ "Enter a ForTheL text (in the " ++ dialectStr ++ " dialect)."
-                ++ " Type CTRL+D to finish your input.\n"
-              inputText <- make_bytes <$> getContents'
-              putStr "\n"
-              return (dialect, inputText, Nothing)
-            -- If more than one non-instruction command line arguments are given,
-            -- throw an error:
-            _ -> error "More than one file argument"
+      (dialect, inputText, mbInputPath) <- do
+        case nonInstrArgs of
+          -- If a single non-instruction command line argument is given, regard it
+          -- as the path to the input text file and determine the ForTheL dialect
+          -- of its contents via its file name extension:
+          [filePath] -> do
+            let fileNameExteisionStr = takeExtensions filePath
+                fileNameExtensions = wordsBy isExtSeparator fileNameExteisionStr
+            let dialect = case reverse fileNameExtensions of
+                  "ftl" : _ -> Ftl
+                  "tex" : "ftl" : _ -> Tex
+                  "tex" : "en" : "ftl" : _ -> Tex
+                  _ -> error $ "Invalid file name extension: " ++ fileNameExteisionStr
+            inputText <- make_bytes <$> File.read filePath
+            return (dialect, inputText, Just filePath)
+          -- If no non-instruction command line argument is given, regard the
+          -- content of the stdin stream as the input text. Determind the ForTheL
+          -- dialect of the text by whether the @tex@ flag is set in the command
+          -- line arguments or not.
+          [] -> do
+            let tex = getInstr texParam initInstrs
+                dialect = if tex then Tex else Ftl
+                dialectStr = case dialect of
+                  Tex -> "TEX"
+                  Ftl -> "FTL"
+            hSetBuffering stdout LineBuffering
+            putStrLn $ "Enter a ForTheL text (in the " ++ dialectStr ++ " dialect)."
+              ++ " Type CTRL+D to finish your input.\n"
+            inputText <- make_bytes <$> getContents'
+            putStr "\n"
+            return (dialect, inputText, Nothing)
+          -- If more than one non-instruction command line arguments are given,
+          -- throw an error:
+          _ -> error "More than one file argument"
       -- Append the input text proof text to the instruction proof texts:
       let inputTextProofTexts = [ProofTextInstr Position.none $ GetText inputText]
           proofTexts = initInstrProofTexts ++ inputTextProofTexts
