@@ -26,7 +26,8 @@ module SAD.Helpers (
   failWithMessage,
 
   getNaprocheHome,
-  getNaprocheFormalizations
+  getNaprocheFormalizations,
+  getNaprocheMathhub
 ) where
 
 import Control.Arrow
@@ -177,5 +178,13 @@ getNaprocheFormalizations :: Program.Context -> IO FilePath
 getNaprocheFormalizations context = if Program.is_pide context
    then make_string <$> getenv (make_bytes "NAPROCHE_FORMALIZATIONS")
    else do
-        naprocheFormalizations <- getNaprocheHome context
-        return $ naprocheFormalizations </> "math"
+        naprocheHome <- getNaprocheHome context
+        return $ naprocheHome </> "math"
+
+-- | Get the path to the formalizations directory.
+getNaprocheMathhub :: Program.Context -> IO FilePath
+getNaprocheMathhub context = if Program.is_pide context
+   then make_string <$> getenv (make_bytes "NAPROCHE_MATHHUB")
+   else do
+        naprocheFormalizations <- getNaprocheFormalizations context
+        return $ naprocheFormalizations </> "archive"

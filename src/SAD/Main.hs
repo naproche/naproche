@@ -37,7 +37,7 @@ import SAD.Parser.TEX.Lexer qualified as TEX
 import SAD.Parser.FTL.Token qualified as FTL
 import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.Token (renderTokens)
-import SAD.Helpers (getNaprocheFormalizations)
+import SAD.Helpers (getNaprocheFormalizations, getNaprocheMathhub)
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
@@ -333,12 +333,14 @@ verifyInputText dialect mesonCache proverCache proofTexts = do
 renderInputFile :: Program.Context -> FilePath -> IO Int
 renderInputFile context inputPath = do
   putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
-  formalizationsDirectoryPath <- getNaprocheFormalizations context
 
-  -- set the paths to pdflatex and bibtex, and the MATHHUB and TEXINPUTS variable:
+  -- set the paths to pdflatex and bibtex:
   let pdflatexBin = "pdflatex"
       bibtexBin = "bibtex"
-      mathhubVar = formalizationsDirectoryPath
+
+  -- set the MATHHUB variable:
+  mathhubVar <- getNaprocheMathhub context
+
   putStrLn $ "[Info] Path to pdflatex:   " ++ pdflatexBin
   putStrLn $ "[Info] Path to bibtex:     " ++ bibtexBin
   putStrLn $ "[Info] MATHHUB variable:   " ++ mathhubVar
