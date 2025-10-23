@@ -20,7 +20,7 @@ module SAD.Data.Instr (
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
   translationParam,
   helpParam, serverParam, onlytranslateParam, onlytokenizeParam,
-  modeParam, dialectParam, proverParam, texExeParam, bibtexExeParam, initParam, theoryParam,
+  modeParam, dialectParam, proverParam, texExeParam, bibtexExeParam,
   keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument, keywordsModule,
   keywordsDropLimit, keywordsDropFlag
 ) where
@@ -159,10 +159,6 @@ textArgs@[modeParam, dialectParam, proverParam, texExeParam, bibtexExeParam] =
     Param.bytes "prover" "use prover NAME" (Prover.get_name Prover.eprover),
     Param.bytes "tex-exe" "TeX executable EXE" "pdflatex",
     Param.bytes "bibtex-exe" "BibTeX executable EXE" "bibtex"]
-
-initParam, theoryParam :: Param.T Bytes
-initParam = Param.bytes "init" "init file, empty to skip" "init.opt"
-theoryParam = Param.bytes "theory" "choose the underlying theory" "fol"
 
 verboseFlags :: [Param.T Bool]
 verboseFlags =

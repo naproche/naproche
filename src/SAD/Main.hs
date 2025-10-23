@@ -398,7 +398,6 @@ optArgument chars p a = optParam chars p arg s
 options :: [GetOpt.OptDescr Instr]
 options = [
   optSwitch "h" helpParam True "",
-  optArgument "" initParam "FILE",
   optArgument "M" modeParam "MODE",
   optArgument "" dialectParam "DIALECT",
   optFlag "" translationParam,
@@ -414,7 +413,6 @@ options = [
   optSwitch "n" proveParam False "cursory mode (equivalent to --prove=off)",
   optSwitch "r" checkParam False "raw mode (equivalent to --check=off)",
   optFlag "" proveParam,
-  optArgument "" theoryParam "THEORY",
   optFlag "" checkParam,
   optFlag "" symsignParam,
   optFlag "" infoParam,
