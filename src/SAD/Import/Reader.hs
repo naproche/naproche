@@ -114,8 +114,6 @@ reader depth dialect naprocheFormalizationsPath doneFiles stateList [ProofTextIn
 
 reader depth dialect naprocheFormalizationsPath doneFiles (pState : states) [ProofTextInstr pos (GetAbsoluteFilePath absoluteFilePath)]
   | absoluteFilePath `elem` doneFiles = do
-      Message.outputMain Message.WARNING pos
-        (make_bytes ("Skipping already read file: " ++ absoluteFilePath))
       (newProofText, newState) <- parseState pState
       reader (depth - 1) dialect naprocheFormalizationsPath doneFiles (newState:states) newProofText
   | otherwise = do

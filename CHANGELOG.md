@@ -114,6 +114,10 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
   `Naproche --mode=render --tex-exe=/usr/local/texlive/2025/bin/x86_64-linux/pdflatex cantor.ftl.tex
 
+* **Removed:** The message `Skipping already read file` is no longer printed
+  when a read instruction for an already imported file is encountered in the
+  reader loop.
+
 
 --------------------------------------------------------------------------------
 
