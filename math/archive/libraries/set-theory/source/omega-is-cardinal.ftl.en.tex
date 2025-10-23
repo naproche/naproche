@@ -31,26 +31,26 @@
     End.
 
     $g$ is injective.
-    Indeed we can show that for all $k, k' \Elem \ORDsucc(n)$ if $k \neq k'$
-    then $g(k) \neq g(k')$. 
+    Indeed we can show that for all $k, k' \Elem \ORDsucc(n)$ if $k \NotEq k'$
+    then $g(k) \NotEq g(k')$. 
     \begin{proof}
       Let $k, k' \Elem \ORDsucc(n)$.
-      Assume $k \neq k'$.
+      Assume $k \NotEq k'$.
 
       \begin{case}{$k, k' \ORDless n$.}
-        Then $f(k) \neq f(k')$.
-        Hence $\ORDsucc(f(k)) \neq \ORDsucc(f(k'))$.
-        Thus $g(k) \neq g(k')$.
+        Then $f(k) \NotEq f(k')$.
+        Hence $\ORDsucc(f(k)) \NotEq \ORDsucc(f(k'))$.
+        Thus $g(k) \NotEq g(k')$.
       \end{case}
 
       \begin{case}{$k \ORDless n$ and $k' \Eq n$.}
-        We have $\ORDsucc(f(k)) \neq \ORDzero$.
-        Hence $g(k) \neq g(k')$.
+        We have $\ORDsucc(f(k)) \NotEq \ORDzero$.
+        Hence $g(k) \NotEq g(k')$.
       \end{case}
 
       \begin{case}{$k \Eq n$ and $k' \ORDless n$.}
-        We have $\ORDsucc(f(k')) \neq \ORDzero$.
-        Hence $g(k) \neq g(k')$.
+        We have $\ORDsucc(f(k')) \NotEq \ORDzero$.
+        Hence $g(k) \NotEq g(k')$.
       \end{case}
     \end{proof}
 
@@ -64,7 +64,7 @@
         Then $m \Eq g(n)$.
       \end{case}
 
-      \begin{case}{$m \neq \ORDzero$.}
+      \begin{case}{$m \NotEq \ORDzero$.}
         Take $m' \Elem \ORDomega$ such that $m \Eq \ORDsucc(m')$.
         Then $m
           \Eq \ORDsucc(m')

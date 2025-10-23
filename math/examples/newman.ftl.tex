@@ -99,15 +99,19 @@ Adrian De Lon (2021)}
       terminating.
 
       Let us demonstrate by induction that for all $a,b,c$ such that $a \reducesTCR{R} b,c$ there exists $d$ such that $b,c \reducesTCR{R} d$.
-        Let $a,b,c$ be terms. Assume $a \reducesTC{R} b,c$.
+        Let $a,b,c$ be terms.
 
-        Take $u$ such that $a \reduces{R} u \reducesTCR{R} b$.
-        Take $v$ such that $a \reduces{R} v \reducesTCR{R} c$.
-        Take $w$ such that $u,v \reducesTCR{R} w$.
-        Take a normal form $d$ of $w$ in $R$.
+        Let us show that if$ a \reducesTC{R} b,c$ then we have the thesis.
+          Assume $a \reducesTC{R} b,c$.
 
-        $b \reducesTCR{R} d$. Indeed take $x$ such that $b,d \reducesTCR{R} x$. 
-        $c \reducesTCR{R} d$. Indeed take $y$ such that $c,d \reducesTCR{R} y$.
+          Take $u$ such that $a \reduces{R} u \reducesTCR{R} b$.
+          Take $v$ such that $a \reduces{R} v \reducesTCR{R} c$.
+          Take $w$ such that $u,v \reducesTCR{R} w$.
+          Take a normal form $d$ of $w$ in $R$.
+  
+          $b \reducesTCR{R} d$. Indeed take $x$ such that $b,d \reducesTCR{R} x$. 
+          $c \reducesTCR{R} d$. Indeed take $y$ such that $c,d \reducesTCR{R} y$.
+        End.
       End.
     \end{proof}
   \end{forthel}

@@ -79,16 +79,16 @@
 
   $f$ is injective.
   Indeed we can show that for all $\beta, \gamma \Elem \ORDsucc(\alpha)$ if
-  $\beta \neq \gamma$ then $f(\beta) \neq f(\gamma)$.
+  $\beta \NotEq \gamma$ then $f(\beta) \NotEq f(\gamma)$.
   \begin{proof}
     Let $\beta, \gamma \Elem \ORDsucc(\alpha)$.
-    Assume $\beta \neq \gamma$.
+    Assume $\beta \NotEq \gamma$.
 
     \begin{case}{$\beta \ORDless \ORDomega$.}
       If $\gamma \Eq \alpha$ then
       $f(\beta)
         \Eq \ORDsucc(\beta)
-        \neq \ORDzero
+        \NotEq \ORDzero
         \Eq f(\gamma)$.
       If $\ORDomega \ORDleq \gamma \ORDless \alpha$ then
       $f(\beta)
@@ -117,7 +117,7 @@
       If $\gamma \ORDless \ORDomega$ then
       $f(\beta)
         \Eq \ORDzero
-        \neq \ORDsucc(\gamma)
+        \NotEq \ORDsucc(\gamma)
         \Eq f(\gamma)$.
       If $\ORDomega \ORDleq \gamma \ORDless \alpha$ then
       $f(\beta)
@@ -139,7 +139,7 @@
 \begin{proof}[forthel]
   Let $\kappa$ be an infinite cardinal.
   Suppose that $\kappa$ is not a limit ordinal.
-  $\kappa \neq \ORDzero$.
+  $\kappa \NotEq \ORDzero$.
   Hence $\kappa$ is a successor ordinal.
   Indeed $\kappa$ is an ordinal.
   Thus we can take an ordinal $\alpha$ such that $\kappa \Eq \ORDsucc(\alpha)$.

@@ -52,7 +52,7 @@
 
       Define \[ g(i) =
         \begin{cases}
-          f(i)  & : i \neq \FUNinv{f}(n')
+          f(i)  & : i \NotEq \FUNinv{f}(n')
           \\
           f(m)  & : i \Eq \FUNinv{f}(n')
         \end{cases} \]
@@ -64,20 +64,20 @@
         Let $i \Elem m$.
         We have $g(i) \Elem \ORDsucc(n')$.
         Indeed $f(i), f(m) \Elem \ORDsucc(n')$ and ($g(i) \Eq f(i)$ or $g(i) \Eq f(m)$).
-        Hence if $g(i) \neq n'$ then $g(i) \Elem n'$.
+        Hence if $g(i) \NotEq n'$ then $g(i) \Elem n'$.
 
-        \begin{case}{$i \neq \FUNinv{f}(n')$.}
+        \begin{case}{$i \NotEq \FUNinv{f}(n')$.}
           Then $g(i) \Eq f(i) \Elem \ORDsucc(n')$.
           If $g(i) \Eq n'$ then $f(i) \Eq n' \Eq f(\FUNinv{f}(n'))$.
           Hence if $g(i) \Eq n'$ then $i \Eq \FUNinv{f}(n')$.
-          Thus $g(i) \neq n'$.
+          Thus $g(i) \NotEq n'$.
           Therefore $g(i) \Elem n'$.
         \end{case}
 
         \begin{case}{$i \Eq \FUNinv{f}(n')$.}
           Then $g(i)
             \Eq f(m)
-            \neq f(\FUNinv{f}(n'))
+            \NotEq f(\FUNinv{f}(n'))
             \Eq n'$.
           Hence $g(i) \Elem n'$.
         \end{case}
@@ -87,7 +87,7 @@
       Indeed we can show that for all $k \Elem n'$ there exists a $l \Elem m$ such that $k \Eq g(l)$.
       \begin{proof}
         Let $k \Elem n'$.
-        Then $\FUNinv{f}(k) \neq \FUNinv{f}(n')$.
+        Then $\FUNinv{f}(k) \NotEq \FUNinv{f}(n')$.
 
         \begin{case}{$\FUNinv{f}(k) \Eq m$.}
           Then $k
@@ -96,7 +96,7 @@
             \Eq g(\FUNinv{f}(n'))$.
         \end{case}
 
-        \begin{case}{$\FUNinv{f}(k) \neq m$.}
+        \begin{case}{$\FUNinv{f}(k) \NotEq m$.}
           Then $\FUNinv{f}(k) \Elem m$.
           Indeed $\FUNinv{f}(k) \Elem \SETcard{\ORDsucc(n')} \Eq \ORDsucc(m) \Eq m \SETunion \SETsingleton{m}$.
           Hence $k
@@ -106,36 +106,36 @@
       \end{proof}
 
       $g$ is injective.
-      Indeed we can show that for all $i, j \Elem m$ if $i \neq j$ then $g(i) \neq g(j)$.
+      Indeed we can show that for all $i, j \Elem m$ if $i \NotEq j$ then $g(i) \NotEq g(j)$.
       \begin{proof}
         Let $i, j \Elem m$.
-        Assume $i \neq j$.
+        Assume $i \NotEq j$.
 
-        \begin{case}{$i, j \neq \FUNinv{f}(n')$.}
+        \begin{case}{$i, j \NotEq \FUNinv{f}(n')$.}
           Then $g(i)
             \Eq f(i)
-            \neq f(j)
+            \NotEq f(j)
             \Eq g(j)$.
         \end{case}
 
         \begin{case}{$i \Eq \FUNinv{f}(n')$.}
-          Then $j \neq \FUNinv{f}(n')$.
+          Then $j \NotEq \FUNinv{f}(n')$.
           Hence $g(i)
             \Eq g(\FUNinv{f}(n'))
             \Eq f(m)
-            \neq f(j)
+            \NotEq f(j)
             \Eq g(j)$.
-          Indeed $m \neq j$.
+          Indeed $m \NotEq j$.
         \end{case}
 
         \begin{case}{$j \Eq \FUNinv{f}(n')$.}
-          Then $i \neq \FUNinv{f}(n')$.
+          Then $i \NotEq \FUNinv{f}(n')$.
           Hence $g(i)
             \Eq f(i)
-            \neq f(m)
+            \NotEq f(m)
             \Eq g(\FUNinv{f}(n'))
             \Eq g(j)$.
-          Indeed $i \neq m$.
+          Indeed $i \NotEq m$.
         \end{case}
       \end{proof}
     End.

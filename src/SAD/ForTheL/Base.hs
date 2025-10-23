@@ -185,18 +185,26 @@ addInits dialect state@FState{symbNotionExpr = sn, cfnExpr = cfn, iprExpr = ipr}
       }
     Tex -> state {
       symbNotionExpr = unionBy comparePatterns sn [
-          texElementOfSymbNotion,
-          stexElementOfSymbNotion
+          texElementOfSymbNotion
         ],
       cfnExpr = unionBy comparePatterns cfn [
-          texDomFunction,
-          stexDomFunction
+          texDomFunction
         ],
       iprExpr = unionBy comparePatterns ipr [
           texInequalityPredicate,
           texInductionPredicate,
           texInPredicate,
-          texNotinPredicate,
+          texNotinPredicate
+        ]
+      }
+    Stex -> state {
+      symbNotionExpr = unionBy comparePatterns sn [
+          stexElementOfSymbNotion
+        ],
+      cfnExpr = unionBy comparePatterns cfn [
+          stexDomFunction
+        ],
+      iprExpr = unionBy comparePatterns ipr [
           stexEqualityPredicate,
           stexInequalityPredicate,
           stexInductionPredicate,

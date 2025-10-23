@@ -34,10 +34,12 @@ import SAD.Data.Instr
 import SAD.API hiding (error)
 import SAD.Parser.FTL.Lexer qualified as FTL
 import SAD.Parser.TEX.Lexer qualified as TEX
+import SAD.Parser.STEX.Lexer qualified as STEX
 import SAD.Parser.FTL.Token qualified as FTL
 import SAD.Parser.TEX.Token qualified as TEX
+import SAD.Parser.STEX.Token qualified as STEX
 import SAD.Parser.Token (renderTokens)
-import SAD.Helpers (getNaprocheFormalizations, getNaprocheMathhub)
+import SAD.Helpers (getNaprocheMathhub)
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
@@ -104,7 +106,7 @@ mainTerminal initInstrs nonInstrArgs = do
             let dialect = case reverse fileNameExtensions of
                   "ftl" : _ -> Ftl
                   "tex" : "ftl" : _ -> Tex
-                  "tex" : "en" : "ftl" : _ -> Tex
+                  "tex" : "en" : "ftl" : _ -> Stex
                   _ -> error $ "Invalid file name extension: " ++ fileNameExteisionStr
             inputText <- make_bytes <$> File.read filePath
             return (dialect, inputText, Just filePath)
@@ -113,13 +115,13 @@ mainTerminal initInstrs nonInstrArgs = do
           -- dialect of the text by whether the @tex@ flag is set in the command
           -- line arguments or not.
           [] -> do
-            let tex = getInstr texParam initInstrs
-                dialect = if tex then Tex else Ftl
-                dialectStr = case dialect of
-                  Tex -> "TEX"
-                  Ftl -> "FTL"
+            let dialect = case getInstr dialectParam initInstrs of
+                  "ftl" -> Ftl
+                  "tex" -> Tex
+                  "stex" -> Stex
+                  dialectArg -> error $ "Invalid dialect: " ++ make_string dialectArg
             hSetBuffering stdout LineBuffering
-            putStrLn $ "Enter a ForTheL text (in the " ++ dialectStr ++ " dialect)."
+            putStrLn $ "Enter a ForTheL text (in the " ++ show dialect ++ " dialect)."
               ++ " Type CTRL+D to finish your input.\n"
             inputText <- make_bytes <$> getContents'
             putStr "\n"
@@ -144,6 +146,7 @@ mainTerminal initInstrs nonInstrArgs = do
             Just inputPath -> case dialect of
               Ftl -> putStrLn "Unable to render input text: No \".ftl.tex\" file given." >> return 1
               Tex -> renderInputFile context inputPath (make_string texExe) (make_string bibtexExe)
+              Stex -> renderInputFile context inputPath (make_string texExe) (make_string bibtexExe)
           modeArg -> putStrLn ("Invalid mode: " ++ make_string modeArg) >> return 1)
         `catch` (\Exception.UserInterrupt -> do
           Program.exit_thread
@@ -199,8 +202,11 @@ pideServer mesonCache proverCache initInstrs socket =
               let instrs = initInstrs ++ moreInstrs
                   locatedInstrs = map (Position.none,) instrs
                   instrProofTexts = map (uncurry ProofTextInstr) locatedInstrs
-                  tex = getInstr texParam instrs
-                  dialect = if tex then Tex else Ftl
+                  dialect = case getInstr dialectParam instrs of
+                    "ftl" -> Ftl
+                    "tex" -> Tex
+                    "stex" -> Stex
+                    dialectArg -> error ""
                   inputTextProofTexts = [ProofTextInstr Position.none (GetText text)]
               let proofTexts = instrProofTexts ++ inputTextProofTexts
 
@@ -225,12 +231,10 @@ lexInputText dialect bytes = do
   -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
   -- Lex the input text and print the result:
-  lexemes <- case dialect of
-    Ftl -> Left <$> FTL.lex Position.start bytes
-    Tex -> Right <$> TEX.lex Position.start bytes
-  putStrLn $ case lexemes of
-    Left ftlLexemes -> FTL.renderLexemes ftlLexemes
-    Right texLexemes -> TEX.renderLexemes texLexemes
+  case dialect of
+    Ftl -> FTL.lex Position.start bytes >>= putStrLn . FTL.renderLexemes
+    Tex -> TEX.lex Position.start bytes >>= putStrLn . TEX.renderLexemes
+    Stex -> STEX.lex Position.start bytes >>= putStrLn . STEX.renderLexemes
   -- Get the finish time of the translation process:
   finishTime <- getCurrentTime
   -- Print the time it took to translate the input text:
@@ -246,6 +250,7 @@ tokenizeInputText dialect bytes = do
   tokens <- case dialect of
     Ftl -> FTL.lex Position.start bytes >>= FTL.tokenize
     Tex -> TEX.lex Position.start bytes >>= TEX.tokenize
+    Stex -> STEX.lex Position.start bytes >>= STEX.tokenize
   putStrLn $ renderTokens tokens
   -- Get the finish time of the translation process:
   finishTime <- getCurrentTime
@@ -395,6 +400,7 @@ options = [
   optSwitch "h" helpParam True "",
   optArgument "" initParam "FILE",
   optArgument "M" modeParam "MODE",
+  optArgument "" dialectParam "DIALECT",
   optFlag "" translationParam,
   optSwitch "" serverParam True "",
   optArgument "P" proverParam "NAME",
@@ -431,5 +437,4 @@ options = [
   optFlag "" unfoldParam,
   optFlag "" unfoldsfParam,
   optFlag "" unfoldlowsfParam,
-  optFlag "" dumpParam,
-  optFlag "" texParam]
+  optFlag "" dumpParam]

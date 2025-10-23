@@ -21,11 +21,14 @@ import SAD.Data.Instr
 import SAD.ForTheL.Base
 import SAD.ForTheL.FTL.Structure qualified as FTL
 import SAD.ForTheL.TEX.Structure qualified as TEX
+import SAD.ForTheL.STEX.Structure qualified as STEX
 import SAD.Parser.Base
 import SAD.Parser.FTL.Lexer qualified as FTL
 import SAD.Parser.TEX.Lexer qualified as TEX
+import SAD.Parser.STEX.Lexer qualified as STEX
 import SAD.Parser.FTL.Token qualified as FTL
 import SAD.Parser.TEX.Token qualified as TEX
+import SAD.Parser.STEX.Token qualified as STEX
 import SAD.Parser.Token (Token, noTokens)
 import SAD.Core.Message qualified as Message
 import SAD.Helpers (failWithMessage, getNaprocheFormalizations)
@@ -58,9 +61,7 @@ reader :: Int -> ParserKind -> FilePath -> [FilePath] -> [State FState] -> [Proo
 -- logical and ontological checking at depth > 0.
 reader depth dialect naprocheFormalizationsPath doneFiles stateList [ProofTextInstr pos (GetModule archivePath modulePath moduleName)] =
   let relativeFilePath = archivePath </> "source" </> modulePath </> moduleName
-      relativeFilePath' = case dialect of
-        Ftl -> relativeFilePath
-        Tex -> relativeFilePath <.> "en" <.> "tex"
+      relativeFilePath' = relativeFilePath <.> "en" <.> "tex"
       absoluteFilePath = naprocheFormalizationsPath </> "archive" </> relativeFilePath'
       instr = GetAbsoluteFilePath absoluteFilePath
   in do
@@ -89,25 +90,12 @@ reader depth dialect naprocheFormalizationsPath doneFiles stateList [ProofTextIn
         "\"..\" is not allowed as a directory name in a file path: " ++
         relativeFilePath
   -- Catch invalid file name extension:
-  | takeExtensions relativeFilePath `notElem` [".ftl", ".ftl.tex", ".ftl.en.tex"] =
-      Message.errorParser pos $
+  | (takeExtensions relativeFilePath `notElem` [".ftl", ".ftl.tex"])
+      || (takeExtensions relativeFilePath == ".ftl" && dialect /= Ftl)
+      || (takeExtensions relativeFilePath == ".ftl.tex" && dialect /= Tex)
+     = Message.errorParser pos $
         "Invalid file name extension \"" ++ takeExtensions relativeFilePath ++
         "\": " ++ relativeFilePath
-  -- Catch .ftl file read from within a text written in the TEX dialect:
-  | takeExtensions relativeFilePath == ".ftl" && dialect == Tex =
-      Message.errorParser pos $
-        "Invalid read instruction for a \".ftl\" file in a \".ftl.tex\" text: "
-        ++ relativeFilePath
-  -- Catch .ftl.tex file read from within a text written in the FTL dialect:
-  | takeExtensions relativeFilePath == ".ftl.tex" && dialect == Ftl =
-      Message.errorParser pos $
-        "Invalid read instruction for a \".ftl.tex\" file in a \".ftl\" text: "
-        ++ relativeFilePath
-  -- Catch .ftl.en.tex file read from within a text written in the FTL dialect:
-  | takeExtensions relativeFilePath == ".ftl.en.tex" && dialect == Ftl =
-      Message.errorParser pos $
-        "Invalid read instruction for a \".ftl.en.tex\" file in a \".ftl\" text: "
-        ++ relativeFilePath
   | otherwise =
       let absoluteFilePath = naprocheFormalizationsPath </> relativeFilePath
           instr = GetAbsoluteFilePath absoluteFilePath
@@ -177,6 +165,7 @@ parse dialect pos bytes state = do
   tokens <- case dialect of
     Ftl -> FTL.lex pos bytes >>= FTL.tokenize
     Tex -> TEX.lex pos bytes >>= TEX.tokenize
+    Stex -> STEX.lex pos bytes >>= STEX.tokenize
   let newState = State {
         stUser = addInits dialect $ (stUser state) {tvrExpr = []},
         stInput = tokens,
@@ -207,6 +196,7 @@ parseState state =
       parser = case dialect of
         Ftl -> FTL.forthelText
         Tex -> TEX.forthelText
+        Stex -> STEX.forthelText
   in launchParser parser state
 
 initState :: Program.Context -> [Token] -> State FState
