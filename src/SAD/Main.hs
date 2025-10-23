@@ -68,19 +68,19 @@ main  = do
   -- the user; when Naproche is run in a PIDE, they are a fixed set of
   -- arguments that are hard-coded into the PIDE integration.
   args <- Environment.getArgs
-  (initInstrs, nonInstrArgs) <- readArgs args
+  (initInstrs, fileArgs) <- readArgs args
   -- Run Naproche either in PIDE or terminal mode, depending on whether the
   -- server parameter is set to @True@ in the initial options. Note that unless
   -- Naproche is run in a PIDE, it is set to @False@.
   if getInstr serverParam initInstrs
     then mainPIDE initInstrs
-    else mainTerminal initInstrs nonInstrArgs
+    else mainTerminal initInstrs fileArgs
 
 
 -- * Terminal Mode
 
 mainTerminal :: [Instr] -> [String] -> IO ()
-mainTerminal initInstrs nonInstrArgs = do
+mainTerminal initInstrs fileArgs = do
   if getInstr helpParam initInstrs
     then putStr $ GetOpt.usageInfo usageHeader options
     else do
@@ -96,7 +96,7 @@ mainTerminal initInstrs nonInstrArgs = do
       -- Get the input text (either via a given file path or if no file path is
       -- provided via the stdin stream) as a proof text:
       (dialect, inputText, mbInputPath) <- do
-        case nonInstrArgs of
+        case fileArgs of
           -- If a single non-instruction command line argument is given, regard it
           -- as the path to the input text file and determine the ForTheL dialect
           -- of its contents via its file name extension:
