@@ -118,6 +118,10 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   when a read instruction for an already imported file is encountered in the
   reader loop.
 
+* **Changed:** The Boolean parameter `tex` was replaced by the option
+  `--dialect` with possible values `ftl`, `tex` and `stex` for the FTL, TeX and
+  sTeX dialect of ForTheL.
+
 
 --------------------------------------------------------------------------------
 
