@@ -9,7 +9,7 @@ if [ -d "$ISABELLE_NAPROCHE/Admin" ]; then
 fi
 
 NAPROCHE_EXE_DIR="$NAPROCHE_HOME/${ISABELLE_WINDOWS_PLATFORM64:-$ISABELLE_PLATFORM64}"
-if "$NAPROCHE_EXE_DIR/Naproche" --init "" </dev/null >/dev/null 2>/dev/null
+if "$NAPROCHE_EXE_DIR/Naproche" </dev/null >/dev/null 2>/dev/null
 then
   NAPROCHE_EXE="$NAPROCHE_EXE_DIR/Naproche"
   ISABELLE_DOCS_EXAMPLES="$ISABELLE_DOCS_EXAMPLES:\$ISABELLE_NAPROCHE/Intro.thy"
