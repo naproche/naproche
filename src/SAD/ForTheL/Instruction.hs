@@ -21,7 +21,6 @@ import Control.Monad
 import Control.Applicative ((<|>))
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
-import Data.Maybe (fromMaybe)
 
 import SAD.Data.Instr
 import SAD.ForTheL.Base
@@ -75,14 +74,13 @@ instrDrop = instrPos addInstrReport (token' "/" >> readInstrDrop)
 
 readInstr :: FTL Instr
 readInstr =
-  readInstrCommand -|- readInstrLimit -|- readInstrBool -|- readInstrText -|- readInstrSynonym -|- readInstrModule
+  readInstrCommand -|- readInstrLimit -|- readInstrBool -|- readInstrText -|- readInstrSynonym
   where
     readInstrCommand = fmap Command (readKeywords keywordsCommand)
     readInstrSynonym = ap (readKeywords keywordsSynonym) readWords
     readInstrLimit = ap (readKeywords keywordsLimit) readInt
     readInstrBool = ap (readKeywords keywordsFlag) readBool
     readInstrText = ap (readKeywords keywordsArgument) readText
-    readInstrModule = ap (readKeywords keywordsModule) readModule
 
 readInt :: FTL Int
 readInt = try $ do
@@ -104,20 +102,6 @@ readTexts = texCommandWithArg "path" (chainLL1 notClosingBrc) <|> chainLL1 notCl
     notClosingBrk = tokenPrim $ notCl "]"
     notClosingBrc = tokenPrim $ notCl "}"
     notCl str t = let tk = showToken t in guard (tk /= str) >> return tk
-
-readModule :: FTL (FilePath, FilePath, String)
-readModule = optInTexArg "path" $ do
-  fstComp <- path
-  symbol "?"
-  sndComp <- path
-  sep <- optLL1 False (symbol "?" >> return True)
-  mdTrdComp <- if sep
-    then Just <$> pathComponent
-    else pure Nothing
-  let modulePath = fstComp
-      archivePath = if sep then sndComp else ""
-      moduleName = fromMaybe sndComp mdTrdComp
-  return (modulePath, archivePath, moduleName)
 
 
 readWords :: FTL [Text]
