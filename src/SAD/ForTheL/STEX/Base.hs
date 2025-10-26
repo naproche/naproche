@@ -3,7 +3,7 @@
 -- Copyright   : (c) 2025 Marcel Schütz
 -- License     : GPL-3
 --
--- ForTheL state for FTL-sTeX texts.
+-- ForTheL state (sTeX).
 
 
 {-# LANGUAGE OverloadedStrings #-}

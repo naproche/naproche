@@ -4,7 +4,7 @@
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
 --
--- Parsing FTL texts.
+-- Document parsing (FTL).
 
 
 {-# LANGUAGE OverloadedStrings #-}

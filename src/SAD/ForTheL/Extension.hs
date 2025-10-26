@@ -4,8 +4,7 @@
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
 --
--- Extending the language: definitions, signature extensions, pretypings,
--- macros and synonyms.
+-- Language extensions.
 
 
 {-# LANGUAGE OverloadedStrings #-}

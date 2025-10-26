@@ -4,7 +4,7 @@
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
 --
--- Generic parsing facilities for ForTheL texts.
+-- Document parsing.
 
 
 {-# LANGUAGE NamedFieldPuns #-}
