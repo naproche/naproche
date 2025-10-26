@@ -18,9 +18,9 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   - `Removed`: A feature of Naproche or a component of its code base was
     removed.
 
-* Additionally, each change can be annotated with the keywords `FTL` and `TEX`
-  which note that the change only affects the code/behaviour of Naproche w.r.t.
-  ForTheL texts written in the ASCII or in the TeX dialect of ForTheL, resp.
+* Additionally, each change can be annotated with the keywords `FTL`, `TEX` and
+  `STEX` to note that this change only affects the FTL, TeX or sTeX dialect,
+  resp., of ForTheL.
 
 
 --------------------------------------------------------------------------------
@@ -89,6 +89,11 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   The `for` parameters are ignored by Naproche while the `name` parameters
   replace the (now obsolete) `id` parameters. Moreover, top-level sections can
   be referenced via sTeX's `\sn` and `\sr` commands.
+
+* **Changed:** The TeX and the sTeX parsers were separated.
+
+* **Changed:** The labelling/referencing mechanism was reset so that it works
+  exactly as in Isabelle/Naproche 2024.
 
 
 ### Misc
