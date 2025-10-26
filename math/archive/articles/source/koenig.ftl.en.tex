@@ -46,7 +46,7 @@ $\kappa \ORDless \ORDtwo^\kappa$.
 
   \begin{definition*}[for=SumSet]
     Let $\kappa$ be a sequence of cardinals on $D$.
-    \[ \SumSet{\kappa}{D} = \CClass{(n,i)}{\text{$i$ is an element of $D$ and $n$ is an element of $\kappa_{i}$}}. \]
+    \[ \SumSet{\kappa}{D} \DefEq \CClass{(n,i)}{\text{$i$ is an element of $D$ and $n$ is an element of $\kappa_{i}$}}. \]
   \end{definition*}
 
   \begin{axiom*}
@@ -56,12 +56,12 @@ $\kappa \ORDless \ORDtwo^\kappa$.
 
   \begin{definition*}[for=Sum]
     Let $\kappa$ be a sequence of cardinals on $D$.
-    \[ \Sum{\kappa}{D} = \SETcard{ \SumSet{\kappa}{D} }. \]
+    \[ \Sum{\kappa}{D} \DefEq \SETcard{ \SumSet{\kappa}{D} }. \]
   \end{definition*}
 
   \begin{definition*}[for=ProdSet]
     Let $\kappa$ be a sequence of cardinals on $D$.
-    \[ \ProdSet{\kappa}{D} = \CClass{f}{\classtext{$f$ is a function and $\Dom(f) \Eq D$ and $f(i)$ is an element of $\kappa_{i}$ for every element $i$ of $D$}}. \]
+    \[ \ProdSet{\kappa}{D} \DefEq \CClass{f}{\classtext{$f$ is a function and $\Dom(f) \Eq D$ and $f(i)$ is an element of $\kappa_{i}$ for every element $i$ of $D$}}. \]
   \end{definition*}
 
   \begin{axiom*}
@@ -71,7 +71,7 @@ $\kappa \ORDless \ORDtwo^\kappa$.
 
   \begin{definition*}[for=Prod]
     Let $\kappa$ be a sequence of cardinals on $D$.
-    \[ \Prod{\kappa}{D} = \SETcard{ \ProdSet{\kappa}{D} }. \]
+    \[ \Prod{\kappa}{D} \DefEq \SETcard{ \ProdSet{\kappa}{D} }. \]
   \end{definition*}
 \end{forthel}
 
@@ -109,7 +109,7 @@ are themselves non-empty:
     Then \[ \Prod{\lambda}{D} \ORDleq \Sum{\kappa}{D}. \]
     Take a surjective map $G$ from $\SumSet{\kappa}{D}$ to $\ProdSet{\lambda}{D}$.
     Indeed $\ProdSet{\lambda}{D}$ and $\Sum{\kappa}{D}$ are nonempty sets.
-    Take $\Lambda = \SETunionover \FUNrange(\lambda)$.
+    Take $\Lambda \Eq \SETunionover \FUNrange(\lambda)$.
     Then $\Lambda$ is a set.
     Indeed $\FUNrange(\lambda)$ is a set.
 
@@ -117,16 +117,16 @@ are themselves non-empty:
     $G(n,i) \Elem \ProdSet{\lambda}{D}$ for every $i \Elem D$ and every $n \Elem \kappa_{i}$.
     Hence for every $i \Elem D$ and every $n \Elem \kappa_{i}$ $G(n,i)$ is a map such that $i \Elem \Dom(G(n,i))$.
 
-    Define $\Delta(i) = \SClass{G(n,i)(i)}{\Lambda}{n \Elem \kappa_{i}}$ for $i \Elem D$.
+    Define $\Delta(i) \DefEq \SClass{G(n,i)(i)}{\Lambda}{n \Elem \kappa_{i}}$ for $i \Elem D$.
 
     For every element $f$ of $\ProdSet{\lambda}{D}$ and every element $i$ of $D$ we have $f(i) \Elem \Lambda$.
 
     For every element $i$ of $D$ we have $\SETcard{\Delta(i)} \ORDless \lambda_{i}$.
     \begin{proof}
       Let $i$ be an element of $D$.
-      Define $F(n) = G(n,i)(i)$ for $n \Elem \kappa_{i}$.
+      Define $F(n) \DefEq G(n,i)(i)$ for $n \Elem \kappa_{i}$.
       Then $F$ is a map from $\kappa_{i}$ to $\lambda_{i}$.
-      We have $\Delta(i) = \CClass{F(n)}{n \Elem \kappa_{i}}$.
+      We have $\Delta(i) \Eq \CClass{F(n)}{n \Elem \kappa_{i}}$.
       Thus $\FUNim{F}{\kappa_{i}} \Eq \Delta(i)$.
       Therefore $\SETcard{\Delta(i)}
         \Eq \SETcard{\FUNim{F}{\kappa_{i}}}

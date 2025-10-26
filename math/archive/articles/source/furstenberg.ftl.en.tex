@@ -41,7 +41,7 @@ $\Nat$ without substantially changing the proof.}
 
   \begin{definition}[for=compl]
     Let $A$ be a subset of $\Nat$.
-    $\compl{A} = \Nat \SETdiff A$.
+    $\compl{A} \DefEq \Nat \SETdiff A$.
   \end{definition}
 
   Let the complement of $A$ stand for $\compl{A}$.
@@ -56,7 +56,7 @@ sequences} $\ArithSeq{n}{q}$ on $\Nat$.
 
 \begin{forthel}
   \begin{definition}[for=ArithSeq]
-    $\ArithSeq{n}{q} = \SClass{m}{\Nat}{\NATcong{m}{n}{q}}$.
+    $\ArithSeq{n}{q} \DefEq \SClass{m}{\Nat}{\NATcong{m}{n}{q}}$.
   \end{definition}
 \end{forthel}
 
@@ -154,7 +154,7 @@ closed under finite unions.
     Then $\SETunionover S$ is closed.
   \end{lemma}
   \begin{proof}
-    Define $C = \CClass{X}{X \text{ is a closed subset of } \Nat}$.
+    Define $C \DefEq \CClass{X}{X \text{ is a closed subset of } \Nat}$.
 
     Let us show that $A \SETunion B \Elem C$ for any $A, B \Elem C$.
       Let $A, B \Elem C$.
@@ -200,7 +200,7 @@ $\PrimeSeq$ is infinite.
 
 \begin{forthel}
   \begin{definition}[for=PrimeSeq]
-    $\PrimeSeq = \CClass{\ArithSeq{\NATzero}{p}}{p \Elem \Prime}$.
+    $\PrimeSeq \DefEq \CClass{\ArithSeq{\NATzero}{p}}{p \Elem \Prime}$.
   \end{definition}
 
   \begin{lemma}
@@ -219,13 +219,13 @@ $\PrimeSeq$ is infinite.
 
     (2) $\PrimeSeq$ is equinumerous to $\Prime$.
     \begin{proof}
-      Define $f(p) = \ArithSeq{\NATzero}{p}$ for $p \Elem \Prime$.
+      Define $f(p) \DefEq \ArithSeq{\NATzero}{p}$ for $p \Elem \Prime$.
 
       Let us show that $f$ is injective.
         Let $p, q \Elem \Prime$.
         Assume $f(p) \Eq f(q)$.
         Then $\ArithSeq{\NATzero}{p} \Eq \ArithSeq{\NATzero}{q}$.
-        We have $\ArithSeq{\NATzero}{p} = \SClass{m}{\Nat}{\NATcong{m}{\NATzero}{p}}$ and
+        We have $\ArithSeq{\NATzero}{p} \Eq \SClass{m}{\Nat}{\NATcong{m}{\NATzero}{p}}$ and
         $\ArithSeq{\NATzero}{q} =\linebreak \SClass{m}{\Nat}{\NATcong{m}{\NATzero}{q}}$.
 
         We can show that for all $m \Elem \Nat$ we have $p \NATmid m$ iff $q \NATmid m$.

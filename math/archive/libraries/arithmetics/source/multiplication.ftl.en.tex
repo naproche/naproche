@@ -34,7 +34,7 @@
       Then $n \NATmul (m \NATplus k) \Eq (n \NATmul m) \NATplus (n \NATmul k)$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \SClass{k'}{\Nat}{n \NATmul (m \NATplus k') \Eq (n \NATmul m) \NATplus (n \NATmul k')}$.
+      Define $\Phi \DefEq \SClass{k'}{\Nat}{n \NATmul (m \NATplus k') \Eq (n \NATmul m) \NATplus (n \NATmul k')}$.
 
       (1) $\NATzero$ is an element of $\Phi$.
       Indeed $n \NATmul (m \NATplus \NATzero)
@@ -65,7 +65,7 @@
       Then $(n \NATplus m) \NATmul k \Eq (n \NATmul k) \NATplus (m \NATmul k)$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \SClass{k'}{\Nat}{(n \NATplus m) \NATmul k' \Eq (n \NATmul k') \NATplus (m \NATmul k')}$.
+      Define $\Phi \DefEq \SClass{k'}{\Nat}{(n \NATplus m) \NATmul k' \Eq (n \NATmul k') \NATplus (m \NATmul k')}$.
 
       (1) $\NATzero$ belongs to $\Phi$.
       Indeed $((n \NATplus m) \NATmul \NATzero)
@@ -125,7 +125,7 @@
       Then $n \NATmul (m \NATmul k) \Eq (n \NATmul m) \NATmul k$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \SClass{k'}{\Nat}{n \NATmul (m \NATmul k') \Eq (n \NATmul m) \NATmul k'}$.
+      Define $\Phi \DefEq \SClass{k'}{\Nat}{n \NATmul (m \NATmul k') \Eq (n \NATmul m) \NATmul k'}$.
 
       (1) $\NATzero$ is contained in $\Phi$.
       Indeed $n \NATmul (m \NATmul \NATzero)
@@ -159,11 +159,11 @@
       Then \[ n \NATmul m \Eq m \NATmul n. \]
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \SClass{m'}{\Nat}{n \NATmul m' \Eq m' \NATmul n}$.
+      Define $\Phi \DefEq \SClass{m'}{\Nat}{n \NATmul m' \Eq m' \NATmul n}$.
 
       (1) $\NATzero$ is contained in $\Phi$.
       \begin{proof}
-        Define $\Psi = \SClass{n'}{\Nat}{n' \NATmul \NATzero \Eq \NATzero \NATmul n'}$.
+        Define $\Psi \DefEq \SClass{n'}{\Nat}{n' \NATmul \NATzero \Eq \NATzero \NATmul n'}$.
 
         (1a) $\NATzero$ is contained in $\Psi$.
 
@@ -185,7 +185,7 @@
 
       (2) $\NATone$ belongs to $\Phi$.
       \begin{proof}
-        Define $\Theta = \SClass{n'}{\Nat}{n' \NATmul \NATone \Eq \NATone \NATmul n'}$.
+        Define $\Theta \DefEq \SClass{n'}{\Nat}{n' \NATmul \NATone \Eq \NATone \NATmul n'}$.
 
         (2a) $\NATzero$ is contained in $\Theta$.
 
@@ -251,7 +251,7 @@
       If $n \NATmul k \Eq m \NATmul k$ then $n \Eq m$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \SClass{n'}{\Nat}{\text{ for all }m' \Elem \Nat\text{ if }n' \NATmul k \Eq m' \NATmul k\text{ and }k \NotEq \NATzero\text{ then }n' \Eq m'}$.
+      Define $\Phi \DefEq \SClass{n'}{\Nat}{\text{ for all }m' \Elem \Nat\text{ if }n' \NATmul k \Eq m' \NATmul k\text{ and }k \NotEq \NATzero\text{ then }n' \Eq m'}$.
 
       (1) $\NATzero$ is contained in $\Phi$.
       \begin{proof}

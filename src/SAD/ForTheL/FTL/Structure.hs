@@ -26,6 +26,7 @@ import SAD.ForTheL.Structure
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
 import SAD.ForTheL.Extension
+import SAD.ForTheL.FTL.Extension qualified as FTL
 import SAD.ForTheL.Reports (markupToken, markupTokenOf)
 import SAD.ForTheL.Instruction
 import qualified SAD.ForTheL.Reports as Reports
@@ -114,10 +115,10 @@ theoremSection = do
 -- * Top-level section bodies
 
 signatureBody :: FTL [ProofText]
-signatureBody = addAssumptions $ pretype $ pretypeSentence Posit sigExtend defVars finishWithoutLink
+signatureBody = addAssumptions $ pretype $ pretypeSentence Posit FTL.sigExtend defVars finishWithoutLink
 
 definitionBody :: FTL [ProofText]
-definitionBody = addAssumptions $ pretype $ pretypeSentence Posit defExtend defVars finishWithoutLink
+definitionBody = addAssumptions $ pretype $ pretypeSentence Posit FTL.defExtend defVars finishWithoutLink
 
 axiomBody :: FTL [ProofText]
 axiomBody = addAssumptions $ pretype $ pretypeSentence Posit (affirmationHeader >> statement) affirmVars finishWithoutLink

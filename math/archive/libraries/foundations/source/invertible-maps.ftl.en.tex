@@ -257,7 +257,7 @@
     Then \[ \FUNpreim{f}{Y} \Eq \FUNim{\FUNinv{f}}{Y}. \]
   \end{proposition}
   \begin{proof}[forthel]
-    We have $\FUNim{\FUNinv{f}}{Y} = \CClass{\FUNinv{f}(b)}{b \Elem Y}$ and $\FUNpreim{f}{Y} = \SClass{a}{A}{f(a) \Elem Y}$.
+    We have $\FUNim{\FUNinv{f}}{Y} \Eq \CClass{\FUNinv{f}(b)}{b \Elem Y}$ and $\FUNpreim{f}{Y} \Eq \SClass{a}{A}{f(a) \Elem Y}$.
 
     Let us show that $\FUNpreim{f}{Y} \SETinclude \FUNim{\FUNinv{f}}{Y}$.
       Let $a \Elem \FUNpreim{f}{Y}$.
@@ -281,7 +281,7 @@
   \end{corollary}
   \begin{proof}[forthel]
     $\FUNpreim{f}{\SETsingleton{b}} \Eq \FUNim{\FUNinv{f}}{\SETsingleton{b}}$.
-    We have $\FUNim{\FUNinv{f}}{\SETsingleton{b}} = \CClass{\FUNinv{f}(c)}{c \Elem \SETsingleton{b}}$.
+    We have $\FUNim{\FUNinv{f}}{\SETsingleton{b}} \Eq \CClass{\FUNinv{f}(c)}{c \Elem \SETsingleton{b}}$.
     Hence $\FUNim{\FUNinv{f}}{\SETsingleton{b}} \Eq \SETsingleton{\FUNinv{f}(b)}$.
   \end{proof}
 

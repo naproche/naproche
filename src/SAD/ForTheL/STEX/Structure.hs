@@ -31,6 +31,7 @@ import SAD.ForTheL.FTL.Structure qualified as FTL -- for backward compatibility
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
 import SAD.ForTheL.Extension
+import SAD.ForTheL.STEX.Extension qualified as STEX
 import SAD.ForTheL.Reports (getMarkupToken, getMarkupTokenOf, markupToken)
 import SAD.ForTheL.Instruction
 import qualified SAD.ForTheL.Reports as Reports
@@ -114,11 +115,11 @@ signatureSection = do
   return $ result ++ macrosAndPretypings
   where
     sig label = do
-      content <- TEX.signatureBody
+      content <- signatureBody
       proofText <- addMetadata Signature content label
       return [proofText]
     structSig label = do
-      (structVarAssumption, structContent) <- TEX.structSignatureBody
+      (structVarAssumption, structContent) <- structSignatureBody
       structMetadata <- addMetadata Signature structContent label
       texCommand "begin" <?> "\\begin"
       symbol "{" <?> "{"
@@ -134,15 +135,15 @@ signatureSection = do
       return $ structMetadata : compMetadata
     inlineSig assumptions = do
       label <- optCompLabel
-      content <- foldr' (pretypeBefore . pure) TEX.signatureBody assumptions
+      content <- foldr' (pretypeBefore . pure) signatureBody assumptions
       addMetadata Signature content label
     inlineDef assumptions = do
       label <- optCompLabel
-      content <- foldr' (pretypeBefore . pure) TEX.definitionBody assumptions
+      content <- foldr' (pretypeBefore . pure) definitionBody assumptions
       addMetadata Definition content label
     inlineAx assumptions = do
       label <- optCompLabel
-      content <- foldr' (pretypeBefore . pure) TEX.axiomBody assumptions
+      content <- foldr' (pretypeBefore . pure) axiomBody assumptions
       addMetadata Axiom content label
     optCompLabel = optLL1 Nothing $ do
       label <- texCommandWithArg "label" identifier
@@ -155,7 +156,7 @@ definitionSection :: FTL [ProofText]
 definitionSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["definition"]
   label <- optTlsOptions
-  content <- TEX.definitionBody
+  content <- definitionBody
   macrosAndPretypings <- many (try introduceMacro <|> pretypeVariable)
   endTopLevelSection keyword starred
   proofText <- addMetadata Definition content label
@@ -168,7 +169,7 @@ axiomSection :: FTL [ProofText]
 axiomSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["axiom"]
   label <- optTlsOptions
-  content <- TEX.axiomBody
+  content <- axiomBody
   macrosAndPretypings <- many (try introduceMacro <|> pretypeVariable)
   endTopLevelSection keyword starred
   proofText <- addMetadata Axiom content label
@@ -194,6 +195,30 @@ conventionSection = do
   macrosAndPretypings <- some (try introduceMacro <|> pretypeVariable)
   endTopLevelSection keyword starred
   return macrosAndPretypings
+
+
+-- * Top-level section bodies
+
+signatureBody :: FTL [ProofText]
+signatureBody = TEX.addAssumptions $ pretype $ pretypeSentence Posit STEX.sigExtend defVars finishWithoutLink
+
+structSignatureBody :: FTL ([Block], [ProofText])
+structSignatureBody = do
+  (varForm, pSent) <- pretypeSentence' Posit STEX.structSigExtend defVars structFinish
+  structProofText <- TEX.addAssumptions $ pretype $ pure pSent
+  varAssumption <- pretypeSentence Assumption (pure varForm) assumeVars (pure [])
+  return ([varAssumption], structProofText)
+  where
+    structFinish = do
+      tokenSeq' ["with", "the", "following", "properties"]
+      symbol "." <|> symbol ":"
+      return []
+
+definitionBody :: FTL [ProofText]
+definitionBody = TEX.addAssumptions $ pretype $ pretypeSentence Posit STEX.defExtend defVars finishWithoutLink
+
+axiomBody :: FTL [ProofText]
+axiomBody = TEX.addAssumptions $ pretype $ pretypeSentence Posit (affirmationHeader >> statement) affirmVars finishWithoutLink
 
 
 -- * Importing Modules

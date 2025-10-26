@@ -51,7 +51,7 @@
 \begin{sfragment}{Unions Over Systems of Sets}
   \begin{definition}[forthel,for=union over]
     Let $X$ be a system of sets.
-    $\emph{\SETunionover X} = \CClass{a}{a \Elem x\text{ for some }x \Elem X}$.
+    $\emph{\SETunionover X} \DefEq \CClass{a}{a \Elem x\text{ for some }x \Elem X}$.
     Let \emph{union over $X$} stand for $\SETunionover X$.
   \end{definition}
 
@@ -59,7 +59,7 @@
     $\SETunionover \SETempty \Eq \SETempty$.
   \end{proposition}
   \begin{proof}[forthel]
-    $\SETunionover \SETempty = \CClass{a}{a \Elem x\text{ for some }x \Elem \SETempty}$.
+    $\SETunionover \SETempty \Eq \CClass{a}{a \Elem x\text{ for some }x \Elem \SETempty}$.
     $\SETempty$ has no elements.
     Hence there is no object $a$ such that $a \Elem x$ for some $x \Elem \SETempty$.
     Thus $\SETunionover \SETempty \Eq \SETempty$.
@@ -94,7 +94,7 @@
 \begin{sfragment}{Intersections Over Systems of Sets}
   \begin{definition}[forthel,for=intersection over]
     Let $X$ be a system of sets.
-    $\emph{\SETintersectover X} = \CClass{a}{a \Elem x\text{ for all }x \Elem X}$.
+    $\emph{\SETintersectover X} \DefEq \CClass{a}{a \Elem x\text{ for all }x \Elem X}$.
     Let the \emph{intersection over $X$} stand for $\SETintersectover X$.
   \end{definition}
 
@@ -102,7 +102,7 @@
     $\SETintersectover \SETempty$ is the class of all objects.
   \end{proposition}
   \begin{proof}[forthel]
-    Define $V = \CClass{x}{x\text{ is an object}}$.
+    Define $V \DefEq \CClass{x}{x\text{ is an object}}$.
     We have $\SETintersectover \SETempty \SETinclude V$.
     Indeed every element of $\SETintersectover \SETempty$ is an object.
 

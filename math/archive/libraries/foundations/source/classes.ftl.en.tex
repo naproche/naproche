@@ -87,7 +87,7 @@
   \end{definition}
 
   \begin{definition}[forthel,for=SETempty]
-    $\emph{\SETempty} = \CClass{x}{x \NotEq x}$.
+    $\emph{\SETempty} \DefEq \CClass{x}{x \NotEq x}$.
   \end{definition}
 
   \begin{proposition}[forthel]
@@ -120,7 +120,7 @@
 \begin{sfragment}{Unordered Pairs}
   \begin{definition}[forthel,for={SETpair,unordered pair}]
     Let $a, b$ be objects.
-    $\emph{\SETpair{a}{b}} = \CClass{x}{x \Eq a\text{ or }x \Eq b}$.
+    $\emph{\SETpair{a}{b}} \DefEq \CClass{x}{x \Eq a\text{ or }x \Eq b}$.
     Let the \emph{unordered pair of $a$ and $b$} stand for $\SETpair{a}{b}$.
   \end{definition}
 
@@ -130,7 +130,7 @@
 
   \begin{definition}[forthel,for={SETsingleton,singleton class}]
     Let $a$ be an object.
-    $\emph{\SETsingleton{a}} = \CClass{x}{x \Eq a}$.
+    $\emph{\SETsingleton{a}} \DefEq \CClass{x}{x \Eq a}$.
     Let the \emph{singleton class of $a$} stand for $\SETsingleton{a}$.
   \end{definition}
 
@@ -169,19 +169,19 @@
 \begin{sfragment}{Unions, Intersections, Complements}
   \begin{definition}[forthel,for={SETunion,union}]
     Let $A, B$ be classes.
-    $\emph{A \SETunion B} = \CClass{x}{x \Elem A\text{ or }x \Elem B}$.
+    $\emph{A \SETunion B} \DefEq \CClass{x}{x \Elem A\text{ or }x \Elem B}$.
     Let the \emph{union of $A$ and $B$} stand for $A \SETunion B$.
   \end{definition}
 
   \begin{definition}[forthel,for={SETintersect,intersection}]
     Let $A, B$ be classes.
-    $\emph{A \SETintersect B} = \CClass{x}{x \Elem A\text{ and }x \Elem B}$.
+    $\emph{A \SETintersect B} \DefEq \CClass{x}{x \Elem A\text{ and }x \Elem B}$.
     Let the \emph{intersection of $A$ and $B$} stand for $A \SETintersect B$.
   \end{definition}
 
   \begin{definition}[forthel,for={SETdiff,complement}]
     Let $A, B$ be classes.
-    $\emph{A \SETdiff B} = \CClass{x}{x \Elem A\text{ and }x \NotElem B}$.
+    $\emph{A \SETdiff B} \DefEq \CClass{x}{x \Elem A\text{ and }x \NotElem B}$.
     Let the \emph{complement of $B$ in $A$} stand for $A \SETdiff B$.
   \end{definition}
 \end{sfragment}

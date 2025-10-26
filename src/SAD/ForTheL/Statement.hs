@@ -403,7 +403,7 @@ classEquality :: FTL Formula
 classEquality = label "a class equality" $ twoClassTerms </> oneClassTerm
   where
     twoClassTerms = do
-      cnd1 <- fmap stripClass symbClassNotation; token "="
+      cnd1 <- fmap stripClass symbClassNotation; token "=" <|> texCommand "Eq"
       cnd2 <- fmap stripClass symbClassNotation; h <- hidden
       hDecl <- makeDecl h
       let hv = pVar h
@@ -412,11 +412,11 @@ classEquality = label "a class equality" $ twoClassTerms </> oneClassTerm
 
     oneClassTerm = left </> right
     left = do
-      cnd <- fmap stripClass symbClassNotation; token "="
+      cnd <- fmap stripClass symbClassNotation; token "=" <|> texCommand "Eq"
       t <- sTerm; h <- hidden; hDecl <- makeDecl h; let hv = pVar h
       return $ And (mkClass t) $ All hDecl $ Iff (cnd hv) (mkElem hv t)
     right = do
-      t <- sTerm; token "="; h <- hidden; hDecl <- makeDecl h
+      t <- sTerm; token "=" <|> texCommand "Eq"; h <- hidden; hDecl <- makeDecl h
       let hv = pVar h
       cnd <- fmap stripClass symbClassNotation
       return $ And (mkClass t) $ dAll hDecl $ Iff (mkElem hv t) (cnd hv)
@@ -458,7 +458,7 @@ choice = fmap (foldl1 And) $ (opt () (tokenOf' ["a", "an", "the"]) >> takeLonges
 
 classNotion :: FTL Formula
 classNotion = do
-  v <- after var (token "="); (_, f, _) <- collection
+  v <- after var (token "=" <|> texCommand "DefEq"); (_, f, _) <- collection
   dig (Tag Dig f) [pVar v]
 
 collection :: FTL MNotion
@@ -566,11 +566,11 @@ symbClassNotation = texClass </> cndClass </> finiteSet </> stexEnumerationClass
 -- -- maps
 
 mapNotion :: FTL Formula
-mapNotion = sVar <**> (wordMap <|> (token "=" >> lambda))
+mapNotion = sVar <**> (wordMap <|> (token "=" <|> texCommand "DefEq" >> lambda))
   where
   wordMap = do
     t <- parenthesised $ twoArguments </> oneArgument
-    token "="
+    token "=" <|> texCommand "DefEq"
     vs <- fvToVarSet <$> freeVars t
     def <- addDecl (Set.map posVarName vs) lambdaBody
     (_, _, dom) <- token' "for" >> classIn
@@ -629,7 +629,7 @@ chooseInTerm = do
       markupToken Reports.lowlevelHeader "choose"; (q, f, vs) <- opt () (tokenOf' ["a", "an"]) >> notion >>= declared
       return $ flip (foldr dExi) vs . And (q f)
     def = do
-      markupToken Reports.lowlevelHeader "define"; x <- var; xDecl <- makeDecl x; token "="
+      markupToken Reports.lowlevelHeader "define"; x <- var; xDecl <- makeDecl x; token "=" <|> texCommand "Eq"
       ap <- ld_class <|> lambda
       return $ dExi xDecl . And (Tag Defined $ ap $ pVar x)
 

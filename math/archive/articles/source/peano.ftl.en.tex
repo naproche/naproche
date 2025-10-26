@@ -132,15 +132,15 @@ number of theorems about addition of natural numbers.
 
 \begin{forthel}
   \begin{definition*}[title=10.i,for=two]
-    $\emph{\two} = \succ{\one}$.
+    $\emph{\two} \DefEq \succ{\one}$.
   \end{definition*}
 
   \begin{definition*}[title=10.ii,for=three]
-    $\emph{\three} = \succ{\two}$.
+    $\emph{\three} \DefEq \succ{\two}$.
   \end{definition*}
   
   \begin{definition*}[title=10.iii,for=four]
-    $\emph{\four} = \succ{\three}$.
+    $\emph{\four} \DefEq \succ{\three}$.
   \end{definition*}
 \end{forthel}
 
@@ -236,7 +236,7 @@ number of theorems about addition of natural numbers.
   \end{theorem*}
   \begin{proof}
     Let $a,b \Elem \Nat$.
-    Define $T = \CClass{b'}{a \plus b' \Elem \Nat}$.
+    Define $T \DefEq \CClass{b'}{a \plus b' \Elem \Nat}$.
     
     We have $a \Elem \Nat$.
     Hence $\succ{a} \Elem \Nat$ (by \sn{P6}).
@@ -261,7 +261,7 @@ number of theorems about addition of natural numbers.
   \end{proof}
 
   \begin{definition*}[title=20,for=triplus]
-    $\emph{\triplus{a}{b}{c}} = (a \plus b) \plus c$.
+    $\emph{\triplus{a}{b}{c}} \DefEq (a \plus b) \plus c$.
   \end{definition*}
 
   \begin{theorem*}[title=21,name=P21]

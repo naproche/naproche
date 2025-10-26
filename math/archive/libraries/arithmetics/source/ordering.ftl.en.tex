@@ -33,12 +33,12 @@
 
   \begin{definition}[forthel,for=Natlessthan]
     Let $n$ be a natural number.
-    $\emph{\Natlessthan{n}} = \SClass{k}{\Nat}{k \NATless n}$.
+    $\emph{\Natlessthan{n}} \DefEq \SClass{k}{\Nat}{k \NATless n}$.
   \end{definition}
 
   \begin{definition}[forthel,for=Natgtrthan]
     Let $n$ be a natural number.
-    $\emph{\Natgtrthan{n}} = \SClass{k}{\Nat}{k \NATgtr n}$.
+    $\emph{\Natgtrthan{n}} \DefEq \SClass{k}{\Nat}{k \NATgtr n}$.
   \end{definition}
 
   \begin{definition}[forthel,for=positive]
@@ -58,12 +58,12 @@
 
   \begin{definition}[forthel,for=Natleqthan]
     Let $n$ be a natural number.
-    $\emph{\Natleqthan{n}} = \SClass{k}{\Nat}{k \NATleq n}$.
+    $\emph{\Natleqthan{n}} \DefEq \SClass{k}{\Nat}{k \NATleq n}$.
   \end{definition}
 
   \begin{definition}[forthel,for=Natgeqthan]
     Let $n$ be a natural number.
-    $\emph{\Natgeqthan{n}} = \SClass{k}{\Nat}{k \NATgeq n }$.
+    $\emph{\Natgeqthan{n}} \DefEq \SClass{k}{\Nat}{k \NATgeq n }$.
   \end{definition}
 
   \begin{proposition}[forthel]
@@ -230,7 +230,7 @@
     Then $n \NATless m$ or $n \Eq m$ or $n \NATgtr m$.
   \end{proposition}
   \begin{proof}[forthel]
-    Define $\Phi = \SClass{m'}{\Nat}{n \NATless m'\text{ or }n \Eq m'\text{ or }n \NATgtr m'}$.
+    Define $\Phi \DefEq \SClass{m'}{\Nat}{n \NATless m'\text{ or }n \Eq m'\text{ or }n \NATgtr m'}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
@@ -444,7 +444,7 @@
       Contradiction.
     End.
 
-    (a) Define $\Phi = \SClass{n}{\Nat}{n\text{ is less than any element of }A}$.
+    (a) Define $\Phi \DefEq \SClass{n}{\Nat}{n\text{ is less than any element of }A}$.
 
     (1) $\Phi$ contains $\NATzero$.
     \begin{proof}
@@ -497,7 +497,7 @@
     Then for all $n \Elem \Natgeqthan{k}$ we have $n \Elem A$.
   \end{theorem}
   \begin{proof}[forthel]
-    Define $\Phi = \SClass{n}{\Nat}{\text{ if }n \NATgeq k\text{ then }n \Elem A}$.
+    Define $\Phi \DefEq \SClass{n}{\Nat}{\text{ if }n \NATgeq k\text{ then }n \Elem A}$.
 
     (1) $\Phi$ contains $\NATzero$.
     Indeed if $\NATzero \NATgeq k$ then $\NATzero \Eq k \Elem A$.

@@ -9,7 +9,7 @@
 \symdecl*{natural number}
 
 \begin{definition}[forthel,for={ORDomega,natural number}]
-  \[ \emph{\ORDomega} = \SClass{n}{\Ord}{\classtext{$n \Elem X$ for every $X \SETinclude \Ord$ such that $\ORDzero \Elem X$ and for all $x \Elem X$ we have $\ORDsucc(x) \Elem X$}}. \]
+  \[ \emph{\ORDomega} \DefEq \SClass{n}{\Ord}{\classtext{$n \Elem X$ for every $X \SETinclude \Ord$ such that $\ORDzero \Elem X$ and for all $x \Elem X$ we have $\ORDsucc(x) \Elem X$}}. \]
   Let a \emph{natural number} stand for an element of $\ORDomega$.
 \end{definition}
 
@@ -33,7 +33,7 @@
 \begin{proof}[forthel]
   Suppose $\Phi \NotEq \ORDomega$.
   Consider an element $n$ of $\ORDomega$ that is not contained in $\Phi$.
-  Take $\Phi' = \Phi \SETdiff \SETsingleton{n}$.
+  Take $\Phi' \Eq \Phi \SETdiff \SETsingleton{n}$.
 
   (1) $\ORDzero \Elem \Phi'$.
   Indeed $\ORDzero \Elem \Phi$ and $\ORDzero \NotEq n$.
@@ -64,7 +64,7 @@
   $\ORDomega$ is a set.
 \end{corollary}
 \begin{proof}[forthel]
-  Define $f(n) = \ORDsucc(n)$ for $n \in \ORDomega$.
+  Define $f(n) \DefEq \ORDsucc(n)$ for $n \in \ORDomega$.
   Take a subset $X$ of $\ORDomega$ that is inductive regarding $\ORDzero$ and $f$.
   Indeed $f$ is a map from $\ORDomega$ to $\ORDomega$.
   Then we have $\ORDzero \Elem X$ and for each $n \Elem X$ we have $\ORDsucc(n) \Elem X$.

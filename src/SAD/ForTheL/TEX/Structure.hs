@@ -27,6 +27,7 @@ import SAD.ForTheL.FTL.Structure qualified as FTL -- for backward compatibility
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
 import SAD.ForTheL.Extension
+import SAD.ForTheL.TEX.Extension qualified as TEX
 import SAD.ForTheL.Reports (getMarkupToken, getMarkupTokenOf, markupToken)
 import SAD.ForTheL.Instruction
 import qualified SAD.ForTheL.Reports as Reports
@@ -192,11 +193,11 @@ conventionSection = do
 -- * Top-level section bodies
 
 signatureBody :: FTL [ProofText]
-signatureBody = addAssumptions $ pretype $ pretypeSentence Posit sigExtend defVars finishWithoutLink
+signatureBody = addAssumptions $ pretype $ pretypeSentence Posit TEX.sigExtend defVars finishWithoutLink
 
 structSignatureBody :: FTL ([Block], [ProofText])
 structSignatureBody = do
-  (varForm, pSent) <- pretypeSentence' Posit structSigExtend defVars structFinish
+  (varForm, pSent) <- pretypeSentence' Posit TEX.structSigExtend defVars structFinish
   structProofText <- addAssumptions $ pretype $ pure pSent
   varAssumption <- pretypeSentence Assumption (pure varForm) assumeVars (pure [])
   return ([varAssumption], structProofText)
@@ -207,7 +208,7 @@ structSignatureBody = do
       return []
 
 definitionBody :: FTL [ProofText]
-definitionBody = addAssumptions $ pretype $ pretypeSentence Posit defExtend defVars finishWithoutLink
+definitionBody = addAssumptions $ pretype $ pretypeSentence Posit TEX.defExtend defVars finishWithoutLink
 
 axiomBody :: FTL [ProofText]
 axiomBody = addAssumptions $ pretype $ pretypeSentence Posit (affirmationHeader >> statement) affirmVars finishWithoutLink
