@@ -55,7 +55,7 @@ topLevelBlock :: FTL ProofText
 topLevelBlock =
       topLevelSection
   <|> (instruction >>= addSynonym >>= resetPretyping)
-  <|> try introduceMacro
+  <|> try FTL.introduceMacro
   <|> pretypeVariable
 
 

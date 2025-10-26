@@ -57,7 +57,7 @@ topLevelBlock =
       try (section <&> singleton)
   <|> topLevelSection
   <|> ((instruction >>= addSynonym >>= resetPretyping) <&> singleton)
-  <|> try (introduceMacro <&> singleton)
+  <|> try (TEX.introduceMacro <&> singleton)
   <|> (pretypeVariable <&> singleton)
 
 
@@ -103,7 +103,7 @@ signatureSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["signature"]
   label <- optionalEnvLabel
   result <- sig label </> structSig label
-  macrosAndPretypings <- many (try introduceMacro <|> pretypeVariable)
+  macrosAndPretypings <- many (try TEX.introduceMacro <|> pretypeVariable)
   endTopLevelSection keyword starred
   return $ result ++ macrosAndPretypings
   where
@@ -150,7 +150,7 @@ definitionSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["definition"]
   label <- optionalEnvLabel
   content <- definitionBody
-  macrosAndPretypings <- many (try introduceMacro <|> pretypeVariable)
+  macrosAndPretypings <- many (try TEX.introduceMacro <|> pretypeVariable)
   endTopLevelSection keyword starred
   proofText <- addMetadata Definition content label
   return $ proofText : macrosAndPretypings
@@ -163,7 +163,7 @@ axiomSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["axiom"]
   label <- optionalEnvLabel
   content <- axiomBody
-  macrosAndPretypings <- many (try introduceMacro <|> pretypeVariable)
+  macrosAndPretypings <- many (try TEX.introduceMacro <|> pretypeVariable)
   endTopLevelSection keyword starred
   proofText <- addMetadata Axiom content label
   return $ proofText : macrosAndPretypings
@@ -185,7 +185,7 @@ conventionSection :: FTL [ProofText]
 conventionSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["convention"]
   optionalEnvLabel
-  macrosAndPretypings <- some (try introduceMacro <|> pretypeVariable)
+  macrosAndPretypings <- some (try TEX.introduceMacro <|> pretypeVariable)
   endTopLevelSection keyword starred
   return macrosAndPretypings
 

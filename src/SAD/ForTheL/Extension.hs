@@ -10,18 +10,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.ForTheL.Extension (
-  newPredicat,
-  newNotion,
   funVars,
   notionVars,
   prdVars,
   pretypeVariable,
-  introduceMacro
+  ignoreNames
 ) where
 
 import Control.Monad
 import Data.Set qualified as Set
-import Control.Monad.State.Class (get, modify)
+import Control.Monad.State.Class (modify)
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 
@@ -29,8 +27,7 @@ import SAD.Data.Formula
 import SAD.Data.Text.Block (ProofText (..))
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
-import SAD.ForTheL.Pattern
-import SAD.ForTheL.Reports (markupToken, markupTokenSeqOf, addPretypingReport, addMacroReport)
+import SAD.ForTheL.Reports (markupToken, markupTokenSeqOf, addPretypingReport)
 import SAD.ForTheL.Reports qualified as Reports
 import SAD.Parser.Base
 import SAD.Parser.Combinators
@@ -38,15 +35,6 @@ import SAD.Data.Text.Decl
 
 import Isabelle.Position qualified as Position
 
-
-newPredicat :: FTL Formula
-newPredicat = do n <- newPrdPattern knownVariable; get >>= addExpr n n True
-
-newNotion :: FTL (Formula, PosVar)
-newNotion = do
-  (n, u) <- newNotionPattern knownVariable;
-  f <- get >>= addExpr n n True
-  return (f, u)
 
 -- well-formedness check
 
@@ -108,32 +96,6 @@ pretypeVariable = do
 
     upd (vs, notion) st = st { tvrExpr = (Set.map posVarName vs, notion) : tvrExpr st }
 
-
-introduceMacro :: FTL ProofText
-introduceMacro = do
-  pos1 <- getPos
-  markupToken Reports.macroLet "let"
-  (pos2, (f, g)) <- narrow2 (prd -|- notion)
-  let pos = Position.range_position (pos1, pos2)
-  addMacroReport pos
-  st <- get
-  addExpr f (ignoreNames g) False st
-  return $ ProofTextMacro pos
-  where
-    prd, notion :: FTL (Position.T, (Formula, Formula))
-    prd = wellFormedCheck (prdVars . snd) $ do
-      f <- newPrdPattern singleLetterVariable
-      markupTokenSeqOf Reports.macroLet standForPhrases
-      g <- statement
-      (_, pos2) <- dot
-      return (pos2, (f, g))
-    notion = wellFormedCheck (funVars . snd) $ do
-      (n, u) <- unnamedNotion singleLetterVariable
-      markupTokenSeqOf Reports.macroLet standForPhrases
-      (q, f) <- anotion
-      (_, pos2) <- dot
-      h <- q <$> dig f [pVar u]
-      return (pos2, (n, h))
 
 ignoreNames :: Formula -> Formula
 ignoreNames (All dcl f) = All dcl {declName = VarEmpty} $ ignoreNames f

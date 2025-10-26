@@ -11,12 +11,16 @@
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 module SAD.ForTheL.Pattern (
+  patHead,
+  patTail,
+  patName,
+  patNoName,
+  unknownAlpha,
+  slexem,
+  unknownAlphaNum,
   knownVariable,
-  newPrdPattern,
   addExpr,
-  unnamedNotion,
   singleLetterVariable,
-  newNotionPattern
 ) where
 
 
@@ -24,7 +28,6 @@ import Control.Monad.State.Class (put, gets)
 import Data.Set qualified as Set
 import Data.List
 import Data.Char (toUpper)
-import Control.Applicative
 import Control.Monad
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
@@ -183,78 +186,6 @@ extractSymbPattern t@Trm {trmName = TermName s, trmArgs = vs} f = (pt, nf)
     getName (Symbol s:ls) = symEncode s <> getName ls
     getName (Vr:ls) = symEncode "." <> getName ls
     getName [] = ""
-
-
-
-
--- New patterns
-
-
-newPrdPattern :: FTL PosVar -> FTL Formula
-newPrdPattern tvr = multi </> unary </> optInTexArg "emph" (newSymbPattern tvr)
-  where
-    unary = do
-      v <- tvr
-      (t, vs) <- unaryAdj -|- unaryVerb
-      return $ mkTrm NewId t $ map pVar (v:vs)
-    multi = do
-      (u,v) <- liftM2 (,) tvr (tokenOf' [",", "and"] >> tvr)
-      (t, vs) <- multiAdj -|- multiVerb
-      return $ mkTrm NewId t $ map pVar (u:v:vs)
-
-    unaryAdj = do
-      token' "is"
-      (t, vs) <- optInTexArg "emph" $ patHead unknownAlpha tvr
-      return (TermUnaryAdjective t, vs)
-    multiAdj = do
-      token' "are"
-      (t, vs) <- optInTexArg "emph" $ patHead unknownAlpha tvr
-      return (TermMultiAdjective t, vs)
-    unaryVerb = do
-      (t, vs) <- optInTexArg "emph" $ patHead unknownAlpha tvr
-      return (TermUnaryVerb t, vs)
-    multiVerb = do
-      (t, vs) <- optInTexArg "emph" $ patHead unknownAlpha tvr
-      return (TermMultiVerb t, vs)
-
-newNotionPattern :: FTL PosVar -> FTL (Formula, PosVar)
-newNotionPattern tvr = (notion <|> function) </> unnamedNotion tvr
-  where
-    notion = do
-      tokenOf' ["a", "an"]
-      (t, v:vs) <- optInTexArg "emph" $ patName unknownAlpha tvr
-      return (mkTrm NewId (TermNotion t) $ map pVar (v:vs), v)
-    function = do
-      token' "the"
-      (t, v:vs) <- optInTexArg "emph" $ patName unknownAlpha tvr
-      return (mkEquality (pVar v) $ mkTrm NewId (TermNotion t) $ map pVar vs, v)
-
-unnamedNotion :: FTL PosVar -> FTL (Formula, PosVar)
-unnamedNotion tvr = (notion <|> function) </> (optInTexArg "emph" (newSymbPattern tvr) >>= equ)
-  where
-    notion = do
-      tokenOf' ["a", "an"]
-      (t, v:vs) <- optInTexArg "emph" $ patNoName unknownAlpha tvr
-      return (mkTrm NewId (TermNotion t) $ map pVar (v:vs), v)
-    function = do
-      token' "the"
-      (t, v:vs) <- optInTexArg "emph" $ patNoName unknownAlpha tvr
-      return (mkEquality (pVar v) $ mkTrm NewId (TermNotion t) $ map pVar vs, v)
-    equ t = do
-      v <- hidden
-      return (mkEquality (pVar v) t, v)
-
-
-newSymbPattern :: FTL PosVar -> FTL Formula
-newSymbPattern tvr = left -|- right
-  where
-    left = do
-      (t, vs) <- patHead slexem tvr
-      return $ mkTrm NewId (TermName t) $ map pVar vs
-    right = do
-      (t, vs) <- patTail slexem tvr
-      guard $ not $ null $ tail $ Text.words t
-      return $ mkTrm NewId (TermName t) $ map pVar vs
 
 
 -- pattern parsing
