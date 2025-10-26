@@ -235,6 +235,10 @@ instruction =
 
 -- * Low-level blocks
 
+-- | Parse a choice expression.
+choose :: FTL Block
+choose = sentence Choice (choiceHeader >> choice) assumeVars finishWithOptLink
+
 -- | Parse an affirmation.
 affirmation :: FTL Block
 affirmation = sentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink </> eqChain
@@ -451,7 +455,7 @@ confirmationBody :: Block -> FTL Block
 confirmationBody block = do
   pbl <-
     narrow TEX.assumption </>
-    lowLevelProof (narrow $ TEX.affirmation </> TEX.choose) </>
+    lowLevelProof (narrow $ affirmation </> choose) </>
     narrow TEX.lowLevelDefinition
   return block {Block.body = [ProofTextBlock pbl]}
 
@@ -478,7 +482,7 @@ proofText qed =
   where
     lowtext =
       narrow TEX.assumption </>
-      lowLevelProof (narrow $ affirmation </> TEX.choose </> TEX.lowLevelDefinition) </>
+      lowLevelProof (narrow $ affirmation </> choose </> TEX.lowLevelDefinition) </>
       caseDestinction
     instruction =
       fmap (uncurry ProofTextDrop) instrDrop </>
