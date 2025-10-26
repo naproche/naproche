@@ -19,8 +19,11 @@ import Control.Exception
 import SAD.Data.Text.Block
 import SAD.Data.Instr
 import SAD.ForTheL.Base
+import SAD.ForTheL.FTL.Base qualified as FTL
 import SAD.ForTheL.FTL.Structure qualified as FTL
+import SAD.ForTheL.TEX.Base qualified as TEX
 import SAD.ForTheL.TEX.Structure qualified as TEX
+import SAD.ForTheL.STEX.Base qualified as STEX
 import SAD.ForTheL.STEX.Structure qualified as STEX
 import SAD.Parser.Base
 import SAD.Parser.FTL.Lexer qualified as FTL
@@ -164,8 +167,13 @@ parse dialect pos bytes state = do
     Ftl -> FTL.lex pos bytes >>= FTL.tokenize
     Tex -> TEX.lex pos bytes >>= TEX.tokenize
     Stex -> STEX.lex pos bytes >>= STEX.tokenize
-  let newState = State {
-        stUser = addInits dialect $ (stUser state) {tvrExpr = []},
+  let 
+      addInits = case dialect of
+        Ftl -> FTL.addInits
+        Tex -> TEX.addInits
+        Stex -> STEX.addInits
+      newState = State {
+        stUser = addInits $ (stUser state) {tvrExpr = []},
         stInput = tokens,
         parserKind = dialect,
         lastPosition = Position.none

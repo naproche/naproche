@@ -19,7 +19,7 @@
 
   (1) $\Phi$ contains $\NATzero$.
   \begin{proof}
-    Take $q = \NATzero$ and $r = \NATzero$.
+    Take $q \Eq \NATzero$ and $r = \NATzero$.
     Then $r \NATless m$ and $\NATzero \Eq (m \NATmul q) \NATplus r$.
     Hence $\NATzero \Elem \Phi$.
   \end{proof}
@@ -33,7 +33,7 @@
       We have $r' \NATplus \NATone \NATless m$ or $r' \NATplus \NATone \Eq m$.
 
       \begin{case}{$r' \NATplus \NATone \NATless m$.}
-        Take $q = q' \NATplus \NATzero$ and $r = r' \NATplus \NATone$. %!
+        Take $q \Eq q' \NATplus \NATzero$ and $r = r' \NATplus \NATone$. %!
         Then $r \NATless m$ and $n' \NATplus \NATone
           \Eq ((q' \NATmul m) \NATplus r') \NATplus \NATone
           \Eq (q' \NATmul m) \NATplus (r' \NATplus \NATone)

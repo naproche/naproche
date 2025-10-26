@@ -21,7 +21,7 @@
     Let $n' \Elem \Phi$.
     Then $n' \NATgeq \NATtwo$.
 
-    Take $X = \NATexp{n' \NATplus \NATone}{n'} \NATmul (n' \NATplus \NATone)$ and $Y = \NATexp{n'}{n'} \NATmul (n' \NATplus \NATone)$.
+    Take $X \Eq \NATexp{n' \NATplus \NATone}{n'} \NATmul (n' \NATplus \NATone)$ and $Y = \NATexp{n'}{n'} \NATmul (n' \NATplus \NATone)$.
     Then $X \NATgtr Y$.
     \begin{proof}
       We have $n' \NATplus \NATone \NATgtr n'$ and $n' \NotEq \NATzero$.
@@ -30,7 +30,7 @@
       Hence $\NATexp{n' \NATplus \NATone}{n'} \NATmul (n' \NATplus \NATone) \NATgtr \NATexp{n'}{n'} \NATmul (n' \NATplus \NATone)$.
     \end{proof}
 
-    Take $Z = \NATfac{n'} \NATmul (n' \NATplus \NATone)$.
+    Take $Z \Eq \NATfac{n'} \NATmul (n' \NATplus \NATone)$.
     Then $Y \NATgtr Z$.
     Indeed $\NATexp{n'}{n'} \NATgtr \NATfac{n'}$ and $n' \NATplus \NATone \NotEq \NATzero$.
 
@@ -65,10 +65,10 @@
     Let $n' \Elem \Phi$.
     Then $n' \NATgeq \NATfour$ and $\NATfac{n'} \NATgtr \NATexp{\NATtwo}{n'}$.
 
-    Take $X = \NATfac{n'} \NATmul (n' \NATplus \NATone)$ and $Y = \NATexp{\NATtwo}{n'} \NATmul (n' \NATplus \NATone)$.
+    Take $X \Eq \NATfac{n'} \NATmul (n' \NATplus \NATone)$ and $Y = \NATexp{\NATtwo}{n'} \NATmul (n' \NATplus \NATone)$.
     Then $X \NATgtr Y$.
 
-    Take $Z = \NATexp{\NATtwo}{n'} \NATmul \NATtwo$.
+    Take $Z \Eq \NATexp{\NATtwo}{n'} \NATmul \NATtwo$.
     Then $Y \NATgtr Z$ (by \sn{preservation of ordering under left-multiplication}).
     Indeed $n' \NATplus \NATone \NATgtr \NATtwo$ and $\NATexp{\NATtwo}{n'} \NotEq \NATzero$.
 

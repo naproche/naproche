@@ -31,7 +31,7 @@
   Then $x \SETunion y$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  Take $X = \SETpair{x}{y}$.
+  Take $X \Eq \SETpair{x}{y}$.
   Then $X$ is a set.
   Hence $\SETunionover X$ is a set (by \sn{Union Axiom}).
   Indeed $X$ is a system of sets.
@@ -134,7 +134,7 @@
 
   Let us show that for any $a \Elem x$ and any $b \Elem y$ we have $f(\SETpair{\SETsingleton{a}}{\SETpair{a}{b}}) \Eq (a,b)$.
     Let $a \Elem x$ and $b \Elem y$.
-    Take $p = \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$.
+    Take $p \Eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$.
     Then $p$ is a set.
     Then we can choose $a' \Elem x$ and $b' \Elem y$ such that $p \Eq \SETpair{\SETsingleton{a'}}{\SETpair{a'}{b'}}$ and $l(p) \Eq a'$.
     Then $a \Eq a'$ and $b \Eq b'$.

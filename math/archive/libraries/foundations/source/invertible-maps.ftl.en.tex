@@ -31,7 +31,7 @@
 
     Let us show that $g(b) \Eq g'(b)$ for all $b \Elem \FUNrange(f)$.
       Let $b \Elem \FUNrange(f)$.
-      Take $a = g'(b)$.
+      Take $a \Eq g'(b)$.
       Then $g(b) \Eq a$ iff $f(a) \Eq b$.
       We have $f(a) \Eq b$ iff $g'(b) \Eq a$.
       Thus $g(b) \Eq g'(b)$.
@@ -157,7 +157,7 @@
   \begin{proof}[forthel]
     $\FUNinv{f}$ is a surjective map from $B$ onto $A$.
     $\FUNinv{g}$ is a surjective map from $C$ onto $B$.
-    Take $h = \FUNinv{f} \FUNcomp \FUNinv{g}$.
+    Take $h \Eq \FUNinv{f} \FUNcomp \FUNinv{g}$.
     Then $h$ is a surjective map from $C$ onto $A$ (by \sn{surjectivity of composition of surjections}).
     $g \FUNcomp f$ is a map from $A$ to $C$.
 
@@ -199,7 +199,7 @@
   \end{proposition}
   \begin{proof}[forthel]
     $f \FUNrest X$ is a surjective map from $X$ onto $\FUNim{f}{X}$.
-    Take $g = \FUNinv{f} \FUNrest (\FUNim{f}{X})$.
+    Take $g \Eq \FUNinv{f} \FUNrest (\FUNim{f}{X})$.
     Then $g$ is a map of $\FUNim{f}{X}$.
 
     Let us show that $X \SETinclude \FUNrange(g)$.
