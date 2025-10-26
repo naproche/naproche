@@ -12,7 +12,7 @@
   Then $\NATexp{n}{n} \NATgtr \NATfac{n}$.
 \end{proposition}
 \begin{proof}[forthel]
-  (a) Define $\Phi = \SClass{n'}{\Natgeqthan{\NATtwo}}{\NATexp{n'}{n'} \NATgtr \NATfac{n'}}$.
+  (a) Define $\Phi \DefEq \SClass{n'}{\Natgeqthan{\NATtwo}}{\NATexp{n'}{n'} \NATgtr \NATfac{n'}}$.
 
   (1) $\Phi$ contains $\NATtwo$.
 
@@ -21,7 +21,7 @@
     Let $n' \Elem \Phi$.
     Then $n' \NATgeq \NATtwo$.
 
-    Take $X = \NATexp{n' \NATplus \NATone}{n'} \NATmul (n' \NATplus \NATone)$ and $Y = \NATexp{n'}{n'} \NATmul (n' \NATplus \NATone)$.
+    Take $X \Eq \NATexp{n' \NATplus \NATone}{n'} \NATmul (n' \NATplus \NATone)$ and $Y \Eq \NATexp{n'}{n'} \NATmul (n' \NATplus \NATone)$.
     Then $X \NATgtr Y$.
     \begin{proof}
       We have $n' \NATplus \NATone \NATgtr n'$ and $n' \NotEq \NATzero$.
@@ -30,7 +30,7 @@
       Hence $\NATexp{n' \NATplus \NATone}{n'} \NATmul (n' \NATplus \NATone) \NATgtr \NATexp{n'}{n'} \NATmul (n' \NATplus \NATone)$.
     \end{proof}
 
-    Take $Z = \NATfac{n'} \NATmul (n' \NATplus \NATone)$.
+    Take $Z \Eq \NATfac{n'} \NATmul (n' \NATplus \NATone)$.
     Then $Y \NATgtr Z$.
     Indeed $\NATexp{n'}{n'} \NATgtr \NATfac{n'}$ and $n' \NATplus \NATone \NotEq \NATzero$.
 
@@ -48,7 +48,7 @@
   Then $\NATfac{n} \NATgtr \NATexp{\NATtwo}{n}$.
 \end{proposition}
 \begin{proof}[forthel]
-  (a) Define $\Phi = \SClass{n'}{\Natgeqthan{\NATfour}}{\NATfac{n'} \NATgtr \NATexp{\NATtwo}{n'}}$.
+  (a) Define $\Phi \DefEq \SClass{n'}{\Natgeqthan{\NATfour}}{\NATfac{n'} \NATgtr \NATexp{\NATtwo}{n'}}$.
 
   (1) $\Phi$ contains $\NATfour$.
   \begin{proof}
@@ -65,14 +65,14 @@
     Let $n' \Elem \Phi$.
     Then $n' \NATgeq \NATfour$ and $\NATfac{n'} \NATgtr \NATexp{\NATtwo}{n'}$.
 
-    Take $X = \NATfac{n'} \NATmul (n' \NATplus \NATone)$ and $Y = \NATexp{\NATtwo}{n'} \NATmul (n' \NATplus \NATone)$.
+    Take $X \Eq \NATfac{n'} \NATmul (n' \NATplus \NATone)$ and $Y \Eq \NATexp{\NATtwo}{n'} \NATmul (n' \NATplus \NATone)$.
     Then $X \NATgtr Y$.
 
-    Take $Z = \NATexp{\NATtwo}{n'} \NATmul \NATtwo$.
+    Take $Z \Eq \NATexp{\NATtwo}{n'} \NATmul \NATtwo$.
     Then $Y \NATgtr Z$ (by \sn{preservation of ordering under left-multiplication}).
     Indeed $n' \NATplus \NATone \NATgtr \NATtwo$ and $\NATexp{\NATtwo}{n'} \NotEq \NATzero$.
 
-    Hence $\NATfac{n' \NATplus \NATone} = X \NATgtr Y \NATgtr Z = \NATexp{\NATtwo}{n' \NATplus \NATone}$.
+    Hence $\NATfac{n' \NATplus \NATone} \Eq X \NATgtr Y \NATgtr Z \Eq \NATexp{\NATtwo}{n' \NATplus \NATone}$.
     Thus $\NATfac{n' \NATplus \NATone} \NATgtr \NATexp{\NATtwo}{n' \NATplus \NATone}$.
   \end{proof}
 

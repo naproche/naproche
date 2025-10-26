@@ -18,7 +18,7 @@
   $\emph{n \NATmid m}$ iff there exists a natural number $k$ such that $n \NATmul k \Eq m$.
   Let $m$ is \emph{divisible by $n$} stand for $n \NATmid m$.
   Let $n$ \emph{divides $m$} stand for $n \NATmid m$.
-  Let $\emph{n \NATnmid m}$ stand for not $n \NATmid m$.
+  Let $\emph{n \NATnmid m}$ stand for $\Not n \NATmid m$.
 \end{definition}
 
 \begin{lemma}[forthel]
@@ -219,7 +219,7 @@
 \end{corollary}
 \begin{proof}[forthel]
   Assume $k \NATmid n$ and $k \NATmid m$.
-  Take $n' = \NATone$ and $m' = \NATone$.
+  Take $n' \Eq \NATone$ and $m' \Eq \NATone$.
   Then $k \NATmid (n' \NATmul n) \NATplus (m' \NATmul m)$.
   $(n' \NATmul n) \NATplus (m' \NATmul m) \Eq n \NATplus m$.
   Hence $k \NATmid n \NATplus m$.

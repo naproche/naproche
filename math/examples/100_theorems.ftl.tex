@@ -1211,7 +1211,7 @@ $x \leq y$ is an atom.
 \end{signature}
 
 
-Let $x \nleq y$ stand for not $x \leq y$.
+Let $x \nleq y$ stand for  $\neg x \leq y$.
 
 Let $x \geq y$ stand for $y \leq x$.
 
@@ -1245,7 +1245,7 @@ If $x \geq 0$ and $y \leq z$ then $x \cdot y \leq x \cdot z$.
 We define the strict order as an abbreviation.
 \begin{forthel}
 Let $x < y$ stand for $x \leq y$ and $x \neq y$.
-Let $x \nless y$ stand for not $x < y$.
+Let $x \nless y$ stand for $\neg x < y$.
 Let $x > y$ stand for $y < x$.
 
 \begin{definition}
@@ -1325,7 +1325,7 @@ If $0 < y$ then $0 < 1/y$.
 \begin{lemma} 0=0. \end{lemma}
 
 \begin{lemma}[syz]
-If not $x \leq y$ then $x \geq y$.
+If $\neg x \leq y$ then $x \geq y$.
 \end{lemma}
 
 \begin{proposition}
@@ -1334,7 +1334,7 @@ Then $1/y \leq 1/x$.
 \end{proposition}
 \begin{proof}[by contradiction]
 Assume the contrary.
-Then not $1/y \leq 1/x$. Let $u = 1/y$ and $v = 1/x$.
+Then $\neg 1/y \leq 1/x$. Let $u = 1/y$ and $v = 1/x$.
 Then $1/y \geq 1/x$.
 Then $1/x < 1/y$.
 Then
@@ -1893,14 +1893,14 @@ $n$ is the infimum of $X$.
 \begin{proof}
 Assume the contrary. Then
 for all elements $n$ of $X$ there
-is $x \in X$ such that not $n \leq x$.
+is $x \in X$ such that $\neg n \leq x$.
 
 (1) For all natural numbers $n$ $n \notin X$.
 
 Proof by induction.
 Let $n$ be a natural number.
 Assume that $n \in X$.
-Take $x \in X$ such that not $n \leq x$.
+Take $x \in X$ such that $\neg n \leq x$.
 Then $x < n$. $x$ is inductively smaller than $n$.
 Hence $x \notin X$. Contradiction.
 Qed.
@@ -2464,7 +2464,7 @@ Let us show that $m - (k \cdot a) = a$ or $m - (k \cdot a) < a$.
 Assume the contrary.
 Let $b = m - (k \cdot a)$ and $c = (m-1) - (k \cdot a)$.
 $(m-1) - (k \cdot a) < a$.
-If not $b = a$ and not $b < a$ then $b > a$.
+If $\neg b = a$ and $\neg b < a$ then $b > a$.
 Then $m - (k \cdot a) > a$.
 $(m - (k \cdot a)) - 1 > a - 1$.
 $(-1) + (m - (k\cdot a)) > a - 1$.
@@ -2729,7 +2729,7 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
   \end{lemma}
   \begin{proof}
   $x$ is an integer.
-  $x \leq n+1$. Not $x \leq n$.
+  $x \leq n+1$. $\neg x \leq n$.
   Assume that $x \neq n+1$.
   $n < x < n+1$.
   $0 < x - n < 1$.
@@ -2798,7 +2798,7 @@ $$g = f \upharpoonright \Seq{1}{m'}.$$
   $m' \leq n'$ and $m \leq n$. Qed.
 [timelimit 3] %%%
 
-  Case not $f[\Seq{1}{m'}] \subseteq \Seq{1}{n'}$.
+  Case $\neg f[\Seq{1}{m'}] \subseteq \Seq{1}{n'}$.
 
   Take $w \in f[\Seq{1}{m'}]$ such that $w \notin \Seq{1}{n'}$.
   $w \in f[\Seq{1}{m'}] \subseteq f[\Seq{1}{m}] \subseteq \Seq{1}{n}$.

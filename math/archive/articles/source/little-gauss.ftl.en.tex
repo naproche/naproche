@@ -21,8 +21,8 @@ the assertion that
 \[\sum_{k = \NATzero}^n k \Eq \frac{k(k \NATplus \NATone)}\NATtwo\]
 for all $n \Elem \Nat$.
 In \Naproche we can define the sum $\sum_{n = \NATzero}^k n$ by the function
-$\gauss : \Nat \to \Nat$ with $\gauss(\NATzero) = \NATzero$ and
-$\gauss(n \NATplus \NATone) = \gauss(n) \NATplus (n \NATplus \NATone)$:
+$\gauss : \Nat \to \Nat$ with $\gauss(\NATzero) \Eq \NATzero$ and
+$\gauss(n \NATplus \NATone) \Eq \gauss(n) \NATplus (n \NATplus \NATone)$:
 
 \begin{forthel}
   Let $n$ denote a natural number.
@@ -48,7 +48,7 @@ $\gauss(n \NATplus \NATone) = \gauss(n) \NATplus (n \NATplus \NATone)$:
     \[\NATtwo \NATmul \gauss(n) \Eq n \NATmul (n \NATplus \NATone).\]
   \end{theorem*}
   \begin{proof}
-    Define $\Phi = \SClass{n}{\Nat}{\NATtwo \NATmul \gauss(n) \Eq n \NATmul (n \NATplus \NATone)}$.
+    Define $\Phi \DefEq \SClass{n}{\Nat}{\NATtwo \NATmul \gauss(n) \Eq n \NATmul (n \NATplus \NATone)}$.
     
     (1) $\NATzero \Elem \Phi$.
 

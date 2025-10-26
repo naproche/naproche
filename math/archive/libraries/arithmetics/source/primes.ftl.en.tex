@@ -35,7 +35,7 @@
   Then $n$ has a prime divisor.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $\Phi = \SClass{n'}{\Nat}{\text{ if }n' \NATgtr \NATone\text{ then }n'\text{ has a prime divisor}}$.
+  Define $\Phi \DefEq \SClass{n'}{\Nat}{\text{ if }n' \NATgtr \NATone\text{ then }n'\text{ has a prime divisor}}$.
 
   Let us show that for every $n' \Elem \Nat$ if $\Phi$ contains all
   predecessors of $n'$ then $\Phi$ contains $n'$.
@@ -114,7 +114,7 @@
   \begin{case}{$p \NATmid n$.} \end{case}
 
   \begin{case}{$p \NATnmid n$.}
-    Define $\Phi = \SClass{k}{\Nat}{k \NotEq \NATzero\text{ and }p \NATmid k \NATmul m}$.
+    Define $\Phi \DefEq \SClass{k}{\Nat}{k \NotEq \NATzero\text{ and }p \NATmid k \NATmul m}$.
     Then $p \Elem \Phi$ and $n \Elem \Phi$.
     Hence $\Phi$ contains some natural number.
     Thus we can take $a \Elem \Phi$ such that $a \NATleq k$ for all $k \Elem \Phi$.
@@ -133,7 +133,7 @@
         We have $p \NATmid a \NATmul m$.
         Hence $p \NATmid (q \NATmul a) \NATmul m$.
         Indeed $((q \NATmul a) \NATmul m) \Eq q \NATmul (a \NATmul m)$. %!
-        Take $A = (q \NATmul a) \NATmul m$ and $B = r \NATmul m$. %!
+        Take $A \Eq (q \NATmul a) \NATmul m$ and $B \Eq r \NATmul m$. %!
         Then $p \NATmid A \NATplus B$ and $p \NATmid A$.
         Thus $p \NATmid B$ (by \sn{divisibility of summands}).
         Indeed $p, A$ and $B$ are natural numbers.

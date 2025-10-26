@@ -66,7 +66,7 @@ untyped $\lambda$-calculus:
 
   \begin{signature*}[title=Fixed-point combinator,for=fix]
     $\fix$ is an expression such that
-    \[\app{\fix}{E} = \app{E}{\app{\fix}{E}}\]
+    \[\app{\fix}{E} \Eq \app{E}{\app{\fix}{E}}\]
     for every expression $E$.
   \end{signature*}
 \end{forthel}
@@ -90,7 +90,7 @@ logic:
   \end{signature*}
 
   \begin{axiom*}[title=$\beta$-reduction,name=beta reduction]
-    $\app{\abs{x}{x \impl E'}}{E} = E \impl E'$.
+    $\app{\abs{x}{x \impl E'}}{E} \Eq E \impl E'$.
   \end{axiom*}
 
   \begin{axiom*}[title=Reflexivity,name=reflexivity]
@@ -112,7 +112,7 @@ logic:
 \noindent Using the fixpoint combinator from above we can formulate a 
 self-referential expression $X$ of the form ``If $X$ is true then $E$ is
 true'' for any arbitrary expression $E$ by defining
-$X = \app{\fix}{\abs{\varzero}{\varzero \impl E}}$.
+$X \Eq \app{\fix}{\abs{\varzero}{\varzero \impl E}}$.
 From the existence of such an expression $X$ together with the above axioms 
 we can then derive that any expression $E$ is true.
 
@@ -122,9 +122,9 @@ we can then derive that any expression $E$ is true.
   \end{theorem*}
   \begin{proof}
     Let $E$ be an expression.
-    Take $N = \abs{\varzero}{\varzero \impl E}$ and $X = \app{\fix}{N}.$
+    Take $N \Eq \abs{\varzero}{\varzero \impl E}$ and $X \Eq \app{\fix}{N}.$
 
-    (1) Then $X = \app{N}{X} = X \impl E$ (by \sr{beta reduction}{$\beta$-reduction}).
+    (1) Then $X \Eq \app{N}{X} \Eq X \impl E$ (by \sr{beta reduction}{$\beta$-reduction}).
 
     Hence $X \impl (X \impl E)$ is true (by 1, \sn{reflexivity}).
 

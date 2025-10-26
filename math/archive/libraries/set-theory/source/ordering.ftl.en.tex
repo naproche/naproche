@@ -17,20 +17,20 @@
   Let $\alpha, \beta$ be ordinals.
   $\emph{\alpha \ORDless \beta}$ iff $\alpha \Elem \beta$.
   Let $\alpha$ is \emph{less than $\beta$} stand for $\alpha \ORDless \beta$.
-  Let $\emph{\alpha \ORDnless \beta}$ stand for not $\alpha \ORDless \beta$.
+  Let $\emph{\alpha \ORDnless \beta}$ stand for $\Not \alpha \ORDless \beta$.
   Let $\emph{\alpha \ORDgtr \beta}$ stand for $\beta \ORDless \alpha$.
   Let $\alpha$ is \emph{greater than $\beta$} stand for $\beta \ORDless \alpha$.
-  Let $\emph{\alpha \ORDngtr \beta}$ stand for not $\alpha \ORDgtr \beta$.
+  Let $\emph{\alpha \ORDngtr \beta}$ stand for $\Not \alpha \ORDgtr \beta$.
 \end{definition}
 
 \begin{definition}[forthel,for={ORDleq,ORDnleq,ORDgeq,ORDngeq}]
   Let $\alpha, \beta$ be ordinals.
   $\emph{\alpha \ORDleq \beta}$ iff $\alpha \ORDless \beta$ or $\alpha \Eq \beta$.
   Let $\alpha$ is \emph{less than or equal to $\beta$} stand for $\alpha \ORDleq \beta$.
-  Let $\emph{\alpha \ORDnleq \beta}$ stand for not $\alpha \ORDleq \beta$.
+  Let $\emph{\alpha \ORDnleq \beta}$ stand for $\Not \alpha \ORDleq \beta$.
   Let $\emph{\alpha \ORDgeq \beta}$ stand for $\beta \ORDleq \alpha$.
   Let $\alpha$ is \emph{greater than or equal to $\beta$} stand for $\beta \ORDleq \alpha$.
-  Let $\emph{\alpha \ORDngeq \beta}$ stand for not $\alpha \ORDgeq \beta$.
+  Let $\emph{\alpha \ORDngeq \beta}$ stand for $\Not \alpha \ORDgeq \beta$.
 \end{definition}
 
 \begin{proposition}[forthel]
@@ -75,12 +75,12 @@
 \begin{proof}[forthel]
   Assume the contrary.
   
-  Define $A = \SClass{\alpha'}{\Ord}{\text{ there exists an ordinal }\beta'\text{ such that neither }\alpha' \ORDless \beta'\text{ nor }\alpha' \Eq \beta'\text{ nor }\alpha' \ORDgtr \beta'}$.
+  Define $A \DefEq \SClass{\alpha'}{\Ord}{\text{ there exists an ordinal }\beta'\text{ such that neither }\alpha' \ORDless \beta'\text{ nor }\alpha' \Eq \beta'\text{ nor }\alpha' \ORDgtr \beta'}$.
   
   $A$ is nonempty.
   Hence we can take a $\alpha' \Elem A$ such that for no $\gamma \Elem A$ we have $\gamma \ORDless \alpha'$.
   
-  Define $B = \SClass{\beta'}{\Ord}{\text{ neither }\alpha' \ORDless \beta'\text{ nor }\alpha' \Eq \beta'\text{ nor }\alpha' \ORDgtr \beta'}$.
+  Define $B \DefEq \SClass{\beta'}{\Ord}{\text{ neither }\alpha' \ORDless \beta'\text{ nor }\alpha' \Eq \beta'\text{ nor }\alpha' \ORDgtr \beta'}$.
   
   $B$ is nonempty.
   Hence we can take a $\beta' \Elem B$ such that for no $\gamma \Elem B$ we have $\gamma \ORDless \beta'$.
@@ -118,7 +118,7 @@
 
   \begin{case}{$\alpha \Eq \beta$.} \end{case}
 
-  \begin{case}{$\alpha \neq \beta$.}
+  \begin{case}{$\alpha \NotEq \beta$.}
     Then $\alpha \ORDless \beta$ or $\alpha \ORDgtr \beta$.
     Assume $\alpha \ORDgtr \beta$.
     Then $\beta \Elem \alpha$.

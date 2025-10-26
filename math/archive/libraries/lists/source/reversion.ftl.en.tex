@@ -31,7 +31,7 @@
 
   \begin{case}{$L \Eq a \LISTcons L''$ for some object $a$ and some list $L''$.}
     Take an object $a$ and a list $L''$ such that $L \Eq a \LISTcons L''$.
-    Then $L'' \prec L$.
+    Then $L'' \ILess L$.
     Hence $\LISTrev(L'' \LISTconcat L') \Eq \LISTrev(L') \LISTconcat \LISTrev(L'')$.
     Thus
     \begin{align*}
@@ -58,7 +58,7 @@
 
   \begin{case}{$L \Eq a \LISTcons L'$ for some object $a$ and some list $L'$.}
     Take an object $a$ and a list $L'$ such that $L \Eq a \LISTcons L'$.
-    Then $L' \prec L$.
+    Then $L' \ILess L$.
     Hence $\LISTrev(\LISTrev(L')) \Eq L'$.
     Thus
     \begin{align*}

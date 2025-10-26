@@ -41,7 +41,7 @@
   \end{proposition}
   \begin{proof}[forthel]
     \begin{case}{$n$ is odd.}
-      (a) Define $\Phi = \SClass{n'}{\Nat}{\text{ if }n'\text{ is odd then }n' \Eq (\NATtwo \NATmul m) \NATplus \NATone\text{ for some natural number }m}$.
+      (a) Define $\Phi \DefEq \SClass{n'}{\Nat}{\text{ if }n'\text{ is odd then }n' \Eq (\NATtwo \NATmul m) \NATplus \NATone\text{ for some natural number }m}$.
 
       (1) $\Phi$ contains $\NATzero$.
       Indeed $\NATzero$ is not odd.
@@ -95,7 +95,7 @@
   \begin{proof}[forthel]
     \begin{case}{$n$ is odd.}
       Consider a natural number $k$ such that $n \Eq (\NATtwo \NATmul k) \NATplus  \NATone$.
-      Take $m = k \NATplus \NATone$.
+      Take $m \Eq k \NATplus \NATone$.
       Then $n
         \Eq (\NATtwo \NATmul k) \NATplus  \NATone
         \Eq (\NATtwo \NATmul (k \NATplus \NATzero)) \NATplus  \NATone
@@ -109,7 +109,7 @@
 
     \begin{case}{$n \Eq (\NATtwo \NATmul m) \NATsub  \NATone$ for some positive natural number $m$.}
       Consider a positive natural number $m$ such that $n \Eq (\NATtwo \NATmul m) \NATsub  \NATone$.
-      Take $k = m \NATsub  \NATone$.
+      Take $k \Eq m \NATsub  \NATone$.
       Then $n
         \Eq (\NATtwo \NATmul m) \NATsub  \NATone
         \Eq (\NATtwo \NATmul (m \NATplus \NATzero)) \NATsub  \NATone

@@ -149,8 +149,8 @@
     Then $A \SETunion A \Eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETunion A = \CClass{x}{x \Elem A\text{ or }x \Elem A}$.
-    Hence $A \SETunion A = \CClass{x}{x \Elem A}$.
+    $A \SETunion A \Eq \CClass{x}{x \Elem A\text{ or }x \Elem A}$.
+    Hence $A \SETunion A \Eq \CClass{x}{x \Elem A}$.
     Thus $A \SETunion A \Eq A$.
   \end{proof}
 
@@ -159,8 +159,8 @@
     Then $A \SETintersect A \Eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETintersect A = \CClass{x}{x \Elem A\text{ and }x \Elem A}$.
-    Hence $A \SETintersect A = \CClass{x}{x \Elem A}$.
+    $A \SETintersect A \Eq \CClass{x}{x \Elem A\text{ and }x \Elem A}$.
+    Hence $A \SETintersect A \Eq \CClass{x}{x \Elem A}$.
     Thus $A \SETintersect A \Eq A$.
   \end{proof}
 \end{sfragment}
@@ -187,8 +187,8 @@
       Then $x \Elem A \SETdiff B$ or $x \Elem A \SETdiff C$.
       Hence ($x \Elem A$ and $x \NotElem B$) or ($x \Elem A$ and $x \NotElem C$).
       Thus $x \Elem A$ and ($x \NotElem B$ or $x \NotElem C$).
-      Therefore $x \Elem A$ and not ($x \Elem B$ and $x \Elem C$).
-      Then $x \Elem A$ and not $x \Elem B \SETintersect C$.
+      Therefore $x \Elem A$ and $\Not(x \Elem B \And x \Elem C)$.
+      Then $x \Elem A$ and $x \NotElem B \SETintersect C$.
       Hence $x \Elem A \SETdiff (B \SETintersect C)$.
     End.
   \end{proof}
@@ -214,8 +214,8 @@
       Then $x \Elem A \SETdiff B$ and $x \Elem A \SETdiff C$.
       Hence ($x \Elem A$ and $x \NotElem B$) and ($x \Elem A$ and $x \NotElem C$).
       Thus $x \Elem A$ and ($x \NotElem B$ and $x \NotElem C$).
-      Therefore $x \Elem A$ and not ($x \Elem B$ or $x \Elem C$).
-      Then $x \Elem A$ and not $x \Elem B \SETunion C$.
+      Therefore $x \Elem A$ and $\Not(x \Elem B \Or x \Elem C)$.
+      Then $x \Elem A$ and $x \NotElem B \SETunion C$.
       Hence $x \Elem A \SETdiff (B \SETunion C)$.
     End.
   \end{proof}
@@ -307,7 +307,7 @@
   \end{proposition}
   \begin{proof}[forthel]
     $A \SETdiff A$ has no elements.
-    Indeed $A \SETdiff A = \CClass{x}{x \Elem A\text{ and }x \NotElem A}$.
+    Indeed $A \SETdiff A \Eq \CClass{x}{x \Elem A\text{ and }x \NotElem A}$.
     Hence the thesis.
   \end{proof}
 
@@ -316,9 +316,9 @@
     Then $A \SETdiff \SETempty \Eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETdiff \SETempty = \CClass{x}{x \Elem A\text{ and }x \NotElem \SETempty}$.
+    $A \SETdiff \SETempty \Eq \CClass{x}{x \Elem A\text{ and }x \NotElem \SETempty}$.
     No element is an element of $\SETempty$.
-    Hence $A \SETdiff \SETempty = \CClass{x}{x \Elem A}$.
+    Hence $A \SETdiff \SETempty \Eq \CClass{x}{x \Elem A}$.
     Then we have the thesis.
   \end{proof}
 

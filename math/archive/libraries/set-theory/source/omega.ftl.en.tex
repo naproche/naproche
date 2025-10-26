@@ -9,7 +9,7 @@
 \symdecl*{natural number}
 
 \begin{definition}[forthel,for={ORDomega,natural number}]
-  \[ \emph{\ORDomega} = \SClass{n}{\Ord}{\classtext{$n \Elem X$ for every $X \SETinclude \Ord$ such that $\ORDzero \Elem X$ and for all $x \Elem X$ we have $\ORDsucc(x) \Elem X$}}. \]
+  \[ \emph{\ORDomega} \DefEq \SClass{n}{\Ord}{\classtext{$n \Elem X$ for every $X \SETinclude \Ord$ such that $\ORDzero \Elem X$ and for all $x \Elem X$ we have $\ORDsucc(x) \Elem X$}}. \]
   Let a \emph{natural number} stand for an element of $\ORDomega$.
 \end{definition}
 
@@ -31,19 +31,19 @@
   Then $\Phi \Eq \ORDomega$.
 \end{proposition}
 \begin{proof}[forthel]
-  Suppose $\Phi \neq \ORDomega$.
+  Suppose $\Phi \NotEq \ORDomega$.
   Consider an element $n$ of $\ORDomega$ that is not contained in $\Phi$.
-  Take $\Phi' = \Phi \SETdiff \SETsingleton{n}$.
+  Take $\Phi' \Eq \Phi \SETdiff \SETsingleton{n}$.
 
   (1) $\ORDzero \Elem \Phi'$.
-  Indeed $\ORDzero \Elem \Phi$ and $\ORDzero \neq n$.
+  Indeed $\ORDzero \Elem \Phi$ and $\ORDzero \NotEq n$.
 
   (2) For each $x \Elem \Phi'$ we have $\ORDsucc(x) \Elem \Phi'$.
   \begin{proof}
     Let $x \Elem \Phi'$.
     Then $\ORDsucc(x) \Elem \Phi$.
 
-    Let us show that $\ORDsucc(x) \neq n$.
+    Let us show that $\ORDsucc(x) \NotEq n$.
       Assume $\ORDsucc(x) \Eq n$.
       Then $x \NotElem \Phi$.
       Indeed $n \NotElem \Phi$ and if $x \Elem \Phi$ then
@@ -64,7 +64,7 @@
   $\ORDomega$ is a set.
 \end{corollary}
 \begin{proof}[forthel]
-  Define $f(n) = \ORDsucc(n)$ for $n \in \ORDomega$.
+  Define $f(n) \DefEq \ORDsucc(n)$ for $n \Elem \ORDomega$.
   Take a subset $X$ of $\ORDomega$ that is inductive regarding $\ORDzero$ and $f$.
   Indeed $f$ is a map from $\ORDomega$ to $\ORDomega$.
   Then we have $\ORDzero \Elem X$ and for each $n \Elem X$ we have $\ORDsucc(n) \Elem X$.
@@ -84,12 +84,12 @@
   Then $\omega'$ is a set.
 
   (1) $\ORDzero \Elem \omega'$.
-  Indeed $k \neq \ORDzero$.
+  Indeed $k \NotEq \ORDzero$.
 
   (2) For all $m \Elem \omega'$ we have $\ORDsucc(m) \Elem \omega'$.
   \begin{proof}
     Let $m \Elem \omega'$.
-    Then $\ORDsucc(m) \neq k$.
+    Then $\ORDsucc(m) \NotEq k$.
     Hence $\ORDsucc(m) \Elem \omega'$.
   \end{proof}
 

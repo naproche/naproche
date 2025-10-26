@@ -2,7 +2,7 @@ section \<open>Isabelle Prover IDE and logic support for NaProChe / ForTheL\<clo
 
 theory Naproche
   imports Main ZFC_Rudiments
-  keywords "forthel" "forthel_tex" :: thy_decl
+  keywords "forthel_ftl" "forthel_tex" "forthel_stex" :: thy_decl
     and "forthel_file" :: thy_load
     and "naproche_problem" :: thy_goal
     and "naproche_problems" :: diag

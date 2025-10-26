@@ -18,9 +18,9 @@ module SAD.Data.Instr (
   filterParam, skipfailParam, flatParam, printgoalParam, printsectionParam, printcheckParam,
   printunfoldParam, printreasonParam, printproverParam, printfulltaskParam, dumpParam,
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
-  translationParam, texParam,
+  translationParam,
   helpParam, serverParam, onlytranslateParam, onlytokenizeParam,
-  modeParam, proverParam, texExeParam, bibtexExeParam, initParam, theoryParam,
+  modeParam, dialectParam, proverParam, texExeParam, bibtexExeParam,
   keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument, keywordsModule,
   keywordsDropLimit, keywordsDropFlag
 ) where
@@ -39,7 +39,13 @@ import Naproche.Prover qualified as Prover
 
 -- | Indicate which of the parsers is currently used. This is must be recorded in the State
 -- for read instruction to work properly.
-data ParserKind = Ftl | Tex deriving (Eq, Ord, Show)
+data ParserKind = Ftl | Tex | Stex deriving (Eq, Ord)
+
+instance Show ParserKind where
+  show :: ParserKind -> String
+  show Ftl = "FTL"
+  show Tex = "TeX"
+  show Stex = "sTeX"
 
 data Instr =
     Command Command
@@ -114,12 +120,12 @@ proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisPa
   filterParam, skipfailParam, flatParam, printgoalParam, printsectionParam, printcheckParam,
   printunfoldParam, printreasonParam, printproverParam, printfulltaskParam, dumpParam,
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
-  translationParam, texParam :: Param.T Bool
+  translationParam :: Param.T Bool
 textFlags@[proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisParam,
   filterParam, skipfailParam, flatParam, printgoalParam, printsectionParam, printcheckParam,
   printunfoldParam, printreasonParam, printproverParam, printfulltaskParam, dumpParam,
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
-  translationParam, texParam] =
+  translationParam] =
    [Param.flag "prove" "prove goals in the text" True,
     Param.flag "check" "check symbols for definedness" True,
     Param.flag "checkconsistency" "check that no contradictory axioms occur" False,
@@ -143,20 +149,16 @@ textFlags@[proveParam, checkParam, checkconsistencyParam, symsignParam, infoPara
     Param.flag "unfoldsf" "enable unfolding of class conditions and map evaluations" True,
     Param.flag "unfoldlow" "enable unfolding of definitions in the whole low level context" True,
     Param.flag "unfoldlowsf" "enable unfolding of class and map conditions in general" False,
-    Param.flag "translation" "print first-order translation of sentences" False,
-    Param.flag "tex" "parse passed file with forthel tex parser" False]
+    Param.flag "translation" "print first-order translation of sentences" False]
 
 textArgs :: [Param.T Bytes]
-modeParam, proverParam, texExeParam, bibtexExeParam :: Param.T Bytes
-textArgs@[modeParam, proverParam, texExeParam, bibtexExeParam] =
+modeParam, dialectParam, proverParam, texExeParam, bibtexExeParam :: Param.T Bytes
+textArgs@[modeParam, dialectParam, proverParam, texExeParam, bibtexExeParam] =
    [Param.bytes "mode" "run Naproche in mode MODE" "verify",
+    Param.bytes "dialect" "use the DIALECT dialect of ForTheL" "ftl",
     Param.bytes "prover" "use prover NAME" (Prover.get_name Prover.eprover),
     Param.bytes "tex-exe" "TeX executable EXE" "pdflatex",
     Param.bytes "bibtex-exe" "BibTeX executable EXE" "bibtex"]
-
-initParam, theoryParam :: Param.T Bytes
-initParam = Param.bytes "init" "init file, empty to skip" "init.opt"
-theoryParam = Param.bytes "theory" "choose the underlying theory" "fol"
 
 verboseFlags :: [Param.T Bool]
 verboseFlags =

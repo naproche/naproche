@@ -24,7 +24,7 @@
   \end{case}
 
   \begin{case}{$U \SETunion V \Elem X$ for every $U, V \Elem X$.}
-    Define $\Phi = \SClass{n}{\Nat}{\SETunionover U \Elem X\text{ for every nonempty subclass }U\text{ of }X\text{ that has }n\text{ elements}}$.
+    Define $\Phi \DefEq \SClass{n}{\Nat}{\SETunionover U \Elem X\text{ for every nonempty subclass }U\text{ of }X\text{ that has }n\text{ elements}}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
@@ -41,7 +41,7 @@
           Let $U$ be a nonempty subclass of $X$ such that $U$ has $n \NATplus \NATone$ elements.
           Take a bijection $f$ between $\NATsegment{\NATone}{n \NATplus \NATone}$ and $U$.
           We have $\NATsegment{\NATone}{n \NATplus \NATone} \Eq \NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}$.
-          Take $V = \FUNim{f}{\NATsegment{\NATone}{n}}$.
+          Take $V \Eq \FUNim{f}{\NATsegment{\NATone}{n}}$.
           We have $\NATsegment{\NATone}{n} \SETinclude \NATsegment{\NATone}{n \NATplus \NATone}$.
 
           Let us show that $V \SETinclude U$.

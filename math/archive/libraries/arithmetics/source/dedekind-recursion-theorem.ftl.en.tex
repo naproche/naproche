@@ -11,7 +11,7 @@
 \begin{definition}[forthel,for=recursively defined]
   Let $a$ be an object and $f$ be a map.
   Let $\varphi$ be a map from $\Nat$ to $\Dom(f)$.
-  $\varphi$ is \emph{recursively defined by $a$ and $f$} iff $\varphi(\NATzero) = a$ and $\varphi(n \NATplus \NATone) = f(\varphi(n))$ for every $n \Elem \Nat$.
+  $\varphi$ is \emph{recursively defined by $a$ and $f$} iff $\varphi(\NATzero) \Eq a$ and $\varphi(n \NATplus \NATone) \Eq f(\varphi(n))$ for every $n \Elem \Nat$.
 \end{definition}
 
 \symdecl*{Dedekind Recursion Existence}
@@ -21,7 +21,7 @@
   Then there exists a $\varphi \FUNfromto{\Nat}{A}$ that is recursively defined by $a$ and $f$.
 \end{theorem}
 \begin{proof}[forthel]
-  (a) Define \[ \Phi = \SClass{H}{\SETpow(\Nat \SETprod A)}{\classtext{$(\NATzero, a) \Elem H$ and for all $n \Elem \Nat$ and all $x \Elem A$ if $(n, x) \Elem H$ then $(n \NATplus \NATone, f(x)) \Elem H$}}. \]
+  (a) Define \[ \Phi \DefEq \SClass{H}{\SETpow(\Nat \SETprod A)}{\classtext{$(\NATzero, a) \Elem H$ and for all $n \Elem \Nat$ and all $x \Elem A$ if $(n, x) \Elem H$ then $(n \NATplus \NATone, f(x)) \Elem H$}}. \]
 
   Let us show that $\SETintersectover \Phi \Elem \Phi$.
   \begin{proof}
@@ -68,7 +68,7 @@
   Let us show that for any $n \Elem \Nat$ there exists an $x \Elem A$ such
   that $(n, x) \Elem \SETintersectover \Phi$.
   \begin{proof}
-    Define $\Psi = \SClass{n}{\Nat}{\text{ there exists an }x \Elem A\text{ such
+    Define $\Psi \DefEq \SClass{n}{\Nat}{\text{ there exists an }x \Elem A\text{ such
     that }(n, x) \Elem \SETintersectover \Phi}$.
 
     (1) $\NATzero$ is contained in $\Psi$.
@@ -89,7 +89,7 @@
   Let us show that for all $n \Elem \Nat$ and all $x, y \Elem A$ if
   $(n, x), (n, y) \Elem \SETintersectover \Phi$ then $x \Eq y$.
   \begin{proof}
-    (b) Define $\Theta = \SClass{n}{\Nat}{\text{ for all }x, y \Elem A\text{ if }
+    (b) Define $\Theta \DefEq \SClass{n}{\Nat}{\text{ for all }x, y \Elem A\text{ if }
     (n, x), (n, y) \Elem \SETintersectover \Phi\text{ then }x \Eq y}$.
 
     (1) $\Theta$ contains $\NATzero$.
@@ -105,7 +105,7 @@
           \begin{case}{$x \NotEq a$.}
             $(\NATzero,x), (\NATzero,a)$ are contained in every element of $\Phi$.
             Then $(\NATzero,x), (\NATzero,a) \Elem \SETintersectover \Phi$.
-            Take $H = (\SETintersectover \Phi) \SETdiff \SETsingleton{(\NATzero,x)}$.
+            Take $H \Eq (\SETintersectover \Phi) \SETdiff \SETsingleton{(\NATzero,x)}$.
 
             Let us show that $H \Elem \Phi$.
               (1) $H \Elem \SETpow(\Nat \SETprod A)$.
@@ -135,7 +135,7 @@
           \begin{case}{$y \NotEq a$.}
             $(\NATzero,y), (\NATzero,a)$ are contained in every element of $\Phi$.
             Then $(\NATzero,y), (\NATzero,a) \Elem \SETintersectover \Phi$.
-            Take $H = (\SETintersectover \Phi) \SETdiff \SETsingleton{(\NATzero,y)}$.
+            Take $H \Eq (\SETintersectover \Phi) \SETdiff \SETsingleton{(\NATzero,y)}$.
 
             Let us show that $H \Elem \Phi$.
               (1) $H \Elem \SETpow(\Nat \SETprod A)$.
@@ -181,7 +181,7 @@
         Suppose $x \NotEq f(b)$ or $y \NotEq f(b)$.
 
         \begin{case}{$x \NotEq f(b)$.}
-          Take $H = (\SETintersectover \Phi) \SETdiff \SETsingleton{(n \NATplus \NATone,x)}$.
+          Take $H \Eq (\SETintersectover \Phi) \SETdiff \SETsingleton{(n \NATplus \NATone,x)}$.
 
           (i) $H \Elem \SETpow(\Nat \SETprod A)$.
 
@@ -214,7 +214,7 @@
         \end{case}
 
         \begin{case}{$y \NotEq f(b)$.}
-          Take $H = (\SETintersectover \Phi) \SETdiff \SETsingleton{(n \NATplus \NATone,y)}$.
+          Take $H \Eq (\SETintersectover \Phi) \SETdiff \SETsingleton{(n \NATplus \NATone,y)}$.
 
           (i) $H \Elem \SETpow(\Nat \SETprod A)$.
 
@@ -256,8 +256,8 @@
     Consequently $n \Elem \Theta$ for every $n \Elem \Nat$ (by \sr{induction I}{induction}).
   \end{proof}
 
-  Define $\varphi(n) =$ ``choose $x \Elem A$ such that $(n, x) \Elem
-  \SETintersectover \Phi$ in $x$'' for $n \in \Nat$.
+  Define $\varphi(n) \DefEq$ ``choose $x \Elem A$ such that $(n, x) \Elem
+  \SETintersectover \Phi$ in $x$'' for $n \Elem \Nat$.
 
   (1) Then $\varphi$ is a map from $\Nat$ to $A$ and we have
   $\varphi(\NATzero) \Eq a$.
@@ -283,7 +283,7 @@
   Then $\varphi \Eq \varphi'$.
 \end{theorem}
 \begin{proof}[forthel]
-  Define $\Phi = \SClass{n}{\Nat}{\varphi(n) \Eq \varphi'(n)}$.
+  Define $\Phi \DefEq \SClass{n}{\Nat}{\varphi(n) \Eq \varphi'(n)}$.
 
   (1) $\Phi$ contains $\NATzero$.
   Indeed $\varphi(\NATzero) \Eq a \Eq \varphi'(\NATzero)$.

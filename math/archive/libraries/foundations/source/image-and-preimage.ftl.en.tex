@@ -7,7 +7,7 @@
 
 \begin{proposition}[forthel]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
-  Then $\FUNim{f}{X} = \CClass{f(x)}{x \Elem X}$.
+  Then $\FUNim{f}{X} \Eq \CClass{f(x)}{x \Elem X}$.
 \end{proposition}
 
 \begin{corollary}[forthel]
@@ -35,7 +35,7 @@
   Then $f(a) \Elem Y$ iff $a \Elem \FUNpreim{f}{Y}$.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $\FUNpreim{f}{Y} = \SClass{x}{A}{f(x) \Elem Y}$.
+  We have $\FUNpreim{f}{Y} \Eq \SClass{x}{A}{f(x) \Elem Y}$.
   Hence $a \Elem \FUNpreim{f}{Y}$ iff $a \Elem A$ and $f(a) \Elem Y$.
   Then we have the thesis.
 \end{proof}
@@ -56,7 +56,7 @@
   Then $\FUNpreim{f}{B} \Eq A$.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $\FUNpreim{f}{B} = \SClass{a}{A}{f(a) \Elem B}$.
+  We have $\FUNpreim{f}{B} \Eq \SClass{a}{A}{f(a) \Elem B}$.
   $f(a) \Elem B$ for all $a \Elem A$.
   Hence the thesis.
 \end{proof}
@@ -89,7 +89,7 @@
   Then $\FUNpreim{f}{\FUNim{f}{A}} \Eq A$.
 \end{proposition}
 \begin{proof}[forthel]
-  $\FUNpreim{f}{\FUNim{f}{A}} = \SClass{a}{A}{f(a) \Elem \FUNim{f}{A}}$.
+  $\FUNpreim{f}{\FUNim{f}{A}} \Eq \SClass{a}{A}{f(a) \Elem \FUNim{f}{A}}$.
   For all $a \Elem A$ we have $f(a) \Elem \FUNim{f}{A}$.
   Hence every element of $\FUNpreim{f}{\FUNim{f}{A}}$ is contained in $A$ and every element of $A$ is contained in $\FUNpreim{f}{\FUNim{f}{A}}$.
   Thus $\FUNpreim{f}{\FUNim{f}{A}} \Eq A$.
@@ -208,10 +208,10 @@
   Then $\FUNim{g \FUNcomp f}{X} \Eq \FUNim{g}{\FUNim{f}{X}}$.
 \end{proposition}
 \begin{proof}[forthel]
-  $\FUNim{g \FUNcomp f}{X} = \CClass{g(f(a))}{a \Elem X}$.
+  $\FUNim{g \FUNcomp f}{X} \Eq \CClass{g(f(a))}{a \Elem X}$.
   $\FUNim{f}{X}$ is a subclass of $B$.
-  We have $\FUNim{g}{\FUNim{f}{X}} = \CClass{g(b)}{b \Elem \FUNim{f}{X}}\text{ and }\FUNim{f}{X} = \CClass{f(a)}{a \Elem X}$.
-  Thus $\FUNim{g}{\FUNim{f}{X}} = \CClass{g(f(a))}{a \Elem X}$.
+  We have $\FUNim{g}{\FUNim{f}{X}} \Eq \CClass{g(b)}{b \Elem \FUNim{f}{X}}\text{ and }\FUNim{f}{X} \Eq \CClass{f(a)}{a \Elem X}$.
+  Thus $\FUNim{g}{\FUNim{f}{X}} \Eq \CClass{g(f(a))}{a \Elem X}$.
   Therefore $\FUNim{g \FUNcomp f}{X} \Eq \FUNim{g}{\FUNim{f}{X}}$.
 \end{proof}
 
@@ -220,9 +220,9 @@
   Then $\FUNpreim{g \FUNcomp f}{Z} \Eq \FUNpreim{f}{\FUNpreim{g}{Z}}$.
 \end{proposition}
 \begin{proof}[forthel]
-  $\FUNpreim{g \FUNcomp f}{Z} = \SClass{a}{A}{g(f(a)) \Elem Z}$.
-  We have $\FUNpreim{g}{Z} = \SClass{b}{B}{g(b) \Elem Z}$ and $\FUNpreim{f}{\FUNpreim{g}{Z}} = \SClass{a}{A}{f(a) \Elem \FUNpreim{g}{Z}}$.
-  Hence $\FUNpreim{f}{\FUNpreim{g}{Z}} = \SClass{a}{A}{g(f(a)) \Elem Z}$.
+  $\FUNpreim{g \FUNcomp f}{Z} \Eq \SClass{a}{A}{g(f(a)) \Elem Z}$.
+  We have $\FUNpreim{g}{Z} \Eq \SClass{b}{B}{g(b) \Elem Z}$ and $\FUNpreim{f}{\FUNpreim{g}{Z}} \Eq \SClass{a}{A}{f(a) \Elem \FUNpreim{g}{Z}}$.
+  Hence $\FUNpreim{f}{\FUNpreim{g}{Z}} \Eq \SClass{a}{A}{g(f(a)) \Elem Z}$.
   Thus $\FUNpreim{g \FUNcomp f}{Z} \Eq \FUNpreim{f}{\FUNpreim{g}{Z}}$.
 \end{proof}
 

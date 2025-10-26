@@ -48,42 +48,42 @@
   \end{signature}
 
   \begin{definition}[forthel,for=two]
-    $\emph{\NATtwo} = \NATone \NATplus \NATone$.
+    $\emph{\NATtwo} \DefEq \NATone \NATplus \NATone$.
     Let \emph{two} stand for $\NATtwo$.
   \end{definition}
 
   \begin{definition}[forthel,for=three]
-    $\emph{\NATthree} = \NATtwo \NATplus \NATone$.
+    $\emph{\NATthree} \DefEq \NATtwo \NATplus \NATone$.
     Let \emph{three} stand for $\NATthree$.
   \end{definition}
 
   \begin{definition}[forthel,for=four]
-    $\emph{\NATfour} = \NATthree \NATplus \NATone$.
+    $\emph{\NATfour} \DefEq \NATthree \NATplus \NATone$.
     Let \emph{four} stand for $\NATfour$.
   \end{definition}
 
   \begin{definition}[forthel,for=five]
-    $\emph{\NATfive} = \NATfour \NATplus \NATone$.
+    $\emph{\NATfive} \DefEq \NATfour \NATplus \NATone$.
     Let \emph{five} stand for $\NATfive$.
   \end{definition}
 
   \begin{definition}[forthel,for=six]
-    $\emph{\NATsix} = \NATfive \NATplus \NATone$.
+    $\emph{\NATsix} \DefEq \NATfive \NATplus \NATone$.
     Let \emph{six} stand for $\NATsix$.
   \end{definition}
 
   \begin{definition}[forthel,for=seven]
-    $\emph{\NATseven} = \NATsix \NATplus \NATone$.
+    $\emph{\NATseven} \DefEq \NATsix \NATplus \NATone$.
     Let \emph{seven} stand for $\NATseven$.
   \end{definition}
 
   \begin{definition}[forthel,for=eight]
-    $\emph{\NATeight} = \NATseven \NATplus \NATone$.
+    $\emph{\NATeight} \DefEq \NATseven \NATplus \NATone$.
     Let \emph{eight} stand for $\NATeight$.
   \end{definition}
 
   \begin{definition}[forthel,for=nine]
-    $\emph{\NATnine} = \NATeight \NATplus \NATone$.
+    $\emph{\NATnine} \DefEq \NATeight \NATplus \NATone$.
     Let \emph{nine} stand for $\NATnine$.
   \end{definition}
 \end{sfragment}
@@ -131,7 +131,7 @@
     Then $n \Eq \NATzero$ or $n \Eq m \NATplus \NATone$ for some natural number $m$.
   \end{proposition}
   \begin{proof}[forthel]
-    Define $\Phi = \SClass{n'}{\Nat}{n' \Eq \NATzero\text{ or }n' \Eq m' \NATplus \NATone\text{ for some natural number }m'}$.
+    Define $\Phi \DefEq \SClass{n'}{\Nat}{n' \Eq \NATzero\text{ or }n' \Eq m' \NATplus \NATone\text{ for some natural number }m'}$.
     $\NATzero \Elem \Phi$ and for all $n' \Elem  \Phi$ we have $n' \NATplus \NATone \Elem \Phi$.
     Hence every natural number is contained in $\Phi$.
     Thus $n \Eq \NATzero$ or $n \Eq m \NATplus \NATone$ for some natural number $m$.
@@ -142,7 +142,7 @@
     Then $n \NotEq n \NATplus \NATone$.
   \end{proposition}
   \begin{proof}[forthel]
-    Define $\Phi = \SClass{n'}{\Nat}{n' \NotEq n' \NATplus \NATone}$.
+    Define $\Phi \DefEq \SClass{n'}{\Nat}{n' \NotEq n' \NATplus \NATone}$.
 
     (1) $\NATzero$ belongs to $\Phi$.
 
@@ -167,7 +167,7 @@
       Then $n \NATplus (m \NATplus k) \Eq (n \NATplus m) \NATplus k$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \SClass{k'}{\Nat}{n \NATplus (m \NATplus k') \Eq (n \NATplus m) \NATplus k'}$.
+      Define $\Phi \DefEq \SClass{k'}{\Nat}{n \NATplus (m \NATplus k') \Eq (n \NATplus m) \NATplus k'}$.
 
       (1) $\NATzero$ is contained in $\Phi$.
       Indeed $n \NATplus (m \NATplus \NATzero) \Eq n \NATplus m \Eq (n \NATplus m) \NATplus \NATzero$.
@@ -196,11 +196,11 @@
       Then $n \NATplus m \Eq m \NATplus n$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \SClass{m'}{\Nat}{n \NATplus m' \Eq m' \NATplus n}$.
+      Define $\Phi \DefEq \SClass{m'}{\Nat}{n \NATplus m' \Eq m' \NATplus n}$.
 
       (1) $\NATzero$ is an element of $\Phi$.
       \begin{proof}
-        Define $\Psi = \SClass{n'}{\Nat}{n' \NATplus \NATzero \Eq \NATzero \NATplus n'}$.
+        Define $\Psi \DefEq \SClass{n'}{\Nat}{n' \NATplus \NATzero \Eq \NATzero \NATplus n'}$.
 
         (1a) $\NATzero$ belongs to $\Psi$.
 
@@ -223,7 +223,7 @@
 
       Let us show that (2) $n \NATplus \NATone \Eq \NATone \NATplus n$.
       \begin{proof}
-        Define $\Theta = \SClass{n'}{\Nat}{n' \NATplus \NATone \Eq \NATone \NATplus n'}$.
+        Define $\Theta \DefEq \SClass{n'}{\Nat}{n' \NATplus \NATone \Eq \NATone \NATplus n'}$.
 
         (2a) $\NATzero$ is an element of $\Theta$.
 
@@ -270,7 +270,7 @@
       If $n \NATplus k \Eq m \NATplus k$ then $n \Eq m$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \SClass{k'}{\Nat}{\text{ if }n \NATplus k' \Eq m \NATplus k'\text{ then }n \Eq m}$.
+      Define $\Phi \DefEq \SClass{k'}{\Nat}{\text{ if }n \NATplus k' \Eq m \NATplus k'\text{ then }n \Eq m}$.
 
       (1) $\NATzero$ is an element of $\Phi$.
 

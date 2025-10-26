@@ -8,7 +8,7 @@
 
 \begin{definition}[forthel,for=NATsegment]
   Let $n, m$ be natural numbers.
-  $\emph{\NATsegment{n}{m}} = \SClass{k}{\Nat}{n \NATleq k \NATleq m}$.
+  $\emph{\NATsegment{n}{m}} \DefEq \SClass{k}{\Nat}{n \NATleq k \NATleq m}$.
 \end{definition}
 
 \begin{proposition}[forthel]
@@ -43,14 +43,14 @@
       Then $n \NATgtr m$ or $m \NATgtr n$.
 
       \begin{case}{$n \NATgtr m$.}
-        Take $k = m \NATplus \NATone$.
+        Take $k \Eq m \NATplus \NATone$.
         Then $k \NATleq n$ and $k \NATnleq m$.
         Hence it is wrong that $k \NATleq n$ iff $k \NATleq m$.
         Contradiction.
       \end{case}
 
       \begin{case}{$m \NATgtr n$.}
-        Take $k = n \NATplus \NATone$.
+        Take $k \Eq n \NATplus \NATone$.
         Then $k \NATleq m$ and $k \NATnleq m$.
         Hence it is wrong that $k \NATleq n$ iff $k \NATleq m$.
         Contradiction.

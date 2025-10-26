@@ -14,7 +14,7 @@ subsection \<open>Inlined text\<close>
 
 declare [[naproche_isabelle]]
 
-forthel \<open>
+forthel_ftl \<open>
 [synonym element/-s] [synonym system/-s] [synonym reduct/-s] [synonym term/-s]
 
 Signature Rewriting system.  A rewriting system is a notion.
@@ -125,5 +125,6 @@ declare [[naproche_prove = false]]
 
 forthel_file \<open>$NAPROCHE_HOME/math/examples/newman.ftl\<close>
 forthel_file \<open>$NAPROCHE_HOME/math/examples/newman.ftl.tex\<close>
+forthel_file \<open>$NAPROCHE_HOME/math/archive/articles/source/newman.ftl.en.tex\<close>
 
 end

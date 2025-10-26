@@ -49,7 +49,7 @@
 
     \begin{case}{$X \Eq \SETsingleton{a}$ for some object $a$.}
       Consider an object $a$ such that $X \Eq \SETsingleton{a}$.
-      Define $f(x) = \NATone$ for $x \in \SETsingleton{a}$.
+      Define $f(x) \DefEq \NATone$ for $x \Elem \SETsingleton{a}$.
       Then $f$ is a bijection between $\SETsingleton{a}$ and $\NATsegment{\NATone}{\NATone}$.
     \end{case}
   \end{proof}
@@ -68,12 +68,12 @@
 
     \begin{case}{$X \Eq \SETpair{a}{b}$ for some distinct objects $a, b$.}
       Consider distinct objects $a, b$ such that $X \Eq \SETpair{a}{b}$.
-      Define \[f(x) =
+      Define \[f(x) \DefEq
         \begin{cases}
           \NATone & : x \Eq a \\
           \NATtwo & : x \Eq b
         \end{cases}\]
-      for $x \in \SETpair{a}{b}$.
+      for $x \Elem \SETpair{a}{b}$.
       Then $f$ is a bijection between $\SETpair{a}{b}$ and $\NATsegment{\NATone}{\NATtwo}$.
       Indeed $f$ is injective and surjective onto $\NATsegment{\NATone}{\NATtwo}$.
     \end{case}
@@ -85,12 +85,12 @@
   \end{proposition}
   \begin{proof}[forthel]
     Take a bijection $f$ between $X$ and $\NATsegment{\NATone}{n}$.
-    Define \[g(x) =
+    Define \[g(x) \DefEq
       \begin{cases}
         f(x)  & : x \Elem X \\
         n \NATplus \NATone & : x \Eq a
       \end{cases}\]
-    for $x \in X \SETunion \SETsingleton{a}$.
+    for $x \Elem X \SETunion \SETsingleton{a}$.
 
     (1) $g$ is a map from $X \SETunion \SETsingleton{a}$ to $\NATsegment{\NATone}{n \NATplus \NATone}$.
     Indeed we can show that $g(x) \Elem \NATsegment{\NATone}{n \NATplus \NATone}$ for all $x \Elem X \SETunion \SETsingleton{a}$.

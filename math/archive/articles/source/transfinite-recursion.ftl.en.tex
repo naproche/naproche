@@ -30,7 +30,7 @@ all ordinals $\alpha$.
   Then \[ H(\alpha) \Eq H'(\alpha) \] for all $\alpha \Elem \Dom(H) \SETintersect \Dom(H')$.
 \end{lemma}
 \begin{proof}[forthel]
-  Define $\Phi = \SClass{\alpha}{\Ord}{\text{ if }
+  Define $\Phi \DefEq \SClass{\alpha}{\Ord}{\text{ if }
   \alpha \Elem \Dom(H) \SETintersect \Dom(H')\text{ then }H(\alpha) \Eq H'(\alpha)}$.
 
   For all ordinals $\alpha$ if every ordinal less than $\alpha$ lies in $\Phi$ then $\alpha \Elem \Phi$.
@@ -69,16 +69,16 @@ all ordinals $\alpha$.
 \begin{proof}[forthel]
   Every ordinal is contained in the domain of some map $H$ to $A$ such that $H$ is recursive regarding $G$.
   \begin{proof}
-    Define \[ \Phi = \SClass{\alpha}{\Ord}{\classtext{$\alpha$ is contained in the domain of some map to $A$ that is recursive regarding $G$}}. \]
+    Define \[ \Phi \DefEq \SClass{\alpha}{\Ord}{\classtext{$\alpha$ is contained in the domain of some map to $A$ that is recursive regarding $G$}}. \]
 
     Let us show that for every ordinal $\alpha$ if every ordinal less than $\alpha$ lies in $\Phi$ then $\alpha \Elem \Phi$.
       Let $\alpha$ be an ordinal.
       Assume that every ordinal less than $\alpha$ lies in $\Phi$.
       Then for all $y \Elem \alpha$ there exists a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \Elem \Dom(h)$.
-      Define $H'(y) =$ ``choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \Elem \Dom(h)$ in $h(y)$'' for $y \Elem \alpha$.
+      Define $H'(y) \DefEq$ ``choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \Elem \Dom(h)$ in $h(y)$'' for $y \Elem \alpha$.
       Then $H'$ is a map from $\alpha$ to $A$.
       We have $H' \Eq H' \FUNrest \alpha$.
-      Define \[ H(\beta) =
+      Define \[ H(\beta) \DefEq
         \begin{cases}
           H'(\beta)                 & : \beta \ORDless \alpha \\
           G(H' \FUNrest \beta)  & : \beta \Eq \alpha
@@ -133,7 +133,7 @@ all ordinals $\alpha$.
     Consequently every ordinal is contained in the domain of some map $H$ to $A$ such that $H$ is recursive regarding $G$.
   \end{proof}
 
-  Define $F(\alpha) =$ ``choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \Elem \Dom(H)$ in $H(\alpha)$'' for $\alpha \Elem \Ord$.
+  Define $F(\alpha) \DefEq$ ``choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \Elem \Dom(H)$ in $H(\alpha)$'' for $\alpha \Elem \Ord$.
   Then $F$ is a map from $\Ord$ to $A$.
 
   $F$ is recursive regarding $G$.
@@ -183,9 +183,9 @@ For given maps $G \FUNfromto{\Ord \SETprod A}{A}$ and
 $H \FUNfromto{\Ord \SETprod \ORDfunspace{A}}{A}$ and an element $a \Elem A$ we
 can define a map $F \FUNfromto{\Ord}{A}$ by
 \begin{itemize}
-  \item $F(\ORDzero) = a$,
-  \item $F(\ORDsucc(\alpha)) = G(\alpha, F(\alpha))$, and
-  \item $F(\lambda) = H(\lambda, F \FUNrest \lambda)$
+  \item $F(\ORDzero) \DefEq a$,
+  \item $F(\ORDsucc(\alpha)) \DefEq G(\alpha, F(\alpha))$, and
+  \item $F(\lambda) \DefEq H(\lambda, F \FUNrest \lambda)$
     for any limit ordinal $\lambda$.
 \end{itemize}
 
@@ -212,7 +212,7 @@ can define a map $F \FUNfromto{\Ord}{A}$ by
 \begin{proof}[forthel]
   $(\ORDpred(\Dom(f)), f(\ORDpred(\Dom(f)))) \Elem \Ord \SETprod A$ for all $f \Elem \ORDfunspace{A}$ such that $\Dom(f)$ is a successor ordinal.
 
-  Define  \[ J(f) =
+  Define  \[ J(f) \DefEq
     \begin{cases}
       a
       & : \Dom(f) \Eq \ORDzero

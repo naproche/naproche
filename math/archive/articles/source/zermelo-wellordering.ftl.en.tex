@@ -40,11 +40,11 @@ $\alpha \Elem \Ord$.
 \begin{proof}[forthel]
   Let $x$ be a set.
   Consider a choice map $g$ for $\SETpow(x) \SETdiff \SETsingleton{\SETempty}$.
-  Take $A = x \SETunion \SETsingleton{x}$.
+  Take $A \Eq x \SETunion \SETsingleton{x}$.
   Every $F \Elem \ORDfunspace{A}$ is a map from some ordinal to $A$.
   For any $F \Elem \ORDfunspace{A}$ if $x \SETdiff \FUNrange(F) \NotEq \SETempty$ then $x \SETdiff \FUNrange(F) \Elem \Dom(g)$.
   Indeed\linebreak $x \SETdiff \FUNrange(F)$ is a subset of $x$ for any $F \Elem \ORDfunspace{A}$.
-  Define \[ G(F) =
+  Define \[ G(F) \DefEq
     \begin{cases}
       g(x \SETdiff \FUNrange(F))
       & : x \SETdiff \FUNrange(F) \NotEq \SETempty
@@ -74,9 +74,9 @@ $\alpha \Elem \Ord$.
   \[ x \SETdiff \FUNim{F}{\alpha} \Eq \SETempty \Implies F(\alpha) \Eq x. \]
   \begin{proof}
     Let $\alpha \Elem \Ord$.
-    We have $\FUNim{F}{\alpha} = \CClass{F(\beta)}{\beta \Elem \alpha}$.
-    Hence $\FUNim{F}{\alpha} = \CClass{G(F \FUNrest \beta)}{\beta \Elem \alpha}$.
-    We have $\FUNrange(F \FUNrest \alpha) = \CClass{F(\beta)}{\beta \Elem \alpha}$.
+    We have $\FUNim{F}{\alpha} \Eq \CClass{F(\beta)}{\beta \Elem \alpha}$.
+    Hence $\FUNim{F}{\alpha} \Eq \CClass{G(F \FUNrest \beta)}{\beta \Elem \alpha}$.
+    We have $\FUNrange(F \FUNrest \alpha) \Eq \CClass{F(\beta)}{\beta \Elem \alpha}$.
     Thus\linebreak $\FUNrange(F \FUNrest \alpha) \Eq \FUNim{F}{\alpha}$.
 
     \begin{case}{$x \SETdiff \FUNim{F}{\alpha} \NotEq \SETempty$.}
@@ -126,13 +126,13 @@ $\alpha \Elem \Ord$.
     Contradiction.
   \end{proof}
 
-  Define $\Phi = \SClass{\alpha}{\Ord}{F(\alpha) \Eq x}$.
+  Define $\Phi \DefEq \SClass{\alpha}{\Ord}{F(\alpha) \Eq x}$.
   $\Phi$ is nonempty.
   Let us show that we can take an $\alpha \Elem \Phi$ such that $\alpha \ORDleq \beta$ for all $\beta \Elem \Phi$.
     Take an $\alpha \Elem \Phi$ such that for no $\beta \Elem \Phi$ we have $\beta \ORDless \alpha$ (by \sn{wellfoundedness of membership relation}).
     Then $\alpha \ORDleq \beta$ for all $\beta \Elem \Phi$.
   End.
-  Take $f = F \FUNrest \alpha$.
+  Take $f \Eq F \FUNrest \alpha$.
   Then $f$ is a map from $\alpha$ to $x$.
   Indeed for no $\beta \Elem \alpha$ we have $F(\beta) \Eq x$.
 

@@ -29,7 +29,7 @@
 
   \begin{definition}[forthel,for={range}]
     Let $f$ be a map.
-    $\emph{\FUNrange(f)} = \CClass{f(a)}{a \Elem \Dom(f)}$.
+    $\emph{\FUNrange(f)} \DefEq \CClass{f(a)}{a \Elem \Dom(f)}$.
     Let the \emph{range of $f$} stand for $\FUNrange(f)$.
   \end{definition}
 
@@ -84,14 +84,14 @@
 \begin{sfragment}{Image and Preimage}
   \begin{definition}[forthel,for={FUNim,image,direct image}]
     Let $f$ be a map and $A$ be a class.
-    $\emph{\FUNim{f}{A}} = \CClass{f(a)}{a \Elem \Dom(f) \SETintersect A}$.
+    $\emph{\FUNim{f}{A}} \DefEq \CClass{f(a)}{a \Elem \Dom(f) \SETintersect A}$.
     Let the \emph{image of $A$ under $f$} stand for $\FUNim{f}{A}$.
     Let the \emph{direct image of $A$ under $f$} stand for $\FUNim{f}{A}$.
   \end{definition}
 
   \begin{definition}[forthel,for={preimage,inverse image}]
     Let $f$ be a map and $B$ be a class.
-    $\emph{\FUNpreim{f}{B}} = \SClass{a}{\Dom(f)}{f(a) \Elem B}$.
+    $\emph{\FUNpreim{f}{B}} \DefEq \SClass{a}{\Dom(f)}{f(a) \Elem B}$.
     Let the \emph{preimage of $B$ under $f$} stand for $\FUNpreim{f}{B}$.
     Let the \emph{inverse image of $B$ under $f$} stand for $\FUNpreim{f}{B}$.
   \end{definition}

@@ -20,7 +20,7 @@
 \end{proposition}
 \begin{proof}[forthel]
   Take a set $x$ (by \sn{Set Existence Axiom}).
-  Define $A = \SClass{y}{x}{y \neq y}$.
+  Define $A \DefEq \SClass{y}{x}{y \NotEq y}$.
   Then $A$ is a set (by \sn{Separation Axiom}).
   We have $A \Eq \SETempty$.
   Hence $\SETempty$ is a set.
@@ -31,7 +31,7 @@
   Then $x \SETunion y$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  Take $X = \SETpair{x}{y}$.
+  Take $X \Eq \SETpair{x}{y}$.
   Then $X$ is a set.
   Hence $\SETunionover X$ is a set (by \sn{Union Axiom}).
   Indeed $X$ is a system of sets.
@@ -63,7 +63,7 @@
 \end{proposition}
 \begin{proof}[forthel]
   $\SETsingleton{a}$ and $\SETpair{a}{b}$ are sets for each $a \Elem x$ and each $b \Elem y$.
-  Define $P = \CClass{\SETpair{\SETsingleton{a}}{\SETpair{a}{b}}}{a \Elem x\text{ and }b \Elem y}$.
+  Define $P \DefEq \CClass{\SETpair{\SETsingleton{a}}{\SETpair{a}{b}}}{a \Elem x\text{ and }b \Elem y}$.
 
   (1) $P$ is a set.
   \begin{proof}
@@ -80,10 +80,10 @@
     Therefore $P$ is a set (by \sn{Separation Axiom}).
   \end{proof}
 
-  Define $l(p) =$ ``choose $a \Elem x$, choose $b \Elem y$ such that $p \Eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $a$'' for $p \in P$.
-  Define $r(p) =$ ``choose $a \Elem x$, choose $b \Elem y$ such that $p \Eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $b$'' for $p \in P$.
+  Define $l(p) \DefEq$ ``choose $a \Elem x$, choose $b \Elem y$ such that $p \Eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $a$'' for $p \Elem P$.
+  Define $r(p) \DefEq$ ``choose $a \Elem x$, choose $b \Elem y$ such that $p \Eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $b$'' for $p \Elem P$.
 
-  Define $f(p) = (l(p), r(p))$ for $p \in P$.
+  Define $f(p) \DefEq (l(p), r(p))$ for $p \Elem P$.
 
   Let us show that for any objects $u, u', v, v'$ if
   $\SETpair{\SETsingleton{u}}{\SETpair{u}{v}} \Eq \SETpair{\SETsingleton{u'}}{\SETpair{u'}{v'}}$ then $u \Eq u'$ and $v \Eq v'$.
@@ -134,7 +134,7 @@
 
   Let us show that for any $a \Elem x$ and any $b \Elem y$ we have $f(\SETpair{\SETsingleton{a}}{\SETpair{a}{b}}) \Eq (a,b)$.
     Let $a \Elem x$ and $b \Elem y$.
-    Take $p = \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$.
+    Take $p \Eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$.
     Then $p$ is a set.
     Then we can choose $a' \Elem x$ and $b' \Elem y$ such that $p \Eq \SETpair{\SETsingleton{a'}}{\SETpair{a'}{b'}}$ and $l(p) \Eq a'$.
     Then $a \Eq a'$ and $b \Eq b'$.
@@ -237,20 +237,20 @@
   Then $\FUNfunspace{x}{y}$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $R = \SClass{F}{\SETpow(x \SETprod y)}{\text{ (for all }a \Elem x\text{ there exists a }b \Elem y\text{ such that }(a,b) \Elem F\text{) and for all }a \Elem x\text{ and all }b, b' \Elem y\text{ such that }(a,b), (a,b') \Elem F\text{ we have }b \Eq b'}$.
+  Define $R \DefEq \SClass{F}{\SETpow(x \SETprod y)}{\text{ (for all }a \Elem x\text{ there exists a }b \Elem y\text{ such that }(a,b) \Elem F\text{) and for all }a \Elem x\text{ and all }b, b' \Elem y\text{ such that }(a,b), (a,b') \Elem F\text{ we have }b \Eq b'}$.
 
   [prover vampire]
   Every element of $R$ is a set. % Needed for ontological checking
-  Define $h(F) = \Map{a}{x}$ ``choose $b \Elem y$ such that $(a,b) \Elem F$ in $b$'' for $F \Elem R$.
+  Define $h(F) \DefEq \Map{a}{x}$ ``choose $b \Elem y$ such that $(a,b) \Elem F$ in $b$'' for $F \Elem R$.
   [prover eprover]
 
   Let us show that $\FUNfunspace{x}{y} \SETinclude \FUNrange(h)$.
     Let $f \Elem \FUNfunspace{x}{y}$.
-    Define $F = \CClass{(a,f(a))}{a \Elem x}$.
+    Define $F \DefEq \CClass{(a,f(a))}{a \Elem x}$.
 
     Then $F \Elem R$.
     \begin{proof}
-      Define $g(a) = (a,f(a))$ for $a \in x$.
+      Define $g(a) \DefEq (a,f(a))$ for $a \Elem x$.
       Then $F \Eq \FUNrange(g)$.
       Hence $F$ is a set.
       Thus $F \Elem \SETpow(x \SETprod y)$.
