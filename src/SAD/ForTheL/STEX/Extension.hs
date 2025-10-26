@@ -15,9 +15,12 @@ module SAD.ForTheL.STEX.Extension (
   structSigExtend,
   newPredicat,
   newNotion,
-  introduceMacro
+  introduceMacro,
+  pretypeVariable
 ) where
 
+import Control.Monad
+import Data.Set qualified as Set
 import Control.Applicative
 import Control.Monad.State.Class
 
@@ -30,6 +33,7 @@ import SAD.ForTheL.Reports qualified as Reports
 import SAD.Parser.Base
 import SAD.ForTheL.Pattern
 import SAD.ForTheL.STEX.Pattern qualified as STEX
+import SAD.ForTheL.STEX.Statement qualified as STEX
 import SAD.Parser.Primitives
 import SAD.Parser.Combinators
 
@@ -50,7 +54,7 @@ defPredicat = do
   (f, g) <- wellFormedCheck prdVars defn
   return $ Iff (Tag HeadTerm f) g
   where
-    defn = do f <- newPredicat; equiv; g <- statement; return (f,g)
+    defn = do f <- newPredicat; equiv; g <- STEX.statement; return (f,g)
     equiv = Reports.markupTokenSeqOf Reports.defIff iffPhrases <|> texCommand "Iff"
 
 defNotion :: FTL Formula
@@ -59,7 +63,7 @@ defNotion = do
   return $ dAll uDecl $ Iff (Tag HeadTerm n) h
   where
     defn = do
-      (n, u) <- newNotion; isOrEq; (q, f) <- anotion
+      (n, u) <- newNotion; isOrEq; (q, f) <- STEX.anotion
       let v = pVar u; fn = replace v (trm n)
       h <- (fn . q) <$> dig f [v]
       return ((n,h),u)
@@ -73,7 +77,7 @@ sigPredicat = do
   (f,g) <- wellFormedCheck prdVars sig
   return $ Imp (Tag HeadTerm f) g
   where
-    sig    = do f <- newPredicat; imp; g <- statement </> noInfo; return (f,g)
+    sig    = do f <- newPredicat; imp; g <- STEX.statement </> noInfo; return (f,g)
     imp    = token' "is" <|> Reports.markupToken Reports.sigImp "implies" <|> texCommand "Implies"
     noInfo = (tokenSeq' ["an", "atom"] </> tokenSeq' ["a", "relation"]) >> return Top
 
@@ -86,7 +90,7 @@ sigNotion = do
     sig = do
       (n, u) <- newNotion
       token' "is"
-      (q, f) <- anotion -|- noInfo
+      (q, f) <- STEX.anotion -|- noInfo
       let v = pVar u
       h <- (replace v (trm n) . q) <$> dig f [v]
       return ((n,h),u)
@@ -135,13 +139,35 @@ introduceMacro = do
     prd = wellFormedCheck (prdVars . snd) $ do
       f <- STEX.newPrdPattern singleLetterVariable
       Reports.markupTokenSeqOf Reports.macroLet standForPhrases
-      g <- statement
+      g <- STEX.statement
       (_, pos2) <- dot
       return (pos2, (f, g))
     notion = wellFormedCheck (funVars . snd) $ do
       (n, u) <- STEX.unnamedNotion singleLetterVariable
       Reports.markupTokenSeqOf Reports.macroLet standForPhrases
-      (q, f) <- anotion
+      (q, f) <- STEX.anotion
       (_, pos2) <- dot
       h <- q <$> dig f [pVar u]
       return (pos2, (n, h))
+
+pretypeVariable :: FTL ProofText
+pretypeVariable = do
+  (pos, tv) <- narrow2 typeVar
+  modify $ upd tv
+  return $ ProofTextPretyping pos (fst tv)
+  where
+    typeVar = do
+      pos1 <- getPos; Reports.markupToken Reports.synonymLet "let"; vs <- varList; Reports.markupTokenSeqOf Reports.synonymLet standForPhrases
+      when (Set.size vs == 0) $ fail "empty variable list in let binding"
+      (g, pos2) <- wellFormedCheck (freeOrOverlapping mempty . fst) holedNotion
+      let pos = Position.range_position (pos1, pos2)
+      Reports.addPretypingReport pos $ map posVarPosition $ Set.toList vs;
+      return (pos, (vs, ignoreNames g))
+
+    holedNotion = do
+      (q, f) <- STEX.anotion
+      g <- q <$> dig f [(mkVar (VarHole ""))]
+      (_, pos2) <- dot
+      return (g, pos2)
+
+    upd (vs, notion) st = st { tvrExpr = (Set.map posVarName vs, notion) : tvrExpr st }

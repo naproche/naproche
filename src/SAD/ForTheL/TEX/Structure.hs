@@ -26,8 +26,8 @@ import SAD.ForTheL.Structure
 import SAD.ForTheL.FTL.Structure qualified as FTL -- for backward compatibility
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
-import SAD.ForTheL.Extension
 import SAD.ForTheL.TEX.Extension qualified as TEX
+import SAD.ForTheL.TEX.Statement qualified as TEX
 import SAD.ForTheL.Reports (getMarkupToken, getMarkupTokenOf, markupToken)
 import SAD.ForTheL.Instruction
 import qualified SAD.ForTheL.Reports as Reports
@@ -58,7 +58,7 @@ topLevelBlock =
   <|> topLevelSection
   <|> ((instruction >>= addSynonym >>= resetPretyping) <&> singleton)
   <|> try (TEX.introduceMacro <&> singleton)
-  <|> (pretypeVariable <&> singleton)
+  <|> (TEX.pretypeVariable <&> singleton)
 
 
 -- * Top-level sections
@@ -103,7 +103,7 @@ signatureSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["signature"]
   label <- optionalEnvLabel
   result <- sig label </> structSig label
-  macrosAndPretypings <- many (try TEX.introduceMacro <|> pretypeVariable)
+  macrosAndPretypings <- many (try TEX.introduceMacro <|> TEX.pretypeVariable)
   endTopLevelSection keyword starred
   return $ result ++ macrosAndPretypings
   where
@@ -150,7 +150,7 @@ definitionSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["definition"]
   label <- optionalEnvLabel
   content <- definitionBody
-  macrosAndPretypings <- many (try TEX.introduceMacro <|> pretypeVariable)
+  macrosAndPretypings <- many (try TEX.introduceMacro <|> TEX.pretypeVariable)
   endTopLevelSection keyword starred
   proofText <- addMetadata Definition content label
   return $ proofText : macrosAndPretypings
@@ -163,7 +163,7 @@ axiomSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["axiom"]
   label <- optionalEnvLabel
   content <- axiomBody
-  macrosAndPretypings <- many (try TEX.introduceMacro <|> pretypeVariable)
+  macrosAndPretypings <- many (try TEX.introduceMacro <|> TEX.pretypeVariable)
   endTopLevelSection keyword starred
   proofText <- addMetadata Axiom content label
   return $ proofText : macrosAndPretypings
@@ -174,7 +174,7 @@ theoremSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["theorem", "proposition", "lemma", "corollary"]
   label <- optionalEnvLabel
   content <- addAssumptions . topLevelProof $
-             pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink <* endTopLevelSection keyword starred
+             pretypeSentence Affirmation (affirmationHeader >> TEX.statement) affirmVars finishWithOptLink <* endTopLevelSection keyword starred
   proofText <- addMetadata Theorem content label
   return [proofText]
 
@@ -185,7 +185,7 @@ conventionSection :: FTL [ProofText]
 conventionSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["convention"]
   optionalEnvLabel
-  macrosAndPretypings <- some (try TEX.introduceMacro <|> pretypeVariable)
+  macrosAndPretypings <- some (try TEX.introduceMacro <|> TEX.pretypeVariable)
   endTopLevelSection keyword starred
   return macrosAndPretypings
 
@@ -211,7 +211,7 @@ definitionBody :: FTL [ProofText]
 definitionBody = addAssumptions $ pretype $ pretypeSentence Posit TEX.defExtend defVars finishWithoutLink
 
 axiomBody :: FTL [ProofText]
-axiomBody = addAssumptions $ pretype $ pretypeSentence Posit (affirmationHeader >> statement) affirmVars finishWithoutLink
+axiomBody = addAssumptions $ pretype $ pretypeSentence Posit (affirmationHeader >> TEX.statement) affirmVars finishWithoutLink
 
 
 -- | Adds parser for parsing any number of assumptions before the passed content
@@ -221,7 +221,7 @@ addAssumptions content = body
   where
     body = assumption <|> content
     assumption = topAssume `pretypeBefore` body
-    topAssume = pretypeSentence Assumption (assumptionHeader >> statement) assumeVars finishWithoutLink
+    topAssume = pretypeSentence Assumption (assumptionHeader >> TEX.statement) assumeVars finishWithoutLink
 
 
 -- * Resetting variable pretypings at new sections (TEX)
@@ -270,26 +270,26 @@ exitInstruction text = case text of
 
 -- | Parse a choice expression.
 choose :: FTL Block
-choose = sentence Choice (choiceHeader >> choice) assumeVars finishWithOptLink
+choose = sentence Choice (choiceHeader >> TEX.choice) assumeVars finishWithOptLink
 
 -- | Parse a case hypothesis:
 -- @"\begin" "{" "case "}" "{" <statement> "." "}"@
 caseHypothesis :: FTL Block
 caseHypothesis = do
   label "\"\\begin{case}\"" . texBegin $ markupToken Reports.proofStart "case"
-  braced $ sentence Block.CaseHypothesis (finish statement) affirmVars (pure [])
+  braced $ sentence Block.CaseHypothesis (finish TEX.statement) affirmVars (pure [])
 
 -- | Parse an affirmation.
 affirmation :: FTL Block
-affirmation = sentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink </> eqChain
+affirmation = sentence Affirmation (affirmationHeader >> TEX.statement) affirmVars finishWithOptLink </> eqChain
 
 -- | Parse an assumption.
 assumption :: FTL Block
-assumption = sentence Assumption (assumptionHeader >> statement) assumeVars finishWithoutLink
+assumption = sentence Assumption (assumptionHeader >> TEX.statement) assumeVars finishWithoutLink
 
 -- | Parse a low-level definition.
 lowLevelDefinition :: FTL Block
-lowLevelDefinition = sentence LowDefinition (lowLevelDefinitionHeader >> classNotion </> mapNotion) llDefnVars finishWithoutLink
+lowLevelDefinition = sentence LowDefinition (lowLevelDefinitionHeader >> TEX.classNotion </> TEX.mapNotion) llDefnVars finishWithoutLink
 
 
 -- ** Links
@@ -555,4 +555,4 @@ caseDestinction_old = do
 -- | FTL-style case hypothesis:
 -- @<statement> [ "by" <references> ] "."@
 caseHypothesis_old :: FTL Block
-caseHypothesis_old = sentence Block.CaseHypothesis (FTL.caseHeader >> statement) affirmVars finishWithOptLink
+caseHypothesis_old = sentence Block.CaseHypothesis (FTL.caseHeader >> TEX.statement) affirmVars finishWithOptLink

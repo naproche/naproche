@@ -80,10 +80,10 @@
     Therefore $P$ is a set (by \sn{Separation Axiom}).
   \end{proof}
 
-  Define $l(p) =$ ``choose $a \Elem x$, choose $b \Elem y$ such that $p \Eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $a$'' for $p \in P$.
-  Define $r(p) =$ ``choose $a \Elem x$, choose $b \Elem y$ such that $p \Eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $b$'' for $p \in P$.
+  Define $l(p) \DefEq$ ``choose $a \Elem x$, choose $b \Elem y$ such that $p \Eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $a$'' for $p \Elem P$.
+  Define $r(p) \DefEq$ ``choose $a \Elem x$, choose $b \Elem y$ such that $p \Eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $b$'' for $p \Elem P$.
 
-  Define $f(p) \DefEq (l(p), r(p))$ for $p \in P$.
+  Define $f(p) \DefEq (l(p), r(p))$ for $p \Elem P$.
 
   Let us show that for any objects $u, u', v, v'$ if
   $\SETpair{\SETsingleton{u}}{\SETpair{u}{v}} \Eq \SETpair{\SETsingleton{u'}}{\SETpair{u'}{v'}}$ then $u \Eq u'$ and $v \Eq v'$.
@@ -250,7 +250,7 @@
 
     Then $F \Elem R$.
     \begin{proof}
-      Define $g(a) \DefEq (a,f(a))$ for $a \in x$.
+      Define $g(a) \DefEq (a,f(a))$ for $a \Elem x$.
       Then $F \Eq \FUNrange(g)$.
       Hence $F$ is a set.
       Thus $F \Elem \SETpow(x \SETprod y)$.

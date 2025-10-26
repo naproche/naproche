@@ -71,7 +71,7 @@
   Then $\SETcard{y} \ORDleq \SETcard{x}$.
 \end{corollary}
 \begin{proof}[forthel]
-  Define $f(v) \DefEq v$ for $v \in y$.
+  Define $f(v) \DefEq v$ for $v \Elem y$.
   Then $f$ is an injective map from $y$ to $x$.
   Hence $\SETcard{y} \ORDleq \SETcard{x}$.
 \end{proof}
@@ -96,7 +96,7 @@
 \begin{proof}[forthel]
   \begin{case}{there exists a surjective map from $x$ onto $y$.}
     Consider a surjective map $f$ from $x$ onto $y$.
-    Define $g(v) =$ ``choose $u \Elem x$ such that $f(u) \Eq v$ in $u$'' for $v \in y$.
+    Define $g(v) \DefEq$ ``choose $u \Elem x$ such that $f(u) \Eq v$ in $u$'' for $v \Elem y$.
     Then $g$ is an injective map from $y$ to $x$.
     Indeed we can show that $g$ is injective.
       Let $v, v' \Elem y$.
@@ -117,12 +117,12 @@
     Then we can take an injective map $f$ from $y$ to $x$.
     Then $\FUNinv{f}$ is a bijection between $\FUNrange(f)$ and $y$.
     Consider an element $z$ of $y$.
-    Define \[ g(u) =
+    Define \[ g(u) \DefEq
       \begin{cases}
         \FUNinv{f}(u) & : u \Elem \FUNrange(f) \\
         z         & : u \NotElem \FUNrange(f)
       \end{cases} \]
-    for $u \in x$.
+    for $u \Elem x$.
     Then $g$ is a surjective map from $x$ onto $y$.
     Indeed we can show that every element of $y$ is a value of $g$.
       Let $v \Elem y$.

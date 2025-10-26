@@ -108,9 +108,9 @@ Let $x \leq y$ stand for $x < y \vee x = y$.
 Let $x \geq y$ stand for $y \leq x$.
 
 \begin{axiom}[1 5 i]\label{1_5_i}
-$(x < y \wedge x \neq y) \wedge not y < x$
-or $not x < y \wedge x = y \wedge not y < x$
-or $not x < y \wedge x \neq y \wedge y < x$.
+$(x < y \wedge x \neq y) \wedge \neg y < x$
+or $\neg x < y \wedge x = y \wedge \neg y < x$
+or $\neg x < y \wedge x \neq y \wedge y < x$.
 \end{axiom}
 
 \begin{axiom}[1 5 ii]\label{1_5_ii}
@@ -118,7 +118,7 @@ If $x < y$ and $y < z$ then $x < z$.
 \end{axiom}
 
 \begin{proposition}
-$x \leq y$ iff not $x > y$.
+$x \leq y$ iff $\neg x > y$.
 \end{proposition}
 
 \begin{axiom}[1 12 A2]\label{1_12_A2}
@@ -360,7 +360,7 @@ Case $1/x = 1/y$. Then
 \[ 1 = x \cdot (1/x) < y \cdot (1/y) = 1. \]
 Contradiction. end.
 
-Hence not $1/x \leq 1/y$ and $1/y < 1/x$.
+Hence $\neg 1/x \leq 1/y$ and $1/y < 1/x$.
 \end{proof}
 
 \end{forthel}

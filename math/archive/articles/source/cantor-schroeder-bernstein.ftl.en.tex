@@ -40,7 +40,7 @@ Its proof of is based on the Knaster-Tarski Fixed Point Theorem.
     Take an injective map $g$ from $y$ to $x$.
     We have $y \SETdiff \FUNim{f}{a} \SETinclude y$ for any $a \Elem \SETpow(x)$.
 
-    (1) Define $h(a) \DefEq x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{a}}$ for $a \in \SETpow(x)$.
+    (1) Define $h(a) \DefEq x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{a}}$ for $a \Elem \SETpow(x)$.
 
     $h$ is a map from $\SETpow(x)$ to $\SETpow(x)$.
     Indeed $h(a)$ is a subset of $x$ for each subset $a$ of $x$.
@@ -58,24 +58,24 @@ Its proof of is based on the Knaster-Tarski Fixed Point Theorem.
 
     Hence we can take a fixed point $c$ of $h$ (by \sn{Knaster-Tarski}).
 
-    (2) Define $F(u) \DefEq f(u)$ for $u \in c$.
+    (2) Define $F(u) \DefEq f(u)$ for $u \Elem c$.
 
     We have $c \Eq h(c)$ iff $x \SETdiff c \Eq \FUNim{g}{y \SETdiff \FUNim{f}{c}}$.
     $\FUNinv{g}$ is a bijection between $\FUNrange(g)$ and $y$.
     Thus $x \SETdiff c \Eq \FUNim{g}{y \SETdiff \FUNim{f}{c}} \SETinclude \FUNrange(g)$.
     Therefore $x \SETdiff c$ is a subset of $\Dom(\FUNinv{g})$.
 
-    (3) Define $G(u) \DefEq \FUNinv{g}(u)$ for $u \in x \SETdiff c$.
+    (3) Define $G(u) \DefEq \FUNinv{g}(u)$ for $u \Elem x \SETdiff c$.
 
     $F$ is a bijection between $c$ and $\FUNrange(F)$.
     $G$ is a bijection between $x \SETdiff c$ and $\FUNrange(G)$.
 
-    Define \[ H(u) =
+    Define \[ H(u) \DefEq
       \begin{cases}
         F(u) & : u \Elem c \\
         G(u) & : u \NotElem c
       \end{cases} \]
-    for $u \in x$.
+    for $u \Elem x$.
 
     Let us show that $H$ is a map to $y$.
       $\Dom(H)$ is a set and every value of $H$ is an object.

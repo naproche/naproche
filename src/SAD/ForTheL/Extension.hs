@@ -13,27 +13,15 @@ module SAD.ForTheL.Extension (
   funVars,
   notionVars,
   prdVars,
-  pretypeVariable,
   ignoreNames
 ) where
 
-import Control.Monad
-import Data.Set qualified as Set
-import Control.Monad.State.Class (modify)
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 
 import SAD.Data.Formula
-import SAD.Data.Text.Block (ProofText (..))
 import SAD.ForTheL.Base
-import SAD.ForTheL.Statement
-import SAD.ForTheL.Reports (markupToken, markupTokenSeqOf, addPretypingReport)
-import SAD.ForTheL.Reports qualified as Reports
-import SAD.Parser.Base
-import SAD.Parser.Combinators
 import SAD.Data.Text.Decl
-
-import Isabelle.Position qualified as Position
 
 
 -- well-formedness check
@@ -71,31 +59,6 @@ allDistinctVars = disVs []
     disVs ls (Var {varName = v@(VarConstant _)} : vs) = notElem v ls && disVs (v:ls) vs
     disVs _ [] = True
     disVs _ _ = False
-
-
-
-pretypeVariable :: FTL ProofText
-pretypeVariable = do
-  (pos, tv) <- narrow2 typeVar
-  modify $ upd tv
-  return $ ProofTextPretyping pos (fst tv)
-  where
-    typeVar = do
-      pos1 <- getPos; markupToken Reports.synonymLet "let"; vs <- varList; markupTokenSeqOf Reports.synonymLet standForPhrases
-      when (Set.size vs == 0) $ fail "empty variable list in let binding"
-      (g, pos2) <- wellFormedCheck (freeOrOverlapping mempty . fst) holedNotion
-      let pos = Position.range_position (pos1, pos2)
-      addPretypingReport pos $ map posVarPosition $ Set.toList vs;
-      return (pos, (vs, ignoreNames g))
-
-    holedNotion = do
-      (q, f) <- anotion
-      g <- q <$> dig f [(mkVar (VarHole ""))]
-      (_, pos2) <- dot
-      return (g, pos2)
-
-    upd (vs, notion) st = st { tvrExpr = (Set.map posVarName vs, notion) : tvrExpr st }
-
 
 ignoreNames :: Formula -> Formula
 ignoreNames (All dcl f) = All dcl {declName = VarEmpty} $ ignoreNames f

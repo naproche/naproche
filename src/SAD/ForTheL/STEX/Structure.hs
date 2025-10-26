@@ -30,8 +30,8 @@ import SAD.ForTheL.Structure
 import SAD.ForTheL.FTL.Structure qualified as FTL -- for backward compatibility
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
-import SAD.ForTheL.Extension
 import SAD.ForTheL.STEX.Extension qualified as STEX
+import SAD.ForTheL.STEX.Statement qualified as STEX
 import SAD.ForTheL.Reports (getMarkupToken, getMarkupTokenOf, markupToken)
 import SAD.ForTheL.Instruction
 import qualified SAD.ForTheL.Reports as Reports
@@ -65,7 +65,7 @@ topLevelBlock =
   <|> topLevelSection
   <|> ((instruction >>= TEX.addSynonym >>= TEX.resetPretyping) <&> singleton)
   <|> try (STEX.introduceMacro <&> singleton)
-  <|> (pretypeVariable <&> singleton)
+  <|> (STEX.pretypeVariable <&> singleton)
 
 
 -- * Top-level sections
@@ -110,7 +110,7 @@ signatureSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["signature"]
   label <- optTlsOptions
   result <- sig label </> structSig label
-  macrosAndPretypings <- many (try STEX.introduceMacro <|> pretypeVariable)
+  macrosAndPretypings <- many (try STEX.introduceMacro <|> STEX.pretypeVariable)
   endTopLevelSection keyword starred
   return $ result ++ macrosAndPretypings
   where
@@ -157,7 +157,7 @@ definitionSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["definition"]
   label <- optTlsOptions
   content <- definitionBody
-  macrosAndPretypings <- many (try STEX.introduceMacro <|> pretypeVariable)
+  macrosAndPretypings <- many (try STEX.introduceMacro <|> STEX.pretypeVariable)
   endTopLevelSection keyword starred
   proofText <- addMetadata Definition content label
   return $ proofText : macrosAndPretypings
@@ -170,7 +170,7 @@ axiomSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["axiom"]
   label <- optTlsOptions
   content <- axiomBody
-  macrosAndPretypings <- many (try STEX.introduceMacro <|> pretypeVariable)
+  macrosAndPretypings <- many (try STEX.introduceMacro <|> STEX.pretypeVariable)
   endTopLevelSection keyword starred
   proofText <- addMetadata Axiom content label
   return $ proofText : macrosAndPretypings
@@ -181,7 +181,7 @@ theoremSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["theorem", "proposition", "lemma", "corollary"]
   label <- optTlsOptions
   content <- TEX.addAssumptions . topLevelProof $
-             pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink <* endTopLevelSection keyword starred
+             pretypeSentence Affirmation (affirmationHeader >> STEX.statement) affirmVars finishWithOptLink <* endTopLevelSection keyword starred
   proofText <- addMetadata Theorem content label
   return [proofText]
 
@@ -192,7 +192,7 @@ conventionSection :: FTL [ProofText]
 conventionSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["convention"]
   optTlsOptions
-  macrosAndPretypings <- some (try STEX.introduceMacro <|> pretypeVariable)
+  macrosAndPretypings <- some (try STEX.introduceMacro <|> STEX.pretypeVariable)
   endTopLevelSection keyword starred
   return macrosAndPretypings
 
@@ -218,7 +218,7 @@ definitionBody :: FTL [ProofText]
 definitionBody = TEX.addAssumptions $ pretype $ pretypeSentence Posit STEX.defExtend defVars finishWithoutLink
 
 axiomBody :: FTL [ProofText]
-axiomBody = TEX.addAssumptions $ pretype $ pretypeSentence Posit (affirmationHeader >> statement) affirmVars finishWithoutLink
+axiomBody = TEX.addAssumptions $ pretype $ pretypeSentence Posit (affirmationHeader >> STEX.statement) affirmVars finishWithoutLink
 
 
 -- * Importing Modules
@@ -262,11 +262,26 @@ instruction =
 
 -- | Parse a choice expression.
 choose :: FTL Block
-choose = sentence Choice (choiceHeader >> choice) assumeVars finishWithOptLink
+choose = sentence Choice (choiceHeader >> STEX.choice) assumeVars finishWithOptLink
+
+-- | Parse a case hypothesis:
+-- @"\begin" "{" "case "}" "{" <statement> "." "}"@
+caseHypothesis :: FTL Block
+caseHypothesis = do
+  label "\"\\begin{case}\"" . texBegin $ markupToken Reports.proofStart "case"
+  braced $ sentence Block.CaseHypothesis (finish STEX.statement) affirmVars (pure [])
 
 -- | Parse an affirmation.
 affirmation :: FTL Block
-affirmation = sentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink </> eqChain
+affirmation = sentence Affirmation (affirmationHeader >> STEX.statement) affirmVars finishWithOptLink </> eqChain
+
+-- | Parse an assumption.
+assumption :: FTL Block
+assumption = sentence Assumption (assumptionHeader >> STEX.statement) assumeVars finishWithoutLink
+
+-- | Parse a low-level definition.
+lowLevelDefinition :: FTL Block
+lowLevelDefinition = sentence LowDefinition (lowLevelDefinitionHeader >> STEX.classNotion </> STEX.mapNotion) llDefnVars finishWithoutLink
 
 
 -- ** Links
@@ -479,9 +494,9 @@ addBody qed link pre post b = proofBody qed link $ b {Block.kind = kind}
 confirmationBody :: Block -> FTL Block
 confirmationBody block = do
   pbl <-
-    narrow TEX.assumption </>
+    narrow assumption </>
     lowLevelProof (narrow $ affirmation </> choose) </>
-    narrow TEX.lowLevelDefinition
+    narrow lowLevelDefinition
   return block {Block.body = [ProofTextBlock pbl]}
 
 -- | Proof body + proof end + link
@@ -506,8 +521,8 @@ proofText qed =
   (TEX.unfailing (fmap ProofTextBlock lowtext <|> instruction) `updateDeclbefore` proofText qed)
   where
     lowtext =
-      narrow TEX.assumption </>
-      lowLevelProof (narrow $ affirmation </> choose </> TEX.lowLevelDefinition) </>
+      narrow assumption </>
+      lowLevelProof (narrow $ affirmation </> choose </> lowLevelDefinition) </>
       caseDestinction
     instruction =
       fmap (uncurry ProofTextDrop) instrDrop </>
@@ -517,7 +532,7 @@ proofText qed =
 -- @<caseHypothesis> <proofBody>@
 caseDestinction :: FTL Block
 caseDestinction = do
-  bl@Block { Block.formula = fr } <- narrow TEX.caseHypothesis
+  bl@Block { Block.formula = fr } <- narrow caseHypothesis
   proofBody TEX.caseDestinctionEnd (pure []) $ bl {
   Block.formula = Imp (Tag Tag.CaseHypothesis fr) mkThesis}
 

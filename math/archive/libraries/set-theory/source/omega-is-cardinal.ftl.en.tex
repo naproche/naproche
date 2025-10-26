@@ -16,13 +16,13 @@
     Then $\SETcard{\ORDomega} \Elem \ORDomega$.
     Take $n \Eq \SETcard{\ORDomega}$ and a bijection $f$ between $n$ and $\ORDomega$.
 
-    Define \[ g(k) =
+    Define \[ g(k) \DefEq
       \begin{cases}
         \ORDsucc(f(k)) & : k \ORDless n
         \\
         \ORDzero           & : k \Eq n
       \end{cases} \]
-    for $k \in \ORDsucc(n)$.
+    for $k \Elem \ORDsucc(n)$.
     Then $g$ is a map from $\ORDsucc(n)$ to $\ORDomega$.
     Indeed we can show that $g(k) \Elem \ORDomega$ for all $k \Elem \ORDsucc(n)$.
       Let $k \Elem \ORDsucc(n)$.

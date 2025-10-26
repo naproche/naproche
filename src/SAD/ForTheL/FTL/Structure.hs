@@ -25,8 +25,8 @@ import Data.Text.Lazy (Text)
 import SAD.ForTheL.Structure
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
-import SAD.ForTheL.Extension
 import SAD.ForTheL.FTL.Extension qualified as FTL
+import SAD.ForTheL.FTL.Statement qualified as FTL
 import SAD.ForTheL.Reports (markupToken, markupTokenOf)
 import SAD.ForTheL.Instruction
 import qualified SAD.ForTheL.Reports as Reports
@@ -56,7 +56,7 @@ topLevelBlock =
       topLevelSection
   <|> (instruction >>= addSynonym >>= resetPretyping)
   <|> try FTL.introduceMacro
-  <|> pretypeVariable
+  <|> FTL.pretypeVariable
 
 
 -- * Top-level sections
@@ -121,10 +121,10 @@ definitionBody :: FTL [ProofText]
 definitionBody = addAssumptions $ pretype $ pretypeSentence Posit FTL.defExtend defVars finishWithoutLink
 
 axiomBody :: FTL [ProofText]
-axiomBody = addAssumptions $ pretype $ pretypeSentence Posit (affirmationHeader >> statement) affirmVars finishWithoutLink
+axiomBody = addAssumptions $ pretype $ pretypeSentence Posit (affirmationHeader >> FTL.statement) affirmVars finishWithoutLink
 
 theoremBody :: FTL [ProofText]
-theoremBody = addAssumptions $ topLevelProof $ pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink
+theoremBody = addAssumptions $ topLevelProof $ pretypeSentence Affirmation (affirmationHeader >> FTL.statement) affirmVars finishWithOptLink
 
 
 -- | Adds parser for parsing any number of assumptions before the passed content
@@ -134,7 +134,7 @@ addAssumptions content = body
   where
     body = assumption <|> content
     assumption = topAssume `pretypeBefore` body
-    topAssume = pretypeSentence Assumption (assumptionHeader >> statement) assumeVars finishWithoutLink
+    topAssume = pretypeSentence Assumption (assumptionHeader >> FTL.statement) assumeVars finishWithoutLink
 
 
 -- * Bracket expressions (aka instructions)
@@ -172,11 +172,11 @@ exitInstruction text = case text of
 
 -- | Parse a choice expression.
 choose :: FTL Block
-choose = sentence Choice (choiceHeader >> choice) assumeVars finishWithOptLink
+choose = sentence Choice (choiceHeader >> FTL.choice) assumeVars finishWithOptLink
 
 -- | Parse a case hypothesis.
 caseHypothesis :: FTL Block
-caseHypothesis = sentence Block.CaseHypothesis (caseHeader >> statement) affirmVars finishWithOptLink
+caseHypothesis = sentence Block.CaseHypothesis (caseHeader >> FTL.statement) affirmVars finishWithOptLink
 
 -- | Header for case hypothesis:
 -- @"case"@
@@ -185,15 +185,15 @@ caseHeader = markupToken Reports.proofStart "case"
 
 -- | Parse an affirmation.
 affirmation :: FTL Block
-affirmation = sentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink </> eqChain
+affirmation = sentence Affirmation (affirmationHeader >> FTL.statement) affirmVars finishWithOptLink </> eqChain
 
 -- | Parse an assumption.
 assumption :: FTL Block
-assumption = sentence Assumption (assumptionHeader >> statement) assumeVars finishWithoutLink
+assumption = sentence Assumption (assumptionHeader >> FTL.statement) assumeVars finishWithoutLink
 
 -- | Parse a low-level definition.
 lowLevelDefinition :: FTL Block
-lowLevelDefinition = sentence LowDefinition (lowLevelDefinitionHeader >> classNotion </> mapNotion) llDefnVars finishWithoutLink
+lowLevelDefinition = sentence LowDefinition (lowLevelDefinitionHeader >> FTL.classNotion </> FTL.mapNotion) llDefnVars finishWithoutLink
 
 
 -- ** Links

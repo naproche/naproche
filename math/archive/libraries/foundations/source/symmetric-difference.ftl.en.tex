@@ -21,7 +21,7 @@
     Let us show that $A \SETsymdiff B \SETinclude (A \SETdiff B) \SETunion (B \SETdiff A)$.
       Let $u \Elem A \SETsymdiff B$.
       Then $u \Elem A \SETunion B$ and $u \NotElem A \SETintersect B$.
-      Hence ($u \Elem A$ or $u \Elem B$) and not ($u \Elem A$ and $u \Elem B$).
+      Hence ($u \Elem A$ or $u \Elem B$) and $\Not(u \Elem A \And u \Elem B)$.
       Thus ($u \Elem A$ or $u \Elem B$) and ($u \NotElem A$ or $u \NotElem B$).
       Therefore if $u \Elem A$ then $u \NotElem B$.
       If $u \Elem B$ then $u \NotElem A$.
@@ -91,8 +91,8 @@
         \begin{case}{$x \Elem C \SETdiff ((A \SETdiff B) \SETunion (B \SETdiff A))$.}
           Then $x \Elem C$.
           $x \NotElem A \SETdiff B$ and $x \NotElem B \SETdiff A$.
-          Hence not ($x \Elem A \SETdiff B$ or $x \Elem B \SETdiff A$).
-          Thus not (($x \Elem A$ and $x \NotElem B$) or ($x \Elem B$ and $x \NotElem A$)).
+          Hence $\Not(x \Elem A \SETdiff B \Or x \Elem B \SETdiff A)$.
+          Thus  $\Not((x \Elem A \And x \NotElem B) \Or (x \Elem B \And x \NotElem A))$.
           Therefore ($x \NotElem A$ or $x \Elem B$) and ($x \NotElem B$ or $x \Elem A$).
 
           \begin{case}{$x \Elem A$.}
@@ -118,8 +118,8 @@
         \begin{case}{$y \Elem A \SETdiff ((B \SETdiff C) \SETunion (C \SETdiff B))$.}
           Then $y \Elem A$.
           $y \NotElem B \SETdiff C$ and $y \NotElem C \SETdiff B$.
-          Hence not ($y \Elem B \SETdiff C$ or $y \Elem C \SETdiff B$).
-          Thus not (($y \Elem B$ and $y \NotElem C$) or ($y \Elem C$ and $y \NotElem B$)).
+          Hence $\Not(y \Elem B \SETdiff C \Or y \Elem C \SETdiff B)$.
+          Thus $\Not((y \Elem B \And y \NotElem C) \Or (y \Elem C \And y \NotElem B))$.
           Therefore ($y \NotElem B$ or $y \Elem C$) and ($y \NotElem C$ or $y \Elem B$).
 
           \begin{case}{$y \Elem B$.}

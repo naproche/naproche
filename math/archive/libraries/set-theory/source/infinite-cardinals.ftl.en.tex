@@ -19,7 +19,7 @@
 \begin{proof}[forthel]
   For any $\beta \Elem \ORDsucc(\alpha)$ we have
   $\beta \ORDless \ORDomega$ or $\ORDomega \ORDleq \beta \ORDless \alpha$ or $\beta \Eq \alpha$.
-  Define \[ f(\beta) =
+  Define \[ f(\beta) \DefEq
     \begin{cases}
       \ORDsucc(\beta)  & : \beta \ORDless \ORDomega
       \\
@@ -27,7 +27,7 @@
       \\
       \ORDzero             & : \beta \Eq \alpha
     \end{cases} \]
-  for $\beta \in \ORDsucc(\alpha)$.
+  for $\beta \Elem \ORDsucc(\alpha)$.
 
   Then $f$ is a map from $\ORDsucc(\alpha)$ to $\alpha$.
   Indeed we can show that $f(\beta) \Elem \alpha$ for all

@@ -187,8 +187,8 @@
       Then $x \Elem A \SETdiff B$ or $x \Elem A \SETdiff C$.
       Hence ($x \Elem A$ and $x \NotElem B$) or ($x \Elem A$ and $x \NotElem C$).
       Thus $x \Elem A$ and ($x \NotElem B$ or $x \NotElem C$).
-      Therefore $x \Elem A$ and not ($x \Elem B$ and $x \Elem C$).
-      Then $x \Elem A$ and not $x \Elem B \SETintersect C$.
+      Therefore $x \Elem A$ and $\Not(x \Elem B \And x \Elem C)$.
+      Then $x \Elem A$ and $x \NotElem B \SETintersect C$.
       Hence $x \Elem A \SETdiff (B \SETintersect C)$.
     End.
   \end{proof}
@@ -214,8 +214,8 @@
       Then $x \Elem A \SETdiff B$ and $x \Elem A \SETdiff C$.
       Hence ($x \Elem A$ and $x \NotElem B$) and ($x \Elem A$ and $x \NotElem C$).
       Thus $x \Elem A$ and ($x \NotElem B$ and $x \NotElem C$).
-      Therefore $x \Elem A$ and not ($x \Elem B$ or $x \Elem C$).
-      Then $x \Elem A$ and not $x \Elem B \SETunion C$.
+      Therefore $x \Elem A$ and $\Not(x \Elem B \Or x \Elem C)$.
+      Then $x \Elem A$ and $x \NotElem B \SETunion C$.
       Hence $x \Elem A \SETdiff (B \SETunion C)$.
     End.
   \end{proof}
