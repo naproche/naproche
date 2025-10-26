@@ -190,12 +190,13 @@
 ]{newformalized}
 
 
-\declaretheorem[numberwithin=section,style=newformalized,Axiom,refname={axiom,axioms},Refname={Axiom,Axioms}]{axiom}
-\declaretheorem[numberlike=axiom,style=newformalized,Signature,refname={signature,signatures},Refname={Signature,Signatures}]{signature}
-\declaretheorem[numberlike=axiom,style=newformalized,Convention,refname={convention,conventions},Refname={Convention,Conventions}]{convention}
-\declaretheorem[numberlike=axiom,style=newformalized,Theorem,refname={theorem,theorems},Refname={Theorem,Theorems}]{theorem}
-\declaretheorem[numberlike=axiom,style=newformalized,Definition,refname={definintion,definitions},Refname={Definition,Definitions}]{definition}
-\declaretheorem[numberlike=axiom,style=newformalized,Lemma,refname={lemma,lemmas},Refname={Lemma,Lemmas}]{lemma}
+\declaretheorem[numberwithin=section,style=newformalized,name=Axiom,refname={axiom,axioms},Refname={Axiom,Axioms}]{axiom}
+\declaretheorem[numberlike=axiom,style=newformalized,name=Signature,refname={signature,signatures},Refname={Signature,Signatures}]{signature}
+\declaretheorem[numberlike=axiom,style=newformalized,name=Convention,refname={convention,conventions},Refname={Convention,Conventions}]{convention}
+\declaretheorem[numberlike=axiom,style=newformalized,name=Theorem,refname={theorem,theorems},Refname={Theorem,Theorems}]{theorem}
+\declaretheorem[numberlike=axiom,style=newformalized,name=Definition,refname={definition,definitions},Refname={Definition,Definitions}]{definition}
+\declaretheorem[numberlike=axiom,style=newformalized,name=Lemma,refname={lemma,lemmas},Refname={Lemma,Lemmas}]{lemma}
+
 
 
 % More visible line breaks in proofs.
@@ -734,6 +735,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
     \begin{proof}
       We have $\Betw{x}{p}{u}$ and $\Betw{z}{v}{u}$.
       Take $r$ such that $\Betw{v}{r}{x}$ and $\Betw{p}{r}{z}$. % inner Pasch.
+      [prover vampire]
       Take $q$ such that $\Betw{r}{q}{z}$ and $\Betw{v}{q}{y}$. % inner Pasch.
     \end{proof}
   \end{forthel}
@@ -755,11 +757,13 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   We can swap $x, y$ with $v, w$.
 
   \begin{forthel}
+    [timelimit 20]
     \begin{lemma} % Satz 4.2
       Assume $\IFS{x}{y}{z}{r}{v}{w}{p}{q}$.
       Then $\Cong{y}{r}{w}{q}$.
     \end{lemma}
     \begin{proof}
+      
       Case $x \neq z$.
         Take points $g,h$ such that
         % We want to extend both figures.
@@ -1174,7 +1178,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
         We have $\OFS{b}{c}{d'}{c'}{b'}{c'}{d}{c}$.
         Thus $\Cong{c'}{d'}{c}{d}$.
-
+        [timelimit 65]
         Take a point $e$ such that
           $\Betw{c}{e}{c'}$ and $\Betw{d}{e}{d'}$.
         Then $\IFS{d}{e}{d'}{c}{d}{e}{d'}{c'}$
@@ -1564,6 +1568,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
         $\RelEquiv{x}{r}{a}$ and $\Cong{a}{x}{b}{c}$.
     \end{lemma}
 
+    [timelimit 120]
     \begin{lemma} % SST 6.11 (uniqueness)
       Suppose $r\neq a$ and $b\neq c$.
       Let $x$ be a point such that
