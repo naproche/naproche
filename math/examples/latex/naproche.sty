@@ -20,7 +20,7 @@
 %% 
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{naproche}[2025-09-27 v1.0.1 Basic LaTeX package for Naproche formalization]
+\ProvidesPackage{naproche}[2025-10-08 v1.0.2 Basic LaTeX package for Naproche formalization]
 
 \RequirePackage{amsfonts}
 \RequirePackage{xspace}
@@ -30,134 +30,224 @@
 \RequirePackage{amsmath}
 \RequirePackage{url}
 
+
 %% Preliminary Setup
 %% =================
 
-\newbool{naproche@forthel}
-\newbool{naproche@puzzle}
-\newcounter{naproche@tlscounter}
+\newbool{@forthel}
+
+\newbool{@puzzle}
+
+\newcounter{@tlscounter}
+
 
 %% Package Options
 %% ===============
 
 \DeclareOption{puzzle}{
-  \setbool{naproche@puzzle}{true}
+  \setbool{@puzzle}{true}
 }
+
 \DeclareOption{numberswithinsection}{
-  \counterwithin{naproche@tlscounter}{section}
+  \counterwithin{@tlscounter}{section}
 }
+
 \DeclareOption{numberswithinsubsection}{
-  \counterwithin{naproche@tlscounter}{subsection}
+  \counterwithin{@tlscounter}{subsection}
 }
+
 \DeclareOption*{
   \PackageWarning{naproche}{Unknown option `\CurrentOption'}
 }
+
 \ProcessOptions\relax
+
 
 %% Commands Required by ForTheL
 %% ============================
 
 \NewDocumentCommand{\dom}{}{\textrm{dom}}
+
 \NewDocumentCommand{\fun}{}{\mathrm{\lambda}}
+
 
 %% Logos
 %% =====
 
 \NewDocumentCommand{\Naproche}{}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
+
 \NewDocumentCommand{\ForTheL}{}{\mbox{ForTheL}\xspace}
+
 
 %% Comprehension Terms
 %% ===================
 
-\NewDocumentCommand{\naproche@lproj}{m m}{#1}
-\NewDocumentCommand{\naproche@rproj}{m m}{#2}
+\NewDocumentCommand{\@lproj}{m m}{#1}
+\NewDocumentCommand{\@rproj}{m m}{#2}
+
 \NewDocumentCommand{\class}{>{\SplitArgument{1}{|}} m}{
-  \left\{\naproche@lproj#1~\middle\vert~\naproche@rproj#1\right\}
+  \left\{\@lproj#1~\middle\vert~\@rproj#1\right\}
 }
+
 \NewDocumentCommand{\classtext}{m}{\parbox{\linegoal}{#1}}
+
 
 %% Printing Labels
 %% ===============
 
 \NewDocumentCommand{\printref}{m}{\path{#1}}
 
+
 %% The ForTheL Environment
 %% =======================
 
-\colorlet{naproche@forthelgray}{lightgray!30}
+\colorlet{@forthelgray}{lightgray!30}
+
 \NewDocumentEnvironment{forthel}{}{
-  \begin{mdframed}[backgroundcolor=naproche@forthelgray,linecolor=naproche@forthelgray]
-  \setbool{naproche@forthel}{true}
+  \begin{mdframed}[backgroundcolor=@forthelgray,linecolor=@forthelgray]
+  \setbool{@forthel}{true}
   \setlength{\parindent}{0pt}
   \setlength{\parskip}{0.5em}
 }{
   \end{mdframed}
-  \setbool{naproche@forthel}{false}
+  \setbool{@forthel}{false}
 }
+
 
 %% Top-level Section Environments
 %% ==============================
 
-\NewDocumentCommand{\naproche@SetCurrentLabelName}{m}{
+\NewDocumentCommand{\@SetCurrentLabelName}{m}{
   \protected@edef\@currentlabelname{#1}
 }
-\NewDocumentCommand{\naproche@NewTLS@standard}{m m}{
+
+
+%% Markup for the Standard Layout
+%% ------------------------------
+
+\NewDocumentCommand{\@NewTLS@standard}{m m}{
   \NewDocumentEnvironment{#1}{o}{
-    \refstepcounter{naproche@tlscounter}
+    \refstepcounter{@tlscounter}
     \par
-    \ifbool{naproche@forthel}{}{\vspace{0.5em}}
-    \noindent\textbf{#2~\thenaproche@tlscounter\IfValueT{##1}{~(##1)}.}%
-    \IfValueT{##1}{\naproche@SetCurrentLabelName{##1}}%
+    \ifbool{@forthel}{}{\vspace{0.5em}}
+    \noindent\textbf{#2~\the@tlscounter\IfValueT{##1}{~(##1)}.}%
+    \IfValueT{##1}{\@SetCurrentLabelName{##1}}%
   }{
     \par
-    \ifbool{naproche@forthel}{}{\vspace{0.5em}}
+    \ifbool{@forthel}{}{\vspace{0.5em}}
   }
-  \NewDocumentEnvironment{#1*}{o}{
+}
+
+\NewDocumentCommand{\@NewTLS@standard@starred}{m m}{
+  \NewDocumentEnvironment{#1}{o}{
     \par
-    \ifbool{naproche@forthel}{}{\vspace{0.5em}}
+    \ifbool{@forthel}{}{\vspace{0.5em}}
     \noindent\textbf{#2\IfValueT{##1}{~(##1)}.}%
-    \IfValueT{##1}{\naproche@SetCurrentLabelName{##1}}%
+    \IfValueT{##1}{\@SetCurrentLabelName{##1}}%
   }{
     \par
-    \ifbool{naproche@forthel}{}{\vspace{0.5em}}
+    \ifbool{@forthel}{}{\vspace{0.5em}}
   }
 }
-\NewDocumentCommand{\naproche@NewTLS@puzzle}{m o}{
+
+
+%% Markup for the Puzzle Layout
+%% ----------------------------
+
+\NewDocumentCommand{\@NewTLS@puzzle}{m o}{
   \NewDocumentEnvironment{#1}{}{\unskip\IfValueT{#2}{#2}}{\unskip}
-  \NewDocumentEnvironment{#1*}{}{\unskip\IfValueT{#2}{#2}}{\unskip}
 }
-\ifbool{naproche@puzzle}{
-  \naproche@NewTLS@puzzle{signature}
-  \naproche@NewTLS@puzzle{axiom}
-  \naproche@NewTLS@puzzle{definition}
-  \naproche@NewTLS@puzzle{theorem}[Therefore:]
-  \naproche@NewTLS@puzzle{lemma}[Therefore:]
-  \naproche@NewTLS@puzzle{proposition}[Therefore:]
-  \naproche@NewTLS@puzzle{corollary}[Therefore:]
-  \naproche@NewTLS@puzzle{convention}
+
+
+%% Defining Top-Level Section Environments
+%% ---------------------------------------
+
+
+%% Signatures
+%% ..........
+
+\ifbool{@puzzle}{
+  \@NewTLS@puzzle{signature}
+  \@NewTLS@puzzle{signature*}
 }{
-  \naproche@NewTLS@standard{signature}{Signature}
-  \naproche@NewTLS@standard{definition}{Definition}
-  \naproche@NewTLS@standard{axiom}{Axiom}
-  \naproche@NewTLS@standard{theorem}{Theorem}
-  \naproche@NewTLS@standard{lemma}{Lemma}
-  \naproche@NewTLS@standard{proposition}{Proposition}
-  \naproche@NewTLS@standard{corollary}{Corollary}
-  \naproche@NewTLS@standard{convention}{Convention}
+  \@NewTLS@standard{signature}{Signature}
+  \@NewTLS@standard@starred{signature*}{Signature}
 }
+
+
+%% Axioms
+%% ......
+
+\ifbool{@puzzle}{
+  \@NewTLS@puzzle{axiom}
+  \@NewTLS@puzzle{axiom*}
+}{
+  \@NewTLS@standard{axiom}{Axiom}
+  \@NewTLS@standard@starred{axiom*}{Axiom}
+}
+
+
+%% Definitions
+%% ...........
+
+\ifbool{@puzzle}{
+  \@NewTLS@puzzle{definition}
+  \@NewTLS@puzzle{definition*}
+}{
+  \@NewTLS@standard{definition}{Definition}
+  \@NewTLS@standard@starred{definition*}{Definition}
+}
+
+
+%% Assertions
+%% ..........
+
+\ifbool{@puzzle}{
+  \@NewTLS@puzzle{theorem}[Therefore:]
+  \@NewTLS@puzzle{theorem*}[Therefore:]
+  \@NewTLS@puzzle{lemma}[Therefore:]
+  \@NewTLS@puzzle{lemma*}[Therefore:]
+  \@NewTLS@puzzle{proposition}[Therefore:]
+  \@NewTLS@puzzle{proposition*}[Therefore:]
+  \@NewTLS@puzzle{corollary}[Therefore:]
+  \@NewTLS@puzzle{corollary*}[Therefore:]
+}{
+  \@NewTLS@standard{theorem}{Theorem}
+  \@NewTLS@standard@starred{theorem*}{Theorem}
+  \@NewTLS@standard{lemma}{Lemma}
+  \@NewTLS@standard@starred{lemma*}{Lemma}
+  \@NewTLS@standard{proposition}{Proposition}
+  \@NewTLS@standard@starred{proposition*}{Proposition}
+  \@NewTLS@standard{corollary}{Corollary}
+  \@NewTLS@standard@starred{corollary*}{Corollary}
+}
+
+
+%% Conventions
+%% ...........
+
+\ifbool{@puzzle}{
+  \@NewTLS@puzzle{convention}
+  \@NewTLS@puzzle{convention*}
+}{
+  \@NewTLS@standard{convention}{Convention}
+  \@NewTLS@standard@starred{convention*}{Convention}
+}
+
 
 %% The Proof Environment
 %% =====================
 
 \NewDocumentEnvironment{proof}{o}{
   \par
-  \ifbool{naproche@forthel}{}{\vspace{0.5em}}
+  \ifbool{@forthel}{}{\vspace{0.5em}}
   \noindent\textit{Proof\IfValueT{#1}{~#1}.}%
 }
 {
   \hfill\ensuremath{\square}
   \par
 }
+
 \endinput
 %%
 %% End of file `naproche.sty'.
