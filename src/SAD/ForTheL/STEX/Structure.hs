@@ -403,7 +403,7 @@ proofHeader :: FTL Scheme
 proofHeader = do
   TEX.proofStart
   mbMbMethod <- optional $ do
-    symbol "["
+    symbolNotAfterSpace "["
     proofOptions <- sepBy0 proofOption (symbol ",")
     let mbMethodOption = find (\(key, val) -> key == "method") proofOptions
     let mbMethod = case mbMethodOption of

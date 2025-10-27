@@ -18,7 +18,7 @@
 %<*package>
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{naproche}[2025-09-27 v1.0.1 Basic LaTeX package for Naproche formalization]
+\ProvidesPackage{naproche}[2025-10-08 v1.0.2 Basic LaTeX package for Naproche formalization]
 
 %</package>
 %
@@ -40,6 +40,7 @@
 % 
 % \changes{v1.0.0}{2025-09-05}{Initial version}
 % \changes{v1.0.1}{2025-09-27}{Add \ForTheL logo}
+% \changes{v1.0.2}{2025-10-08}{Clean up definitions of top-level section environments}
 % \GetFileInfo{naproche.sty}
 % \DoNotIndex{\#,\$,\%,\&,\@,\\,\{,\},\^,\_,\~,\ }
 % \DoNotIndex{\begin,\end}
@@ -420,6 +421,7 @@
 % 
 % \iffalse
 %    \begin{macrocode}
+
 %<*package>
 
 %% Preliminary Setup
@@ -429,26 +431,29 @@
 %    \end{macrocode}
 % \fi
 %    
-% \begin{macro}{naproche@forthel}
+% \begin{macro}{@forthel}
 % A Boolean variable that tracks iff we are currently in a |forthel|
 % environment.
 %    \begin{macrocode}
-\newbool{naproche@forthel}
+\newbool{@forthel}
+
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{naproche@puzzle}
+% \begin{macro}{@puzzle}
 % A Boolean variable whose value determines if the ``puzzle'' typesetting is to
 % be used instead of the ``standard'' typesetting.
 %    \begin{macrocode}
-\newbool{naproche@puzzle}
+\newbool{@puzzle}
+
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{naproche@tlscounter}
+% \begin{macro}{@tlscounter}
 % A counter for numbered top-level section environments.
 %    \begin{macrocode}
-\newcounter{naproche@tlscounter}
+\newcounter{@tlscounter}
+
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -470,8 +475,9 @@
 % See section \ref{sec:package-options}
 %    \begin{macrocode}
 \DeclareOption{puzzle}{
-  \setbool{naproche@puzzle}{true}
+  \setbool{@puzzle}{true}
 }
+
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -479,8 +485,9 @@
 % See section \ref{sec:package-options}
 %    \begin{macrocode}
 \DeclareOption{numberswithinsection}{
-  \counterwithin{naproche@tlscounter}{section}
+  \counterwithin{@tlscounter}{section}
 }
+
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -488,8 +495,9 @@
 % See section \ref{sec:package-options}
 %    \begin{macrocode}
 \DeclareOption{numberswithinsubsection}{
-  \counterwithin{naproche@tlscounter}{subsection}
+  \counterwithin{@tlscounter}{subsection}
 }
+
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -498,11 +506,13 @@
 \DeclareOption*{
   \PackageWarning{naproche}{Unknown option `\CurrentOption'}
 }
+
 %    \end{macrocode}
 % 
 % Process the options.
 %    \begin{macrocode}
 \ProcessOptions\relax
+
 %    \end{macrocode}
 % 
 % 
@@ -523,6 +533,7 @@
 % See section \ref{sec:commands-required-by-forthel}
 %    \begin{macrocode}
 \NewDocumentCommand{\dom}{}{\textrm{dom}}
+
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -530,6 +541,7 @@
 % See section \ref{sec:commands-required-by-forthel}
 %    \begin{macrocode}
 \NewDocumentCommand{\fun}{}{\mathrm{\lambda}}
+
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -551,6 +563,7 @@
 % See section \ref{sec:logos}
 %    \begin{macrocode}
 \NewDocumentCommand{\Naproche}{}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
+
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -558,6 +571,7 @@
 % See section \ref{sec:logos}
 %    \begin{macrocode}
 \NewDocumentCommand{\ForTheL}{}{\mbox{ForTheL}\xspace}
+
 %    \end{macrocode}
 % \end{macro}
 %
@@ -575,11 +589,12 @@
 %    \end{macrocode}
 % \fi
 % 
-% \begin{macro}{\naproche@lproj,\naproche@rproj}
+% \begin{macro}{\@lproj,\@rproj}
 % Left and right projection.
 %    \begin{macrocode}
-\NewDocumentCommand{\naproche@lproj}{m m}{#1}
-\NewDocumentCommand{\naproche@rproj}{m m}{#2}
+\NewDocumentCommand{\@lproj}{m m}{#1}
+\NewDocumentCommand{\@rproj}{m m}{#2}
+
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -587,8 +602,9 @@
 % See section \ref{sec:comprehension-terms}
 %    \begin{macrocode}
 \NewDocumentCommand{\class}{>{\SplitArgument{1}{|}} m}{
-  \left\{\naproche@lproj#1~\middle\vert~\naproche@rproj#1\right\}
+  \left\{\@lproj#1~\middle\vert~\@rproj#1\right\}
 }
+
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -596,6 +612,7 @@
 % See section \ref{sec:comprehension-terms}
 %    \begin{macrocode}
 \NewDocumentCommand{\classtext}{m}{\parbox{\linegoal}{#1}}
+
 %    \end{macrocode}
 % \end{macro}
 %
@@ -617,6 +634,7 @@
 % See section \ref{sec:printing-labels}
 %    \begin{macrocode}
 \NewDocumentCommand{\printref}{m}{\path{#1}}
+
 %    \end{macrocode}
 % \end{macro}
 %
@@ -634,10 +652,11 @@
 %    \end{macrocode}
 % \fi
 % 
-% \begin{macro}{naproche@forthelgray}
+% \begin{macro}{@forthelgray}
 % Background color of |forthel| environments.
 %    \begin{macrocode}
-\colorlet{naproche@forthelgray}{lightgray!30}
+\colorlet{@forthelgray}{lightgray!30}
+
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -645,19 +664,20 @@
 % See section \ref{sec:the-forthel-env}.
 %    \begin{macrocode}
 \NewDocumentEnvironment{forthel}{}{
-  \begin{mdframed}[backgroundcolor=naproche@forthelgray,linecolor=naproche@forthelgray]
-  \setbool{naproche@forthel}{true}
+  \begin{mdframed}[backgroundcolor=@forthelgray,linecolor=@forthelgray]
+  \setbool{@forthel}{true}
   \setlength{\parindent}{0pt}
   \setlength{\parskip}{0.5em}
 }{
   \end{mdframed}
-  \setbool{naproche@forthel}{false}
+  \setbool{@forthel}{false}
 }
+
 %    \end{macrocode}
 % \end{environment}
 %
 % 
-% \section{Top-level Section Environments}
+% \section{Top-Level Section Environments}
 % 
 % \iffalse
 %    \begin{macrocode}
@@ -670,101 +690,296 @@
 %    \end{macrocode}
 % \fi
 % 
-% \begin{macro}{\naproche@SetCurrentLabelName}
+% \begin{macro}{\@SetCurrentLabelName}
 % Redefine the |\@currentlabelname| macro.
-% (See \url{https://ctan.net/macros/latex/contrib/hyperref/doc/nameref.pdf})
-% for details.
+% (See \url{https://ctan.net/macros/latex/contrib/hyperref/doc/nameref.pdf}
+% for details.)
 %    \begin{macrocode}
-\NewDocumentCommand{\naproche@SetCurrentLabelName}{m}{
+\NewDocumentCommand{\@SetCurrentLabelName}{m}{
   \protected@edef\@currentlabelname{#1}
 }
+
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\naproche@NewTLS@standard}
-% |\naproche@NewTLS@standard|\marg{env}\marg{name} defines two environments
-% \meta{env} and \meta{env}|*| (which both take an optional argument
-% \meta{title}) which do the following:
+% 
+% \subsection{Markup for the Standard Layout}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% Markup for the Standard Layout
+%% ------------------------------
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{macro}{\@NewTLS@standard}
+% |\@NewTLS@standard|\marg{env}\marg{name} defines an environment\linebreak
+% |\begin{|\meta{env}|}|\oarg{title}\dots|\end{|\meta{env}|}| that does the
+% following:
 % \begin{enumerate}
-%   \item Only applies to the environment \meta{env}: The counter
-%   |naproche@tlscounter| (whose value is referred to as \meta{tls} in the
-%   following) is increased.
-%   \item\label{step@ii} Enter a new paragraph and if |naproche@forthel| is
-%   |false| (i.e. if we are currently not in a |forthel| environment), insert a
-%   horizontal space of 0.5 em. (Inside a |forthel| environment this is not
-%   necessary since there all paragraphs are separated by 0.5 em anyway.)
-%   \item In case of \meta{env} print ``\textbf{\meta{name} \meta{tls}.}'' or,
-%   if \meta{title} is given, ``\textbf{\meta{name} \meta{tls}
-%   (\meta{title}).}'' without indentation.
-%   In case of \meta{env}|*| print ``\textbf{\meta{name}.}'' or, if \meta{title}
-%   is given, ``\textbf{\meta{name} (\meta{title}).}'' without indentation.
+%   \item Increase the counter |@tlscounter| (whose value is referred to
+%   as \meta{tls} in the following) is increased.
+%   \item\label{std@unstarred@layout@step@ii} Enter a new paragraph and if
+%   |@forthel| is |false| (i.e. if we are currently not in a |forthel|
+%   environment), insert a horizontal space of 0.5 em. (Inside a |forthel|
+%   environment this is not necessary since there all paragraphs are separated
+%   by 0.5 em anyway.)
+%   \item Print ``\textbf{\meta{name} \meta{tls}.}'' or, if \meta{title} is
+%   given, ``\textbf{\meta{name} \meta{tls} (\meta{title}).}'' without
+%   indentation.
 %   \item Print the body of the environment.
-%   \item Enter a new paragraph and if |naproche@forthel| is |false| (i.e. if we
+%   \item Enter a new paragraph and if |@forthel| is |false| (i.e. if we
 %   are currently not in a |forthel| environment), a horizontal space of 0.5 em
-%   is inserted (cf. step \ref{step@ii}).
+%   is inserted (cf. step \ref{std@unstarred@layout@step@ii}).
 % \end{enumerate}
 %    \begin{macrocode}
-\NewDocumentCommand{\naproche@NewTLS@standard}{m m}{
+\NewDocumentCommand{\@NewTLS@standard}{m m}{
   \NewDocumentEnvironment{#1}{o}{
-    \refstepcounter{naproche@tlscounter}
+    \refstepcounter{@tlscounter}
     \par
-    \ifbool{naproche@forthel}{}{\vspace{0.5em}}
-    \noindent\textbf{#2~\thenaproche@tlscounter\IfValueT{##1}{~(##1)}.}%
-    \IfValueT{##1}{\naproche@SetCurrentLabelName{##1}}%
+    \ifbool{@forthel}{}{\vspace{0.5em}}
+    \noindent\textbf{#2~\the@tlscounter\IfValueT{##1}{~(##1)}.}%
+    \IfValueT{##1}{\@SetCurrentLabelName{##1}}%
   }{
     \par
-    \ifbool{naproche@forthel}{}{\vspace{0.5em}}
+    \ifbool{@forthel}{}{\vspace{0.5em}}
   }
-  \NewDocumentEnvironment{#1*}{o}{
+}
+
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\@NewTLS@standard@starred}
+% |\@NewTLS@standard|\marg{env}\marg{name} defines an environment\linebreak
+% |\begin{|\meta{env}*|}|\oarg{title}\dots|\end{|\meta{env}*|}| that does the following:
+% \begin{enumerate}
+%   \item\label{std@starred@layout@step@i} Enter a new paragraph and if
+%   |@forthel| is |false| (i.e. if we are currently not in a |forthel|
+%   environment), insert a horizontal space of 0.5 em. (Inside a |forthel|
+%   environment this is not necessary since there all paragraphs are separated
+%   by 0.5 em anyway.)
+%   \item Print ``\textbf{\meta{name}.}'' or, if \meta{title} is given,
+%   ``\textbf{\meta{name} (\meta{title}).}'' without indentation.
+%   \item Print the body of the environment.
+%   \item Enter a new paragraph and if |@forthel| is |false| (i.e. if we
+%   are currently not in a |forthel| environment), a horizontal space of 0.5 em
+%   is inserted (cf. step \ref{std@starred@layout@step@i}).
+% \end{enumerate}
+%    \begin{macrocode}
+\NewDocumentCommand{\@NewTLS@standard@starred}{m m}{
+  \NewDocumentEnvironment{#1}{o}{
     \par
-    \ifbool{naproche@forthel}{}{\vspace{0.5em}}
+    \ifbool{@forthel}{}{\vspace{0.5em}}
     \noindent\textbf{#2\IfValueT{##1}{~(##1)}.}%
-    \IfValueT{##1}{\naproche@SetCurrentLabelName{##1}}%
+    \IfValueT{##1}{\@SetCurrentLabelName{##1}}%
   }{
     \par
-    \ifbool{naproche@forthel}{}{\vspace{0.5em}}
+    \ifbool{@forthel}{}{\vspace{0.5em}}
   }
 }
+
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\naproche@NewTLS@puzzle}
-% |\naproche@NewTLS@puzzle|\marg{env}\oarg{prefix} defines two environments
-% \meta{env} and \meta{env}|*| (which both take an optional argument) which just
-% print their bodies. In case the optional argument \meta{prefix} is given, it
-% is prepended to the body.
+% 
+% \subsection{Markup for the Puzzle Layout}
+% 
+% \iffalse
 %    \begin{macrocode}
-\NewDocumentCommand{\naproche@NewTLS@puzzle}{m o}{
+%<*package>
+
+%% Markup for the Puzzle Layout
+%% ----------------------------
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{macro}{\@NewTLS@puzzle}
+% |\@NewTLS@puzzle|\marg{env}\oarg{prefix} defines an environment\linebreak
+% |\begin{|\meta{env}|}|\oarg{prefix}\dots|\end{|\meta{env}|}| that just prints
+% its body. In case \meta{prefix} is given, it is prepended to the body.
+%    \begin{macrocode}
+\NewDocumentCommand{\@NewTLS@puzzle}{m o}{
   \NewDocumentEnvironment{#1}{}{\unskip\IfValueT{#2}{#2}}{\unskip}
-  \NewDocumentEnvironment{#1*}{}{\unskip\IfValueT{#2}{#2}}{\unskip}
 }
+
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{environment}{signature,axiom,definition,theorem,lemma,proposition,corollary,convention}
-% Top-level section environments (see section
-% \ref{sec:top-level-sections-envs}). If |naproche@puzzle| is |true|, define
-% them via |\naproche@NewTLS@puzzle|, otherwise via |\naproche@NewTLS@standard|.
+% 
+% \subsection{Defining Top-Level Section Environments}
+% 
+% \iffalse
 %    \begin{macrocode}
-\ifbool{naproche@puzzle}{
-  \naproche@NewTLS@puzzle{signature}
-  \naproche@NewTLS@puzzle{axiom}
-  \naproche@NewTLS@puzzle{definition}
-  \naproche@NewTLS@puzzle{theorem}[Therefore:]
-  \naproche@NewTLS@puzzle{lemma}[Therefore:]
-  \naproche@NewTLS@puzzle{proposition}[Therefore:]
-  \naproche@NewTLS@puzzle{corollary}[Therefore:]
-  \naproche@NewTLS@puzzle{convention}
+%<*package>
+
+%% Defining Top-Level Section Environments
+%% ---------------------------------------
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% Top-level section environments (see section
+% \ref{sec:top-level-sections-envs}). If |@puzzle| is |true|, define
+% them via |\@NewTLS@puzzle|, otherwise via\linebreak
+% |\@NewTLS@standard| and |\@NewTLS@standard@starred|.
+% 
+% 
+% \subsubsection{Signatures}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% Signatures
+%% ..........
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{environment}{signature,signature*}
+% Signature environments.
+%    \begin{macrocode}
+\ifbool{@puzzle}{
+  \@NewTLS@puzzle{signature}
+  \@NewTLS@puzzle{signature*}
 }{
-  \naproche@NewTLS@standard{signature}{Signature}
-  \naproche@NewTLS@standard{definition}{Definition}
-  \naproche@NewTLS@standard{axiom}{Axiom}
-  \naproche@NewTLS@standard{theorem}{Theorem}
-  \naproche@NewTLS@standard{lemma}{Lemma}
-  \naproche@NewTLS@standard{proposition}{Proposition}
-  \naproche@NewTLS@standard{corollary}{Corollary}
-  \naproche@NewTLS@standard{convention}{Convention}
+  \@NewTLS@standard{signature}{Signature}
+  \@NewTLS@standard@starred{signature*}{Signature}
 }
+
+%    \end{macrocode}
+% \end{environment}
+% 
+% 
+% \subsubsection{Axioms}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% Axioms
+%% ......
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{environment}{axiom,axiom*}
+% Axiom environments.
+%    \begin{macrocode}
+\ifbool{@puzzle}{
+  \@NewTLS@puzzle{axiom}
+  \@NewTLS@puzzle{axiom*}
+}{
+  \@NewTLS@standard{axiom}{Axiom}
+  \@NewTLS@standard@starred{axiom*}{Axiom}
+}
+
+%    \end{macrocode}
+% \end{environment}
+% 
+% 
+% \subsubsection{Definitions}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% Definitions
+%% ...........
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{environment}{definition,definition*}
+% Definition environments.
+%    \begin{macrocode}
+\ifbool{@puzzle}{
+  \@NewTLS@puzzle{definition}
+  \@NewTLS@puzzle{definition*}
+}{
+  \@NewTLS@standard{definition}{Definition}
+  \@NewTLS@standard@starred{definition*}{Definition}
+}
+
+%    \end{macrocode}
+% \end{environment}
+% 
+% 
+% \subsubsection{Assertions}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% Assertions
+%% ..........
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{environment}{theorem,theorem*,lemma,lemma*,proposition,proposition*,
+% corollary,corollary*}
+% Assertion environments.
+%    \begin{macrocode}
+\ifbool{@puzzle}{
+  \@NewTLS@puzzle{theorem}[Therefore:]
+  \@NewTLS@puzzle{theorem*}[Therefore:]
+  \@NewTLS@puzzle{lemma}[Therefore:]
+  \@NewTLS@puzzle{lemma*}[Therefore:]
+  \@NewTLS@puzzle{proposition}[Therefore:]
+  \@NewTLS@puzzle{proposition*}[Therefore:]
+  \@NewTLS@puzzle{corollary}[Therefore:]
+  \@NewTLS@puzzle{corollary*}[Therefore:]
+}{
+  \@NewTLS@standard{theorem}{Theorem}
+  \@NewTLS@standard@starred{theorem*}{Theorem}
+  \@NewTLS@standard{lemma}{Lemma}
+  \@NewTLS@standard@starred{lemma*}{Lemma}
+  \@NewTLS@standard{proposition}{Proposition}
+  \@NewTLS@standard@starred{proposition*}{Proposition}
+  \@NewTLS@standard{corollary}{Corollary}
+  \@NewTLS@standard@starred{corollary*}{Corollary}
+}
+
+%    \end{macrocode}
+% \end{environment}
+% 
+% 
+% \subsubsection{Conventions}
+% 
+% \iffalse
+%    \begin{macrocode}
+%<*package>
+
+%% Conventions
+%% ...........
+
+%</package>
+%    \end{macrocode}
+% \fi
+% 
+% \begin{environment}{convention,convention*}
+% Convention environments.
+%    \begin{macrocode}
+\ifbool{@puzzle}{
+  \@NewTLS@puzzle{convention}
+  \@NewTLS@puzzle{convention*}
+}{
+  \@NewTLS@standard{convention}{Convention}
+  \@NewTLS@standard@starred{convention*}{Convention}
+}
+
 %    \end{macrocode}
 % \end{environment}
 %
@@ -787,13 +1002,14 @@
 %    \begin{macrocode}
 \NewDocumentEnvironment{proof}{o}{
   \par
-  \ifbool{naproche@forthel}{}{\vspace{0.5em}}
+  \ifbool{@forthel}{}{\vspace{0.5em}}
   \noindent\textit{Proof\IfValueT{#1}{~#1}.}%
 }
 {
   \hfill\ensuremath{\square}
   \par
 }
+
 %    \end{macrocode}
 % \end{environment}
 % 

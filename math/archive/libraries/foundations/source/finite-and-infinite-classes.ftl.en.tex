@@ -35,6 +35,16 @@
     Let $X$ be a class.
     $X$ has zero elements iff $X \Eq \SETempty$.
   \end{proposition}
+  \begin{proof}[forthel]
+    \begin{case}{$X$ has zero elements.}
+      Then $X$ does not contain any element.
+    \end{case}
+
+    \begin{case}{$X \Eq \SETempty$.}
+      Then $X$ does not contain any element.
+      Hence $X \Eq \NATsegment{\NATone}{\NATzero}$.
+    \end{case}
+  \end{proof}
 
   \begin{proposition}[forthel]
     Let $X$ be a class.

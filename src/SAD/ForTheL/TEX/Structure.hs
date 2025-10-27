@@ -367,7 +367,7 @@ proofHeader :: FTL Scheme
 proofHeader = do
   proofStart
   mbMbMethod <- optional $ do
-    symbol "["
+    symbolNotAfterSpace "["
     token' "by"
     method <- proofMethod
     symbol "]"

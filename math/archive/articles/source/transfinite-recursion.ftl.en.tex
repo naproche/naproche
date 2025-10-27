@@ -47,6 +47,7 @@ all ordinals $\alpha$.
       Thus $H(y) \Eq H'(y)$ for all $y \Elem \alpha$.
       Therefore $H \FUNrest \alpha \Eq\linebreak H' \FUNrest \alpha$.
       $H$ and $H'$ are recursive regarding $G$.
+      [prover vampire]
       We have $H \FUNrest \alpha, H' \FUNrest \alpha \Elem \ORDfunspace{A}$.
       Hence $H(\alpha)
         \Eq G(H \FUNrest \alpha)
@@ -78,9 +79,19 @@ all ordinals $\alpha$.
       Define $H'(y) \DefEq$ ``choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \Elem \Dom(h)$ in $h(y)$'' for $y \Elem \alpha$.
       Then $H'$ is a map from $\alpha$ to $A$.
       We have $H' \Eq H' \FUNrest \alpha$.
+
+      We can show that $H' \FUNrest \beta \Elem \Dom(G)$ for every $\beta \Elem \ORDsucc(\alpha)$.
+        Let $\beta \Elem \ORDsucc(\alpha)$.
+        $H' \FUNrest \beta$ is a function.
+        Indeed $H' \FUNrest \beta$ is a map and $\Dom(H' \FUNrest \beta)$ is a set.
+        Hence $H' \FUNrest \beta$ is a function from $\beta$ to $A$.
+        Thus $H' \FUNrest \beta \Elem \ORDfunspace{A}$.
+        Therefore  $H' \FUNrest \beta \Elem \Dom(G)$.
+      End.
+
       Define \[ H(\beta) \DefEq
         \begin{cases}
-          H'(\beta)                 & : \beta \ORDless \alpha \\
+          H'(\beta)             & : \beta \ORDless \alpha \\
           G(H' \FUNrest \beta)  & : \beta \Eq \alpha
         \end{cases} \]
       for $\beta \Elem \ORDsucc(\alpha)$.

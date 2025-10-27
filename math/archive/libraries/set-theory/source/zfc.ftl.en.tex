@@ -260,10 +260,17 @@
 
       (2) For all $a \Elem x$ and all $b, b' \Elem y$ such that $(a,b),
       (a,b') \Elem F$ we have $b \Eq b'$.
+      \begin{proof}
+        Let $a \Elem x$ and $b, b' \Elem y$.
+        Assume $(a,b), (a,b') \Elem F$.
+        Take $c, c' \Elem F$ such that $c \Eq (a,b)$ and $c' \Eq (a,b')$.
+        Take $d, d' \Elem x$ such that $c \Eq (d,f(d))$ and $c' \Eq (d',f(d'))$.
+        Then $a \Eq d$ and $b \Eq f(d)$ and $a \Eq d'$ and $b' \Eq f(d)$.
+        Hence $b \Eq b'$.
+      \end{proof}
 
       [prover vampire]
       Hence the thesis.
-      [prover eprover]
     \end{proof}
 
     $\Dom(f) \Eq \Dom(h(F))$ and for each $a \Elem \Dom(f)$ we have $h(F)(a) \Eq f(a)$.

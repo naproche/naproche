@@ -118,8 +118,9 @@
                 Let $n \Elem \Nat$ and $b \Elem A$.
                 Assume $(n,b) \Elem H$.
                 Then $(n \NATplus \NATone, f(b)) \Elem \SETintersectover \Phi$.
+                [prover vampire]
                 We have $(n \NATplus \NATone, f(b)) \NotEq (\NATzero,x)$.
-                Indeed $n \NATplus \NATone \NotEq \NATzero$.
+                Indeed $n \NATplus \NATone, \NATzero, f(b), x$ are objects and $n \NATplus \NATone \NotEq \NATzero$.
                 Hence $(n \NATplus \NATone, f(b)) \Elem H$.
               \end{proof}
 
@@ -149,8 +150,9 @@
                 Let $n \Elem \Nat$ and $b \Elem A$.
                 Assume $(n,b) \Elem H$.
                 Then $(n \NATplus \NATone, f(b)) \Elem \SETintersectover \Phi$.
+                [prover vampire]
                 We have $(n \NATplus \NATone, f(b)) \NotEq (\NATzero,y)$.
-                Indeed $n \NATplus \NATone \NotEq \NATzero$.
+                Indeed $n \NATplus \NATone, \NATzero, f(b), x$ are objects and $n \NATplus \NATone \NotEq \NATzero$.
                 Hence $(n \NATplus \NATone, f(b)) \Elem H$.
               \end{proof}
 
@@ -188,9 +190,10 @@
           (ii) $(\NATzero,a) \Elem H$.
           \begin{proof}
             $(\NATzero,a) \Elem \SETintersectover \Phi$.
+            [prover vampire]
             $(\NATzero,a) \NotElem \SETsingleton{(n \NATplus \NATone,x)}$.
             Indeed $(\NATzero,a) \NotEq (n \NATplus \NATone,x)$.
-            Indeed $\NATzero \NotEq n \NATplus \NATone$.
+            Indeed $n \NATplus \NATone, \NATzero, a, x$ are objects and $\NATzero \NotEq n \NATplus \NATone$.
           \end{proof}
 
           (iii) For all $m \Elem \Nat$ and all $z \Elem A$ if $(m,z) \Elem H$ then $(m \NATplus \NATone,f(z)) \Elem H$.
@@ -199,8 +202,11 @@
             Assume $(m,z) \Elem H$.
             Then $(m,z) \Elem \SETintersectover \Phi$.
             Hence $(m \NATplus \NATone,f(z)) \Elem \SETintersectover \Phi$.
-            $(m \NATplus \NATone,f(z)) \NotEq (n \NATplus \NATone,x)$.
-            Indeed if $(m \NATplus \NATone,f(z)) \Eq (n \NATplus \NATone,x)$ then $m \Eq n$ and $f(z) \Eq x$ (by \sn{injectivity of successor function}).
+            $m \NATplus \NATone, n \NATplus \NATone, f(z), x$ are objects.
+            [prover vampire]
+            Thus if $(m \NATplus \NATone,f(z)) \Eq (n \NATplus \NATone,x)$ then $m \NATplus \NATone \Eq n \NATplus \NATone$ and $f(z) \Eq x$.
+            Therefore if $(m \NATplus \NATone,f(z)) \Eq (n \NATplus \NATone,x)$ then $m \Eq n$ and $f(z) \Eq x$ (by \sn{injectivity of successor function}).
+            Consequently $(m \NATplus \NATone,f(z)) \NotEq (n \NATplus \NATone,x)$.
             Thus $(m \NATplus \NATone,f(z)) \NotElem \SETsingleton{(n \NATplus \NATone,x)}$.
             Therefore $(m \NATplus \NATone,f(z)) \Elem H$.
           \end{proof}
@@ -221,8 +227,9 @@
           (ii) $(\NATzero,a) \Elem H$.
           \begin{proof}
             $(\NATzero,a) \Elem \SETintersectover \Phi$.
+            [prover vampire]
             $(\NATzero,a) \NotElem \SETsingleton{(n \NATplus \NATone,y)}$.
-            Indeed $(\NATzero,a) \NotEq (n \NATplus \NATone,y)$.
+            Indeed $\NATzero, n \NATplus \NATone, a, y$ are objects and $(\NATzero,a) \NotEq (n \NATplus \NATone,y)$.
             Indeed $\NATzero \NotEq n \NATplus \NATone$.
           \end{proof}
 
@@ -232,8 +239,11 @@
             Assume $(m,z) \Elem H$.
             Then $(m,z) \Elem \SETintersectover \Phi$.
             Hence $(m \NATplus \NATone,f(z)) \Elem \SETintersectover \Phi$.
-            $(m \NATplus \NATone,f(z)) \NotEq (n \NATplus \NATone,y)$.
-            Indeed if $(m \NATplus \NATone,f(z)) \Eq (n \NATplus \NATone,y)$ then $m \Eq n$ and $f(z) \Eq y$ (by \sn{injectivity of successor function}).
+            $m \NATplus \NATone, n \NATplus \NATone, f(z), y$ are objects.
+            [prover vampire]
+            Thus if $(m \NATplus \NATone,f(z)) \Eq (n \NATplus \NATone,y)$ then $m \NATplus \NATone \Eq n \NATplus \NATone$ and $f(z) \Eq y$.
+            Therefore if $(m \NATplus \NATone,f(z)) \Eq (n \NATplus \NATone,y)$ then $m \Eq n$ and $f(z) \Eq y$ (by \sn{injectivity of successor function}).
+            Consequently $(m \NATplus \NATone,f(z)) \NotEq (n \NATplus \NATone,y)$.
             Thus $(m \NATplus \NATone,f(z)) \NotElem \SETsingleton{(n \NATplus \NATone,y)}$.
             Therefore $(m \NATplus \NATone,f(z)) \Elem H$.
           \end{proof}
