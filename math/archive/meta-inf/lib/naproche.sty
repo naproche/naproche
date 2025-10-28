@@ -15,6 +15,15 @@
 \RequirePackage{soul}
 
 
+% Backward Compatibility with sTeX 3
+% ----------------------------------
+
+\if_cs_exist:N \stex_css_literal:n
+\else:
+  \cs_new:Nn \stex_css_literal:n {}
+\fi:
+
+
 % Preliminary Setup
 % -----------------
 
