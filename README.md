@@ -80,7 +80,10 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
     - Windows 10/11
 
     The Isabelle component with its PDF documents has been produced on:
-    - Ubuntu Linux 24.04 LTS with packages `texlive-latex-extra` and `texlive-bibtex-extra`
+    - Ubuntu Linux 24.04 LTS with packages
+      - `texlive-xetex`
+      - `texlive-latex-extra`
+      - `texlive-bibtex-extra`
 
 * Isabelle Prover IDE
   
