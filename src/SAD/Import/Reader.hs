@@ -93,9 +93,10 @@ reader depth dialect naprocheFormalizationsPath doneFiles stateList [ProofTextIn
         "\"..\" is not allowed as a directory name in a file path: " ++
         relativeFilePath
   -- Catch invalid file name extension:
-  | (takeExtensions relativeFilePath `notElem` [".ftl", ".ftl.tex"])
+  | (takeExtensions relativeFilePath `notElem` [".ftl", ".ftl.tex", ".ftl.en.tex"])
       || (takeExtensions relativeFilePath == ".ftl" && dialect /= Ftl)
       || (takeExtensions relativeFilePath == ".ftl.tex" && dialect /= Tex)
+      || (takeExtensions relativeFilePath == ".ftl.en.tex" && dialect /= Stex)
      = Message.errorParser pos $
         "Invalid file name extension \"" ++ takeExtensions relativeFilePath ++
         "\": " ++ relativeFilePath
