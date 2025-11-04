@@ -117,7 +117,7 @@ object Naproche_Component {
         progress.echo("Building " + pdf_path + " with " + tex_program + " (1st run)")
         val result =
           progress.bash(Bash.string(tex_program) + " " + Bash.string(tex_name),
-            cwd = tex_dir, env = Isabelle_System.settings(tex_env_writesms))
+            cwd = tex_dir, env = Isabelle_System.Settings.env(tex_env_writesms))
         if (!result.ok) {
           tex_failed += tex_path
           progress.echo_error_message(cat_lines("LaTeX failed:"
@@ -125,11 +125,11 @@ object Naproche_Component {
         } else {
           progress.echo("Building " + bbl_path + " with " + bibtex_program)
           progress.bash(Bash.string(bibtex_program) + " " + Bash.string(raw_file),
-            cwd = tex_dir, env = Isabelle_System.settings(bibtex_env))
+            cwd = tex_dir, env = Isabelle_System.Settings.env(bibtex_env))
           progress.echo("Building " + pdf_path + " with " + tex_program + " (2nd run)")
           val result =
             progress.bash(Bash.string(tex_program) + " " + Bash.string(tex_name),
-              cwd = tex_dir, env = Isabelle_System.settings(tex_env_usesms))
+              cwd = tex_dir, env = Isabelle_System.Settings.env(tex_env_usesms))
           if (!result.ok) {
             tex_failed += tex_path
             progress.echo_error_message(cat_lines("LaTeX failed:"
@@ -138,7 +138,7 @@ object Naproche_Component {
             progress.echo("Building " + pdf_path + " with " + tex_program + " (3rd run)")
             val result =
               progress.bash(Bash.string(tex_program) + " " + Bash.string(tex_name),
-                cwd = tex_dir, env = Isabelle_System.settings(tex_env_usesms))
+                cwd = tex_dir, env = Isabelle_System.Settings.env(tex_env_usesms))
           }
         }
         if (!tex_failed(tex_path)) {

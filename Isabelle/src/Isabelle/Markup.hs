@@ -50,7 +50,7 @@ module Isabelle.Markup (
 
   forkedN, forked, joinedN, joined, runningN, running, finishedN, finished,
   failedN, failed, canceledN, canceled, initializedN, initialized, finalizedN, finalized,
-  consolidatedN, consolidated,
+  consolidatingN, consolidating, consolidatedN, consolidated,
 
   writelnN, writeln, stateN, state, informationN, information, tracingN, tracing,
   warningN, warning, legacyN, legacy, errorN, error, reportN, report, no_reportN, no_report,
@@ -442,7 +442,7 @@ comment3 = markup_elem comment3N
 {- command status -}
 
 forkedN, joinedN, runningN, finishedN, failedN, canceledN,
-  initializedN, finalizedN, consolidatedN :: Bytes
+  initializedN, finalizedN, consolidatingN, consolidatedN :: Bytes
 forkedN = "forked"
 joinedN = "joined"
 runningN = "running"
@@ -451,10 +451,11 @@ failedN = "failed"
 canceledN = "canceled"
 initializedN = "initialized"
 finalizedN = "finalized"
+consolidatingN = "consolidating"
 consolidatedN = "consolidated"
 
 forked, joined, running, finished, failed, canceled,
-  initialized, finalized, consolidated :: T
+  initialized, finalized, consolidating, consolidated :: T
 forked = markup_elem forkedN
 joined = markup_elem joinedN
 running = markup_elem runningN
@@ -463,6 +464,7 @@ failed = markup_elem failedN
 canceled = markup_elem canceledN
 initialized = markup_elem initializedN
 finalized = markup_elem finalizedN
+consolidating = markup_elem consolidatingN
 consolidated = markup_elem consolidatedN
 
 
