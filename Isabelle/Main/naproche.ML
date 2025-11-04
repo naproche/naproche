@@ -409,7 +409,7 @@ val _ = Theory.setup
           in define_problem (Binding.make (bname, pos)) sequent end;
       in fold_map (map_theory_result o define) args state end) #>
   command0_setup \<^binding>\<open>output_report\<close> Output.report #>
-  command0_setup \<^binding>\<open>output_state\<close> (Output.state o the_single) #>
+  command0_setup \<^binding>\<open>output_state\<close> Output.state #>
   command0_setup \<^binding>\<open>output_writeln\<close> (writeln o the_single) #>
   command0_setup \<^binding>\<open>output_information\<close> (Output.information o the_single) #>
   command0_setup \<^binding>\<open>output_tracing\<close> (tracing o the_single) #>

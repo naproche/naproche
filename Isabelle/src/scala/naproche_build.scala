@@ -15,10 +15,10 @@ object Naproche_Build {
 
     val build_options = options + "naproche_server=false"
 
-    val rc =
+    val results =
       Build.build_logic(build_options, Naproche.session, progress = progress,
         dirs = List(Naproche.NAPROCHE_HOME))
-    if (rc != 0) error("Failed to build session " + quote(Naproche.session))
+    if (!results.ok) error("Failed to build session " + quote(Naproche.session))
 
 
     /* export Haskell sources */
