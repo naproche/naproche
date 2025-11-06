@@ -13,7 +13,7 @@ module SAD.Import.Reader (
 
 import Control.Monad
 import System.IO.Error
-import System.FilePath
+import System.FilePath.Posix
 import Control.Exception
 
 import SAD.Data.Text.Block
