@@ -50,7 +50,7 @@ import Naproche.Program qualified as Program
 readProofText :: ParserKind -> [ProofText] -> IO [ProofText]
 readProofText dialect text0 = do
   context <- Program.thread_context
-  naprocheFormalizationsPath <- getNaprocheFormalizations context
+  naprocheFormalizationsPath <- getNaprocheFormalizations
   (text, reports) <- reader 0 dialect naprocheFormalizationsPath [] [initState context noTokens] text0
   when (Program.is_pide context) $ Message.reports reports
   return text

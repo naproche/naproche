@@ -145,10 +145,12 @@ the output of the commands listed in its second column.
 
 Environment Variable      | Command
 --------------------------|-----------------------------------------------------
+`NAPROCHE_HOME`           | `isabelle getenv -b NAPROCHE_HOME`
 `NAPROCHE_FORMALIZATIONS` | `isabelle getenv -b NAPROCHE_FORMALIZATIONS`
 `NAPROCHE_EPROVER`        | `isabelle getenv -b NAPROCHE_EPROVER`
 `NAPROCHE_VAMPIRE`        | `isabelle getenv -b NAPROCHE_VAMPIRE`
 `NAPROCHE_SPASS`          | `isabelle getenv -b NAPROCHE_SPASS`
+`NAPROCHE_MATHHUB`        | `isabelle getenv -b NAPROCHE_MATHHUB`
 
 Run `isabelle getenv -b NAPROCHE_EXE` to find the location of the
 executable of command line interface of Naproche.
