@@ -13,8 +13,7 @@ module SAD.Import.Reader (
 
 import Control.Monad
 import System.IO.Error
-import System.FilePath.Posix
--- System.FilePath.Posix is correct even on Windows as we use Cygwin there.
+import System.FilePath.Posix -- This is correct even on Windows as we use Cygwin there.
 import Control.Exception
 
 import SAD.Data.Text.Block

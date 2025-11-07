@@ -23,7 +23,7 @@ import Control.Exception (catch)
 import System.Console.GetOpt qualified as GetOpt
 import System.Environment qualified as Environment
 import System.IO
-import System.FilePath
+import System.FilePath.Posix -- This is correct even on Windows as we use Cygwin there.
 import System.Directory
 import System.Process (callCommand)
 import Network.Socket (Socket)
