@@ -13,11 +13,11 @@ module SAD.Core.Message (
   reports_text, report_text, reports, report,
   console_position, show_position,
   origin_main, origin_export, origin_forthel, origin_parser,
-  origin_reasoner, origin_simplifier, origin_thesis, origin_translate,
+  origin_reasoner, origin_simplifier, origin_thesis, origin_translate, origin_reader,
   Kind (..), output, error,
   outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
   outputThesis, outputSimplifier, outputTranslate, outputTokenizer,
-  errorExport, errorParser, errorLexer, errorTokenizer
+  errorExport, errorParser, errorLexer, errorTokenizer, errorReader
 ) where
 
 import Prelude hiding (error)
@@ -66,7 +66,7 @@ report pos markup = reports [(pos, markup)]
 
 origin_main, origin_export, origin_forthel, origin_parser,
   origin_reasoner, origin_simplifier, origin_thesis, origin_translate,
-  origin_lexer, origin_tokenizer :: Bytes
+  origin_lexer, origin_tokenizer, origin_reader :: Bytes
 origin_main = "Main"
 origin_export = "Export"
 origin_forthel = "ForTheL"
@@ -77,6 +77,7 @@ origin_thesis = "Thesis"
 origin_translate = "Translation"
 origin_lexer = "Lexer"
 origin_tokenizer = "Tokenizer"
+origin_reader = "Reader"
 
 
 -- message kind
@@ -163,8 +164,9 @@ outputTokenizer = output origin_tokenizer
 outputTranslate :: BYTES a => Kind -> Position.T -> a -> IO ()
 outputTranslate = output origin_translate
 
-errorExport, errorParser, errorLexer, errorTokenizer :: BYTES a => Position.T -> a -> IO b
+errorExport, errorParser, errorLexer, errorTokenizer, errorReader :: BYTES a => Position.T -> a -> IO b
 errorExport = error origin_export
 errorParser = error origin_parser
 errorLexer = error origin_lexer
 errorTokenizer = error origin_tokenizer
+errorReader = error origin_reader

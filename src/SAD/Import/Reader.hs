@@ -84,12 +84,12 @@ reader depth dialect naprocheFormalizationsPath doneFiles stateList [ProofTextIn
 reader depth dialect naprocheFormalizationsPath doneFiles stateList [ProofTextInstr pos (GetRelativeFilePath relativeFilePath)]
   -- Catch "." as directory name in file path:
   | "." `elem` splitDirectories relativeFilePath =
-      Message.errorParser pos $
+      Message.errorReader pos $
         "\".\" is not allowed as a directory name in a file path: " ++
         relativeFilePath
   -- Catch ".." as directory name in file path:
   | ".." `elem` splitDirectories relativeFilePath =
-      Message.errorParser pos $
+      Message.errorReader pos $
         "\"..\" is not allowed as a directory name in a file path: " ++
         relativeFilePath
   -- Catch invalid file name extension:
@@ -97,7 +97,7 @@ reader depth dialect naprocheFormalizationsPath doneFiles stateList [ProofTextIn
       || (takeExtensions relativeFilePath == ".ftl" && dialect /= Ftl)
       || (takeExtensions relativeFilePath == ".ftl.tex" && dialect /= Tex)
       || (takeExtensions relativeFilePath == ".ftl.en.tex" && dialect /= Stex)
-     = Message.errorParser pos $
+     = Message.errorReader pos $
         "Invalid file name extension \"" ++ takeExtensions relativeFilePath ++
         "\": " ++ relativeFilePath
   | otherwise =
@@ -192,7 +192,7 @@ parseFile :: ParserKind -> FilePath -> State FState -> IO ([ProofText], State FS
 parseFile dialect filePath state = do
   bytes <- catch
     (if null filePath then make_bytes <$> getContents else File.read filePath)
-    (Message.errorParser (Position.file_only $ make_bytes filePath) . make_bytes . ioeGetErrorString)
+    (Message.errorReader (Position.file_only $ make_bytes filePath) . make_bytes . ioeGetErrorString)
   let pos = Position.file $ make_bytes filePath
   parse dialect pos bytes state{parserKind = dialect}
 
