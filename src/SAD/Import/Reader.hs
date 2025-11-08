@@ -13,8 +13,7 @@ module SAD.Import.Reader (
 
 import Control.Monad
 import System.IO.Error
-import System.FilePath.Posix
--- System.FilePath.Posix is correct even on Windows as we use Cygwin there.
+import System.FilePath.Posix -- This is correct even on Windows as we use Cygwin there.
 import Control.Exception
 
 import SAD.Data.Text.Block
@@ -51,7 +50,7 @@ import Naproche.Program qualified as Program
 readProofText :: ParserKind -> [ProofText] -> IO [ProofText]
 readProofText dialect text0 = do
   context <- Program.thread_context
-  naprocheFormalizationsPath <- getNaprocheFormalizations context
+  naprocheFormalizationsPath <- getNaprocheFormalizations
   (text, reports) <- reader 0 dialect naprocheFormalizationsPath [] [initState context noTokens] text0
   when (Program.is_pide context) $ Message.reports reports
   return text
@@ -85,12 +84,12 @@ reader depth dialect naprocheFormalizationsPath doneFiles stateList [ProofTextIn
 reader depth dialect naprocheFormalizationsPath doneFiles stateList [ProofTextInstr pos (GetRelativeFilePath relativeFilePath)]
   -- Catch "." as directory name in file path:
   | "." `elem` splitDirectories relativeFilePath =
-      Message.errorParser pos $
+      Message.errorReader pos $
         "\".\" is not allowed as a directory name in a file path: " ++
         relativeFilePath
   -- Catch ".." as directory name in file path:
   | ".." `elem` splitDirectories relativeFilePath =
-      Message.errorParser pos $
+      Message.errorReader pos $
         "\"..\" is not allowed as a directory name in a file path: " ++
         relativeFilePath
   -- Catch invalid file name extension:
@@ -98,7 +97,7 @@ reader depth dialect naprocheFormalizationsPath doneFiles stateList [ProofTextIn
       || (takeExtensions relativeFilePath == ".ftl" && dialect /= Ftl)
       || (takeExtensions relativeFilePath == ".ftl.tex" && dialect /= Tex)
       || (takeExtensions relativeFilePath == ".ftl.en.tex" && dialect /= Stex)
-     = Message.errorParser pos $
+     = Message.errorReader pos $
         "Invalid file name extension \"" ++ takeExtensions relativeFilePath ++
         "\": " ++ relativeFilePath
   | otherwise =
@@ -193,7 +192,7 @@ parseFile :: ParserKind -> FilePath -> State FState -> IO ([ProofText], State FS
 parseFile dialect filePath state = do
   bytes <- catch
     (if null filePath then make_bytes <$> getContents else File.read filePath)
-    (Message.errorParser (Position.file_only $ make_bytes filePath) . make_bytes . ioeGetErrorString)
+    (Message.errorReader (Position.file_only $ make_bytes filePath) . make_bytes . ioeGetErrorString)
   let pos = Position.file $ make_bytes filePath
   parse dialect pos bytes state{parserKind = dialect}
 

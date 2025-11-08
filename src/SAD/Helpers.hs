@@ -35,7 +35,7 @@ import Data.Function
 import Data.Char qualified as Char
 import System.Environment (getExecutablePath)
 import Data.List.Extra (dropEnd)
-import System.FilePath
+import System.FilePath.Posix -- This is correct even on Windows as we use Cygwin there.
 
 import Naproche.Program qualified as Program
 
@@ -164,27 +164,13 @@ failWithMessage functionId message = error $ failureMessage functionId message
 -- *
 
 -- | Get the path to the naproche directory.
-getNaprocheHome :: Program.Context -> IO FilePath
-getNaprocheHome context = if Program.is_pide context
-   then make_string <$> getenv (make_bytes "NAPROCHE_HOME")
-   else do
-    executablePath <- getExecutablePath
-    let executablePathComps = splitPath executablePath -- e.g. ".../naproche/x86_64-linux/Naproche"
-        naprocheHome = dropEnd 2 executablePathComps
-    return $ joinPath naprocheHome
+getNaprocheHome :: IO FilePath
+getNaprocheHome = make_string <$> getenv (make_bytes "NAPROCHE_HOME")
 
 -- | Get the path to the formalizations directory.
-getNaprocheFormalizations :: Program.Context -> IO FilePath
-getNaprocheFormalizations context = if Program.is_pide context
-   then make_string <$> getenv (make_bytes "NAPROCHE_FORMALIZATIONS")
-   else do
-        naprocheHome <- getNaprocheHome context
-        return $ naprocheHome </> "math"
+getNaprocheFormalizations :: IO FilePath
+getNaprocheFormalizations = make_string <$> getenv (make_bytes "NAPROCHE_FORMALIZATIONS")
 
 -- | Get the path to the formalizations directory.
-getNaprocheMathhub :: Program.Context -> IO FilePath
-getNaprocheMathhub context = if Program.is_pide context
-   then make_string <$> getenv (make_bytes "NAPROCHE_MATHHUB")
-   else do
-        naprocheFormalizations <- getNaprocheFormalizations context
-        return $ naprocheFormalizations </> "archive"
+getNaprocheMathhub :: IO FilePath
+getNaprocheMathhub = make_string <$> getenv (make_bytes "NAPROCHE_MATHHUB")

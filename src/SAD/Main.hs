@@ -23,7 +23,7 @@ import Control.Exception (catch)
 import System.Console.GetOpt qualified as GetOpt
 import System.Environment qualified as Environment
 import System.IO
-import System.FilePath
+import System.FilePath.Posix -- This is correct even on Windows as we use Cygwin there.
 import System.Directory
 import System.Process (callCommand)
 import Network.Socket (Socket)
@@ -58,6 +58,7 @@ import Isabelle.File qualified as File
 import Naproche.Program qualified as Program
 import Naproche.Console qualified as Console
 import Naproche.Param qualified as Param
+import Naproche.System (is_windows)
 
 
 main :: IO ()
@@ -145,8 +146,8 @@ mainTerminal initInstrs fileArgs = do
             Nothing -> putStrLn "Unable to render input text: No input file given." >> return 1
             Just inputPath -> case dialect of
               Ftl -> putStrLn "Unable to render input text: No \".ftl.tex\" file given." >> return 1
-              Tex -> renderInputFile context inputPath (make_string texExe) (make_string bibtexExe)
-              Stex -> renderInputFile context inputPath (make_string texExe) (make_string bibtexExe)
+              Tex -> renderInputFile inputPath (make_string texExe) (make_string bibtexExe)
+              Stex -> renderInputFile inputPath (make_string texExe) (make_string bibtexExe)
           modeArg -> putStrLn ("Invalid mode: " ++ make_string modeArg) >> return 1)
         `catch` (\Exception.UserInterrupt -> do
           Program.exit_thread
@@ -331,34 +332,38 @@ verifyInputText dialect mesonCache proverCache proofTexts = do
     then 0
     else 1
 
-renderInputFile :: Program.Context -> FilePath -> FilePath -> FilePath -> IO Int
-renderInputFile context inputPath texExe bibtexExe = do
-  putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
+renderInputFile :: FilePath -> FilePath -> FilePath -> IO Int
+renderInputFile inputPath texExe bibtexExe = do
+  if is_windows
+    then do
+      putStrLn "[Error] \"render\" mode is not supported on Windows."
+      return 1
+  else do
+    putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
 
-  -- set the MATHHUB variable:
-  mathhubVar <- getNaprocheMathhub context
+    mathhubVar <- getNaprocheMathhub
 
-  putStrLn $ "[Info] Path to pdflatex:   " ++ texExe
-  putStrLn $ "[Info] Path to bibtex:     " ++ bibtexExe
-  putStrLn $ "[Info] MATHHUB variable:   " ++ mathhubVar
+    putStrLn $ "[Info] PDFLaTeX binary:  " ++ texExe
+    putStrLn $ "[Info] BibTeX binary:    " ++ bibtexExe
+    putStrLn $ "[Info] MATHHUB variable: " ++ mathhubVar
 
-  putStr $ "\nReady to render \"" ++ inputPath ++ "\" to PDF. Continue? (Y/n) "
-  hFlush stdout
-  answer <- getLine
-  putStr "\n"
+    putStr $ "\nReady to render \"" ++ inputPath ++ "\" to PDF. Continue? (Y/n) "
+    hFlush stdout
+    answer <- getLine
+    putStr "\n"
 
-  when (answer `elem` ["Y", "y", ""]) $ do
-    -- Render the input file as PDF:
-    let inputDir = takeDirectory inputPath
-        inputFile = takeFileName inputPath
-        inputFileBase = takeBaseName inputFile
-    setCurrentDirectory inputDir
-    callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_WRITESMS=true " ++ texExe ++ " " ++ inputFile
-    callCommand $ bibtexExe ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
-    callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_USESMS=true " ++ texExe ++ " " ++ inputFile
-    callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_USESMS=true " ++ texExe ++ " " ++ inputFile
+    when (answer `elem` ["Y", "y", ""]) $ do
+      -- Render the input file as PDF:
+      let inputDir = takeDirectory inputPath
+          inputFile = takeFileName inputPath
+          inputFileBase = takeBaseName inputFile
+      setCurrentDirectory inputDir
+      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_WRITESMS=true " ++ texExe ++ " " ++ inputFile
+      callCommand $ bibtexExe ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
+      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_USESMS=true " ++ texExe ++ " " ++ inputFile
+      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_USESMS=true " ++ texExe ++ " " ++ inputFile
 
-  return 0
+    return 0
 
 
 -- * Arguments
