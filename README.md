@@ -25,6 +25,15 @@ Ensure that `curl`, `g++`, `gcc`, `git`, `gmp`, `make`, and `hg` (Mercurial) are
 
   * Windows: use Cygwin64 with packages `curl`, `gcc-core`, `git`, `make`, and `mercurial` (via Cygwin setup-x86_64.exe)
 
+To build a Naproche component for Isabelle, ensure that all necessary LaTeX
+tools and packages are installed:
+
+  * Linux: e.g. `sudo apt install texlive-xetex texlive-latex-extra texlive-bibtex-extra`
+
+  * Windows: use Cygwin64 with packages `texlive-collection-latex`,
+    `texlive-collection-latexextra`, `texlive-collection-xetex`,
+    `texlive-collection-pstricks` and `texlive-collection-bibtexextra`
+
 
 #### Repository Management
 
