@@ -341,12 +341,11 @@ renderInputFile inputPath texExe bibtexExe = do
   else do
     putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
 
-    -- set the MATHHUB variable:
     mathhubVar <- getNaprocheMathhub
 
-    putStrLn $ "[Info] Path to pdflatex:   " ++ texExe
-    putStrLn $ "[Info] Path to bibtex:     " ++ bibtexExe
-    putStrLn $ "[Info] MATHHUB variable:   " ++ mathhubVar
+    putStrLn $ "[Info] PDFLaTeX binary:  " ++ texExe
+    putStrLn $ "[Info] BibTeX binary:    " ++ bibtexExe
+    putStrLn $ "[Info] MATHHUB variable: " ++ mathhubVar
 
     putStr $ "\nReady to render \"" ++ inputPath ++ "\" to PDF. Continue? (Y/n) "
     hFlush stdout
