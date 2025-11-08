@@ -16,7 +16,7 @@ object Naproche {
   val NAPROCHE_HOME: Path = Path.explode("$NAPROCHE_HOME")
   val NAPROCHE_EXE: Path = Path.explode("$NAPROCHE_EXE")
   val NAPROCHE_EXE_DIR: Path = Path.explode("$NAPROCHE_EXE_DIR")
-  val NAPROCHE_MATH: Path = NAPROCHE_HOME + Path.explode("math")
+  val NAPROCHE_MATH: Path = Path.explode("$NAPROCHE_MATH")
 
   def platform: String = NAPROCHE_EXE_DIR.expand.base.implode
   val session = "Naproche"
