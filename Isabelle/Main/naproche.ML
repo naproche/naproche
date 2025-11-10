@@ -4,13 +4,6 @@ Authors: Makarius Wenzel (2018, 2021)
 Isabelle/Naproche connectivity, with Prover IDE support.
 *)
 
-datatype forthel_dialect = ftl | tex | stex;
-
-fun show_dialect dialect = case dialect of
-    ftl => "ftl"
-  | tex => "tex"
-  | stex => "stex"
-
 signature NAPROCHE =
 sig
   val naproche_prove: bool Config.T
@@ -32,7 +25,8 @@ sig
   val yxml_command1_setup: binding -> (Proof.context -> XML.body -> XML.body) -> theory -> theory
   val cancel_program: string
   val forthel_program: string
-  val check_forthel: {dialect: forthel_dialect} -> string * Position.T -> theory -> theory
+  datatype forthel_dialect = Ftl | Tex | Stex
+  val check_forthel: forthel_dialect -> string * Position.T -> theory -> theory
   type sequent = term list * term list
   val prove_sequent: binding -> sequent -> Input.source -> Proof.context -> thm list * Proof.context
   val present_sequent: sequent -> Proof.context ->
@@ -201,12 +195,23 @@ fun command_loop streams state =
 
 (* process ForTheL text *)
 
+datatype forthel_dialect = Ftl | Tex | Stex;
+
+val show_dialect = fn Ftl => "ftl" | Tex => "tex" | Stex => "stex";
+
+fun file_dialect path =
+  let val file_name = Path.file_name path in
+    if String.isSuffix ".ftl.tex" file_name then Tex
+    else if String.isSuffix ".ftl.en.tex" file_name then Stex
+    else Ftl
+  end;
+
 val forthel_program = "forthel";
 
 fun forthel_bool b = if b then "on" else "off";
 fun forthel_bool_option ctxt = forthel_bool o Config.get ctxt;
 
-fun forthel_args ctxt {dialect} =
+fun forthel_args ctxt dialect =
   let val bool_option = forthel_bool_option ctxt in
    ["--dialect=" ^ show_dialect dialect,
     "--prove=" ^ bool_option naproche_prove,
@@ -423,29 +428,22 @@ val _ = Theory.setup
 
 val _ =
   Outer_Syntax.command \<^command_keyword>\<open>forthel_ftl\<close> "check Naproche text (FTL)"
-    (Parse.embedded_position >> (Toplevel.theory o check_forthel {dialect = ftl}));
+    (Parse.embedded_position >> (Toplevel.theory o check_forthel Ftl));
 
 val _ =
   Outer_Syntax.command \<^command_keyword>\<open>forthel_tex\<close> "check Naproche text (TeX)"
-    (Parse.embedded_position >> (Toplevel.theory o check_forthel {dialect = tex}));
+    (Parse.embedded_position >> (Toplevel.theory o check_forthel Tex));
 
 val _ =
   Outer_Syntax.command \<^command_keyword>\<open>forthel_stex\<close> "check Naproche text (sTeX)"
-    (Parse.embedded_position >> (Toplevel.theory o check_forthel {dialect = stex}));
+    (Parse.embedded_position >> (Toplevel.theory o check_forthel Stex));
 
 val _ =
   Outer_Syntax.command \<^command_keyword>\<open>forthel_file\<close> "check Naproche text file"
     (Resources.provide_parse_file >> (fn get_file =>
       Toplevel.theory (fn thy =>
-        let
-          val ({src_path, lines, pos, ...}, thy') = get_file thy;
-          val file_name = Path.implode (Path.expand src_path);
-          val dialect = if String.isSuffix ".ftl.tex" file_name
-            then tex
-            else if String.isSuffix ".ftl.en.tex" file_name
-              then stex
-              else ftl;
-        in check_forthel {dialect = dialect} (cat_lines lines, pos) thy' end)));
+        let val ({src_path, lines, pos, ...}, thy') = get_file thy
+        in check_forthel (file_dialect src_path) (cat_lines lines, pos) thy' end)));
 
 val _ =
   Outer_Syntax.local_theory_to_proof' \<^command_keyword>\<open>naproche_problem\<close> "prove Naproche problem"
