@@ -35,7 +35,7 @@ import Data.Function
 import Data.Char qualified as Char
 import System.Environment (getExecutablePath)
 import Data.List.Extra (dropEnd)
-import System.FilePath.Posix -- This is correct even on Windows as we use Cygwin there.
+import System.FilePath.Posix
 
 import Naproche.Program qualified as Program
 

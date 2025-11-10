@@ -23,7 +23,7 @@ import Data.Functor ((<&>))
 import Data.Foldable (foldr')
 import Data.Maybe (fromMaybe)
 import Data.Either.Extra (fromEither)
-import System.FilePath.Posix hiding ((</>)) -- This is correct even on Windows as we use Cygwin there.
+import System.FilePath.Posix hiding ((</>))
 
 import SAD.ForTheL.TEX.Structure qualified as TEX
 import SAD.ForTheL.Structure

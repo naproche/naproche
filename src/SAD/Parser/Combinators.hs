@@ -18,7 +18,7 @@ import Data.Maybe (isNothing, mapMaybe)
 import Debug.Trace
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
-import System.FilePath.Posix hiding ((</>)) -- This is correct even on Windows as we use Cygwin there.
+import System.FilePath.Posix hiding ((</>))
 
 import SAD.Parser.Base
 import SAD.Parser.Token
