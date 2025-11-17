@@ -757,7 +757,8 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   We can swap $x, y$ with $v, w$.
 
   \begin{forthel}
-    [timelimit 20]
+    [timelimit 70]
+    [prover vampire]
     \begin{lemma} % Satz 4.2
       Assume $\IFS{x}{y}{z}{r}{v}{w}{p}{q}$.
       Then $\Cong{y}{r}{w}{q}$.
@@ -1169,6 +1170,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
         Then $\BetwFive{a}{b}{d}{c'}{b'}$.
 
         %
+        [timelimit 90]
         Thus $\Cong{b}{c'}{b''}{c}$.
 
         Thus $\Cong{b}{b'}{b''}{b}$.
