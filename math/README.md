@@ -66,7 +66,7 @@ math .................................... Naproche formalizations
 │   │
 │   ├── documentation ................... Documentation of Naproche
 │   │   │
-│   │   ├── ontology .................... The object-level ontology of Naproche
+│   │   └── ontology .................... The object-level ontology of Naproche
 │   │
 │   ├── libraries ....................... Naproche libraries based on sTeX
 │   │   │
