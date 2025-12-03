@@ -1,0 +1,788 @@
+\documentclass[../solow_main.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Locality}\label{chapter:local}
+
+
+\begin{forthel}
+    [read \path{examples/solow/sections/3differentiation.ftl.tex}]
+\end{forthel}
+
+\section{Open Sets and Intervals}
+
+\subsection{Balls and Open Sets}
+
+As a small proposition we show that alternatively we could have introduced continuity not via domain restrictors but rather with balls.
+
+\begin{forthel}
+Let $f$ denote a real map. Let $a,b,x,y,z$ denote real number.
+Let $r$ denote a positive real number.
+
+\begin{definition}
+    $\B_{r}(a) = \{x \in \mathbb{R} | \Rmetric(x,a) < r\}$.
+\end{definition}
+
+\begin{definition}
+    An open set is a subset $S$ of $\mathbb{R}$ such that
+    for every $a \in S$ there exists a positive real number $r$ such that $\B_{r}(a) \subseteq S$.
+\end{definition}
+
+\begin{lemma}[R is open]
+    $\mathbb{R}$ is an open set.
+\end{lemma}
+
+\begin{lemma}[ball nonempty]
+    $a \in \B_{r}(a)$.
+\end{lemma}
+
+[timelimit 10]
+\begin{proposition}[equivalence domain restrictor and ball]
+    $f$ is continuous in $a$ iff for every positive real number $\varepsilon$ there exists a positive real number $\delta$ such that
+    $f[\B_{\delta}(a)] \subseteq \B_{\varepsilon}(f(a))$.
+\end{proposition}
+\begin{proof}
+    Case $f$ is continuous in $a$.
+    
+        Let $\varepsilon$ be a positive real number. Take a positive real number $\delta$ such that $\delta$ is a domain restrictor for $\varepsilon$ and $f$ around $a$ and $f(a)$.
+        Let us show that $f[\B_{\delta}(a)] \subseteq \B_{\varepsilon}(f(a))$.
+
+            Let $y \in f[\B_{\delta}(a)]$. Take $x \in \B_{\delta}(a)$ such that $f(x) = y$. $\Rmetric(x,a) < \delta$.
+            $\abs{f(x) - f(a)} < \varepsilon$ (by domain restrictor lemma 3). Indeed $\abs{x - a} < \delta$.
+            Therefore $y = f(x) \in \B_{\varepsilon}(f(a))$. 
+        End.
+    End.
+
+    Case for every positive real number $\varepsilon$ there exists a positive real number $\delta$ such that
+    $f[\B_{\delta}(a)] \subseteq \B_{\varepsilon}(f(a))$.
+
+        Let $\varepsilon$ be a positive real number. Take a positive real number $\delta$ such that 
+        $f[\B_{\delta}(a)] \subseteq \B_{\varepsilon}(f(a))$.
+        $\delta$ is a domain restrictor for $\varepsilon$ and $f$ around $a$ and $f(a)$.
+        Indeed we can show that for all $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$ 
+        if $\Rmetric(x,a) < \delta$ then $\Rmetric(f(x),f(a)) < \varepsilon$.
+            Let $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$. Assume $\Rmetric(x,a) < \delta$. Thus $x \in \B_{\delta}(a)$.
+            Hence $f(x) \in f[\B_{\delta}(a)]$ and $f(x) \in \B_{\varepsilon}(f(a))$. Therefore $\Rmetric(f(x),f(a)) < \varepsilon$.
+        End.
+    End.
+\end{proof}
+
+\begin{lemma}[lemma 01]
+    $\abs{x - y} < r$ iff $x \in \B_{r}(y)$.
+\end{lemma}
+
+\begin{lemma}[ball subsets]
+    Let $r,\rho$ be positive real numbers. 
+    If $r < \rho$ then $\B_{r}(a) \subseteq \B_{\rho}(a)$.
+\end{lemma}
+\begin{proof}
+   Assume $r < \rho$. Let $x \in \B_{r}(a)$. Then $\abs{x - a} < \rho$. Indeed $\abs{x - a} < r < \rho$.
+   Therefore $x \in \B_{\rho}(a)$.
+\end{proof}
+
+\begin{lemma}[intersection of open sets]
+    Let $A,B$ be open sets.
+    Then $A \cap B$ is an open set.
+\end{lemma}
+\begin{proof}
+    Let $x$ be an element of $A \cap B$.
+    Take a positive real number $\tau$ such that $\B_{\tau}(x) \subseteq A$.
+    Take a positive real number $\theta$ such that $\B_{\theta}(x) \subseteq B$.
+    Take a positive real number $\delta$ such that $\delta < \tau$ and $\delta < \theta$ (by ineq lemma 19).
+    Then $\B_{\delta}(x) \subseteq \B_{\tau}(x) \subseteq A$ and $\B_{\delta}(x) \subseteq \B_{\theta}(x) \subseteq B$ (by ball subsets).
+    Therefore $\B_{\delta}(x)$ is a subset of $A \cap B$.
+\end{proof}
+
+
+
+\end{forthel}
+
+
+
+\subsection{Intervals}
+
+
+\begin{forthel}
+
+\begin{definition}
+    $(x,y)_{OI} = \{z \in \mathbb{R} | x < z < y\}$.
+\end{definition}
+
+\begin{lemma}
+    $(x,y)_{OI}$ is nonempty iff $x < y$.
+\end{lemma}
+\begin{proof}
+    Case $x < y$ (by ineq lemma 20). End.
+\end{proof}
+
+[timelimit 30]
+\begin{lemma}[ball and open interval]
+    $\B_{r}(x)$ is equal to $(x - r, x + r)_{OI}$.
+\end{lemma}
+\begin{proof}
+    Take $I = (x - r, x + r)_{OI}$.
+    $\B_{r}(x) \subseteq I$. Proof.
+
+        Let $y \in \B_{r}(x)$. $(y,x) \in \dom(\Rmetric)$. Then $\Rmetric(y,x) < r$. $\Rmetric(y,x) = \abs{y - x}$.
+
+        Case $y - x \geq 0$. $y \geq x$ and $y > x - r$. 
+            $\abs{y - x} = y - x < r$. Thus $y < r + x$ (by ineq lemma 15). Therefore $y \in I$. End.
+
+        Case $y - x < 0$. Then $y < x$ and $y < x + r$.
+            $\abs{y - x} = -(y - x) = x - y < r$. Thus $x - r < y$ (by ineq lemma 18). Therefore $y \in I$. End.
+
+    End.
+
+    $I \subseteq \B_{r}(x)$. Proof.
+
+        Let $y \in I$. $x - y < r$ (by ineq lemma 18). Indeed $x - r < y$. $y - x < r$ (by ineq lemma 15). Indeed $y < r + x$.
+        $\abs{y - x} < r$. Indeed 
+        $y - x < r$ and $-(y - x) < r$. $(x,y) \in \mathbb{R} \times \mathbb{R}$. Therefore $\Rmetric(y,x) = \abs{y - x} < r$.
+        Hence $y \in \B_{r}(x)$.
+    End.
+\end{proof}
+
+\begin{lemma}[open interval lemma]
+    If $a \geq x$ and $b \leq y$ then 
+    $(a,b)_{OI} \subseteq (x,y)_{OI}$.
+\end{lemma}
+
+[prover vampire]
+\begin{lemma}[open interval is open]
+    $(a,b)_{OI}$ is an open set.
+\end{lemma}
+\begin{proof}
+    $(a,b)_{OI}$ is a subset of $\mathbb{R}$.
+    Let $x \in (a,b)_{OI}$.
+    Take a positive real number $\delta$ such that $\delta < x - a$ and $\delta < b - x$ (by ineq lemma 19).
+        Indeed $x - a$, $b - x$ are positive real numbers.
+    Then $a < x - \delta$ and $x + \delta < b$ (by ineq lemma 28, ineq lemma 285). 
+    Therefore $\B_{\delta}(x) = (x - \delta, x + \delta)_{OI} \subseteq (a,b)_{OI}$ (by ball and open interval, open interval lemma).
+\end{proof}
+
+\begin{lemma}[ball is open]
+    $\B_{r}(a)$ is an open set.
+\end{lemma}
+\begin{proof}
+    $\B_{r}(a)$ is an open set (by ball and open interval, open interval is open).
+\end{proof}
+    
+\begin{definition}
+    An interval is a subset $I$ of $\mathbb{R}$ such that $(x,z)_{OI} \subseteq I$  for every $x,z \in I$.
+\end{definition}
+
+\begin{lemma}
+    Let $I$ be an interval. Let $x,y \in I$.
+    Then $(x,y)_{OI} \subseteq I$ and $(y,x)_{OI} \subseteq I$.
+\end{lemma}
+
+\begin{definition}
+    $[a,b]_{CI} = \{x \in \mathbb{R} | a \leq x \leq b\}$.
+\end{definition}
+
+\begin{lemma}[interval lemma]
+    $(a,b)_{OI}$ is an interval and $[a,b]_{CI}$ is an interval.
+\end{lemma}
+
+\end{forthel}
+
+
+\section{Local Functions}
+
+
+\begin{forthel}
+Let $a$ denote a real number. Let $f$ denote a real map.
+Let $S$ denote a subset of $\mathbb{R}$.
+Let a real map on $S$ stand for a map from $S$ to $\mathbb{R}$.
+
+\begin{definition}
+    Let $g$ be a real map on $S$ for some subset $S$ of $\mathbb{R}$.
+    A real map extension of $g$ is a real map $f$ such that $f(x) = g(x)$ for all $x \in \dom(g)$.
+\end{definition}
+ 
+\begin{definition}
+    Let $g$ be a real map on $S$ for some subset $S$ of $\mathbb{R}$.
+    $g$ is locally continuous in $a$ iff $f$ is continuous in $a$ for every real map extension $f$ of $g$.
+\end{definition}
+
+\begin{definition}
+    An open neighbourhood of $a$ is an open set $S$ such that $a \in S$.
+\end{definition}
+
+\begin{theorem}[open set continuity extension]
+    Let $S$ be an open neighbourhood of $a$. 
+    Let $g$ be a real map on $S$.
+    Let $f$ be a real map extension of $g$ such that $f$ is continuous in $a$.
+
+    Then $g$ is locally continuous in $a$.
+\end{theorem}
+\begin{proof}
+    Let $h$ be a real map extension of $g$. 
+    Let $\varepsilon$ be a positive real number.
+    Take a positive real number $\tau$ such that $\B_{\tau}(a) \subseteq S$. Indeed $S$ is an open set and $a \in S$.
+    Take a positive real number $\theta$ such that $\theta$ is a domain restrictor for $\varepsilon$ and $f$ around $a$ and $f(a)$.
+    Take a positive real number $\delta$ such that $\delta < \tau$ and $\delta < \theta$ (by ineq lemma 19). 
+    Indeed $\tau,\theta$ are positive real numbers.
+
+    $\delta$ is a domain restrictor for $\varepsilon$ and $h$ around $a$ and $h(a)$. Proof.
+        Let $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$. Assume $\abs{x - a} < \delta$.
+        $x \in S$ and $h(x) = g(x)$. Proof.
+            $\abs{x - a} < \tau$. $x \in \B_{\tau}(a)$ (by lemma 01). 
+            $\B_{\tau}(a) \subseteq S$.
+        End. [prover eprover]
+
+        $(h(x),h(a)),(g(x),g(a)),(f(x),f(a)),(x,a) \in \dom(\Rmetric)$.
+        $\Rmetric(h(x),h(a)) = \Rmetric(g(x),g(a)) = \Rmetric(f(x),f(a)) < \varepsilon$. Indeed $\Rmetric(x,a) < \theta$.
+    End.
+\end{proof}
+
+\begin{corollary}[continuity under domain restriction]
+    Let $E$ be an open neighbourhood of $a$ and $f$ be continuous in $a$.
+    Then $f \upharpoonright E$ is locally continuous in $a$.
+\end{corollary}
+\begin{proof}
+    $f$ is real map extension of $f \upharpoonright E$.
+    $f \upharpoonright E$ is locally continuous in $a$ (by open set continuity extension). 
+    Indeed $f \upharpoonright E$ is a real map on $E$.
+\end{proof} 
+
+
+\begin{definition}
+    Let $g$ be a real map on $S$ for some subset $S$ of $\mathbb{R}$.
+    $g$ is locally differentiable in $a$ iff for every real map extension $f$ of $g$ $f$ is differentiable in $a$.
+\end{definition}
+
+\begin{definition}
+    Let $g$ be a real map on $S$ for some subset $S$ of $\mathbb{R}$.
+    The canonical real map extension of $g$ is a real map extension $ext$ of $g$ such that
+    $ext(x) = 0$ for all $x \in \mathbb{R} \setminus \dom(g)$.
+\end{definition}
+
+Let $ext|_{g}$ stand for the canonical real map extension of $g$.
+\begin{definition}
+    Let $g$ be a real map on $S$ for some subset $S$ of $\mathbb{R}$.
+    Assume $g$ is locally differentiable in $a$.
+    $\lderivin{g}(a)$ is a real number such that $\lderivin{g}(a) = \derivin{ext|_{g}}(a)$.
+\end{definition}
+
+\end{forthel}
+
+The following theorem aims to show that if a function is locally differentiable in some point $a$, then every real map 
+extension thereof has the same derivative in that point. We prove that by defining a function $h$, which is according to some 
+real map extension on one side of $a$ and according to another on the other side. Since $h$ is thus also a real map extension,
+we know it is differentiable in $a$. Then we can show that the derivative of $h$ must be equal to the derivative of both real
+map extensions, which yields a contradiction when they are unequal.
+
+\begin{forthel}
+
+\begin{theorem}[lemma differentiation extension]
+    Let $S$ be a subset of $\mathbb{R}$ and $g$ be a real map on $S$.
+    Assume $a$ is an element of $S$ and $g$ is locally differentiable in $a$. Let $f$ be a real map extension of $g$.
+    Then $f$ is differentiable in $a$ and $\derivin{f}(a) = \lderivin{g}(a)$.
+\end{theorem}
+\begin{proof}
+    $f$ is differentiable in $a$. Assume $\derivin{f}(a) \neq \lderivin{g}(a)$. 
+    Take a difference quotient map $\varphi$ of $f$ in $a$. Take difference quotient map $\gamma$ of $ext|_{g}$ in $a$.
+
+    Define $$h(x) = \begin{cases}
+        ext|_{g}(x) & : x \leq a \\
+        f(x)        & : x > a
+    \end{cases}$$
+    for $x \in \mathbb{R}$. $h$ is a real map. Indeed $h(x)$ is a real number for any $x \in \mathbb{R}$.
+
+    $h(a) = g(a) = f(a)$.
+    $h$ is a real map extension of $g$.
+    Indeed we can show that for every $x \in \dom(g)$ $h(x) = g(x)$.
+        Let $x \in \dom(g)$. 
+        If $x \leq a$ then $h(x) = ext|_{g}(x) = g(x)$.
+        If $x > a$ then $h(x) = f(x) = g(x)$. 
+    End.
+    $h$ is differentiable in $a$. Take a difference quotient map $\psi$ of $h$ in $a$.
+
+    (A) For any real number $x$ such that $x < a$ $\psi(x) = \gamma(x)$. Proof.
+        Let $x$ be a real number such that $x < a$. Thus $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$.
+        $\psi(x) = \Diffquot{h}{a}(x)$ (by prop difference quotient map).
+        $\Diffquot{h}{a}(x) = \frac{h(x) - h(a)}{x - a} = \frac{ext|_{g}(x) - ext|_{g}(a)}{x - a} = \Diffquot{ext|_{g}}{a}(x)$.
+        $\Diffquot{ext|_{g}}{a}(x) = \gamma(x)$ (by prop difference quotient map).
+    End.
+
+    (B) For any real number $x$ such that $x > a$ $\psi(x) = \varphi(x)$. Proof.
+        Let $x$ be a real number such that $x > a$. Thus $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$.
+        $\psi(x) = \Diffquot{h}{a}(x)$ (by prop difference quotient map).
+        $\Diffquot{h}{a}(x) = \frac{h(x) - h(a)}{x - a} = \frac{f(x) - f(a)}{x - a} = \Diffquot{f}{a}(x)$.
+        $\Diffquot{f}{a}(x) = \varphi(x)$ (by prop difference quotient map).
+    End. [prover eprover]
+
+    (C) $\psi(a) = \lderivin{g}(a)$. Proof. Assume the contrary. 
+
+        (C1) Take $\kappa = \abs{\psi(a) - \gamma(a)}$. 
+        $\kappa$ is a positive real number (by absolute value positive). Indeed $\psi(a) - \gamma(a)$ is nonzero.
+
+        Take a positive real number $\varepsilon$ such that $\varepsilon < \kappa$. 
+        Take a positive real number $d$ such that $d$ is a domain restrictor for $\kappa - \varepsilon$ and $\gamma$ around $a$ and $\gamma(a)$.
+            Indeed $\kappa - \varepsilon$ is a positive real number and $\gamma$ is continuous in $a$.
+        Take a positive real number $\delta$ such that $\delta$ is a domain restrictor for $\varepsilon$ and $\psi$ around $a$ and $\psi(a)$.
+        Take a positive real number $\iota$ such that $\iota < d$ and $\iota < \delta$ (by ineq lemma 19).
+        Take $x = a - \iota$. 
+       
+        (C2) $\psi(x) = \gamma(x)$ (by A). Indeed $x < a$. [timelimit 20]
+
+        (C3) $\abs{\gamma(x) - \gamma(a)} = \Rmetric(\gamma(x),\gamma(a)) < \kappa - \varepsilon$. Indeed $\Rmetric(x, a) < d$.
+
+        (C4) $\abs{\psi(x) - \psi(a)} < \varepsilon$ (by domain restrictor lemma 3). 
+            Indeed $\abs{x - a} < \delta$.
+        [timelimit 3] 
+        
+        We can show that $\abs{\psi(x) - \psi(a)} \geq \varepsilon$.
+
+            $\abs{\psi(x) - \psi(a)} .= \abs{\gamma(x) - \psi(a)}$ (by C2)
+
+            $.= \abs{\psi(a) - \gamma(x)}$ (by absolute lemma 3)
+
+            $.= \abs{(\psi(a) - \gamma(x)) + (\gamma(a) - \gamma(a))}$ (by existence zero, additive inverse)
+
+            $.= \abs{(\psi(a) + (\gamma(a) - \gamma(x))) - \gamma(a)}$ (by add comm, add ass)
+
+            $.= \abs{(\psi(a) - \gamma(a)) + (\gamma(a) - \gamma(x))}$ (by add comm, add ass) 
+
+            $.= \abs{(\psi(a) - \gamma(a)) - (\gamma(x) - \gamma(a))}$ (by eq lemma 15, add comm, eq lemma 45).
+
+            $\abs{(\psi(a) - \gamma(a)) - (\gamma(x) - \gamma(a))}
+            \geq \abs{\psi(a) - \gamma(a)} - \abs{\gamma(x) - \gamma(a)}$ (by absolute lemma 6).
+
+            $\abs{\psi(a) - \gamma(a)} - \abs{\gamma(x) - \gamma(a)} .= \kappa - \abs{\gamma(x) - \gamma(a)}$ (by C1).
+
+            $\kappa - \abs{\gamma(x) - \gamma(a)} \geq \kappa - (\kappa - \varepsilon)$ (by ineq lemma 22, C3).
+
+            $\kappa - (\kappa - \varepsilon) .= (\kappa - \kappa) + \varepsilon$ (by eq lemma 15, eq lemma 45, add ass)
+
+            $.= \varepsilon + 0$ (by additive inverse, add comm)
+
+            $.= \varepsilon$ (by existence zero).
+        qed.
+
+        Contradiction.
+    End.
+
+    (D) $\psi$ is not continuous in $a$. Proof.
+
+        (D1) Take $\kappa = \abs{\lderivin{g}(a) - \varphi(a)}$. 
+        $\kappa$ is a positive real number. Indeed $\varphi(a) = \derivin{f}(a)$.
+
+        Take a positive real number $\varepsilon$ such that $\varepsilon < \kappa$. 
+        Take a positive real number $d$ such that $d$ is a domain restrictor for $\kappa - \varepsilon$ and $\varphi$ around $a$ and $\varphi(a)$.
+            Indeed $\kappa - \varepsilon$ is a positive real number and $\varphi$ is continuous in $a$.
+        Take a positive real number $\delta$ such that $\delta$ is a domain restrictor for $\varepsilon$ and $\psi$ around $a$ and $\psi(a)$.
+        Take a positive real number $\iota$ such that $\iota < d$ and $\iota < \delta$ (by ineq lemma 19).
+        Take $x = a + \iota$. [timelimit 10]
+
+        (D2) $\abs{\varphi(x) - \varphi(a)} < \kappa - \varepsilon$. Indeed $\abs{x - a} < d$.
+
+        (D3) $\abs{\psi(x) - \psi(a)} < \varepsilon$. Indeed $\abs{x - a} < \delta$. [timelimit 3]
+
+        We can show that $\abs{\psi(x) - \psi(a)} \geq \varepsilon$.
+
+            $\abs{\psi(x) - \psi(a)} .= \abs{\varphi(x) - \lderivin{g}(a)}$ (by B, C) 
+
+            $.= \abs{\lderivin{g}(a) - \varphi(x)}$ (by absolute lemma 3) 
+
+            $.= \abs{(\lderivin{g}(a) - \varphi(x)) + (\varphi(a) - \varphi(a))}$ (by existence zero, additive inverse)
+
+            $.= \abs{(\lderivin{g}(a) + (\varphi(a) - \varphi(x))) - \varphi(a)}$ (by add comm, add ass) 
+
+            $.= \abs{(\lderivin{g}(a) - \varphi(a)) + (\varphi(a) - \varphi(x))}$ (by add comm, add ass)
+
+            $.= \abs{(\lderivin{g}(a) - \varphi(a)) - (\varphi(x) - \varphi(a))}$ (by eq lemma 15, add comm, eq lemma 45).
+
+            $\abs{(\lderivin{g}(a) - \varphi(a)) - (\varphi(x) - \varphi(a))}
+            \geq \abs{\lderivin{g}(a) - \varphi(a)} - \abs{\varphi(x) - \varphi(a)}$ (by absolute lemma 6).
+
+            $\abs{\lderivin{g}(a) - \varphi(a)} - \abs{\varphi(x) - \varphi(a)} .= \kappa - \abs{\varphi(x) - \varphi(a)}$ (by D1).
+
+            $\kappa - \abs{\varphi(x) - \varphi(a)} \geq \kappa - (\kappa - \varepsilon)$ (by ineq lemma 22, D2).
+
+            $\kappa - (\kappa - \varepsilon) .= (\kappa - \kappa) + \varepsilon$ (by eq lemma 15, eq lemma 45, add ass)
+
+            $.= \varepsilon + 0$ (by additive inverse, add comm)
+
+            $.= \varepsilon$ (by existence zero).
+        qed.
+    End.
+\end{proof}
+
+\end{forthel}
+
+This theorem is basically the other side of the coin of the previous theorem. While above we assume a local function to be locally 
+differentiable to say that a real map extension thereof is then also differentiable, this theorem assumes differentiability of a real map extension to say that the
+local function is locally differentiable.
+\begin{forthel}
+
+\begin{theorem}[open set differentiation extension]
+    Let $E$ be an open neighbourhood of $a$. Let $g$ be a real map on $E$. 
+    Let $f$ be a real map extension of $g$ such that $f$ is differentiable in $a$.
+    Then $g$ is locally differentiable in $a$ and $\lderivin{g}(a) = \derivin{f}(a)$.
+\end{theorem}
+\begin{proof}
+    Let $h$ be a real map extension of $g$. Then $\Diffquot{h}{a}$ is a real map.
+    Take a difference quotient map $\psi$ of $f$ in $a$.
+    Define $$\varphi(x) = \begin{cases}
+        \psi(x)             & : x \in E \\
+        \Diffquot{h}{a}(x)  & : x \notin E
+    \end{cases}$$
+    for $x \in \mathbb{R}$. $\varphi$ is a real map. Indeed $\varphi(x)$ is a real number for any real number $x$. 
+
+    Let us show that $\varphi$ is a difference quotient map of $h$ in $a$. 
+
+        (1) $\varphi$ is continuous in $a$. Proof.
+
+            $\psi$ is continuous in $a$. $\psi \upharpoonright E$ is locally continuous in $a$ (by continuity under domain restriction).
+            $\psi \upharpoonright E = \varphi \upharpoonright E$. Thus $\varphi \upharpoonright E$ is locally continuous in $a$.
+            Therefore $\varphi$ is continuous in $a$. Indeed $\varphi$ is a real map extension of $\varphi \upharpoonright E$. 
+        End.
+
+        (2) $h(x) = ((x - a) \cdot \varphi(x)) + h(a)$ for any real number $x$. Proof.
+            Let $x$ be a real number.
+
+            Case $x \notin E$. 
+                $((x - a) \cdot \varphi(x)) + h(a) = ((x - a) \cdot \Diffquot{h}{a}(x)) + h(a)$. 
+
+                $\left((x - a) \cdot \Diffquot{h}{a}(x)\right) + h(a) 
+                .= \left((x - a) \cdot \frac{h(x) - h(a)}{x - a}\right) + h(a)$ (by def diffquot)
+
+                $.= (h(x) - h(a)) + h(a)$ (by fraction lemma 2)
+
+                $.= h(x)$ (by add ass, add comm, additive inverse, existence zero). 
+            End.
+
+            Case $x \in E$.
+                $((x - a) \cdot \varphi(x)) + h(a) 
+                = ((x - a) \cdot \psi(x)) + f(a) 
+                = f(x) = g(x) = h(x)$. 
+            End.
+        End.
+    End.
+
+    $\derivin{h}(a) = \varphi(a) = \psi(a) = \derivin{f}(a)$.
+\end{proof}
+\end{forthel}
+
+
+
+
+\section{Intermediate Value Theorem}
+
+For Bolzano's theorem we define a set $H$ as those values with an image smaller zero. We know that it has a supremum.
+When we have shown that the image of the supremum can neither be positive nor negative, it needs to be zero and we are done.
+\begin{forthel}
+Let $f$ denote a real map. Let $a,b,x,z$ denote real numbers.
+
+[prover vampire][timelimit 50]
+\begin{theorem}[Bolzanos Theorem]
+    Let $f$ be continuous. Assume $a<b$ and $f(a) < 0 < f(b)$. 
+    Then there exists $c \in (a,b)_{OI}$ such that $f(c) = 0$.
+\end{theorem}
+\begin{proof}
+    Take $I = [a,b]_{CI}$.
+    Define $H = \{x \in I | f(x) < 0\}$. 
+    Take a supremum $s$ of $H$ (by completeness axiom). Indeed $H$ is bounded above and $H$ is a nonempty subset of $\mathbb{R}$. $s \in I$.
+          
+    Let us show that $f(s) = 0$.
+        If $\neg f(s) < 0$ and $\neg f(s) > 0$ then $f(s) = 0$.
+
+        Case $f(s) < 0$.
+            Take a positive real number $\delta$ such that $\delta$ is a domain restrictor for $\abs{f(s)}$ and $f$ around $s$ and $f(s)$.
+
+            Take a positive real number $\iota$ such that $\iota < \delta$ and $\iota < b - s$ (by ineq lemma 19).
+            Indeed $b - s$ is a positive real number. Take $c = s + \iota$.
+
+            We can show that $c \in H$.
+
+                $c = s + \iota < s + (b - s) = b$ and $a \leq s \leq c$. Thus $c \in I$.
+
+                Let us show that $f(c) < 0$.
+                    Assume $f(c) \geq 0$.
+                    $\abs{f(c) - f(s)} = f(c) - f(s)$. 
+                    Indeed $-f(s) \geq 0$ and $f(c) \geq 0$ and $f(c) - f(s) \geq 0$ (by ineq lemma 21).
+
+                    $\abs{f(c) - f(s)} < \abs{f(s)}$ (by domain restrictor lemma 3).
+                    Indeed $\abs{c - s} = \iota < \delta$.
+
+                    Then $\abs{f(s)} > f(c) - f(s)$ and 
+                    $f(c) < \abs{f(s)} + f(s) = -f(s) + f(s) = 0$. Contradiction.
+                End.
+            End.
+
+            Hence $s$ is not an upper bound of $H$. Indeed $s < s + \iota = c$.
+        End.
+
+        Case $f(s) > 0$. 
+            Take a positive real number $\delta$ such that $\delta$ is a domain restrictor for $f(s)$ and $f$ around $s$ and $f(s)$. 
+
+            $s - a$ is a positive real number. Indeed
+                $a \leq s$ and $a \neq s$. Indeed $f(a) \neq f(s)$.
+            Take a positive real number $\iota$ such that $\iota < \delta$ and $\iota < s - a$ (by ineq lemma 19).
+            Take $c = s - \iota$.
+
+            We can show that for all $x \in [c,s]_{CI}$ $f(x) > 0$.
+
+                Assume the contrary. Take $x \in [c,s]_{CI}$ such that $f(x) \leq 0$.
+                Then $f(s) - f(x) \geq 0$ (by ineq lemma 21). Indeed $-f(x) \geq 0$ and $f(s) \geq 0$.
+
+                $\abs{f(x) - f(s)} < f(s)$ (by domain restrictor lemma 3). Proof.
+                    $s - x \leq s - c$ (by ineq lemma 22). Indeed $c \leq x$.
+                    Thus $\abs{x - s} = \abs{s - x} = s - x \leq s - c = s - (s - \iota) = \iota < \delta$.
+                    Therefore $\abs{x - s} < \delta$ and $x$ is a real number.
+                End.
+
+                Then $f(s) > \abs{f(x) - f(s)} = \abs{f(s) - f(x)} = f(s) - f(x)$. 
+                Thus $-f(x) < 0$. 
+            End.
+
+            Thus $c$ is an upper bound of $H$. Proof.
+                Assume the contrary. Take $x \in H$ such that $c < x$.
+                Then $x \leq s$.
+                Therefore $x \in [c,s]_{CI}$ and $f(x) > 0$.
+                Contradiction.
+            End.
+                
+            $c = s - \iota < s$. Contradiction.
+        End.
+    qed.
+\end{proof}
+
+
+\begin{corollary}[intermediate value theorem I]
+    Let $f$ be continuous. Assume $x < z$.
+    Then $(f(x),f(z))_{OI} \subseteq f[(x,z)_{OI}]$.
+\end{corollary}
+\begin{proof}
+    Case $x = z$. Trivial.
+
+    Assume $x \neq z$.
+    Let $\upsilon \in (f(x),f(z))_{OI}$. 
+
+    Take $g = \flin{1}{-\upsilon} \circ f$. 
+    [timelimit 50]
+    $g(x) = f(x) - \upsilon < 0$ and $g(z) = f(z) - \upsilon > 0$. 
+    Indeed For any real number $r$ $g(r) = f(r) - \upsilon$ and $f(x) < \upsilon < f(z)$.
+    Take $y \in (x,z)_{OI}$ such that $g(y) = 0$ (by Bolzanos Theorem). Indeed $g$ is a continuous real map and $x<z$ and $g(x) < 0 < g(z)$.
+    Then $f(y) = (f(y) - \upsilon) + \upsilon = g(y) + \upsilon = \upsilon$. 
+    [timelimit 3]
+    Therefore $\upsilon \in f[(x,z)_{OI}]$.
+\end{proof}
+[prover eprover][timelimit 3]
+
+\begin{corollary}[intermediate value theorem II]
+    Let $f$ be continuous. Assume $x < z$.
+    Then $(f(z),f(x))_{OI} \subseteq f[(x,z)_{OI}]$.
+\end{corollary}
+\begin{proof}
+    Case $x = z$. Trivial.
+    Assume $x \neq z$.
+
+    Let $\upsilon \in (f(z),f(x))_{OI}$.
+    Take $g = \flin{-1}{\upsilon} \circ f$. 
+
+    (A) For any real number $r$ $g(r) = ((-1)\cdot f(r)) + \upsilon = -f(r) + \upsilon$.
+
+    $g(x) = -f(x) + \upsilon < 0$ and $g(z) = -f(z) + \upsilon > 0$. 
+    Indeed $f(z) < \upsilon < f(x)$.
+
+    [timelimit 10]
+    (B) Take $y \in (x,z)_{OI}$ such that $g(y) = 0$ (by Bolzanos Theorem). Indeed $g$ is a continuous real map and $x<z$ and $g(x) < 0 < g(z)$. 
+    [timelimit 3]
+
+    $f(y) = \upsilon$. Proof.
+
+        $\upsilon .= \upsilon - (-f(y) + \upsilon)$ (by existence zero, eq lemma 0, B,A)
+
+        $.= f(y) + (\upsilon - \upsilon) $ (by eq lemma 15, eq lemma 45,add comm, add ass)
+
+        $.= f(y)$ (by additive inverse, existence zero).
+    End.
+
+    Therefore $\upsilon \in f[(x,z)_{OI}]$.
+\end{proof}
+
+\end{forthel}
+
+
+
+
+
+\section{Division Map}
+
+The continuity of a division map we will later need for the inverse function theorem. Having proved the inverse function theorem we can show the 
+differentiability of a division map using the exponential function.
+
+\begin{forthel}
+Let $f$ denote a real map. Let $a$ denote a real number.
+
+\begin{definition}[def division map]
+    A division map of $f$ in $a$ is a real map $g$ such that 
+        (for all $x \in E$ $f(x)$ is nonzero and $g(x) = 1/f(x)$) for some open neighbourhood $E$ of $a$.
+\end{definition}
+
+ [prover vampire]
+\begin{proposition}[existence division map]
+    Let $f$ be continuous in $a$ and $f(a)$ is nonzero.
+    Then there exists a division map of $f$ in $a$. 
+\end{proposition}
+\begin{proof}
+    Take a positive real number $\delta$ such that $\delta$ is a domain restrictor for $\abs{f(a)}$ and $f$ around $a$ and $f(a)$.
+         Indeed $\abs{f(a)}$ is a positive real number. [prover eprover]
+    Take $E = \B_{\delta}(a)$.
+
+    (1) $E$ is an open neighbourhood of $a$ (by ball nonempty, ball is open).
+
+    (2) For all $x \in E$ $f(x)$ is nonzero. Proof.
+        Let $x$ be an element in $E \setminus \sset{a}{\mathbb{R}}$. Then $\Rmetric(x,a) < \delta$ (by lemma 01).
+        Assume $f(x) = 0$. Then $\Rmetric(f(x),f(a)) = \abs{0 - f(a)} = \abs{f(a)}$.
+        Thus $\delta$ is not a domain restrictor for $\abs{f(a)}$ and $f$ around $a$ and $f(a)$ (by domain restrictor lemma 2).
+        Indeed $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$.
+        Contradiction.
+    End.
+
+    Define $$g(x) = \begin{cases}
+        1/f(x)  & : x \in E \\
+        0       & : x \notin E
+    \end{cases}$$
+    for $x \in \mathbb{R}$. $g$ is a real map. Indeed $g(x)$ is a real number for any real number $x$.
+
+    Therefore $g$ is a division map of $f$ in $a$.
+\end{proof}
+ [prover eprover]
+\end{forthel}
+
+
+The proof of the continuity of the division map is very unbeautiful. A particular nuisance is the introduction of $\Theta$, because we cannot 
+define $\delta$ as a positive real value $\delta < \tau$ and $\delta < \theta$ and $\delta < \vartheta$ immediately, although we have already defined
+in ineq lemma 195 that such a value exists. The reasoner seems to be overwhelmed by the number of conditions necessary to be fulfilled
+for this lemma.
+
+By choosing $\delta$ so small that if $\abs{x - a} < \delta$ then $\abs{f(x) - f(a)} < \frac{\abs{f(a)}}{2}$, we can show that 
+$1/\abs{f(x)} < 2/\abs{f(a)}$. Choosing $\delta$ such that $\abs{f(x) - f(a)} < \frac{\abs{f(a)}^{2}}{2} \varepsilon$ as well, 
+we can derive the following:
+\begin{align*}
+    \abs{1/f(x) - 1/f(a)} = \abs{\frac{f(a) - f(x)}{f(x) f(a)}} = \frac{1}{\abs{f(x)}}\frac{1}{\abs{f(a)}}\abs{f(x) - f(a)} < 
+    \frac{2}{\abs{f(a)}}\frac{1}{\abs{f(a)}} \frac{\abs{f(a)}^{2}}{2} \varepsilon = \varepsilon.
+\end{align*}
+
+\begin{forthel}
+\begin{theorem}[continuity division map]
+    Let $f$ be continuous in $a$. Let $g$ be a division map of $f$ in $a$.
+    Then $g$ is continuous in $a$.
+\end{theorem}
+\begin{proof}
+    Let $\varepsilon$ be a positive real number.
+
+    Take $\nu = \frac{\abs{f(a)}}{2}$ and $\upsilon = f(a)$. $\nu$ is a positive real number.
+    Take a positive real number $\tau$ such that $\tau$ is a domain restrictor for $\nu$ and $f$ around $a$ and $f(a)$.
+        Indeed $\frac{\abs{f(a)}}{2}$ is a positive real number.
+
+    Take $c = \frac{\abs{f(a)}^{2}}{2} \cdot \varepsilon$.
+    $c$ is a positive real number (by ineq lemma 215). Indeed $\abs{f(a)}^{2}, 1/2$ are positive real numbers.
+    Take a positive real number $\theta$ such that $\theta$ is a domain restrictor for $c$ and $f$ around $a$ and $f(a)$.
+
+    Take an open neighbourhood $E$ of $a$ such that for every $x \in E$ $f(x)$ is nonzero and $g(x) = 1/f(x)$.
+    Take a positive real number $\vartheta$ such that $\B_{\vartheta}(a) \subseteq E$.
+
+    Take a positive real number $\Theta$ such that $\Theta < \tau$ and $\Theta < \vartheta$ (by ineq lemma 19).
+    Take a positive real number $\delta$ such that $\delta < \theta$ and $\delta < \Theta$ (by ineq lemma 19).
+    Then $\delta < \tau$ and $\delta < \vartheta$.
+
+    Let us show that $\delta$ is a domain restrictor for $\varepsilon$ and $g$ around $a$ and $g(a)$.
+        Let $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$. Assume $\abs{x - a} < \delta$.
+        $x,f(x),f(a)$ are real numbers. [timelimit 10]
+
+        (A) $\abs{f(x) - f(a)} < \nu$ (by domain restrictor lemma 3). Indeed $\abs{x - a} < \tau$.
+
+        (B) $\abs{f(x) - f(a)} < c$ (by domain restrictor lemma 3). Indeed $\abs{x - a} < \theta$. 
+
+        (C) $g(a) = 1/f(a)$ and $f(x)$ is nonzero and $g(x) = 1/f(x)$.
+            Indeed we can show that $x,a$ are elements in $E$.
+                $\abs{x - a} < \delta < \vartheta$. Thus $x \in \B_{\vartheta}(a)$. 
+            End. [timelimit 3]
+   
+        (0) $\frac{\abs{f(a)}}{2} < \abs{f(x)}$. Proof.
+
+            (01) $\abs{f(a)} < \frac{\abs{f(a)}}{2} + \abs{f(x)}$. Proof.
+                $\abs{f(a)} .= (\abs{f(a)} - \abs{f(x)}) + \abs{f(x)}$ (by existence zero, additive inverse, add comm, add ass).
+
+                $(\abs{f(a)} - \abs{f(x)}) + \abs{f(x)} \leq \abs{f(a) - f(x)} + \abs{f(x)}$ (by ineq lemma 145, absolute lemma 6).
+
+                $\abs{f(a) - f(x)} + \abs{f(x)} .= \abs{f(x) - f(a)} + \abs{f(x)}$ (by absolute lemma 3).
+
+                $\abs{f(x) - f(a)} + \abs{f(x)} < \nu + \abs{f(x)}$ (by ineq lemma 14, A).
+
+                Thus $\abs{f(a)} < \nu + \abs{f(x)}$. Indeed $\abs{f(a)} \leq \nu + \abs{f(x)}$ (by transitivity). 
+
+                    Indeed $\abs{f(a)} \leq \abs{f(x) - f(a)} + \abs{f(x)} \leq  \nu + \abs{f(x)}$.
+            End.
+
+            $\frac{\abs{f(a)}}{2} .= \abs{f(a)} - \frac{\abs{f(a)}}{2}$ (by eq lemma 23).
+
+            $\abs{f(a)} - \frac{\abs{f(a)}}{2} < (\frac{\abs{f(a)}}{2} + \abs{f(x)}) - \frac{\abs{f(a)}}{2}$ (by ineq lemma 14, 01).
+
+            $(\frac{\abs{f(a)}}{2} + \abs{f(x)}) - \frac{\abs{f(a)}}{2} 
+            .= \abs{f(x)} + (\frac{\abs{f(a)}}{2} - \frac{\abs{f(a)}}{2})$ (by add comm, add ass) 
+
+            $.= \abs{f(x)}$ (by additive inverse, existence zero).
+        End. 
+       
+        (1) $1/\abs{f(x)} < \frac{2}{\abs{f(a)}}$. Proof.
+            $1/\abs{f(x)} \leq 1 / \frac{\abs{f(a)}}{2}$ (by ineq lemma 12).
+                Indeed $0 < \frac{\abs{f(a)}}{2} \leq \abs{f(x)}$. 
+
+            $1 / \frac{\abs{f(a)}}{2} .= \frac{2}{\abs{f(a)}}$ (by eq lemma 22).
+            Therefore $1 / \abs{f(x)} \leq \frac{2}{\abs{f(a)}}$.
+            $1/f(x) \neq \frac{2}{\abs{f(a)}}$.
+        End.
+
+        $\abs{g(x) - g(a)} .= \abs{1/f(x) - 1/f(a)}$ (by C) 
+        $.= \abs{\frac{f(a) - f(x)}{f(x) \cdot f(a)}}$ (by eq lemma 25)
+
+        $.= \abs{1/f(x) \cdot \frac{f(a) - f(x)}{f(a)}}$ (by mult comm, fraction lemma)
+
+        $.= \abs{1/f(x)} \cdot \frac{\abs{f(a) - f(x)}}{\abs{f(a)}}$ (by absolute lemma 2)
+
+        $.= 1/\abs{f(x)} \cdot \frac{\abs{f(x) - f(a)}}{\abs{f(a)}}$ (by absolute lemma 3, absolute lemma 5).[timelimit 10]
+
+        $1/\abs{f(x)} \cdot \frac{\abs{f(x) - f(a)}}{\abs{f(a)}} \leq \frac{2}{\abs{f(a)}} \cdot \frac{\abs{f(x) - f(a)}}{\abs{f(a)}}$ (by ineq lemma 26).
+        Proof.
+
+            $1/\abs{f(x)}, \frac{\abs{f(x) - f(a)}}{\abs{f(a)}}, \frac{2}{\abs{f(a)}}$ are real numbers.
+            $1/\abs{f(x)} \leq \frac{2}{\abs{f(a)}}$ (by 1).
+            $\frac{\abs{f(x) - f(a)}}{\abs{f(a)}} \geq 0$ (by frac lemma 1). Indeed $\abs{f(x) - f(a)} \geq 0$ and $\abs{f(a)} > 0$.
+        End.
+
+        $\frac{2}{\abs{f(a)}} \cdot \frac{\abs{f(x) - f(a)}}{\abs{f(a)}}
+        .= (\frac{2}{\abs{f(a)}} \cdot 1/\abs{f(a)}) \cdot \abs{f(x) - f(a)}$ (by mult comm, mult ass)
+
+        $.= \abs{f(x) - f(a)} \cdot \frac{2}{\abs{f(a)}^{2}}$ (by fraction lemma, potence lemma 2, mult comm).
+
+        $\abs{f(x) - f(a)} \cdot \frac{2}{\abs{f(a)}^{2}} < c \cdot \frac{2}{\abs{f(a)}^{2}}$ (by ineq lemma 25).
+        Proof. 
+        
+            $\abs{f(x) - f(a)}, \frac{2}{\abs{f(a)}^{2}}, c$ are real numbers.
+            $\frac{2}{\abs{f(a)}^{2}}$ is positive (by ineq lemma 215). Indeed $2,\abs{f(a)}^{2},1/(\abs{f(a)}^{2})$ are positive real numbers.
+            $\abs{f(x) - f(a)} < c$ (by B). 
+        End.
+
+        $\frac{2}{\abs{f(a)}^{2}} \cdot \left( \frac{\abs{f(a)}^{2}}{2} \cdot \varepsilon \right) 
+        .= \left(\frac{2}{\abs{f(a)}^{2}} \cdot \frac{\abs{f(a)}^{2}}{2} \right) \cdot \varepsilon$ (by mult ass)
+        $.= \varepsilon$ (by eq lemma 26, existence one).
+
+        Therefore $\abs{g(x) - g(a)} < \varepsilon$ (by ineq lemma 29). Indeed
+        $\abs{g(x) - g(a)} \leq \frac{2}{\abs{f(a)}} \cdot \frac{\abs{f(x) - f(a)}}{\abs{f(a)}} < \varepsilon$ and 
+        $\abs{g(x) - g(a)}, \frac{2}{\abs{f(a)}} \cdot \frac{\abs{f(x) - f(a)}}{\abs{f(a)}}, \varepsilon$ are real numbers.
+        [timelimit 3]
+    qed.
+\end{proof}
+
+
+\end{forthel}
+
+
+\end{document}
+

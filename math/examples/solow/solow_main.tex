@@ -1,0 +1,79 @@
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{etex}
+\documentclass[oneside,11pt]{book} 
+
+\usepackage[english]{babel}
+\usepackage{../latex/naproche}
+\usepackage{amsmath,amssymb}
+\usepackage[margin = 1in]{geometry}
+\setlength{\headheight}{14pt}
+
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{subfiles}
+\usepackage{xurl}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{caption}
+\usepackage[nobottomtitles]{titlesec}
+
+
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\fancyhead[L]{\thechapter\ \leftmark}
+\fancyfoot{}
+\setlength\parindent{0pt}
+
+
+\newcommand{\sset}[2]{\{#1\}}
+\newcommand{\Seq}[2]{\{#1,\dots,#2\}}
+\newcommand{\limS}[2]{\lim_{x \rightarrow #2} #1 (x)}
+\newcommand{\Rmetric}{d_{\mathbb{R}}}
+\newcommand{\deriv}[1]{\textrm{D}#1}
+\newcommand{\derivin}[1]{\partial #1}
+\newcommand{\lderiv}[1]{\textrm{D}_{\ell}#1}
+\newcommand{\lderivin}[1]{\partial_{\ell} #1}
+\newcommand{\Diffquot}[2]{\frac{\Delta #1}{\Delta #2}}
+\newcommand{\fplus}[2]{(#1 + #2)}
+\newcommand{\fminus}[1]{(-#1)}
+\newcommand{\fmult}[2]{(#1 \cdot #2)}
+\newcommand{\flin}[2]{\textrm{f}_{#1 \cdot \_ + #2}}
+\newcommand{\fdiv}[2]{(#1 / #2)}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\B}{B}
+
+\newcommand{\inv}[1]{{{#1}^{-1}}}
+
+%\newcommand{\fexp}[1]{\textrm{f}_{{#1}\ {\bf \hat{}}\ \_}}
+%\newcommand{\fpot}[1]{\textrm{f}_{\_\ {\bf \hat{}}\ {#1}}}
+\newcommand{\fexp}[1]{\exp_{#1}}
+\newcommand{\fpot}[1]{\textrm{pow}_{#1}}
+\newcommand{\range}{\textrm{Range}}
+\usepackage{graphicx}
+
+\title{Formalization of the Solow Growth Model}
+\author{Patrick Schäfer}
+\date{2024}
+
+\begin{document}
+\maketitle \thispagestyle{empty}
+\vspace*{\fill}
+ATP proof searches are restricted by wall clock timeouts, which depend significantly on a system's speed and state. Changing the timeout from the standard of 3 seconds to 10, 20, or more seconds can be done by inserting \verb+[timelimit X]+ commands. The timeouts in this formalization are chosen such that the proof runs through on a mid-range consumer laptop (ASUS Zenbook 15, Linux). Making the code run on a different laptop may require increasing the timeout or, in very stubborn cases, adding additional proof steps. Sometimes, changing the ATP by inserting \texttt{[prover vampire]}, for example may prove helpful as well.
+\vspace*{\fill}
+
+\tableofcontents
+
+\subfile{sections/0preparation.ftl.tex}
+\subfile{sections/1metrics.ftl.tex}
+\subfile{sections/2continuity.ftl.tex}
+\subfile{sections/3differentiation.ftl.tex}
+\subfile{sections/4locality.ftl.tex} 
+\subfile{sections/5extrema.ftl.tex}
+\subfile{sections/6inverse.ftl.tex}
+\subfile{sections/7exponential.ftl.tex}
+\subfile{sections/8solow.ftl.tex}
+
+\end{document}

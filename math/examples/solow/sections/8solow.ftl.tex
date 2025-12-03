@@ -1,0 +1,1091 @@
+\documentclass[../solow_main.tex]{subfiles}
+
+\begin{document}
+
+
+\chapter{Solow Model}
+
+The Solow growth model was introduced by Robert M. Solow in 1956 and sought to explain several consistent patterns in economic data, which seem to hold in the long term and which later in 1961 Nicholas Kaldor summarized in 6 "stylized" facts. These 6 are therefore called Kaldor's facts.
+
+\begin{enumerate}
+    \item[G1] Continued growth in the aggregate volume of production, i.e. in the long term economies seem to grow.
+    \item[G2] A continued increase in the amount of capital per worker, meaning that each employee manages more and more capital. 
+    \item[G3] A steady rate of profit on capital, i.e. when you invest money, the average return you get on it when discounting inflation, seems to be quite constant over time.
+    \item[G4] Steady capital-output ratios over long periods, which implies the near-identity in the percentage rates of growth of production and of the capital stock. 
+    \item[G5] A steady share of profits (and of wages) in societies and periods in which the share of investment in output is constant. 
+    \item[G6] There are appreciable differences in the rate of growth of labour productivity and of total output in different societies.
+\end{enumerate} 
+
+\section{The Model}
+
+The model consists of output ($Y_t$), capital ($K_t$), labor ($L_t$), technology (or efficiency $A_t$), a savings rate $s$, and a depreciation rate $\delta$. Later we will also introduce wages $w_t$ and interest rates on capital $r_t$ and a production function $f$ that converts capital, labor, and technology into output.\\
+
+In economics, time-dependent variables are typically denoted as sequences by $x_t$, instead of $x(t)$, which is used for functions. This saves some brackets and makes many equations much clearer. Unfortunately, we cannot follow this notational change here because sequences are already introduced in \texttt{100\_theorems.ftl.tex} with their typical notation. Thus, denoting functions with a domain on $\mathbb{R}$ in the same way as sequences will run into parsing problems. In addition, Naproche does not have any notational rules regarding parentheses implemented. Therefore, $a \cdot b + c$ will return an error and must be rewritten as $(a \cdot b) + c$. This makes the whole formalization a bit heavy on parentheses. Despite that, one aim of this text is to show that formalizations can be done visually quite clearly in Naproche. 
+
+\begin{forthel} 
+    [read \path{examples/solow/sections/7exponential.ftl.tex}]
+
+Let a point in time stand for a real number.
+Let $t$ denote a point in time.
+
+Let $\hat{f}$ stand for $\fdiv{\deriv{f}}{f}$.
+
+\begin{signature}
+    An output level is a differentiable real map with positive range.
+\end{signature}
+Let $Y$ denote an output level.
+ 
+
+\begin{signature}
+    A capital stock is a differentiable real map with positive range.
+\end{signature}
+Let $K$ denote a capital stock.
+
+
+\begin{signature}
+    A labor amount is a differentiable real map with positive range.
+\end{signature}
+Let $L$ denote a labor amount.
+
+\begin{signature}
+    A labor growth rate is a nonnegative real number.
+\end{signature}
+Let $gL$ denote a labor growth rate.
+
+\begin{axiom}[labor growth rate]
+    $gL = \hat{L}(t)$.
+\end{axiom}
+\begin{lemma}[lemma gL]
+    $\frac{\derivin{L}(t)}{L(t)} = gL$.
+\end{lemma}
+\begin{proof}
+    $gL = \hat{L}(t) = \frac{\derivin{L}(t)}{L(t)}$ (by labor growth rate, def div map, deriv and derivin).
+\end{proof}
+
+
+\begin{signature}
+    An efficiency level is a differentiable real map with positive range.
+\end{signature}
+Let $A$ denote an efficiency level.
+
+\begin{signature}
+    An efficiency growth rate is a nonnegative real number.
+\end{signature}
+Let $gA$ denote an efficiency growth rate.
+
+\begin{axiom}[efficiency growth rate]
+    $gA = \hat{A}(t)$.
+\end{axiom}
+\begin{lemma}[lemma gA]
+    $\frac{\derivin{A}(t)}{A(t)} = gA$.
+\end{lemma}
+\begin{proof}
+    $gA = \hat{A}(t) = \frac{\derivin{A}(t)}{A(t)}$ (by efficiency growth rate, def div map, deriv and derivin).
+\end{proof}
+
+
+\begin{signature}
+    A depreciation rate is a positive real number $\delta$ such that $\delta < 1$.
+\end{signature}
+Let $\delta$ denote a depreciation rate.
+
+
+\begin{signature}
+    A savings rate is a positive real number $s$ such that $s < 1$.
+\end{signature}
+Let $s$ denote a savings rate.
+\end{forthel}
+
+The first relation we want to introduce is the capital accumulation rule. It says that the marginal change in our capital stock depends on how much we save and how much it depreciates. If we save more than it depreciates, our capital stock grows, while if more depreciates than is saved, our capital stock shrinks. Formally, this means:
+
+\begin{forthel}
+
+\begin{axiom}[capital accumulation]
+    $$\derivin{K}(t) = (s \cdot Y(t)) - (\delta \cdot K(t)).$$
+\end{axiom}
+
+\end{forthel}
+
+Next we introduce capital per efficiency unit labor $k_t = \frac{K_t}{A_t \cdot L_t}$. As we will see, this will be the defining variable in this model. Properly, we would have to define $k(t) := \frac{K(t)}{A(t) \cdot L(t)}$, but because $k$ then depends on $K$, $A$, and $L$, we would have to write $k_{K,A,L,t}$ as we will later do with firm profits. Because we use $k$ so often, we would like to suppress this extra notation. Thus, we introduce it with a signature and by axiom. If there were two different capital stocks $K$, this would lead to a contradiction\footnote{Say, there were two different capital stocks $K$ and $K'$. Then $k(t) = \frac{K(t)}{A(t) \cdot L(t)} \neq \frac{K'(t)}{A(t) \cdot L(t)} = k(t)$.}, but we will not assume this.
+
+\begin{forthel}
+
+\begin{lemma}
+    $\fmult{A}{L}$ is a real map with positive range and $A(t) \cdot L(t)$ is nonzero.
+\end{lemma}
+
+\begin{signature}
+    A capital per efficiency unit labor is a real map with positive range.
+\end{signature}
+Let $k$ denote a capital per efficiency unit labor.
+
+\begin{axiom}[def k]
+    $k = \fdiv{K}{\fmult{A}{L}}.$
+\end{axiom}
+\begin{lemma}[lemma k]
+    $k(t) = \frac{K(t)}{A(t) \cdot L(t)}$.
+\end{lemma}
+\begin{proof}
+    $k(t) = \fdiv{K}{\fmult{A}{L}}(t) = \frac{K(t)}{\fmult{A}{L}(t)} = \frac{K(t)}{A(t) \cdot L(t)}$ 
+    (by def k, def div map, def mult func).
+\end{proof}
+
+\end{forthel}
+
+Next we want to introduce the production function and thus the connection between capital, labor, and technology on one side and output on the other.
+The typical production function is $$Y_t = F(K_t,A_tL_t),$$
+where the assumption of constant returns to scale is typically defined separately as 
+$$F(\lambda K_t, \lambda A_t L_t) = \lambda Y_t$$
+for every positive real number $\lambda$. We define a production function in the following way:
+
+\begin{forthel}
+
+\begin{signature}
+    A production function is a strictly convex differentiable real map.
+\end{signature}
+Let $f$ denote a production function.
+
+\begin{axiom}[constant returns to scale]
+    $Y = \fmult{\fmult{A}{L}}{(f \circ k)}$.
+\end{axiom}
+
+\begin{lemma}[lemma Y]
+    $Y(t) = (A(t) \cdot L(t)) \cdot f(k(t))$.
+\end{lemma}
+\begin{proof}
+    $Y(t) = \fmult{\fmult{A}{L}}{(f \circ k)}(t) = \fmult{A}{L}(t) \cdot f(k(t)) = (A(t) \cdot L(t)) \cdot f(k(t))$ 
+    (by constant returns to scale, def mult func, composition).
+\end{proof}
+
+\end{forthel}
+
+In our definition of the production function, we already assume constant returns to scale implicitly:
+$$(\lambda A_t L_t) f\left(\frac{\lambda K_t}{\lambda A_t L_t}\right)= \lambda A_t L_t f(k_t) = \lambda Y_t.$$
+In general constant returns to scale seems to be reasonable condition to assume. Two identical bakeries should probably produce basically twice as much as a single of those bakeries would produce. Also, on a country-wide level: if one country is twice as large as another and both are otherwise identical, the larger one should probably have an economy about twice as large. What reasonably holds in a large economy does not necessarily need to be the case on a firm level. When you are a car manufacturer for example the size of your addressed market is crucial. When you are very large, then investing in a huge and highly automated factory makes a lot of sense. However, when you are just producing a couple of hundred cars per year, the upfront cost of the large machinery cannot be justified by the slight efficiency improvements. Therefore, a factory that produces 10,000 cars instead of 100 is probably not needing 100 times the inputs of the latter but fewer, because the processes the larger factory allows are not viable in the smaller one.\\
+
+Next we discuss the maximization problem of the firm:
+\begin{forthel}
+
+\begin{signature}
+    A wage is a differentiable real map with positive range.
+\end{signature}
+Let $w$ denote a wage.
+
+\begin{signature}
+    An interest rate is a differentiable real map with positive range.
+\end{signature}
+Let $r$ denote an interest rate.
+
+\end{forthel}
+
+The typical formulation of the maximization problem of a firm is 
+$$\max_{K_t, L_t}\ F(K_t, A_tL_t) - r_tK_t - w_tL_t.$$
+This is total output minus the costs consisting of the capital ($r_tK_t$) and labor ($w_tL_t$) costs.
+The firm chooses its capital and labor demand such that it maximizes profits. Here we will just focus on maximizing profits by capital
+because Kaldor's facts, as we stated them above, only demand that of us. With $\Pi$ we denote the profits depending upon the capital stock.
+
+\begin{forthel}
+
+\begin{definition}[def Pi]
+    $\Pi_{A, L, f, r, w, t} = \fplus{\flin{A(t) \cdot L(t)}{0} \circ (f \circ \flin{1/(A(t) \cdot L(t))}{0})}
+    {\fminus{\flin{r(t)}{w(t) \cdot L(t)}}}$.
+\end{definition}
+
+\begin{lemma}
+    $\Pi_{A, L, f, r, w, t}$ is a differentiable real map.
+\end{lemma}
+\end{forthel}
+
+Later we will add the following axiom, but first we want to show that such a $K(t)$ also exists:
+\begin{axiom}[profit maximizing K]
+    $K(t)$ is a maximum of $\Pi_{A, L, f, r, w, t}$.
+\end{axiom}
+
+From an economics perspective, we should discuss what this maximization problem of a firm means. We did not introduce any firms, and $K$ is the capital stock of the whole economy. So who is maximizing based on profits? Do we assume that only one firm exists? In a way, we do exactly that. This is obviously not realistic, and monopolies bring about their own set of problems. Actually when we assume constant returns to scale, we implicitly also assume perfect competition - i.e. the firm is making, when it maximizes profits, exactly zero profits\footnote{The proof works as follows: Because $\lambda Y_t = F(\lambda K_t, \lambda A_tL_t)$, taking the derivative with respect to $\lambda$ on both sides yields $Y_t = \frac{\partial F}{\partial K_t}K_t + \frac{\partial F}{\partial L_t}L_t$ when evaluated for $\lambda = 1$. As we will later see $r_t = \frac{\partial F}{\partial K_t}$ (or rather we show that $r_t = f'(k_t)$, but $f'(k_t) = \frac{\partial F}{\partial K_t}$). Analogously $w_t = \frac{\partial F}{\partial L_t}$ when $L_t$ is chosen optimally. This leaves us, however, with zero profits.}. Instead economists would rather speak of a "representative firm". The idea is that we have many small identical firms and therefore perfect competition, preventing profits from realizing, but because every firm faces the very same maximization problem - namely the one above, just with firm specific capital and labor -, total capital and labor demand behave as if they were maximized. This makes it obviously also not so much more realistic, as we certainly do see profits in the real economy. Another implicit assumption we make is that capital demand is equal to capital supply, and - even more problematically - labor demand is equal to labor supply. This means there is no unemployment in this modeled economy and there are no vacancies. On the other hand, we can certainly make the model more complex in order to remedy this, but the model is designed to make statements about long-term growth trends and introducing labor market frictions or imperfect markets will not change the results. Therefore it is probably preferable to keep the model simple and clear, even though we then may have to make some assumption we are not perfectly comfortable with - as long as we know that making the assumptions more realistic does not significantly change the results.\\
+
+Next we introduce the Inada-conditions. They focus on the concept of diminishing returns on capital and labor that we already introduced in our definition of the production function, when we stated that it was strictly convex, but which did not discuss there. The idea is that when you have no capital, any capital might significantly help. A farmer is already much more productive with a plough than with his bare hands - and even more productive with a tractor. But there is also a limit to the productivity increases more capital brings: Giving a farmer a tractor when he has none makes him much more productive; giving the same tractor to a farmer who already has a hundred, will probably not help him at all. The same argument can be made for labor: If you have a small plot of land, having one worker on it will yield much more crops than leaving it barren. But when you already have a million workers on your small plot of land, adding the one million and first worker will only stand in the way of the others. \\
+
+In macroeconomics textbooks, you will find the Inada-conditions typically defined like this:
+\begin{align*}
+    & \lim_{K_t \rightarrow 0} F'(K_t, A_tL_t) = \infty = \lim_{L_t \rightarrow 0} F'(K_t,A_tL_t) \\
+    & \lim_{K_t \rightarrow \infty} F'(K_t,A_tL_t) = 0 = \lim_{L_t \rightarrow \infty} F'(K_t,A_tL_t).
+\end{align*}
+Infinity is, however, nothing that we have defined so far. For our purposes, we just want to make sure that the production function is such that it is optimal to use at least some capital and labor, while at the same time it is also not optimal to use infinitely much of it. 
+
+\begin{forthel}
+
+\begin{axiom}[Inada condition I]
+    $\derivin{f}(0) > r(t)$.
+\end{axiom}
+
+\begin{axiom}[Inada condition II]
+    There exists a positive real number $x$ such that $\derivin{f}(x) < r(t)$.
+\end{axiom}
+
+\begin{axiom}[Inada condition III]
+    There exists a positive real number $M$ such that for all real numbers $\xi$ $f(\xi) < M$.
+\end{axiom}
+
+\begin{axiom}[Inada condition IV]
+    $f(0) > 0$.
+\end{axiom}
+
+\end{forthel}
+
+Utilizing the Inada-conditions, we will show that there exists a profit maximizing capital stock.
+
+\begin{forthel}
+
+\begin{proposition}[derivative profit function]
+    For any real number $x$
+    $$\deriv{\Pi_{A, L, f, r, w, t}}(x) = \derivin{f}\left(\frac{x}{A(t) \cdot L(t)}\right) - r(t).$$
+\end{proposition}
+\begin{proof}
+    Let $x$ be a real number. $f \circ \flin{1/(A(t) \cdot L(t))}{0}$ is a real map.
+    
+    (A) Take $\xi = (f \circ \flin{1/(A(t) \cdot L(t))}{0})(x)$. Then $\xi$ is a real number. 
+
+    (B) $\derivin{\flin{A(t) \cdot L(t)}{0}}(\xi) = \flin{0}{A(t) \cdot L(t)}(\xi)$ and 
+    $\derivin{\flin{r(t)}{w(t) \cdot L(t)}}(x) = \flin{0}{r(t)}(x)$ and
+
+    $\derivin{\flin{1/(A(t) \cdot L(t))}{0}}(x) = \flin{0}{1/(A(t) \cdot L(t))}(x)$. Proof.
+
+        $A(t) \cdot L(t), r(t), w(t) \cdot L(t), x, 1/(A(t) \cdot L(t))$ are real numbers.
+
+        $\derivin{\flin{A(t) \cdot L(t)}{0}}(\xi) = \deriv{\flin{A(t) \cdot L(t)}{0}}(\xi)$
+
+        and $\derivin{\flin{r(t)}{w(t) \cdot L(t)}}(x) = \deriv{\flin{r(t)}{w(t) \cdot L(t)}}(x)$ and
+
+        $\derivin{\flin{1/(A(t) \cdot L(t))}{0}}(x) = \deriv{\flin{1/(A(t) \cdot L(t))}{0}}(x)$ (by deriv and derivin).
+
+        $\deriv{\flin{A(t) \cdot L(t)}{0}}(\xi) = \flin{0}{A(t) \cdot L(t)}(\xi)$ and 
+
+        $\deriv{\flin{r(t)}{w(t) \cdot L(t)}}(x) = \flin{0}{r(t)}(x)$ and
+
+        $\deriv{\flin{1/(A(t) \cdot L(t))}{0}}(x) = \flin{0}{1/(A(t) \cdot L(t))}(x)$
+        (by derivative of linear function).
+    End.
+
+    $\deriv{\Pi_{A, L, f, r, w, t}}(x) .= \derivin{\Pi_{A, L, f, r, w, t}}(x)$ (by deriv and derivin)
+
+    $.= \derivin{\fplus{\flin{A(t) \cdot L(t)}{0} \circ (f \circ \flin{1/(A(t) \cdot L(t))}{0})}
+    {\fminus{\flin{r(t)}{w(t) \cdot L(t)}}}}(x)$ (by def Pi)
+
+    $.= \derivin{\flin{A(t) \cdot L(t)}{0} \circ (f \circ \flin{1/(A(t) \cdot L(t))}{0})}(x) 
+    + \derivin{\fminus{\flin{r(t)}{w(t) \cdot L(t)}}}(x)$ (by derivative addition rule)
+
+    $.= (\derivin{\flin{A(t) \cdot L(t)}{0}}((f \circ \flin{1/(A(t) \cdot L(t))}{0})(x))
+    \cdot (\derivin{f}(\flin{1/(A(t) \cdot L(t))}{0}(x)) \cdot \derivin{\flin{1/(A(t) \cdot L(t))}{0}}(x)))
+    - \derivin{\flin{r(t)}{w(t) \cdot L(t)}}(x)$ (by derivative chain rule, minus derivative)
+
+    $.= (\derivin{\flin{A(t) \cdot L(t)}{0}}(\xi)
+    \cdot (\derivin{f}(\flin{1/(A(t) \cdot L(t))}{0}(x)) \cdot \derivin{\flin{1/(A(t) \cdot L(t))}{0}}(x)))
+    - \derivin{\flin{r(t)}{w(t) \cdot L(t)}}(x)$ (by A)
+
+    $.= (\flin{0}{A(t) \cdot L(t)}(\xi)
+    \cdot (\derivin{f}(\flin{1/(A(t) \cdot L(t))}{0}(x)) \cdot \flin{0}{1/(A(t) \cdot L(t))}(x)))
+    - \flin{0}{r(t)}(x)$ (by B)
+
+    $.= ((A(t) \cdot L(t)) \cdot (\derivin{f}(\flin{1/(A(t) \cdot L(t))}{0}(x)) \cdot (1/(A(t) \cdot L(t)))))
+    - r(t)$ (by A, linear lem 1)
+
+    $.= ((A(t) \cdot L(t)) \cdot (\derivin{f}(1/(A(t) \cdot L(t)) \cdot x) \cdot (1/(A(t) \cdot L(t)))))
+    - r(t)$ (by linear lem 2)
+
+    $.= \left(((A(t) \cdot L(t)) \cdot 1/(A(t) \cdot L(t))) \cdot \derivin{f}\left(\frac{x}{A(t) \cdot L(t)}\right)\right) - r(t)$ 
+    (by mult comm, mult ass)
+
+    $.= \derivin{f}\left(\frac{x}{A(t) \cdot L(t)}\right) - r(t)$ (by multiplicative inverse, mult comm, existence one).
+\end{proof}
+
+\begin{proposition}
+    There exists a maximum of $\Pi_{A, L, f, r, w, t}$.
+\end{proposition}
+\begin{proof}
+    Take $\Pi = \Pi_{A, L, f, r, w, t}$. [prover eprover]
+
+    (1) For any real number $x$ 
+        $\deriv{\Pi}(x) = \derivin{f}\left(\frac{x}{A(t) \cdot L(t)}\right) - r(t)$ (by derivative profit function).
+
+    (2) $\flin{1/(A(t) \cdot L(t))}{0}$ is a real map.
+
+    Let us show that $\deriv{\Pi} = \flin{1}{-r(t)} \circ (\deriv{f} \circ \flin{1/(A(t) \cdot L(t))}{0})$.
+
+        Let $x$ be a real number. $\flin{1}{-r(t)} \circ (\deriv{f} \circ \flin{1/(A(t) \cdot L(t))}{0})$ is a real map.
+
+        $\deriv{\Pi}(x) .= \derivin{f}\left(\frac{x}{A(t) \cdot L(t)}\right) - r(t)$ (by 1) 
+
+        $.= \deriv{f}((1/(A(t) \cdot L(t)) \cdot x) + 0) - r(t)$ (by deriv and derivin, mult comm, existence zero)
+
+        $.= (1 \cdot (\deriv{f} \circ \flin{1/(A(t) \cdot L(t))}{0})(x)) - r(t)$ (by linear function, composition, existence one)
+
+        $.= (\flin{1}{-r(t)} \circ (\deriv{f} \circ \flin{1/(A(t) \cdot L(t))}{0}))(x)$ (by linear function, composition).
+    End.
+
+    Thus $\deriv{\Pi}$ is differentiable.
+    $\deriv{f}$ is differentiable. Indeed for every real number $x$ $\deriv{f}$ is differentiable in $x$.
+
+    Let us show that $\derivin{\deriv{\Pi}}(x) < 0$ for every real number $x$.
+
+        $\deriv{(\flin{1}{-r(t)} \circ (\deriv{f} \circ \flin{1/(A(t) \cdot L(t))}{0}))}
+        .= \fmult{(\deriv{\flin{1}{-r(t)}} \circ (\deriv{f} \circ \flin{1/(A(t) \cdot L(t))}{0}))}
+        {\deriv{(\deriv{f} \circ \flin{1/(A(t) \cdot L(t))}{0})}}$ (by derivative chain rule 2)
+
+        $.= \fmult{(\deriv{\flin{1}{-r(t)}} \circ (\deriv{f} \circ \flin{1/(A(t) \cdot L(t))}{0}))}
+        {\fmult{(\deriv{\deriv{f}} \circ \flin{1/(A(t) \cdot L(t))}{0})}{\deriv{\flin{1/(A(t) \cdot L(t))}{0}}}}$
+        
+        (by derivative chain rule 2)
+
+        $.= \fmult{(\flin{0}{1} \circ (\deriv{f} \circ \flin{1/(A(t) \cdot L(t))}{0}))}
+        {\fmult{(\deriv{\deriv{f}} \circ \flin{1/(A(t) \cdot L(t))}{0})}{\deriv{\flin{1/(A(t) \cdot L(t))}{0}}}}$
+        
+        (by derivative of linear function)
+
+        $.= \fmult{(\flin{0}{1} \circ (\deriv{f} \circ \flin{1/(A(t) \cdot L(t))}{0}))} 
+        {\fmult{(\deriv{\deriv{f}} \circ \flin{1/(A(t) \cdot L(t))}{0})}{\flin{0}{1/(A(t) \cdot L(t))}}}$
+        
+        (by derivative of linear function).
+
+        Let $x$ be a real number.
+
+        $\fmult{(\flin{0}{1} \circ (\deriv{f} \circ \flin{1/(A(t) \cdot L(t))}{0}))}
+        {\fmult{(\deriv{\deriv{f}} \circ \flin{1/(A(t) \cdot L(t))}{0})}{\flin{0}{1/(A(t) \cdot L(t))}}}(x)$
+
+        $.= (\flin{0}{1} \circ (\deriv{f} \circ \flin{1/(A(t) \cdot L(t))}{0}))(x) \cdot 
+        \fmult{(\deriv{\deriv{f}} \circ \flin{1/(A(t) \cdot L(t))}{0})}{\flin{0}{1/(A(t) \cdot L(t))}}(x)$
+        
+        (by def mult func)
+
+        $.= \flin{0}{1}((\deriv{f} \circ \flin{1/(A(t) \cdot L(t))}{0})(x)) \cdot 
+        \fmult{(\deriv{\deriv{f}} \circ \flin{1/(A(t) \cdot L(t))}{0})}{\flin{0}{1/(A(t) \cdot L(t))}}(x)$
+        
+        (by composition)
+
+        $.= 1 \cdot \fmult{(\deriv{\deriv{f}} \circ \flin{1/(A(t) \cdot L(t))}{0})}{\flin{0}{1/(A(t) \cdot L(t))}}(x)$ (by linear lem 1)
+
+        $.= (\deriv{\deriv{f}} \circ \flin{1/(A(t) \cdot L(t))}{0})(x) \cdot \flin{0}{1/(A(t) \cdot L(t))}(x)$ (by existence one, def mult func)
+
+        $.= (\deriv{\deriv{f}} \circ \flin{1/(A(t) \cdot L(t))}{0})(x) \cdot 1/(A(t) \cdot L(t))$ (by linear lem 1)
+
+        $.= \deriv{\deriv{f}}(\flin{1/(A(t) \cdot L(t))}{0}(x)) \cdot 1/(A(t) \cdot L(t))$ (by composition)
+
+        $.= \frac{\deriv{\deriv{f}}\left(\frac{x}{A(t) \cdot L(t)}\right)}{A(t) \cdot L(t)}$ (by linear lem 2, mult comm).
+       
+        We can show that $\frac{\deriv{\deriv{f}}\left(\frac{x}{A(t) \cdot L(t)}\right)}{A(t) \cdot L(t)} < 0$. 
+            $f$ is strictly convex. Therefore $\derivin{\deriv{f}}\left(\frac{x}{A(t) \cdot L(t)}\right) \leq 0$.
+            Thus $\deriv{\deriv{f}}\left(\frac{x}{A(t) \cdot L(t)}\right) \leq 0$. $A(t) \cdot L(t) > 0$. 
+            $\frac{\deriv{\deriv{f}}\left(\frac{x}{A(t) \cdot L(t)}\right)}{A(t) \cdot L(t)} \leq 0$ (by frac lemma 3). 
+            $\frac{\deriv{\deriv{f}}\left(\frac{x}{A(t) \cdot L(t)}\right)}{A(t) \cdot L(t)} < 0$.
+            Indeed $\deriv{\deriv{f}}\left(\frac{x}{A(t) \cdot L(t)}\right)$ is nonzero. 
+        End. 
+    End.
+
+    Therefore $\Pi$ is strictly convex.
+
+    Let us show that there exists a positive real number $\xi$ such that $\deriv{\Pi}(\xi) = 0$.
+
+        $\deriv{\Pi}(0) .= \derivin{f}\left(\frac{0}{A(t) \cdot L(t)}\right) - r(t)$ (by 1)
+
+        $.= \derivin{f}(0) - r(t)$ (by eq lemma 9).
+
+        $\derivin{f}(0) - r(t) > 0$. Indeed $\derivin{f}(0) > r(t)$ (by Inada condition I). Thus $\deriv{\Pi}(0) > 0$.
+
+        Take a positive real number $u$ such that $\derivin{f}(u) < r(t)$.
+
+        $\deriv{\Pi}((A(t) \cdot L(t)) \cdot u) 
+        .= \derivin{f}\left(\frac{(A(t) \cdot L(t)) \cdot u}{A(t) \cdot L(t)}\right) - r(t)$ (by 1)
+
+        $.= \derivin{f}(u) - r(t)$ (by mult ass, fraction lemma 2).
+
+        $\derivin{f}(u) - r(t) < 0$. Indeed $\derivin{f}(u) < r(t)$ (by Inada condition II).
+        Therefore $\deriv{\Pi}((A(t) \cdot L(t)) \cdot u) = \derivin{f}(u) - r(t) < 0$.  [timelimit 10][prover vampire]
+
+        Take $\omega = (A(t) \cdot L(t)) \cdot u$. Then $\deriv{\Pi}(\omega) < 0 < \deriv{\Pi}(0)$ and $0 \in (\deriv{\Pi}(\omega),\deriv{\Pi}(0))_{OI}$.
+        $\deriv{\Pi}$ is a continuous real map and $0 < \omega$.
+        $(\deriv{\Pi}(\omega),\deriv{\Pi}(0))_{OI} \subseteq \deriv{\Pi}[(0,\omega)_{OI}]$ (by intermediate value theorem II). 
+        Therefore $0 \in \deriv{\Pi}[(0,\omega)_{OI}]$. [prover eprover]
+        Take $\xi \in (0,\omega)_{OI}$ such that $\deriv{\Pi}(\xi) = 0$. $\xi$ is a positive real number.
+    End.
+
+    Take a positive real number $\xi$ such that $\derivin{\Pi}(\xi) = 0$.
+    $\xi$ is a local maximum of $\Pi$ (by sufficient condition local maximum). Indeed
+        $\derivin{\deriv{\Pi}}(\xi) < 0$.
+    Then $\xi$ is a maximum of $\Pi$ (by sufficient condition for maximum on interval).
+        Indeed $\mathbb{R}$ is an interval and $\xi$ is an element in $\mathbb{R}$.[timelimit 3]
+\end{proof}
+   
+\end{forthel}
+
+Now that we know that there exists such a profit maximizing capital stock, we assume that firms will choose exactly that:
+
+\begin{forthel}
+\begin{axiom}[profit maximizing K]
+    $K(t)$ is the maximum of $\Pi_{A, L, f, r, w, t}$.
+\end{axiom}
+\end{forthel}
+
+Next, we can show that there exists a stable-steady state amount of capital per efficiency unit labor. What we will see is that for some function $\Delta$, $\deriv{k}(t) = \Delta(k_t)$. Furthermore, there exists a level of capital per efficiency unit labor, $\kappa$, such that $\Delta(\kappa) = 0$, i.e. if $k_t = \kappa$ for some $t$, then it is constant throughout time; meaning, the capital per efficiency unit labor will always be at that level and actually also always has been. This level is called the steady state. In addition, we can show that for any capital levels $x$ below $\kappa$, $\Delta(x) > 0$ and for any levels above, $\Delta(x) < 0$; i.e., if the amount of capital is off steady state, it will always converge to $\kappa$ (although it will never reach that level).\\
+
+In the proposition derivative k, because we want to use $K$, $L$, and $A$ during the proof, although they are otherwise not mentioned in the declaration of the proposition, we have to add them there by
+\begin{quotation}
+    Let $K$ be a capital stock and $L$ be a labor amount and $A$ be an efficiency level.
+\end{quotation}
+
+\begin{forthel}
+  
+\begin{proposition}[derivative k]
+    Let $Y$ be an output level and $K$ be a capital stock and $L$ be a labor amount and $A$ be an efficiency level.
+    $k$ is differentiable in $t$ and $$\derivin{k}(t) = (s \cdot f(k(t))) - ((\delta + (gA + gL)) \cdot k(t)).$$
+\end{proposition}
+\begin{proof}$
+    (\fmult{A}{L}(t))^{2},A(t) \cdot L(t)$ are nonzero.
+
+    (A) $\frac{\derivin{\fmult{A}{L}}(t)}{(\fmult{A}{L}(t))^{2}} = \frac{gA + gL}{\fmult{A}{L}(t)}$. Proof.
+        $A(t) \cdot L(t), L(t)$ is nonzero.
+
+        (A1) $\frac{\derivin{A}(t)}{A(t)} = gA$ and $\frac{\derivin{L}(t)}{L(t)} = gL$ (by lemma gA, lemma gL).
+
+        $\frac{\derivin{\fmult{A}{L}}(t)}{(\fmult{A}{L}(t))^{2}}
+        .= \frac{(\derivin{A}(t) \cdot L(t)) + (A(t) \cdot \derivin{L}(t))}{(\fmult{A}{L}(t))^{2}}$ (by derivative multiplication rule)
+
+        $.= \left(\frac{\derivin{A}(t) \cdot L(t)}{\fmult{A}{L}(t)} + \frac{A(t) \cdot \derivin{L}(t)}{\fmult{A}{L}(t)}\right)
+                \cdot 1/\fmult{A}{L}(t)$
+                
+                (by potence lemma 2, eq lemma 30, mult ass, eq lemma 1) 
+
+        $.= \left(\frac{\derivin{A}(t) \cdot L(t)}{A(t) \cdot L(t)} + \frac{A(t) \cdot \derivin{L}(t)}{A(t) \cdot L(t)}\right)
+                \cdot 1/\fmult{A}{L}(t)$ (by def mult func)
+                
+        $.= \left(\frac{\derivin{A}(t) \cdot L(t)}{L(t) \cdot A(t)} + \frac{\derivin{L}(t) \cdot A(t)}{A(t) \cdot L(t)}\right)
+                \cdot 1/\fmult{A}{L}(t)$(by mult comm)
+
+        $.= \left(\left(\derivin{A}(t) \cdot \frac{L(t)}{L(t) \cdot A(t)}\right) 
+                + \left(\derivin{L}(t) \cdot \frac{A(t)}{A(t) \cdot L(t)}\right)\right)
+                \cdot 1/\fmult{A}{L}(t)$ (by mult ass) 
+
+        $.= \frac{gA + gL}{\fmult{A}{L}(t)}$ (by eq lemma 29, A1). 
+    End.
+    [timelimit 10]
+    
+    (B) $\derivin{K}(t) - (K(t) \cdot (gA + gL)) = (s \cdot Y(t)) - (K(t) \cdot (\delta + (gA + gL)))$. Proof.
+
+        (B1) $\derivin{K}(t) = (s \cdot Y(t)) - (\delta \cdot K(t))$ (by capital accumulation). [timelimit 3]
+
+        $\derivin{K}(t) - (K(t) \cdot (gA + gL))$
+        $.= ((s \cdot Y(t)) - (\delta \cdot K(t))) - (K(t) \cdot (gA + gL))$ (by B1)
+
+        $.= (s \cdot Y(t)) - ((K(t) \cdot \delta) + (K(t) \cdot (gA + gL)))$
+            (by mult comm, add ass, eq lemma 15)
+
+        $.= (s \cdot Y(t)) - (K(t) \cdot (\delta + (gA + gL)))$ (by distributive law).
+    End.[prover vampire]
+
+    (C) $Y(t) = (A(t) \cdot L(t)) \cdot f(k(t))$ (by lemma Y). [prover eprover]
+
+    (D) $k(t) = \frac{K(t)}{A(t) \cdot L(t)}$ (by lemma k).
+
+    $\derivin{k}(t) = \derivin{\fdiv{K}{\fmult{A}{L}}}(t)$ (by def k).
+
+    $\derivin{\fdiv{K}{\fmult{A}{L}}}(t)$
+    $.= \frac{(\derivin{K}(t) \cdot \fmult{A}{L}(t)) - (K(t) \cdot \derivin{\fmult{A}{L}}(t))}{(\fmult{A}{L}(t))^{2}}$ 
+        (by derivative of a fraction)
+
+    $.= \frac{(\derivin{K}(t) \cdot \fmult{A}{L}(t))}{(\fmult{A}{L}(t))^{2}} - \frac{(K(t) \cdot \derivin{\fmult{A}{L}}(t))}{(\fmult{A}{L}(t))^{2}}$
+        (by eq lemma 1, eq lemma 11)
+
+    $.= \frac{\derivin{K}(t)}{\fmult{A}{L}(t)} - \frac{K(t) \cdot (gA + gL)}{\fmult{A}{L}(t)}$ 
+        (by A, potence lemma 2, mult ass, eq lemma 29)
+
+    $.= \frac{\derivin{K}(t) - (K(t) \cdot (gA + gL))}{\fmult{A}{L}(t)}$ (by eq lemma 1, eq lemma 11)
+
+    $.= \frac{(s \cdot Y(t)) - (K(t) \cdot (\delta + (gA + gL)))}{\fmult{A}{L}(t)}$ (by B)
+
+    $.= \frac{s \cdot Y(t)}{\fmult{A}{L}(t)} - \frac{K(t) \cdot (\delta + (gA + gL))}{\fmult{A}{L}(t)}$ (by eq lemma 1, eq lemma 11)
+
+    $.= \frac{s \cdot ((A(t) \cdot L(t)) \cdot f(k(t)))}{\fmult{A}{L}(t)} 
+        - \left((\delta + (gA + gL)) \cdot \frac{K(t)}{A(t) \cdot L(t)}\right)$ (by C, mult comm, mult ass, def mult func)
+
+    $.= \frac{s \cdot ((A(t) \cdot L(t)) \cdot f(k(t)))}{\fmult{A}{L}(t)} 
+        - ((\delta + (gA + gL)) \cdot k(t))$ (by D)
+
+    $.= \frac{s \cdot (\fmult{A}{L}(t) \cdot f(k(t)))}{\fmult{A}{L}(t)} 
+        - ((\delta + (gA + gL)) \cdot k(t))$ (by def mult func)
+
+    $.= \left(s \cdot \left(\fmult{A}{L}(t) \cdot \frac{f(k(t))}{\fmult{A}{L}(t)}\right)\right) 
+        - ((\delta + (gA + gL)) \cdot k(t))$ (by mult ass)
+
+    $.= (s \cdot f(k(t))) - ((\delta + (gA + gL)) \cdot k(t))$ (by fraction lemma 2). 
+\end{proof}
+
+\end{forthel}
+
+The reason we chose the Inada-conditions the way we did, was to make the production function resemble most closely the following image with the limited concepts, which we have defined so far. This image is always shown for illustrative purposes during any presentation of the Solow model.
+
+\begin{center}
+\includegraphics[width=15cm]{Solow_graph.jpeg}
+\end{center}
+
+The $\Delta$-function that we define right below, is exactly the difference between these to graphs.
+
+\begin{forthel}
+\begin{definition}[Delta]
+    $\Delta_{s, f, \delta, gA, gL} = \fplus{\flin{s}{0} \circ f}{\fminus{\flin{\delta + (gA + gL)}{0}}}$.
+\end{definition}
+
+
+Let $x$ denote a real number.
+\begin{lemma}[lemma Delta]
+    $\Delta_{s, f, \delta, gA, gL}(x) = (s \cdot f(x)) - ((\delta + (gA + gL)) \cdot x)$.
+\end{lemma}
+\begin{proof}
+    $\Delta_{s, f, \delta, gA, gL}(x) .= \fplus{\flin{s}{0} \circ f}{\fminus{\flin{\delta + (gA + gL)}{0}}}(x)$ (by Delta)
+
+    $.= (\flin{s}{0} \circ f)(x) + \fminus{\flin{\delta + (gA + gL)}{0}}(x)$ (by def add func)
+
+    $.= (\flin{s}{0} \circ f)(x) - \flin{\delta + (gA + gL)}{0}(x)$ (by def func minus)
+
+    $.= \flin{s}{0}(f(x)) - \flin{\delta + (gA + gL)}{0}(x)$ (by composition)
+
+    $.= (s \cdot f(x)) - ((\delta + (gA + gL)) \cdot x)$ (by linear lem 2).
+\end{proof}
+
+\begin{proposition}[proposition Delta]
+    Let $Y$ be an output level and $K$ be a capital stock and $L$ be a labor amount and $A$ be an efficiency level.
+    $\Delta_{s, f, \delta, gA, gL} \circ k = \deriv{k}$.
+\end{proposition}
+\begin{proof}
+    Take $\Delta = \Delta_{s, f, \delta, gA, gL}$.
+    Let $t$ be a point in time. $\Delta$, $\Delta \circ k$ are real maps and $k(t)$ is a real number. [timelimit 30]
+
+    (1) $\derivin{k}(t) = (s \cdot f(k(t)))- ((\delta + (gA + gL)) \cdot k(t))$ (by derivative k).
+
+    (2) $\Delta(k(t)) = (s \cdot f(k(t))) - ((\delta + (gA + gL)) \cdot k(t))$ (by lemma Delta).
+
+    (3) $\derivin{k}(t) = (s \cdot f(k(t))) - ((\delta + (gA + gL)) \cdot k(t)) = \Delta(k(t))$ (by 1,2).
+
+    Therefore $\deriv{k}(t) = \derivin{k}(t) = \Delta(k(t)) = (\Delta \circ k)(t)$ (by deriv and derivin, 3, composition). [timelimit 3]
+\end{proof}
+
+\begin{lemma}[derivative Delta]
+    $\deriv{\Delta_{s, f, \delta, gA, gL}} = \flin{s}{-(\delta + (gA + gL))} \circ \deriv{f}$.
+\end{lemma}
+\begin{proof} 
+    $\flin{s}{-(\delta + (gA + gL))} \circ \deriv{f}$ is a real map.
+
+    Let us show that for all real numbers $x$ $\deriv{\Delta_{s, f, \delta, gA, gL}}(x) = (\flin{s}{-(\delta + (gA + gL))} \circ \deriv{f})(x)$.
+
+    $\deriv{\Delta_{s, f, \delta, gA, gL}} .= \deriv{\fplus{\flin{s}{0} \circ f}{\fminus{\flin{\delta + (gA + gL)}{0}}}}$ (by Delta)
+
+    $.= \fplus{\deriv{(\flin{s}{0} \circ f)}}{\fminus{\deriv{\flin{\delta + (gA + gL)}{0}}}}$ (by derivative addition rule 2, minus derivative 2)
+
+    $.= \fplus{\fmult{(\flin{0}{s} \circ f)}{\deriv{f}}}{\fminus{\flin{0}{\delta + (gA + gL)}}}$ (by derivative chain rule 2, derivative of linear function).
+
+    Let $x$ be a real number.
+
+    $\fplus{\fmult{(\flin{0}{s} \circ f)}{\deriv{f}}}{\fminus{\flin{0}{\delta + (gA + gL)}}}(x) 
+    .= \fmult{(\flin{0}{s} \circ f)}{\deriv{f}}(x) - \flin{0}{\delta + (gA + gL)}(x)$
+    
+    (by def add func, def func minus)
+
+    $.= ((\flin{0}{s} \circ f)(x) \cdot \deriv{f}(x)) - \flin{0}{\delta + (gA + gL)}(x)$ (by def mult func)
+
+    $.= (\flin{0}{s}(f(x)) \cdot \deriv{f}(x)) - \flin{0}{\delta + (gA + gL)}(x)$ (by composition) 
+
+    $.= (s \cdot \deriv{f}(x)) - (\delta + (gA + gL))$ (by linear lem 1)
+
+    $.= \flin{s}{-(\delta + (gA + gL))}(\deriv{f}(x))$ (by linear function)
+
+    $.= (\flin{s}{-(\delta + (gA + gL))} \circ \deriv{f})(x)$ (by composition).
+    End.
+
+    Thus $\deriv{\Delta_{s, f, \delta, gA, gL}} = \flin{s}{-(\delta + (gA + gL))} \circ \deriv{f}$.
+\end{proof}
+
+\begin{lemma}[lemma Delta 2]
+    $\Delta_{s, f, \delta, gA, gL}(0) > 0$.
+\end{lemma}
+\begin{proof}
+
+        $\Delta_{s, f, \delta, gA, gL}(0) = (s \cdot f(0)) - ((\delta + (gA + gL)) \cdot 0)$ (by lemma Delta).
+
+        $(s \cdot f(0)) - ((\delta + (gA + gL)) \cdot 0)$  
+        $.= (s \cdot f(0)) - 0$ (by mult comm, eq lemma 9)
+
+        $.= s \cdot f(0)$ (by eq lemma 0, existence zero).
+
+        $s \cdot f(0) > s \cdot 0 = 0$. Indeed $f(0) > 0$ (by Inada condition IV).
+\end{proof}
+
+\begin{lemma}[lemma Delta 3]
+    Let $\xi$ be a positive real number such that $\Delta_{s, f, \delta, gA, gL}(\xi) = 0$.
+    Then for all real numbers $\zeta$ such that $\zeta > \xi$ $\Delta_{s, f, \delta, gA, gL}(\zeta) < 0$.
+\end{lemma}
+\begin{proof}
+    Let $\zeta$ be a real number such that $\zeta > \xi$. Take $\Delta = \Delta_{s, f, \delta, gA, gL}$.
+    $\Delta, \deriv{\Delta}$ are differentiable real maps and $\mathbb{R}$ is an interval. [prover vampire]
+
+    $\deriv{\Delta}$ is strictly decreasing on $\mathbb{R}$ (by derivative strictly decreasing).
+        Indeed we can show that $\derivin{\deriv{\Delta}}(x) < 0$ for any $x \in \mathbb{R}$.
+        Let $x$ be a real number. 
+
+        (1) $\deriv{\Delta} = \flin{s}{-(\delta + (gA + gL))} \circ \deriv{f}$ (by derivative Delta).
+
+        $\derivin{\deriv{\Delta}}(x) .= \derivin{(\flin{s}{-(\delta + (gA + gL))} \circ \deriv{f})}(x)$ (by 1)
+
+        $.= \derivin{\flin{s}{-(\delta + (gA + gL))}}(\deriv{f}(x)) \cdot \derivin{\deriv{f}}(x)$ (by derivative chain rule)
+
+        $.= \flin{0}{s}(\deriv{f}(x)) \cdot \derivin{\deriv{f}}(x)$ (by deriv and derivin, derivative of linear function)
+
+        $.= s \cdot \derivin{\deriv{f}}(x)$ (by linear lem 1).
+
+        $s \cdot \derivin{\deriv{f}}(x) < s \cdot 0 = 0$. Indeed $\derivin{\deriv{f}}(x) < 0$. 
+        Thus $\derivin{\deriv{\Delta}}(x) < 0$.
+    End.
+    
+    $\Delta(0) > 0$ (by lemma Delta 2).
+
+    Take $Z \in (0,\xi)_{OI}$ such that $\derivin{\Delta}(Z) = \Diffquot{\Delta}{0}(\xi)$ (by mean value theorem).
+
+    $\deriv{\Delta}(Z) < 0$. Proof.
+        $\derivin{\Delta}(Z) = \Diffquot{\Delta}{0}(\xi) = \frac{\Delta(\xi) - \Delta(0)}{\xi - 0}
+        = \frac{-\Delta(0)}{\xi} \leq 0$.
+
+        $\deriv{\Delta}(Z) = \frac{-\Delta(0)}{\xi} < 0$ (by frac lemma 5).
+    End.
+
+    $\Delta$ is strictly decreasing on $[Z,\zeta]_{CI}$ (by derivative strictly decreasing, interval lemma).
+    Indeed we can show that for all $x \in [Z,\zeta]_{CI}$ $\derivin{\Delta}(x) < 0$.
+        Let $x \in [Z,\zeta]_{CI}$. $\deriv{\Delta}(x) \leq \deriv{\Delta}(Z) < 0$. 
+        Indeed $x \geq Z$ and $\deriv{\Delta}$ is strictly decreasing on $\mathbb{R}$.
+    End.[prover eprover]
+
+    Therefore $\Delta(\zeta) < \Delta(\xi) = 0$. Indeed $\xi,\zeta \in [Z,\zeta]_{CI}$ and $\xi < \zeta$.
+\end{proof}
+
+\begin{proposition}
+    There exists a positive real number $\kappa$ such that $\Delta_{s, f, \delta, gA, gL}(\kappa) = 0$.
+\end{proposition}
+\begin{proof}
+    Take $\Delta = \Delta_{s, f, \delta, gA, gL}$.
+    $\Delta$ is a continuous real map.
+
+    Take a positive real number $x$ such that $\Delta(x) < 0$. Proof.
+
+        Take a positive real number $M$ such that $f(\xi) < M$ for all real numbers $\xi$ (by Inada condition III).
+
+        (A) Take $c = \frac{s}{\delta + (gA + gL)} \cdot M$. $c$ is a positive real number. 
+        Indeed $\delta + (gA + gL), \frac{s}{\delta + (gA + gL)}$ are positive.
+
+        $\Delta(c) = (s \cdot f(c)) - ((\delta + (gA + gL)) \cdot c)$ (by lemma Delta).
+
+        $(s \cdot f(c)) - ((\delta + (gA + gL)) \cdot c)
+        .= (s \cdot f(c)) - \left((\delta + (gA + gL)) \cdot \left(\frac{s}{\delta + (gA + gL)} \cdot M\right)\right)$ (by A)
+
+        $.= (s \cdot f(c)) - \left(\left((\delta + (gA + gL)) \cdot \frac{s}{\delta + (gA + gL)}\right) \cdot M\right)$ (by mult ass)
+
+        $.= (s \cdot f(c)) - (s \cdot M)$ (by fraction lemma 2).
+
+        $(s \cdot f(c)) - (s \cdot M) < (s \cdot M) - (s \cdot M) = 0$. Thus $\Delta(c) < 0$.
+    End.
+
+    $\Delta(0) > 0$ (by lemma Delta 2). $0 < x$. 
+    $(\Delta(x), \Delta(0))_{OI} \subseteq \Delta[(0,x)_{OI}]$ (by intermediate value theorem II).
+    $0 \in (\Delta(x), \Delta(0))_{OI}$. Therefore take $\kappa \in (0,x)_{OI}$ such that $\Delta(\kappa) = 0$.
+    $\kappa$ is a positive real number.
+\end{proof}
+ 
+\begin{signature}
+    A steady state capital is a positive real number.
+\end{signature}
+Let $\kappa$ denote a steady state capital.
+
+\begin{axiom}[def kappa]
+    $\Delta_{s, f, \delta, gA, gL}(\kappa) = 0$.
+\end{axiom}
+
+\begin{proposition}[off steady state]
+    Let $x$ be positive.
+    (If $x < \kappa$ then $\Delta_{s, f, \delta, gA, gL}(x) > 0$) and if $x > \kappa$ then $\Delta_{s, f, \delta, gA, gL}(x) < 0$.
+\end{proposition}
+\begin{proof}
+    Take $\Delta = \Delta_{s, f, \delta, gA, gL}$.
+
+    Case $x < \kappa$. 
+        Assume the contrary. Then $\Delta(x) \leq 0$. [timelimit 20]
+
+        Case $\Delta(x) = 0$. Then $\Delta(\kappa) < 0$ (by lemma Delta 3). Contradiction (by def kappa). End.
+
+        Case $\Delta(x) < 0$. 
+            $\Delta$ is a continuous real map and $0 < x$. Therefore
+            $(\Delta(x), \Delta(0))_{OI} \subseteq \Delta[(0,x)_{OI}]$ (by intermediate value theorem II).
+            $0 \in (\Delta(x), \Delta(0))_{OI}$. Indeed $\Delta(x) < 0 < \Delta(0)$ (by lemma Delta 2, lemma Delta 3).
+            Therefore take $\xi \in (0,x)_{OI}$ such that $\Delta(\xi) = 0$.
+            Then $\Delta(\kappa) < 0$ (by lemma Delta 3).
+            Indeed $\xi$ is a positive real number such that $\Delta(\xi) = 0$ and $\kappa$ is a real number such that $\kappa > \xi$.
+            Contradiction (by def kappa).
+        End.
+    End.
+
+    Case $x > \kappa$. [timelimit 50] 
+        $\Delta(x) < 0$ (by lemma Delta 3).
+            Indeed $\kappa$ is a positive real number such that $\Delta(\kappa) = 0$ and 
+            $x$ is a real number such that $x > \kappa$ (by def kappa). 
+            [timelimit 3]
+    End.
+\end{proof}
+
+\end{forthel}
+
+So $\kappa$ is our steady-state capital per efficiency unit labor. When our capital per efficiency unit labor is once at a level of $\kappa$, it does not change anymore, since $\derivin{k}(t)|_{k = \kappa} = \Delta(\kappa) = 0$. If we are not at the level $\kappa$, we know that we converge to this level. For Kaldor's facts, we will assume that we are in the steady state. However, at G6, we will continue our discussion of what happens off steady state, because that is exactly what is relevant there. 
+\begin{forthel}
+
+\begin{axiom}[steady state]
+    $\derivin{k}(t) = 0$.
+\end{axiom} 
+ 
+\begin{lemma}[lemma kappa]
+    Let $Y$ be an output level and $K$ be a capital stock and $L$ be a labor amount and $A$ be an efficiency level.
+    Let $s$ be a savings rate and $f$ be a production function and $\delta$ be a depreciation rate and $gA$ be an efficiency growth rate and 
+    $gL$ be a labor growth rate.
+    $k(t) = \kappa$. 
+\end{lemma}
+\begin{proof}
+    Take $\Delta = \Delta_{s, f, \delta, gA, gL}$.
+    $k$ is constant on $\mathbb{R}$ (by derivative zero then constant). 
+        Indeed for every point in time $\tau$ $\derivin{k}(\tau) = 0$ and $\mathbb{R}$ is an interval and $k$ is a continuous real map.
+        
+    (1) Take $\iota = k(0)$. $\iota,\kappa$ are positive real numbers. $\Delta \circ k$ is a real map.
+    Then for any point in time $\tau$ $k(\tau) = \iota$.
+
+    $\Delta(\iota) .= (\Delta \circ k)(0)$ (by 1, composition). [timelimit 30][prover vampire]
+    Then $(\Delta \circ k)(0) = \deriv{k}(0)$. Indeed $\Delta \circ k = \deriv{k}$ (by proposition Delta).
+    $\deriv{k}(0) = \derivin{k}(0) = 0$ (by deriv and derivin, steady state).
+    Assume $\iota \neq \kappa$. 
+
+    Case $\iota < \kappa$. $\Delta(\iota) > 0$ (by off steady state). End.
+
+    Case $\iota > \kappa$. $\Delta(\iota) < 0$ (by off steady state). End. [timelimit 3]
+\end{proof}
+
+\end{forthel}
+
+\section{Kaldor's Facts}
+
+Having the model presented, we can now turn to Kaldor's facts. 
+
+\begin{enumerate}
+    \item[G1] Continued growth in the aggregate volume of production, i.e. in the long term economies seem to grow.
+\end{enumerate}
+
+We will make a stronger claim in this model: Even the aggregate volume of production per capita grows. 
+
+\begin{forthel}
+    Let $Y$ denote an output level. Let $K$ denote a capital stock. Let $L$ denote a labor amount. 
+    Let $f$ denote a production function. Let $\delta$ denote a depreciation rate. Let $gA$ denote an efficiency growth rate. 
+    Let $gL$ denote a labor growth rate. Let $t$ denote a point in time. Let $r$ denote an interest rate. 
+    Let $\kappa$ denote a steady state capital.
+ 
+\begin{lemma}
+    $\fdiv{Y}{L}$ is a real map with positive range.
+\end{lemma}
+\begin{proof}
+    Let $t$ be a point in time.
+    Therefore $\frac{Y(t)}{L(t)}$ is a positive real number. Indeed 
+    $Y(t),L(t)$ are positive real numbers.
+\end{proof}
+
+\begin{proposition}[G1]
+    Let $A$ be an efficiency level and $f$ be a production function and $k$ be a capital per efficiency unit labor.
+    $$\hat{\fdiv{Y}{L}}(t) = gA.$$
+\end{proposition}
+\begin{proof}
+    (A) $\fdiv{Y}{L} = \fmult{A}{(f \circ k)}$. Proof. 
+
+        Let $\tau$ be a real number. [timelimit 20]
+
+        (1) $Y(\tau) = \fmult{\fmult{A}{L}}{(f \circ k)}(\tau)$ (by constant returns to scale). [timelimit 3]
+
+        $\fdiv{Y}{L}(\tau) .= \frac{Y(\tau)}{L(\tau)}$ (by def div map)
+
+        $.= \frac{\fmult{\fmult{A}{L}}{(f \circ k)}(\tau)}{L(\tau)}$ (by 1) 
+
+        $.= \frac{(A(\tau) \cdot L(\tau)) \cdot (f \circ k)(\tau)}{L(\tau)}$ (by def mult func) 
+
+        $.= A(\tau) \cdot (f \circ k)(\tau)$ (by mult ass, fraction lemma 2) 
+
+        $.= \fmult{A}{(f \circ k)}(\tau)$ (by def mult func).
+    End.
+
+    (2) $\derivin{k}(t) = 0$ (by steady state).
+
+    (B) $\derivin{(f \circ k)}(t) = 0$. Proof.
+
+        $\derivin{(f \circ k)}(t) .= \derivin{f}(k(t)) \cdot \derivin{k}(t)$ (by derivative chain rule)
+
+        $.= \derivin{f}(k(t)) \cdot 0$ (by 2)
+
+        $.= 0$ (by mult comm, eq lemma 9).
+    End.
+
+    (2) $\frac{\derivin{A}(t)}{A(t)} = gA$ (by lemma gA).
+
+    $L(t), (f \circ k)(t)$ are nonzero. Proof.
+        Assume $(f \circ k)(t) = 0$.
+        Then $Y(t) = (A(t) \cdot L(t)) \cdot (f \circ k)(t) = 0$.
+    End.
+
+    $\hat{\fdiv{Y}{L}}(t) .= \hat{\fmult{A}{(f \circ k)}}(t)$ (by A) 
+
+    $.= \frac{\deriv{\fmult{A}{(f \circ k)}}(t)}{\fmult{A}{(f \circ k)}(t)}$ 
+
+    $.= \frac{\derivin{\fmult{A}{(f \circ k)}}(t)}{\fmult{A}{(f \circ k)}(t)}$ (by deriv and derivin)
+
+    $.= \frac{(\derivin{A}(t) \cdot (f \circ k)(t)) + (A(t) \cdot \derivin{(f \circ k)}(t))}{\fmult{A}{(f \circ k)}(t)}$
+        (by derivative multiplication rule) 
+
+    $.= \frac{(\derivin{A}(t) \cdot (f \circ k)(t)) + (0 \cdot A(t))}{\fmult{A}{(f \circ k)}(t)}$ (by B, mult comm)
+
+    $.= \frac{\derivin{A}(t) \cdot (f \circ k)(t)}{\fmult{A}{(f \circ k)}(t)}$ (by eq lemma 9, existence zero) 
+
+    $.= \derivin{A}(t) \cdot \frac{(f \circ k)(t)}{(f \circ k)(t) \cdot A(t)}$ 
+        (by def mult func, mult comm,  mult ass)
+
+    $.= \frac{\derivin{A}(t)}{A(t)}$ (by eq lemma 29)
+
+    $.= gA$ (by 2).
+\end{proof}
+\end{forthel}
+
+We can see that output per capita grows with improvements in technology. So the more efficient we become, the wealthier we will be. Hence, we cannot only show with the model that the first of Kaldor's facts holds within it, but can also point out why this is true in this model and under which conditions this is the case. I think therein lies the biggest advantage of modeling theories: you have to explicitly state every single assumption you make that leads you to a conclusion. This structures one's own thoughts and ideas and makes them transparent to everyone else. By having rigid methods on which you can rely, you can also see where your assumptions lead you. In our case, given our assumptions, only technological advancements can increase our wealth in the steady state. 
+
+\begin{itemize}
+    \item[G2] A continued increase in the amount of capital per worker, meaning that each employee manages more and more capital. 
+\end{itemize}
+
+For G2, we see that the capital stock grows in the steady-state with technological advancements and labor force increases. The capital per worker therefore increases with the efficiency gains.
+
+\begin{forthel}
+
+\begin{proposition}[G2]
+    Let $Y$ be an output level and $\delta$ be a depreciation rate and $s$ be a savings rate and $f$ be a production function.
+    Let $A$ be an efficiency level and $L$ be a labor amount and $k$ be a capital per efficiency unit labor.
+    $$\hat{K}(t) = gA + gL.$$
+\end{proposition}
+\begin{proof} 
+    $k(t)$ is a real number.
+
+    (A) $\derivin{K}(t) = (s \cdot Y(t)) - (\delta \cdot K(t))$ (by capital accumulation).
+
+    (B) $\frac{s \cdot Y(t)}{K(t)} = \delta + (gA + gL)$. Proof.
+
+        (B1) $\derivin{k}(t) = (s \cdot f(k(t))) - ((\delta + (gA + gL)) \cdot k(t))$ (by derivative k).
+
+        (B2) $\derivin{k}(t) = 0$ (by steady state).
+
+        (B3) $s \cdot f(k(t)) = (\delta + (gA + gL)) \cdot k(t)$. 
+            Indeed $(s \cdot f(k(t))) - ((\delta + (gA + gL)) \cdot k(t)) = 0$ (by B1, B2). [prover vampire]
+
+        (B4) $Y(t) = (A(t) \cdot L(t)) \cdot f(k(t))$ (by lemma Y). [prover eprover]
+
+        (B5) $(A(t) \cdot L(t)) \cdot k(t) = K(t)$. Indeed $k(t) = \frac{K(t)}{A(t) \cdot L(t)}$ (by lemma k).
+
+        $\frac{s \cdot Y(t)}{K(t)} .= \frac{s \cdot ((A(t) \cdot L(t)) \cdot f(k(t)))}{K(t)}$ (by B4)
+
+        $.= \frac{ (A(t) \cdot L(t)) \cdot (s \cdot f(k(t)))}{K(t)}$ (by mult comm, mult ass)
+
+        $.= \frac{(A(t) \cdot L(t)) \cdot ((\delta + (gA + gL)) \cdot k(t))}{K(t)}$ (by B3)
+
+        $.= \frac{(A(t) \cdot L(t)) \cdot (k(t) \cdot (\delta + (gA + gL)))}{K(t)}$ (by mult comm)
+
+        $.= ((A(t) \cdot L(t)) \cdot k(t)) \cdot \frac{\delta + (gA + gL)}{K(t)}$ (by mult ass)
+
+        $.= K(t) \cdot \frac{\delta + (gA + gL)}{K(t)}$ (by B5)
+
+        $.= \delta + (gA + gL)$ (by fraction lemma 2).
+    End.
+
+    $\hat{K}(t) .= \fdiv{\deriv{K}}{K}(t)$
+
+    $.= \frac{\derivin{K}(t)}{K(t)}$ (by def div map, deriv and derivin) 
+
+    $.= \frac{(s \cdot Y(t)) - (\delta \cdot K(t))}{K(t)}$ (by A) 
+
+    $.= \frac{s \cdot Y(t)}{K(t)} - \frac{\delta \cdot K(t)}{K(t)}$ (by eq lemma 1, eq lemma 11) 
+
+    $.= \frac{s \cdot Y(t)}{K(t)} - \delta$ (by mult ass, multiplicative inverse, mult comm, existence one)
+
+    $.= (\delta + (gA + gL)) - \delta$ (by B)
+
+    $.= (gA + gL) + (\delta - \delta)$ (by add comm, add ass)
+
+    $.= gA + gL$ (by additive inverse, existence zero).
+\end{proof}
+\end{forthel}
+
+\begin{itemize}
+    \item[G3] A steady rate of profit on capital, i.e. when you invest money, the average return you get on it when discounting inflation, seems to be quite constant over time.
+\end{itemize}
+
+Profit on capital we interpret as the real interest rate. The real interest rate differs from the nominal interest rate in that the nominal profits are those in euros or dollars, but the real values always account for inflation. Otherwise, we would observe significant changes in the rate of profit on capital depending on whether we are currently in a high or low inflation environment.
+
+\begin{forthel}
+[timelimit 10]
+
+\begin{proposition}[G3]
+    Let $Y$ be an output level and $K$ be a capital stock and $L$ be a labor amount and $A$ be an efficiency level.
+    Let $s$ be a savings rate and $f$ be a production function and $\delta$ be a depreciation rate and $gA$ be an efficiency growth rate and 
+    $gL$ be a labor growth rate and $w$ be a wage and $k$ be a capital per efficiency unit labor.
+    $$r(t) = \derivin{f}(\kappa).$$
+\end{proposition}
+\begin{proof}
+    Take $\Pi = \Pi_{A, L, f, r, w, t}$. [prover vampire] 
+
+    Let us show that $\derivin{\Pi}(K(t)) = 0$.
+        $K(t)$ is the maximum of $\Pi$ (by profit maximizing K).
+        $\derivin{\Pi}(K(t)) = 0$ (by derivative of maximum).
+            Indeed $K(t)$ is a local maximum of $\Pi$ (by maximum is local maximum).
+    End. 
+
+    (1) For any real number $x$ $\deriv{\Pi}(x) = \derivin{f}\left(\frac{x}{A(t) \cdot L(t)}\right) - r(t)$ (by derivative profit function).
+
+    (2) $\frac{K(t)}{A(t) \cdot L(t)} = k(t)$ (by lemma k).
+
+    (3) $k(t) = \kappa$ (by lemma kappa). [prover eprover]
+
+    $\deriv{\Pi}(K(t)) .= \derivin{f}\left(\frac{K(t)}{A(t) \cdot L(t)}\right) - r(t)$ (by 1)
+
+    $.= \derivin{f}(k(t)) - r(t)$ (by 2)
+
+    $.= \derivin{f}(\kappa) - r(t)$ (by 3).
+    
+    Thus $r(t) = \derivin{f}(\kappa)$.  
+\end{proof}
+
+[timelimit 3]
+\end{forthel}
+
+G3 is an interesting observation that holds in many macroeconomic models. The interest on capital that is being paid is equal to the marginal productivity of capital. If the interest rate wer lower than the marginal productivity of capital, then it would increase profits to take out a loan, borrow more capital, but producing significantly more. However, by increasing capital, we reduce its marginal productivity due to diminishing returns on it. Similarly, if the interest rate is higher than the marginal productivity of capital, it would be better to have less capital. Although we would be producing less, we would also be reducing our capital costs, which would save us more than what we lose in output. By decreasing our capital share, we increase the marginal productivity of the remaining capital---the idea being that we essentially discard machines that are not significantly contributing - and in equilibrium, the interest rate aligns with the marginal productivity.\\
+
+The next logical step that is usually done in extensions of the Solow model is to endogenize the interest rate by introducing households and thus their inclination to either consume or to save and to examine how this relates to the interest rate and the supply of capital.
+
+\begin{itemize}
+    \item[G4] Steady capital-output ratios over long periods, which implies the near-identity in the percentage rates of growth of production and of the capital stock. 
+\end{itemize}
+
+Given that we do steady-state analysis, G4 is trivially the case.
+
+\begin{forthel}
+
+\begin{lemma}
+    $\delta + (gA + gL)$ is a positive real number.
+\end{lemma}
+\begin{proof}
+    $\delta + (gA + gL)$ is nonzero. [timelimit 20]
+\end{proof}
+
+\begin{lemma}[lemma G4]
+    Let $s$ be a savings rate and $\delta$ be a depreciation rate and $gA$ be an efficiency growth rate and 
+    $gL$ be a labor growth rate.
+    Let $Y$ be an output level and $K$ be a capital stock and $A$ be an efficiency level and $L$ be a labor amount and $k$ be a capital per efficiency unit labor
+    and $t$ be a point in time.
+    Then $f(\kappa)$ is a positive real number.
+\end{lemma}
+\begin{proof}
+    $Y(t), A(t), L(t)$ are positive real numbers. 
+    Therefore $\frac{Y(t)}{A(t) \cdot L(t)}$ is positive. [prover vampire]
+
+    (1) $Y(t) = (A(t) \cdot L(t)) \cdot f(k(t))$ (by lemma Y).
+
+    (2) $k(t) = \kappa$ (by lemma kappa).[prover eprover]
+
+    $\frac{Y(t)}{A(t) \cdot L(t)} .= \frac{(A(t) \cdot L(t)) \cdot f(k(t))}{A(t) \cdot L(t)}$ (by 1)
+
+    $.= (A(t) \cdot L(t)) \cdot \frac{f(k(t))}{A(t) \cdot L(t)}$ (by mult ass)
+
+    $.= f(k(t))$ (by fraction lemma 2)
+
+    $.= f(\kappa)$ (by 2).
+    
+    Thus $f(\kappa)$ is a positive real number.
+\end{proof}
+
+[prover vampire]
+\begin{proposition}[G4]
+    Let $s$ be a savings rate and $\delta$ be a depreciation rate and $gA$ be an efficiency growth rate and 
+    $gL$ be a labor growth rate.
+    Let $A$ be an efficiency level and $L$ be a labor amount and $k$ be a capital per efficiency unit labor.
+    $f(\kappa)$ is nonzero and
+    $$\frac{K(t)}{Y(t)} = \frac{\kappa}{f(\kappa)}.$$
+\end{proposition}
+\begin{proof} 
+    (0) $Y(t) = (A(t) \cdot L(t)) \cdot f(k(t))$ (by lemma Y).
+
+    (1) $\frac{K(t)}{A(t) \cdot L(t)} = k(t)$ (by lemma k).
+
+    (2) $k(t) = \kappa$ (by lemma kappa).
+
+    $f(\kappa)$ is nonzero (by lemma G4). 
+    Thus $f(k(t)), (A(t) \cdot L(t)) \cdot f(k(t))$ are nonzero.[prover eprover] 
+
+    $\frac{K(t)}{Y(t)} .= \frac{K(t)}{(A(t) \cdot L(t)) \cdot f(k(t))}$ (by 0)
+
+    $.= \frac{K(t)}{A(t) \cdot L(t)} \cdot 1/f(k(t))$ (by eq lemma 30, mult ass)
+
+    $.= \frac{k(t)}{f(k(t))}$ (by 1)
+
+    $.= \frac{\kappa}{f(\kappa)}$ (by 2).
+\end{proof}
+
+\end{forthel}
+
+\begin{itemize}
+    \item[G5] A steady share of profits (and of wages) in societies and periods in which the share of investment in output is constant. 
+\end{itemize}
+
+G5 is a corollary of G3 and G4.
+
+\begin{forthel}
+\begin{proposition}[G5]
+    Let $s$ be a savings rate and $\delta$ be a depreciation rate and $gA$ be an efficiency growth rate and 
+    $gL$ be a labor growth rate and $w$ be a wage.
+    Let $A$ be an efficiency level and $L$ be a labor amount and $k$ be a capital per efficiency unit labor.
+    $f(\kappa)$ is nonzero and
+    $$\frac{r(t) \cdot K(t)}{Y(t)} = \frac{\derivin{f}(\kappa) \cdot \kappa}{f(\kappa)}.$$
+\end{proposition}
+\begin{proof}
+    $f(\kappa)$ is nonzero (by lemma G4).
+
+    (1) $r(t) = \derivin{f}(\kappa)$ (by G3).
+
+    (2) $\frac{K(t)}{Y(t)} = \frac{\kappa}{f(\kappa)}$ (by G4). [prover eprover]
+    
+    $\frac{r(t) \cdot K(t)}{Y(t)} .= r(t) \cdot \frac{K(t)}{Y(t)}$ (by mult ass)
+
+    $.= \derivin{f}(\kappa) \cdot \frac{\kappa}{f(\kappa)}$ (by 1, 2) 
+
+    $.= \frac{\derivin{f}(\kappa) \cdot \kappa}{f(\kappa)}$ (by mult ass).
+\end{proof}
+\end{forthel}
+
+\begin{itemize}
+    \item[G6] There are appreciable differences in the rate of growth of labour productivity and of total output in different societies.
+\end{itemize}
+
+G6 can be analyzed in the Solow model as being off steady state. A country is in a steady state when the capital per efficiency unit labor is constant, which we can interpret as the long-term state of the economy of an industrialized country like Britain with the appropriate amount of capital for its labor around which it fluctuates with booms and recessions in the short to medium term. If a country has a different growth rate from Britain in the longer term - typically growing much faster for some decades, like China in the last 30 years, or Japan in the 30 years before that, or Germany before the First or after the Second World War -, then this is interpreted in the country having less capital than it should have - so it has much less machinery than an industrialized country. In this catch up phase, where the country builds up its capital until it reaches the point where it is equivalent to Britain, it reaches higher growth rates in the Solow model.
+
+
+\section{Cobb-Douglas Example}
+
+
+An alternative to the way we introduced a production function with the Inada conditions, we also could have defined 
+$$f = ext|_{\fpot{a}}.$$
+This is the Cobb-Douglas production function
+$$F(K_t,A_tL_t) = K_t^\alpha(A_tL_t)^{1 - \alpha},$$
+which is equivalent to 
+$$f(k_t) = k_t^\alpha$$
+for some $\alpha \in (0,1)$.
+Because this is a function that satisfies the standard Inada-conditions stated above, but not the ones that we defined, since we do not have limits against infinity, we cannot define $f = ext|_{\fpot{a}}$ axiomatically at this time and view it as an example. However in the future, formalizations including examples like this would be a great idea.
+
+
+\end{document}
+

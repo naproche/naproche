@@ -1,0 +1,439 @@
+\documentclass[../solow_main.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Differentiation}\label{chapter:differentiation}
+
+
+\begin{forthel}
+    [read \path{examples/solow/sections/2continuity.ftl.tex}]
+\end{forthel}
+
+In this chapter we want to define differentiability and prove some common derivation rules: \\
+The derivative of a linear function is its slope,
+$\fplus{f}{g}'(x) = f'(x) + g'(x)$, $\fmult{f}{g}'(x) = \fmult{f'}{g}(x) + \fmult{f}{g'}(x)$, and
+the chain rule $(g \circ f)'(x) = g'(f(x)) \cdot f'(x)$.
+
+In regards of notation $\Diffquot{f}{a}(x)$ means $\frac{f(x) - f(a)}{x - a}$, $\derivin{f}(x)$ is a real number 
+that is the slope of $f$ in $x$, and $\deriv{f}$ is a function, names $f$'s derivative.
+
+\section{Definition of Differentiability}
+
+\begin{forthel}
+Let $a$ denote a real number.
+Let $f$ denote a real map.
+
+\begin{definition}[def diffquot]
+    $\Diffquot{f}{a}$ is a real map such that 
+    $\Diffquot{f}{a}(x) = \frac{f(x) - f(a)}{x - a}$ for all $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$.
+\end{definition}
+
+\begin{definition}
+    $f$ is differentiable in $a$ iff there exists a real number $y$ such that
+    $\limS{\Diffquot{f}{a}}{a} = y$.
+\end{definition}
+
+\begin{definition}
+    $f$ is differentiable iff for every real number $a$ $f$ is differentiable in $a$.
+\end{definition}
+
+\begin{definition}
+    Assume $f$ is differentiable in $a$.
+    The derivative of $f$ in $a$ is a real number $y$ such that $\limS{\Diffquot{f}{a}}{a} = y$.
+\end{definition}
+Let $\derivin{f}(x)$ stand for the derivative of $f$ in $x$.
+
+\begin{definition}
+    Let $f$ be differentiable.
+    The derivative of $f$ is a real map $d$ such that for every real number $x$ $d(x)$ is equal to the derivative of $f$ in $x$.
+\end{definition}
+Let $\deriv{f}$ stand for the derivative of $f$.
+
+\begin{lemma}[deriv and derivin]
+    Let $f$ be differentiable.
+    $\deriv{f}(a) = \derivin{f}(a)$.
+\end{lemma}
+
+\end{forthel}
+
+
+
+\section{Equivalent Definition of Differentiability}
+
+Although the above definition of differentiability is standard, we give here an equivalent definition and also prove 
+the equivalence, because this one will be more useful to prove the following theorems. 
+We define a function as the difference quotient of a function $f$; i.e. $\varphi(x) = \frac{f(x) - f(a)}{x - a}$ for 
+all $x \neq a$. If we can find such a function $\varphi$ that is in addition continuous in $a$, then $f$ is 
+differentiable in $a$. This map we call difference quotient map.
+
+\begin{forthel}
+Let $a$ denote a real number.
+Let $f$ denote a real map. [timelimit 50]
+
+\begin{definition}
+    The difference quotient map of $f$ in $a$ is a real map $\varphi$ such that $\varphi$ is continuous in $a$ and 
+    for all real numbers $x$ $f(x) = ((x - a) \cdot \varphi(x)) + f(a)$.
+\end{definition}
+
+\begin{proposition}[prop difference quotient map]
+    Let $\varphi$ be the difference quotient map of $f$ in $a$.
+    $f$ is differentiable in $a$ and $\derivin{f}(a) = \varphi(a)$
+    and for every $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$ $\varphi(x) = \Diffquot{f}{a}(x)$.
+\end{proposition}
+\begin{proof}
+    Let us show that $\varphi(x) = \Diffquot{f}{a}(x)$ for every $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$.
+        Let $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$. Then $x - a \neq 0$. 
+        $f(x) - f(a) = (((x - a) \cdot \varphi(x)) + f(a)) - f(a) 
+                = ((x - a) \cdot \varphi(x)) + (f(a) - f(a)) = (x - a) \cdot \varphi(x)$.
+        $\Diffquot{f}{a}(x) = \frac{f(x) - f(a)}{x - a} = \frac{(x - a) \cdot \varphi(x)}{x - a} = \varphi(x)$.
+    End. 
+
+    $\varphi(a)$ is a real number.
+
+    $\limS{\Diffquot{f}{a}}{a} = \varphi(a)$. Proof.
+        Let $\varepsilon$ be a positive real number.
+
+        Take a positive real number $\delta$ such that $\delta$ is a domain restrictor for $\varepsilon$ and $\varphi$ around $a$ and $\varphi(a)$.
+
+        Then $\delta$ is a domain restrictor for $\varepsilon$ and $\Diffquot{f}{a}$ around $a$ and $\varphi(a)$.
+        Indeed for every $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$ if $\Rmetric(x,a) < \delta$ then
+                $\Diffquot{f}{a}(x) = \varphi(x)$ and 
+                $\Rmetric(\Diffquot{f}{a}(x),\varphi(a)) = \Rmetric(\varphi(x),\varphi(a)) < \varepsilon$.
+    End.
+
+    $\derivin{f}(a) = \limS{\Diffquot{f}{a}}{a} = \varphi(a)$.
+\end{proof}
+
+\begin{theorem}
+    $f$ is differentiable in $a$ iff there exists a difference quotient map of $f$ in $a$.
+\end{theorem}
+\begin{proof}
+    Case $f$ is differentiable in $a$.
+    Define $$\varphi(x) = \begin{cases}
+        \Diffquot{f}{a}(x) & : x \neq a \\
+        \derivin{f}(a)  & : x = a
+    \end{cases}$$
+    for $x \in \mathbb{R}$. $\varphi$ is a real map. Indeed $\range(\varphi) \subseteq \mathbb{R}$.
+
+    Let us show that $\varphi$ is continuous in $a$.
+        Let $\varepsilon$ be a positive real number.
+        Take a positive real number $\delta$ such that $\delta$ is a domain restrictor for $\varepsilon$ and $\Diffquot{f}{a}$ around $a$ and $\derivin{f}(a)$. 
+            Indeed for every positive real number $\epsilon$ there exists a domain restrictor for $\epsilon$ and $\Diffquot{f}{a}$ around $a$ and $\derivin{f}(a)$. 
+
+        Then $\delta$ is a domain restrictor for $\varepsilon$ and $\varphi$ around $a$ and $\derivin{f}(a)$.
+        Indeed for every $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$ if $\Rmetric(x,a) < \delta$ then
+                $\varphi(x) = \Diffquot{f}{a}(x)$ and 
+                $\Rmetric(\varphi(x),\derivin{f}(a)) = \Rmetric\left(\Diffquot{f}{a}(x),\derivin{f}(a)\right) < \varepsilon$.
+    End.
+
+    Let us show that for all real numbers $x$ $f(x) = ((x - a) \cdot \varphi(x)) + f(a)$.
+        Let $x$ be a real number.
+
+        Case $x = a$. Trivial.
+
+        Case $x \neq a$.
+            $((x - a) \cdot \varphi(x)) + f(a) 
+            = \left((x - a) \cdot \Diffquot{f}{a}(x)\right) + f(a)
+            = \left((x - a) \cdot \frac{f(x) - f(a)}{x - a}\right) + f(a)
+            = \left(\frac{x - a}{x - a} \cdot (f(x) - f(a))\right) + f(a)
+            = (f(x) - f(a)) + f(a) 
+            = f(x)$.
+        End.
+    End.
+    
+    Therefore $\varphi$ is a difference quotient map of $f$ in $a$.
+    End. 
+
+    Case there exists a difference quotient map of $f$ in $a$. Trivial.
+\end{proof}
+
+[timelimit 10]
+\begin{theorem}
+    Let $f$ be differentiable in $a$.
+    Then $f$ is continuous in $a$.
+\end{theorem}
+\begin{proof}
+    Take the difference quotient map $\varphi$ of $f$ in $a$.
+    For all $x \in \dom(f)$ 
+    
+    $f(x) = ((x - a) \cdot \varphi(x)) + f(a) 
+            = (\flin{1}{-a}(x) \cdot \varphi(x)) + f(a) 
+            = (\flin{1}{-a}(x) \cdot \varphi(x)) + \flin{0}{f(a)}(x)
+            = \fplus{\fmult{\flin{1}{-a}}{\varphi}}{\flin{0}{f(a)}}(x)$. 
+            
+            [prover vampire]
+    Therefore $f = \fplus{\fmult{\flin{1}{-a}}{\varphi}}{\flin{0}{f(a)}}$. [prover eprover]
+
+    $\fplus{\fmult{\flin{1}{-a}}{\varphi}}{\flin{0}{f(a)}}$ is continuous in $a$.
+    Indeed $\fmult{\flin{1}{-a}}{\varphi}$ is continuous in $a$. 
+\end{proof}
+
+\begin{corollary}
+    Let $f$ be a differentiable real map.
+    Then $f$ is continuous.
+\end{corollary}[timelimit 3]
+\end{forthel}
+
+
+
+\section{Differentiation Rules}
+
+\subsection{Derivative of a Linear Function}
+\begin{forthel}
+Let $a,b$ denote real numbers.
+
+\begin{theorem}[derivative of linear function]
+    $\flin{a}{b}$ is differentiable and $\deriv{\flin{a}{b}} = \flin{0}{a}$.
+\end{theorem}
+\begin{proof}
+    Take $f = \flin{a}{b}$.
+    Let $\xi$ be a real number. [timelimit 30]
+
+    Let us show that $\derivin{f}(\xi) = a$.
+        Let $\varepsilon$ be a positive real number.
+    
+        We can show that 1 is a domain restrictor for $\varepsilon$ and $\Diffquot{f}{\xi}$ around $\xi$ and $a$.
+            Let $x \in \mathbb{R} \setminus \sset{\xi}{\mathbb{R}}$. Thus $x - \xi \neq 0$.
+            
+            Then $f(x) - f(\xi)= a \cdot (x - \xi)$. Indeed 
+                $((a \cdot x) + b) - ((a \cdot \xi) + b) .= ((a \cdot x) + b) + (-b - (a \cdot \xi)) (by eq lemma 15, add comm)
+                .= ((a \cdot x) + (b - b)) - (a \cdot \xi) (by add ass)
+                .= (a \cdot x) - (a \cdot \xi) (by additive inverse, existence zero)
+                .= (a \cdot x) + (a \cdot (-\xi)) (by mult comm, eq lemma 11)
+                .= a \cdot (x - \xi)$ (by distributive law).
+
+            $\Diffquot{f}{\xi}(x) = \frac{f(x) - f(\xi)}{x - \xi} = \frac{a \cdot (x - \xi)}{x - \xi} = a$. [timelimit 3]
+            $\Rmetric(\Diffquot{f}{\xi}(x),a) = \Rmetric(a,a) = 0 < \varepsilon$.
+        End.
+    End.
+
+    Therefore $\deriv{f}(\xi) = a = \flin{0}{a}(\xi)$ (by linear lem 1).
+\end{proof}
+
+\end{forthel}
+
+
+\subsection{Derivative Under Addition}
+
+\begin{forthel}
+Let $f,g$ denote real maps.
+
+\begin{theorem}[derivative addition rule]
+    Let $f,g$ be differentiable in $a$.
+    $\fplus{f}{g}$ is differentiable in $a$ and $\derivin{\fplus{f}{g}}(a) = \derivin{f}(a) + \derivin{g}(a)$.
+\end{theorem}
+\begin{proof}
+    Take difference quotient map $\varphi$ of $f$ in $a$.
+    Take difference quotient map $\gamma$ of $g$ in $a$.
+    Take $\psi = \fplus{\varphi}{\gamma}$.
+
+    Let us show that $\psi$ is the difference quotient map of $\fplus{f}{g}$ in $a$.
+        $\varphi,\gamma$ are continuous in $a$. Thus $\psi$ is continuous in $a$.
+        
+        We can show that for all real numbers $x$ $\fplus{f}{g}(x) = ((x - a) \cdot \psi(x)) + \fplus{f}{g}(a)$. [timelimit 10]
+            Let $x$ be a real number.
+
+            $\fplus{f}{g}(x) = f(x) + g(x)$ 
+
+            $= (((x - a) \cdot \varphi(x)) + f(a)) + (((x - a) \cdot \gamma(x)) + g(a))$
+
+            $= (((x - a) \cdot \varphi(x)) + (((x - a) \cdot \gamma(x)) + f(a))) + g(a)$
+
+            $= (((x - a) \cdot \varphi(x)) + ((x - a) \cdot \gamma(x))) + (f(a) + g(a))$
+
+            $= ((x - a) \cdot (\varphi(x) + \gamma(x))) + \fplus{f}{g}(a)$
+
+            $= ((x - a) \cdot \psi(x)) + \fplus{f}{g}(a)$. 
+        End.
+    End.
+
+    $\derivin{\fplus{f}{g}}(a) = \psi(a) = \varphi(a) + \gamma(a) = \derivin{f}(a) + \derivin{g}(a)$.
+\end{proof}
+
+\begin{corollary}[derivative addition rule 2]
+    Let $f,g$ be differentiable real maps.
+    $\fplus{f}{g}$ is differentiable and $\deriv{\fplus{f}{g}} = \fplus{\deriv{f}}{\deriv{g}}$.
+\end{corollary}
+\begin{proof}
+    For all real numbers $x$
+
+        $\deriv{\fplus{f}{g}}(x) = \derivin{\fplus{f}{g}}(x) = \derivin{f}(x) + \derivin{g}(x)
+        = \deriv{f}(x) + \deriv{g}(x) = \fplus{\deriv{f}}{\deriv{g}}(x)$.
+\end{proof}
+
+\end{forthel}
+
+
+
+\subsection{Derivative Under Multiplication}
+
+\begin{forthel}
+
+\begin{theorem}[derivative multiplication rule]
+    Let $f,g$ be differentiable in $a$.
+    $\fmult{f}{g}$ is differentiable in $a$ and $\derivin{\fmult{f}{g}}(a) = (\derivin{f}(a) \cdot g(a)) + (f(a) \cdot \derivin{g}(a))$.
+\end{theorem}
+\begin{proof}
+    Take difference quotient map $\varphi$ of $f$ in $a$.
+    Take difference quotient map $\gamma$ of $g$ in $a$.
+    Take $\psi = \fplus{\fmult{\varphi}{g}}{\fmult{\flin{0}{f(a)}}{\gamma}}$.
+    $\psi$ is continuous in $a$. Indeed $\fmult{\varphi}{g}, \fmult{\gamma}{\flin{0}{f(a)}}$ are continuous in $a$. [timelimit 30]
+
+    (0) $\psi(x) = (\varphi(x) \cdot g(x)) + (f(a) \cdot \gamma(x))$ for any real number $x$. Indeed for every real number $x$
+    $(\fplus{\fmult{\varphi}{g}}{\fmult{\flin{0}{f(a)}}{\gamma}})(x) = (\varphi(x) \cdot g(x)) + (f(a) \cdot \gamma(x))$ (by def mult func, def add func, linear lem 1).
+    
+    Let us show that $\psi$ is the difference quotient map of $\fmult{f}{g}$ in $a$.
+    Indeed we can show that for all real numbers $x$ $\fmult{f}{g}(x) = ((x - a) \cdot \psi(x)) + \fmult{f}{g}(a)$.
+        Let $x$ be a real number.
+
+        (1) $f(x) = ((x - a) \cdot \varphi(x)) + f(a)$.
+
+        (2) $g(x) = ((x - a) \cdot \gamma(x)) + g(a)$.
+
+        $\fmult{f}{g}(x) .= f(x) \cdot g(x)$ (by def mult func)
+
+        $.= (((x - a) \cdot \varphi(x)) + f(a)) \cdot g(x)$ (by 1)
+
+        $.= (((x - a) \cdot \varphi(x)) \cdot g(x)) + (f(a) \cdot g(x))$ (by eq lemma 1) 
+
+        $.= ((x - a) \cdot (\varphi(x) \cdot g(x))) + (f(a) \cdot (((x - a) \cdot \gamma(x)) + g(a)))$ (by mult ass, 2)
+
+        $.= (((x - a) \cdot (\varphi(x) \cdot g(x))) + (f(a) \cdot ((x - a) \cdot \gamma(x)))) + (f(a) \cdot g(a))$ (by distributive law, add ass)
+
+        $.= (((x - a) \cdot (\varphi(x) \cdot g(x))) + ((x - a) \cdot (f(a) \cdot \gamma(x)))) + (f(a) \cdot g(a))$ (by mult comm, mult ass)
+
+        $.= ((x - a) \cdot ((\varphi(x) \cdot g(x)) + (f(a) \cdot \gamma(x)))) + (f(a) \cdot g(a))$ (by distributive law)
+
+        $.= ((x - a) \cdot \psi(x)) + \fmult{f}{g}(a)$ (by 0, def mult func).
+    End.
+
+    $\derivin{\fmult{f}{g}}(a) = \psi(a) = \fmult{\varphi}{g}(a) + \fmult{\flin{0}{f(a)}}{\gamma}(a)
+    = (\varphi(a) \cdot g(a)) + (f(a) \cdot \gamma(a))$ 
+
+    $= (\derivin{f}(a) \cdot g(a)) + (f(a) \cdot \derivin{g}(a))$.
+\end{proof}
+[prover vampire]
+\begin{corollary}[derivative multiplication rule 2]
+    Let $f,g$ be differentiable real maps.
+    $\fmult{f}{g}$ is differentiable and $\deriv{\fmult{f}{g}} = \fplus{\fmult{\deriv{f}}{g}}{\fmult{f}{\deriv{g}}}$.
+\end{corollary}
+\begin{proof}
+    Let $x$ be a real number.
+
+    $\deriv{\fmult{f}{g}}(x) = \derivin{\fmult{f}{g}}(x) = (\derivin{f}(x) \cdot g(x)) + (f(x) \cdot \derivin{g}(x))
+    = (\deriv{f}(x) \cdot g(x)) + (f(x) \cdot \deriv{g}(x)) = \fplus{\fmult{\deriv{f}}{g}}{\fmult{f}{\deriv{g}}}(x)$.
+\end{proof}
+[prover eprover]
+\end{forthel}
+
+
+\subsection{Derivative Chain Rule}
+
+\begin{forthel}
+
+\begin{theorem}[derivative chain rule]
+    Let $f$ be differentiable in $a$ and $g$ be differentiable in $f(a)$.
+    $g \circ f$ is differentiable in $a$ and $\derivin{(g \circ f)}(a) = \derivin{g}(f(a)) \cdot \derivin{f}(a)$.
+\end{theorem}
+\begin{proof} 
+    $g \circ f$ is a real map. 
+    Take difference quotient map $\varphi$ of $f$ in $a$.
+    Take difference quotient map $\gamma$ of $g$ in $f(a)$. 
+    Take $\psi = \fmult{(\gamma \circ f)}{\varphi}$. 
+
+    (1) Then $\psi$ is continuous in $a$ and for every $x \in \mathbb{R}$ $\psi(x) = \gamma(f(x)) \cdot \varphi(x)$.
+
+    $\psi$ is the difference quotient map of $g \circ f$ in $a$.
+
+    Indeed we can show that for all real numbers $x$ $(g \circ f)(x) = ((x - a) \cdot \psi(x)) + (g \circ f)(a)$.
+        Let $x$ be a real number.
+
+        (2)$f(x) - f(a) = (x - a) \cdot \varphi(x)$.
+        (3) For all real numbers $y$ $g(y)= ((y - f(a)) \cdot \gamma(y)) + g(f(a))$.
+
+        $g(f(x)) .= ((f(x) - f(a)) \cdot \gamma(f(x))) + g(f(a))$ (by 3) 
+
+        $.= (((x - a) \cdot \varphi(x)) \cdot \gamma(f(x))) + g(f(a))$ (by 2) 
+
+        $.= ((x - a) \cdot (\gamma(f(x)) \cdot \varphi(x))) + g(f(a))$ (by mult ass, mult comm) 
+
+        $.= ((x - a) \cdot \psi(x)) + g(f(a))$ (by 1).
+    End.
+
+    $\derivin{(g \circ f)}(a) = \psi(a) = \gamma(f(a)) \cdot \varphi(a) = \derivin{g}(f(a)) \cdot \derivin{f}(a)$.
+\end{proof}
+
+\begin{corollary}[derivative chain rule 2]
+    Let $f,g$ be differentiable real maps.
+    $g \circ f$ is differentiable and $\deriv{(g \circ f)} = \fmult{(\deriv{g} \circ f)}{\deriv{f}}$.
+\end{corollary}
+\begin{proof}
+    Let $x$ be a real number. (1) $\deriv{g}(f(x)) = (\deriv{g} \circ f)(x)$ (by composition).
+
+        $\deriv{(g \circ f)}(x) .= \derivin{(g \circ f)}(x)$ (by deriv and derivin)
+
+        $.= \derivin{g}(f(x)) \cdot \derivin{f}(x)$ (by derivative chain rule)
+
+        $.= \deriv{g}(f(x)) \cdot \deriv{f}(x)$ (by deriv and derivin)
+
+        $.= (\deriv{g} \circ f)(x) \cdot \deriv{f}(x)$ (by 1)
+
+        $.= \fmult{(\deriv{g} \circ f)}{\deriv{f}}(x)$ (by def mult func).
+\end{proof}
+
+\end{forthel}
+
+
+\subsection{Derivative With a Minus}
+
+In contrast to the previous proofs of differentiability, in the proof about the 
+differentiability of $\fminus{f}$ we use Frerix' rewriting algorithm. Sometimes this rewriting mechanism
+solves equations that the normal mechanism was not able to do. On the other hand, even the smallest 
+rewriting step must be precisely named in the rewriting algorithm for it to solve the equations, which 
+is unhelpful with regard to the goal of making the formalization appear more natural. Perhaps the biggest 
+advantage of Frerix' algorithm is its speed. It makes the verification process significantly faster than it 
+would otherwise be. 
+
+\begin{forthel}
+
+\begin{definition}[def func minus]
+    $\fminus{f}$ is a real map such that $\fminus{f}(x) = -f(x)$ for any real number $x$.
+\end{definition}
+
+\begin{lemma}[minus function lemma]
+    $\fminus{f} = \flin{-1}{0} \circ f$.
+\end{lemma}
+\begin{proof}
+    Let $x$ be a real number.
+
+    $(\flin{-1}{0} \circ f)(x)
+    .= -f(x)$ (by  composition, linear lem 2, eq lemma 12)
+    $.= \fminus{f}(x)$.
+\end{proof}
+
+\begin{lemma}[minus derivative]
+    Let $f$ be differentiable in $a$.
+    Then $\fminus{f}$ is differentiable in $a$ and $\derivin{\fminus{f}}(a) = -\derivin{f}(a)$.
+\end{lemma}
+\begin{proof}
+    $\derivin{\fminus{f}}(a)
+    .= \derivin{(\flin{-1}{0} \circ f)}(a)$ (by minus function lemma)
+
+    $.= \derivin{\flin{-1}{0}}(f(a)) \cdot \derivin{f}(a)$ (by derivative chain rule)
+
+    $.= \flin{0}{-1}(f(a)) \cdot \derivin{f}(a)$ (by  deriv and derivin, derivative of linear function)
+
+    $.= (-1) \cdot \derivin{f}(a)$ (by linear lem 1)
+    
+    $.= -\derivin{f}(a)$ (by eq lemma 12).
+\end{proof}
+
+\begin{corollary}[minus derivative 2]
+    Let $f$ be differentiable.
+    Then $\fminus{f}$ is differentiable and $\deriv{\fminus{f}} = \fminus{\deriv{f}}$.
+\end{corollary} 
+
+\end{forthel}
+
+\end{document}
+
