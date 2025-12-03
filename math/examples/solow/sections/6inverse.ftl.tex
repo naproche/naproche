@@ -1,0 +1,531 @@
+\documentclass[../solow_main.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Inverse Function Theorem}
+
+
+\begin{forthel}
+    [read \path{examples/solow/sections/5extrema.ftl.tex}]
+\end{forthel}
+
+Now we are finally able to devote ourselves explicitly to the inverse function theorem. The inverse functon theorem says that under some conditions
+$(f^{-1})'(y) = 1/f'(f^{-1}(y))$. One such condition, for which we want to prove the theorem, is that $f$ is continuously differentiable and $f'(x)$
+is nonzero for $y = f(x)$. In lemma lemma mon 4 we show that in that case there exists an open neighbourhood $E$ of $x$ such that $f$ is strictly 
+monotone on $E$. Then we know that $(f \upharpoonright E)^{-1}$ exists. In lemma lemma mon 3 we show that the inverse is continuous in $y$.
+This we eventually use in our actually proof of the inverse function theorem to show that a function that we define there is continuous in $y$ and 
+therefore a difference quotient map.
+
+\begin{forthel}
+    
+Let $f$ denote a real map.
+Let $a$ denote a real number.
+Let $U$ denote an interval.
+Let $E$ denote a subset of $\mathbb{R}$.
+
+\begin{lemma}[lemma mon 1]
+    Let $f$ be strictly monotone on $E$.
+    $f \upharpoonright E$ is injective. 
+\end{lemma}
+\begin{proof}
+    We can show that for all distinct elements $x,y$ in $E$ $f(x) \neq f(y)$.
+    Let $x,y$ be distinct elements in $E$. $x,y \in E$.
+
+    Case $f$ is strictly increasing on $E$. If $x < y$ then $f(x) < f(y)$. 
+        If $x > y$ then $f(x) > f(y)$. $f(x) \neq f(y)$. End.
+
+    Case $f$ is strictly decreasing on $E$. If $x < y$ then $f(x) > f(y)$.
+        If $x > y$ then $f(x) < f(y)$. $f(x) \neq f(y)$. End.
+    End.
+\end{proof}
+
+\end{forthel}
+
+We want to show that if $E$ is an open neighbourhood of $a$ and $f$ continuous and strictly monotone on $E$, then $f[E]$ is an open neighbourhood of $f(a)$. Let us assume $f$ is strictly increasing as the case for $f$ strictly decreasing works analogously. We need to show that $f[E]$ is open. Therefore let $\xi$ be an element of $f[E]$. Take $x \in E$ $f(x) = \xi$ and, because $E$ is open, there exists $\delta > 0$ such that $\B_{\delta}(x) \subseteq E$. One corollary of the intermediate value theorem that we proved in the monotonicity subsection of the section about extrema, that for continuous strictly increasing functions 
+$f[(x - \delta, x + \delta)] = (f(x - \delta),f(x + \delta)) \ni \xi$. Thus 
+$$\exists d >0:\ \B_{d}(\xi) \subseteq (f(x - \delta),f(x + \delta)) \subseteq f[E].$$
+
+\begin{forthel}
+
+\begin{lemma}[lemma mon 2]
+    Let $E$ be an open neighbourhood of $a$.
+    Let $f$ be continuous and strictly monotone on $E$.
+    Then $f[E]$ is an open neighbourhood of $f(a)$.
+\end{lemma}
+\begin{proof}
+    $f(a)$ is an element of $f[E]$. $f[E]$ is a subset of $\mathbb{R}$.
+
+    $f[E]$ is an open set.
+    Indeed we can show that for every $\xi \in f[E]$ 
+            there exists a positive real number $r$ such that $\B_{r}(\xi) \subseteq f[E]$.
+
+        Let $\xi \in f[E]$. Take $x \in E$ such that $f(x) = \xi$.
+        Take a positive real number $\delta$ such that $\B_{\delta}(x) \subseteq E$.
+        Take a positive real number $d$ such that $d < \delta$.
+        Take $y = x - d$, $z = x + d$. Then $y < x < z$.
+
+        (1) Then $x,y,z \in \B_{\delta}(x)$. Proof.
+            $x - \delta < x - d$ (by ineq lemma 22). Indeed $x - d \neq x - \delta$. [timelimit 30]
+            $x - d, x + d \in (x - \delta, x + \delta)_{OI}$. Indeed $x+d$ is a real number and $x + d < x + \delta$.
+        End.
+
+        (2) $\B_{\delta}(x)$ is an interval (by ball and open interval).
+        Indeed $(x - \delta, x + \delta)_{OI}$ is an interval (by interval lemma).
+       
+        (3) Case $f$ is strictly increasing on $\B_{\delta}(x)$. [prover vampire]
+            $f[(y,z)_{OI}] = (f(y), f(z))_{OI}$ (by cor I intermediate value theorem, 1, 2). 
+            Indeed $f$ is a continuous real map such that $f$ is strictly increasing on $\B_{\delta}(x)$.
+            $\xi$ is an element of $(f(y), f(z))_{OI}$. Proof.
+                $f(y) < f(x)$ (by 1,3). Indeed $y < x$. 
+                $f(x) < f(z)$ (by 1,3). Indeed $x < z$. 
+                Therefore $f(y) < \xi < f(z)$. 
+            End. 
+            Take a positive real number $r$ such that $\B_{r}(\xi) \subseteq (f(y), f(z))_{OI}$ (by open interval is open).
+            Indeed $(f(y), f(z))_{OI}$ is an open set (by open interval is open).
+            $\B_{r}(\xi)$ is a subset of $f[E]$. Proof. 
+                $(y,z)_{OI} \subseteq E$. Indeed $(y,z)_{OI} \subseteq \B_{\delta}(x) \subseteq E$.
+                Therefore $f[(y,z)_{OI}]$ is a subset of $f[E]$.
+                Thus $\B_{r}(\xi) \subseteq f[E]$. Indeed
+                $\B_{r}(\xi) \subseteq (f(y), f(z))_{OI} = f[(y,z)_{OI}] \subseteq f[E]$.
+            End.
+        End.
+
+        Case $f$ is strictly decreasing on $\B_{\delta}(x)$. [timelimit 20] 
+            $f[(y,z)_{OI}] = (f(z), f(y))_{OI}$ (by cor II intermediate value theorem, 1, 2).
+            Indeed $f$ is a continuous real map such that $f$ is strictly decreasing on $\B_{\delta}(x)$.
+            $\xi$ is an element of $(f(z), f(y))_{OI}$. Indeed $f(z) < \xi < f(y)$. Indeed $y < x < z$. [timelimit 3]
+            Take a positive real number $r$ such that $\B_{r}(\xi) \subseteq (f(z), f(y))_{OI}$ (by open interval is open).
+            $\B_{r}(\xi)$ is a subset of $f[E]$. Indeed $f[(y,z)_{OI}]$ is a subset of $f[E]$.
+                Indeed $(y,z)_{OI} \subseteq \B_{\delta}(x) \subseteq E$.
+        End. [prover eprover]
+
+        $f$ is strictly increasing on $\B_{\delta}(x)$ or $f$ is strictly decreasing on $\B_{\delta}(x)$.
+            Indeed $f$ is strictly monotone on $\B_{\delta}(x)$ (by subset monotone lemma).
+    qed.
+\end{proof}
+
+\end{forthel}
+
+In lemma mon 3 we want to show that $\inv{(f \upharpoonright E)}$ is locally continuous in $f(a)$. From lemma mon 1 we already know that $\inv{(f \upharpoonright E)}$ exists. Thus we can take a real map extension thereof and want to show that $\lim_{x \rightarrow f(a)} h(x) = h(f(a)) = a$.
+We assume $f$ to be strictly increasing as the strictly decreasing case is again analogous. Since $E$ is open, we can take a positive real number $d$ such that $[a - d, a + d] \subseteq E$ and $d < \varepsilon$ for any positive $\varepsilon$. Because $f(a - d) < f(a) < f(a + d)$ we can take 
+$\delta = \min\{f(a) - f(a - d), f(a + d) - f(a)\}$ (or rather $\delta < f(a) - f(a - d)$ and $\delta < f(a + d) - f(a)$, as we did not define any minimum function). Then $\delta$ is a domain restrictor for $\varepsilon$ and $h$ around $f(a)$ and $a$. Since $f$ is invertible,
+\begin{align*}
+    \text{if } & f[\B_{d}(a)] = f[(a - d, a + d)] = (f(a - d), f(a + d)) \supseteq \B_{\delta}(f(a)), \\
+    \text{then } & \inv{(f \upharpoonright E)}[\B_{\delta}(f(a))] \subseteq \B_{d}(a) \subseteq \B_{\varepsilon}(a).
+\end{align*}
+Formally it takes some time to convince the ATP to verify this, but this is how the proof works.
+
+\begin{forthel}
+ 
+\begin{lemma}[lemma mon 3]
+    Let $E$ be an open neighbourhood of $a$.
+    Let $f$ be strictly monotone on $E$ and continuous.
+    $\inv{(f \upharpoonright E)}$ is a real map on $f[E]$ and
+    $\inv{(f \upharpoonright E)}$ is locally continuous in $f(a)$.
+\end{lemma}
+\begin{proof}
+    Take $b = f(a)$.
+    (0) $f \upharpoonright E$ is an injective map. $f[E]$ is a subset of $\mathbb{R}$.
+
+    Take $g = \inv{(f \upharpoonright E)}$.
+
+    (A) $g$ is a real map on $f[E]$. Indeed $\range(\inv{(f \upharpoonright E)}) \subseteq \mathbb{R}$ and $\dom(g) = f[E]$.
+
+    (B) Let $h$ be a real map extension of $g$.
+[prover vampire]
+    $\limS{h}{b} = h(b)$.
+    Indeed we can show that for every positive real number $\varepsilon$ there exists a domain restrictor
+            for $\varepsilon$ and $h$ around $b$ and $h(b)$.
+        Let $\varepsilon$ be a positive real number.
+
+        Take a positive real number $\theta$ such that $\B_{\theta}(a) \subseteq E$.
+        Take a positive real number $d$ such that $d < \varepsilon$ and $d < \theta$.
+
+        (C) $[a - d, a + d]_{CI} \subseteq E$. Proof.
+                $[a - d, a + d]_{CI} \subseteq (a - \theta, a + \theta)_{OI}$. Proof.
+                    Let $x \in [a - d, a + d]_{CI}$. Then $x = a - d$ or $x = a + d$ or $x \in (a - d, a + d)_{OI}$.
+                    $(a - d, a + d)_{OI} \subseteq (a - \theta, a + \theta)_{OI}$ (by open interval lemma). 
+                        Indeed $a - \theta \leq a - d$ and $a + d \leq a + \theta$.
+                    $a - d \in (a - \theta, a + \theta)_{OI}$ and $a + d \in (a - \theta, a + \theta)_{OI}$.
+                        Indeed $a - \theta < a - d$ and $a + d < a + \theta$. Indeed $-\theta < -d$.
+                End.
+                $(a - \theta, a + \theta)_{OI}  = \B_{\theta}(a)$ (by ball and open interval).
+                $\B_{\theta}(a) \subseteq E$.
+            End.
+        Take $\beta = f(a - d)$, $B = f(a + d)$.
+
+        (1) Case $f$ is strictly increasing on $E$. 
+            $b - \beta, B - b$ are positive real numbers. Proof. 
+                $a-d, a, a+d \in E$ (by A). Indeed $a-d, a, a+d$ are elements in $[a-d, a+d]_{CI}$. $a-d < a < a + d$. 
+                Therefore $f(a-d) < f(a) < f(a+d)$ (by 1). Thus $\beta < b < B$.
+            End.
+            Take a positive real number $\delta$ such that $\delta < b - \beta$ and $\delta < B - b$ (by ineq lemma 19).
+
+                [timelimit 10]
+            Let us show that $\delta$ is a domain restrictor for $\varepsilon$ and $h$ around $b$ and $h(b)$
+                    (by domain restrictor lemma 2).
+                Let $\upsilon \in \mathbb{R} \setminus \sset{b}{\mathbb{R}}$. Assume $\abs{\upsilon - b} < \delta$. 
+                
+                $f[(a - d, a + d)_{OI}] = (f(a - d), f(a + d))_{OI} = (\beta,B)_{OI}$ (by cor I intermediate value theorem). Proof. 
+                    $f$ is a continuous real map such that $f$ is strictly increasing on $[a - d, a + d]_{CI}$.
+                    $a - d, a + d \in [a - d, a + d]_{CI}$. $[a - d, a + d]_{CI}$ is an interval (by interval lemma).
+                End.
+                   
+                $\upsilon \in (\beta,B)_{OI}$. Proof. 
+                    $\upsilon \in \B_{\delta}(b)$ (by lemma 01).
+                    $\B_{\delta}(b) = (b - \delta, b + \delta)_{OI}$ (by ball and open interval).
+                    $(b - \delta, b + \delta)_{OI} \subseteq (\beta, B)_{OI}$ (by open interval lemma). 
+                        Indeed $b - \delta \geq \beta$ and $b + \delta \leq B$.
+                End. 
+                Take $y \in (a - d, a + d)_{OI}$ such that $f(y) = \upsilon$.
+                
+                $\abs{y - a} < d$ (by lemma 01). Indeed $y \in \B_{d}(a)$ (by ball and open interval).
+
+                $h(\upsilon) = y$. Proof.
+                    $\abs{y - a} < d < \theta$. $y \in E$. $\upsilon \in f[E] = \dom(g)$.
+                    $h(\upsilon) = g(\upsilon)$.
+                    $\inv{(f \upharpoonright E)}(\upsilon) = y$ (by inverse lemma, 0).
+                    Indeed $y \in \dom(f\upharpoonright E)$ and $(f \upharpoonright E)(y) = \upsilon$.
+                End.
+
+                $h(b) = a$. Indeed $b \in \dom(g)$ and $g(b) = a$ (by inverse lemma, 0).
+                Indeed $a \in \dom(f \upharpoonright E)$ and $(f \upharpoonright E)(a) = b$.
+                Thus $\abs{h(\upsilon) - h(b)} = \abs{y - a} < d < \varepsilon$. 
+                Therefore $\abs{h(\upsilon) - h(b)} < \varepsilon$.
+            End. 
+        qed. [timelimit 10]
+
+
+        (2) Case $f$ is strictly decreasing on $E$.
+            $\beta - b, b - B$ are positive real numbers. Proof. 
+                $a-d, a, a+d \in E$ (by A). Indeed $a-d, a, a+d$ are elements in $[a-d, a+d]_{CI}$. $a-d < a < a + d$. 
+                Therefore $f(a+d) < f(a) < f(a-d)$ (by 2). Thus $B < b < \beta$.
+            End.
+            Take a positive real number $\delta$ such that $\delta < \beta - b$ and $\delta < b - B$ (by ineq lemma 19).
+
+            Let us show that $\delta$ is a domain restrictor for $\varepsilon$ and $h$ around $b$ and $h(b)$
+                    (by domain restrictor lemma 2). 
+                Let $\upsilon \in \mathbb{R} \setminus \sset{b}{\mathbb{R}}$. Assume $\abs{\upsilon - b} < \delta$.
+
+                $f[(a-d, a+d)_{OI}] = (f(a + d),f(a - d))_{OI} = (B,\beta)_{OI}$ (by cor II intermediate value theorem). Proof.
+                    $f$ is a continuous real map such that $f$ is strictly decreasing on $[a - d, a + d]_{CI}$ (by C, 2).
+                    $a - d, a + d$ are elements in $[a - d, a + d]_{CI}$. $[a - d, a + d]_{CI}$ is an interval (by interval lemma).
+                End.
+                
+                $\upsilon \in (B,\beta)_{OI}$. Proof.
+                    $\upsilon \in \B_{\delta}(b)$ (by lemma 01).
+                    $\B_{\delta}(b) = (b - \delta, b + \delta)_{OI}$ (by ball and open interval).
+                    $(b - \delta, b + \delta)_{OI} \subseteq (B, \beta)_{OI}$ (by open interval lemma).
+                        Indeed $b - \delta \geq B$ and $b + \delta \leq \beta$.
+                End.
+                Take $y \in (a - d, a + d)_{OI}$ such that $f(y) = \upsilon$.
+                
+                $\abs{y - a} < d$ (by lemma 01). Indeed $y \in \B_{d}(a)$ (by ball and open interval).
+
+                $h(\upsilon) = y$. Proof.
+                    $\abs{y - a} < d < \theta$. $y \in E$. $\upsilon \in f[E] = \dom(g)$.
+                    $h(\upsilon) = g(\upsilon)$. 
+                    $\inv{(f \upharpoonright E)}(\upsilon) = y$ (by inverse lemma, 0).
+                    Indeed $y \in \dom(f \upharpoonright E)$ and $(f \upharpoonright E)(y) = \upsilon$. 
+                End.
+
+                $b \in \dom(g)$.                    
+                $h(b) = a$. Indeed $g(b) = a$ (by inverse lemma, 0).
+                Indeed $a \in \dom(f \upharpoonright E)$ and $(f \upharpoonright E)(a) = b$. 
+                $\abs{h(\upsilon) - h(b)} = \abs{y - a} < d < \varepsilon$. 
+                Therefore $\abs{h(\upsilon) - h(b)} < \varepsilon$.
+            End.
+        qed.
+    End. [timelimit 3]
+\end{proof}
+
+\end{forthel}
+
+In the next lemma we want to show if $f$ is continuously differentiable and $f'(a) \neq 0$ then there also exists such an open neighborhood $E$ of $a$, where $f$ is strictly monotone. Let us just look at the case of $f'(a)$ being positive. Then we can Take a positive real number $\delta$ such that $\delta$ is a domain restrictor such that 
+$$\forall x \in \B_{\delta}(a):\ \abs{f'(x) - f'(a)} < f'(a).$$
+Then for all those $x$ $f'(x) > 0$, because if not, then $\abs{f'(x) - f'(a)} = f'(a) - f'(x) \geq f'(a)$. Therefore $f$ is strictly increasing on the neighborhood $\B_{\delta}(a)$ of $a$.
+
+\begin{forthel}
+
+
+Let $f$ is continuously differentiable stand for $f$ is differentiable and $\deriv{f}$ is continuous. [prover eprover]
+ [timelimit 10]
+\begin{lemma}[lemma mon 4]
+    Let $f$ be continuously differentiable and $\derivin{f}(a) \neq 0$.
+    Then there exists an open neighbourhood $E$ of $a$ such that $f$ is strictly monotone on $E$.
+\end{lemma}
+\begin{proof}
+    Take $\varepsilon = \abs{\derivin{f}(a)}$. [prover vampire][timelimit 50]
+    Take a positive real number $\delta$ such that $\delta$ is a domain restrictor for $\varepsilon$ and $\deriv{f}$ around $a$ and $\deriv{f}(a)$.
+        Indeed $\deriv{f}$ is a real map and $\deriv{f}$ is continuous in $a$ and $\varepsilon$ is a positive real number. [prover eprover][timelimit 10]
+    $\B_{\delta}(a)$ is an open neighbourhood of $a$ (by ball is open). Indeed $a \in \B_{\delta}(a)$. Take $B = \B_{\delta}(a)$.
+
+    Let us show that $f$ is strictly monotone on $B$.
+
+        Case $\derivin{f}(a) > 0$. Then $f$ is strictly increasing on $B$ (by derivative strictly increasing, ball and open interval, interval lemma).
+            Indeed we can show that $\derivin{f}(x) > 0$ for any $x \in B$.
+
+                Let $x \in B \setminus \sset{a}{\mathbb{R}}$. Assume $\derivin{f}(x) \leq 0$.
+                Then $\abs{\derivin{f}(x) - \derivin{f}(a)} 
+                = \abs{\derivin{f}(a) - \derivin{f}(x)}
+                = \derivin{f}(a) - \derivin{f}(x)
+                \geq \derivin{f}(a) = \varepsilon$. [prover vampire][timelimit 30]
+
+                $\delta$ is not a domain restrictor for $\varepsilon$ and $\deriv{f}$ around $a$ and $\deriv{f}(a)$ (by domain restrictor lemma 2).
+                    Indeed $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$ and 
+                    $\abs{x - a} < \delta$ and $\abs{\deriv{f}(x) - \deriv{f}(a)} \geq \varepsilon$.
+                Contradiction. [timelimit 3]
+            End.
+        End.
+
+        Case $\derivin{f}(a) < 0$. Then $f$ is strictly decreasing on $B$ (by derivative strictly decreasing, ball and open interval, interval lemma).
+            Indeed we can show that $\derivin{f}(x) < 0$ for any $x \in B$.
+
+                Let $x \in B \setminus \sset{a}{\mathbb{R}}$. Assume $\derivin{f}(x) \geq 0$.
+                Then $\abs{\derivin{f}(x) - \derivin{f}(a)}
+                = \derivin{f}(x) - \derivin{f}(a)
+                \geq -\derivin{f}(a) = \varepsilon$. [timelimit 30][prover vampire]
+
+                $\delta$ is not a domain restrictor for $\varepsilon$ and $\deriv{f}$ around $a$ and $\deriv{f}(a)$ (by domain restrictor lemma 2).
+                Indeed $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$ and $\abs{x - a} < \delta$ and $\abs{\deriv{f}(x) - \deriv{f}(a)} \geq \varepsilon$.
+                Contradiction.
+            End.
+        End.
+    qed. [prover eprover]
+\end{proof}
+
+\end{forthel}
+
+So we want to show that $\inv{(f \upharpoonright E)}$ is locally differentiable in $f(a)$ for some neighborhood $E$ of $a$.
+By lemma mon 4 we can find a neighborhood $E = \B_{d}(a)$ of $a$, where $f$ is strictly monotone on.
+By lemma mon 1 we know then that $f \upharpoonright E$ is injective and therefore $\inv{(f \upharpoonright E)}$ exists.
+
+Now we define $$ext(y) = \begin{cases}
+    \inv{(f \upharpoonright E)}(y)    & : y \in f[E] \\
+    a                               & : y \notin f[E]
+\end{cases}$$
+for all real numbers $y$, which makes $ext$ a real map extension of $\inv{(f \upharpoonright E)}$.
+
+By lemma mon 2 we know that $f[E]$ is actually an open environment of $f(a)$. Thus the idea is to utilize the open set differentiation extension theorem from the section Locality, which says that if we have a differentiable real map extension of a partial function defined on an open set, the partial function is locally differentiable. So what is left to show is that $ext$ is differentiable, which we do by showing the existence of a difference quotient map. For that we define 
+$$\psi(y) = \begin{cases}
+    1/\varphi(\inv{(f \upharpoonright E)}(y)) & : y \in f[E] \\
+    0                                       & : y \notin f[E]
+\end{cases}$$
+for any real number $y$, where $\varphi$ is the difference quotient map of $f$ in $a$; $\varphi$ exists, because $f$ is differentiable in $a$.
+$\psi$ is a difference quotient map for $ext$ in $f(a)$ if it satisfies 
+\begin{enumerate}
+    \item[(1)] $ext(y) = (y - f(a)) \psi(y) + ext(f(a))$ for all $y$. 
+    \item[(2)] $\psi$ is continuous in $f(a)$
+\end{enumerate}
+(1) we can show by case distinction with $y \in f[E]$ and $y \notin f[E]$ and then some simple calculation. For (2) we need lemma mon 3 though, which says that $\inv{(f \upharpoonright E)}$ is locally continuous in $f(a)$. Furthermore $\varphi$ is continuous in $a$ and therefore by the continuity of composition and the continuity of a division map is $\psi$ also continuous in $f(a)$.
+
+Thus $ext$ is differentiable in $f(a)$ and since $\dom(\inv{(f \upharpoonright E)}) = f[E]$ is an open set, $\inv{(f \upharpoonright E)}$ is locally differentiable in $f(a)$ by open set differentiation extension and 
+$$\lderivin{\inv{(f \upharpoonright E)}}(f(a)) = \psi(f(a)) = 1/\varphi(\inv{(f \upharpoonright E)}(f(a))) = 1/f'(a).$$
+
+\begin{forthel}
+
+\begin{theorem}[inverse function theorem]
+    Let $f$ be continuously differentiable and $\derivin{f}(a) \neq 0$.
+    Then there exists an open neighbourhood $E$ of $a$ such that $f$ is strictly monotone on $E$ and $\inv{(f \upharpoonright E)}$ is a real map on $f[E]$ and
+    $\inv{(f \upharpoonright E)}$ is locally differentiable in $f(a)$ and $\lderivin{\inv{(f \upharpoonright E)}}(f(a)) = 1/\derivin{f}(a)$.
+\end{theorem}
+\begin{proof}
+    Take an open neighbourhood $N$ of $a$ such that $f$ is strictly monotone on $N$ (by lemma mon 4).
+    Take a positive real number $d$ such that $\B_{d}(a) \subseteq N$.
+    Take a positive real number $\delta$ such that $\delta < d$.
+    Take $E = \B_{\delta}(a)$.
+
+    (0) $f$ is strictly monotone on $E$ (by subset monotone lemma). 
+        Indeed $E$ is a subset of $N$. 
+        Indeed $E = \B_{\delta}(a) \subseteq \B_{d}(a) \subseteq N$ (by ball subsets).
+
+    $f \upharpoonright E$ is injective (by lemma mon 1, 0). Indeed $E$ is a subset of $\mathbb{R}$.
+    Thus there exists $\inv{(f \upharpoonright E)}$.
+
+    Take $g = f \upharpoonright E$. $g$ is a real map on $E$.
+    Take $D = \range(g)$. $D$ is an open neighbourhood of $f(a)$ (by lemma mon 2, 0).
+    Indeed $f$ is continuous and $D = f[E]$ and $E$ is an open neighbourhood of $a$.
+    $\inv{g}$ is a real map on $D$.
+    
+    (3) Take a difference quotient map $\varphi$ of $f$ in $a$.
+    For all $y \in D$ there exists an $x \in E$ such that $x = \inv{g}(y)$.
+
+    Define $$ext(y) = \begin{cases}
+        \inv{g}(y)    & : y \in D \\
+        a             & : y \notin D
+    \end{cases}$$
+    for $y \in \mathbb{R}$. $ext$ is a real map extension of $\inv{g}$. 
+    Indeed $ext(y)$ is a real number for any real number $y$. 
+    Indeed $a$ is a real number and $\inv{g}(y)$ is a real number for every $y \in D$. 
+ 
+    For all $y \in D$ $\varphi(\inv{g}(y)) \neq 0$. Proof. 
+        $\range(\inv{g}) \subseteq E$. Indeed $E = \dom(g)$.
+        We can show that for all $x \in E$ $\varphi(x) \neq 0$.
+            Let $x \in E$.
+
+            Case $x = a$. Trivial.
+
+            Case $x \neq a$.
+                $\varphi(x) = \Diffquot{f}{a}(x)$ (by prop difference quotient map, 3).
+                    Indeed $f$ is differentiable in $a$ and $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$. 
+                Therefore $x \neq a$ and $x - a$ is nonzero.
+                $\Diffquot{f}{a}(x) = \frac{f(x) - f(a)}{x - a}$ (by def diffquot).
+                (4) $f(x) - f(a)$ is nonzero. Indeed $x \neq a$ and $x,a \in E$ and $f(x) \neq f(a)$.
+                $\frac{f(x) - f(a)}{x - a} \neq 0$ (by frac lemma 5,4). Indeed $x-a$ is nonzero.
+            End.
+        End.
+    End.
+  
+    Define $$\psi(y) = \begin{cases}
+        1/\varphi(\inv{g}(y))   & : y \in D \\
+        0                       & : y \notin D
+    \end{cases}$$
+    for $y \in \mathbb{R}$. $\psi$ is a real map. Indeed $1/\varphi(\inv{g}(y))$ is a real number for any $y \in D$.
+
+    Let us show that $\psi$ is a difference quotient map of $ext$ in $f(a)$.
+
+        Let us show that for every real number $y$ $ext(y) = ((y - f(a)) \cdot \psi(y)) + ext(f(a))$.
+            Let $y$ be a real number. 
+
+            (A) $ext(f(a)) = a$.
+            $((y - f(a)) \cdot \psi(y)) + ext(f(a)) .= ((y - f(a)) \cdot \psi(y)) + a$ (by A).
+
+            Case $y = f(a)$. 
+                $((f(a) - f(a)) \cdot \psi(y)) + a .= a$ (by additive inverse, eq lemma 9, add comm, existence zero)
+                $.= ext(f(a))$ (by A).
+            End. 
+
+            Case $y \in D$ and $y \neq f(a)$.
+
+                (B) $\psi(y) = \frac{\inv{g}(y) - a}{y - f(a)}$. Proof.
+                    $\varphi(\inv{g}(y)) = \Diffquot{f}{a}(\inv{g}(y))$ (by prop difference quotient map,3).
+                        Indeed $f$ is differentiable in $\inv{g}(y)$ and $\inv{g}(y) \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$.
+                    $\inv{g}(y) \neq a$ and $\inv{g}(y) - a$ is nonzero.
+                    $\Diffquot{f}{a}(\inv{g}(y)) .= \frac{f(\inv{g}(y)) - f(a)}{\inv{g}(y) - a}$ (by def diffquot).
+                    $f(\inv{g}(y)) - f(a) \neq 0$.
+                    $1/\frac{f(\inv{g}(y)) - f(a)}{\inv{g}(y) - a}.= \frac{\inv{g}(y) - a}{f(\inv{g}(y)) - f(a)}$ (by eq lemma 22).
+                    $\psi(y) = 1 / \varphi(\inv{g}(y)) = \frac{\inv{g}(y) - a}{y - f(a)}$.
+                End.
+
+                $((y - f(a)) \cdot \psi(y)) + a .= ((y - f(a)) \cdot \frac{\inv{g}(y) - a}{y - f(a)}) + a$ (by B)
+                $.= (\inv{g}(y) - a) + a$ (by fraction lemma 2)
+                $.= \inv{g}(y)$ (by add ass, add comm, additive inverse, existence zero).
+
+                $ext(y) = \inv{g}(y)$.
+            End.
+
+            Case $y \notin D$. 
+                (C) $\psi(y) = 0$.
+                $((y - f(a)) \cdot \psi(y)) + a .= a$ (by mult comm, C, eq lemma 9, add comm, existence zero).
+                $ext(y) = a$.
+            End.
+        End.
+
+        Let us show that $\psi$ is continuous in $f(a)$.
+
+            (4) $E$ is an open neighbourhood of $a$. Proof.
+                $a$ is an element of $E$.
+                $E$ is an open set (by open interval is open).
+                    Indeed $E = (a - \delta, a + \delta)_{OI}$ (by ball and open interval).
+            End.
+
+            $\inv{g}$ is locally continuous in $f(a)$ (by lemma mon 3, 4, 0). Indeed $f$ is continuous.
+            $ext$ is continuous in $f(a)$. 
+            $\varphi$ is continuous in $a$.
+            [timelimit 50]
+            Thus $\varphi \circ ext$ is continuous in $f(a)$ (by continuity of composition). Indeed $\inv{g}(f(a)) = a$.
+            $\psi$ is continuous in $f(a)$ (by continuity division map). Proof.
+                $\varphi \circ ext$ is a real map. $\psi$ is a division map of $\varphi \circ ext$ in $f(a)$ (by 4). 
+            End. 
+        End.
+    End.
+ 
+    Therefore $ext$ is differentiable in $f(a)$.
+    $\dom(\inv{g}) = D$ and $D$ is an open neighbourhood of $f(a)$.
+        $\inv{g}$ is a real map on $D$. Indeed $\range(g) = D$ and for every $y \in D$ $\inv{g}(y)$ is a real number.
+    $\lderivin{\inv{g}}(f(a)) = \derivin{ext}(f(a))$ (by open set differentiation extension). Indeed
+        $ext$ is a real map extension of $\inv{g}$ such that $ext$ is differentiable in $f(a)$.
+[timelimit 3]
+$\derivin{ext}(f(a)) = \psi(f(a)) = 1/\varphi(\inv{g}(f(a))) = 1/\varphi(a) = 1/\derivin{f}(a)$.
+$\inv{(f \upharpoonright E)}$ is locally differentiable in $f(a)$. $\lderivin{\inv{(f \upharpoonright E)}}(f(a)) = 1/\derivin{f}(a)$.
+ $f \upharpoonright E$ is injective. $\inv{(f \upharpoonright E)}$ is a real map on $f[E]$. Indeed $\range(f \upharpoonright E) = f[E]$.
+\end{proof} [timelimit 3]
+
+\begin{definition}
+    A locally inverse function to $f$ in $a$ is a real map $g$ such that for some open neighbourhood $E$ of $a$ 
+    $f \upharpoonright E$ is injective and $g \upharpoonright f[E] = \inv{(f \upharpoonright E)}$.
+\end{definition}
+
+\begin{corollary}[inverse function theorem II]
+    Let $f$ be continuously differentiable and $\derivin{f}(a) \neq 0$.
+    Let $g$ be a locally inverse function to $f$ in $a$.
+    Then $g$ is differentiable in $f(a)$ and $\derivin{g}(f(a)) = 1/\derivin{f}(a)$.
+\end{corollary} 
+\begin{proof}
+    Take an open neighbourhood $M$ of $a$ such that 
+        $f \upharpoonright M$ is injective and $g \upharpoonright f[M] = \inv{(f \upharpoonright M)}$.
+    [timelimit 100]
+    Take an open neighbourhood $N$ of $a$ such that $f$ is strictly monotone on $N$
+    and $\inv{(f \upharpoonright N)}$ is a real map on $f[N]$ and
+    $\inv{(f \upharpoonright N)}$ is locally differentiable in $f(a)$ and 
+    $\lderivin{\inv{(f \upharpoonright N)}}(f(a)) = 1/\derivin{f}(a)$ (by inverse function theorem). 
+    Take $E = N \cap M$.
+    
+    $E$ is an open neighbourhood of $a$. 
+    Indeed $a$ is an element of $E$ and $E$ is an open set (by intersection of open sets). 
+
+    $f \upharpoonright E$ is injective. $\inv{(f \upharpoonright E)}$ is a real map on $f[E]$.
+        Indeed $\dom(\inv{(f \upharpoonright E)}) = \range(f \upharpoonright E) = f[E]$ and 
+        for every $y \in f[E]$ $\inv{(f \upharpoonright E)}(y)$ is a real number.
+    Define $$ext(y) = \begin{cases}
+        \inv{(f \upharpoonright N)}(y)  & : y \in f[N] \\
+        0                               & : y \notin f[N]
+    \end{cases}$$
+    for $y \in \mathbb{R}$. $ext$ is a real map. Indeed $\range(ext)$ is a subset of $\mathbb{R}$.
+    Indeed for any $y \in \dom(ext)$ $ext(y)$ is a real number.
+    Indeed 0 is a real number and $\inv{(f \upharpoonright N)}(y)$ is a real number for any $y \in f[N]$.
+    $\inv{(f \upharpoonright N)}$ is a real map on $f[N]$.
+
+        $f[N]$ is a subset of $\mathbb{R}$. Take $\gamma = \inv{(f \upharpoonright N)}$.
+        $\gamma$ is a real map on $f[N]$. $f(a)$ is an element of $f[N]$.
+        $\gamma$ is locally differentiable in $f(a)$. [prover vampire]
+    $\lderivin{\gamma}(f(a)) = \derivin{ext}(f(a))$ (by lemma differentiation extension).
+        Indeed $ext$ is a real map extension of $\gamma$. [prover eprover]
+    Thus $\lderivin{\inv{(f \upharpoonright N)}}(f(a)) = \derivin{ext}(f(a))$.
+
+    Take $h = \inv{(f \upharpoonright E)}$.
+    $h$ is locally differentiable in $f(a)$ and
+    $\derivin{ext}(f(a)) = \lderivin{h}(f(a))$ (by open set differentiation extension). Proof.
+        $h$ is a real map on $f[E]$.
+        $f[E]$ is an open neighbourhood of $f(a)$ (by lemma mon 2, 1). Proof. 
+            $f$ is strictly monotone on $E$ (by subset monotone lemma). Indeed $E$ is a subset of $N$.
+            $f$ is continuous.
+        End. 
+        
+        $ext$ is a real map extension of $h$ such that $ext$ is differentiable in $f(a)$.
+        Indeed we can show that for every $y \in f[E]$ $\inv{(f \upharpoonright E)}(y) = ext(y)$.
+            Let $y \in f[E]$. Then $y \in f[N]$. $h(y) = \inv{(f \upharpoonright N)}(y)$.
+            $\inv{(f \upharpoonright N)}(y) = ext(y)$.
+        End.
+    End.
+
+    $\lderivin{\inv{(f \upharpoonright E)}}(f(a)) = \derivin{g}(f(a))$ (by lemma differentiation extension). Proof.
+        $f[E]$ is a subset of $\mathbb{R}$.
+        $\inv{(f \upharpoonright E)}$ is a real map on $f[E]$. $f(a)$ is an element of $f[E]$.
+        $\inv{(f \upharpoonright E)}$ is locally differentiable in $f(a)$. 
+        $g$ is a real map extension of $\inv{(f \upharpoonright E)}$. Proof. 
+            $f \upharpoonright M$ is injective. $\inv{(f \upharpoonright M)}$ is a real map on $f[M]$. $f[E] \subseteq f[M]$.
+            For every $y \in f[E]$ $\inv{(f \upharpoonright E)}(y) = g(y)$. Proof.
+                Assume the contrary. Take $y \in f[E]$ such that $\inv{(f \upharpoonright E)}(y) \neq g(y)$.
+                Take $x = \inv{(f \upharpoonright E)}(y)$. Then $(f \upharpoonright E)(x) = y$. Thus $f(x) = y$. $x \in M$. Indeed $E \subseteq M$.
+                Hence $(f \upharpoonright M)(x) = y$. Thus $\inv{(f \upharpoonright M)}(y) = x$. Indeed $y \in f[M]$.  
+                $\inv{(f \upharpoonright E)}(y) = \inv{(f \upharpoonright M)}(y)$.
+                $\inv{(f \upharpoonright M)}(y) \neq g(y)$. Contradiction.
+            End.
+        End.
+    End.
+\end{proof} 
+[timelimit 3]
+\end{forthel}
+
+\end{document}

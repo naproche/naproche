@@ -1,0 +1,1045 @@
+\documentclass[../solow_main.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Extrema and Mean Value Theorem}
+
+In the last chapter before we are able to take on the inverse function theorem, we have to prove the mean value
+theorem and some propositions about the relation of derivatives and the slope of the function, i.e. a function is strictly 
+increasing if its derivative is larger than zero and strictly decreasing if smaller than zero. 
+At the end of the chapter we also provide a proof that $f'(\xi) = 0$ and $f''(\xi) < 0$ is a sufficient condition for $\xi$
+being a maximum. Using this condition for calculating some optimal state is absolutely ubiquitous in economics.
+
+For the proof of the mean value theorem, we use Rolle's theorem, which says that when you got a differentiable function $f$ with
+$f(a) = f(b)$ for some $a < b$ then there needs to be some value $\xi$ in between such $f'(\xi) = 0$.
+For the proof of Rolle's theorem we need that such a function is bounded on $[a,b]$, for which we need the extreme value theorem,
+and that the derivative of a maximum and minimum is zero, which we proof in section \ref{sec.local_extrema}. 
+
+
+\begin{forthel}
+    [read \path{examples/solow/sections/4locality.ftl.tex}][check off][prove off]
+\end{forthel}
+
+Before we can devote ourselves to the intermediate value theorem, we need to state the extreme value theorem. 
+
+\section{Extreme Value Theorem}
+
+\begin{forthel}
+Let $a,b$ denote real numbers.
+Let $f$ denote a real map.
+Let $S$ denote a subset of $\mathbb{R}$.
+
+Let $S$ is bounded stand for $S$ is bounded above and $S$ is bounded below.
+Let $a$ bounds $S$ stand for $a$ is an upper bound of $S$ and $-a$ is a lower bound of $S$.
+
+\end{forthel}
+
+The following theorem is the boundedness theorem, which says that
+the image of a continuous function on a closed interval is bounded.
+This theorem we need in order to prove the extreme value theorem, namely when we have a continuous function $f$ on $[a,b]$
+that we can find an $x \in [a,b]$ such that $f(x)$ is the supremum of the image of $f$ on $[a,b]$.
+
+In the proof of the boundedness theorem we basically follow along the lines of mathcenter.oxford.emory.edu.
+Here we define a function $h$ such that $$h(x) = \begin{cases}
+        f[[a,\xi]_{CI}] & : \xi \leq b \\
+        \emptyset & : \xi > b
+    \end{cases}$$
+for any real number $x$. Furthermore we define $B = \{x \in \mathbb{R} | a \leq x \leq b$ and $h(x)$ is bounded$\}$.
+We then can take the supremum $s$ of $B$. In (1) we show that $s = b$ and in (2) that $b \in B$. Then we are done.
+To prove (1) and (2) we choose a value $l$ very close to $s$ ($b$), 
+for which we still, however, know that $f$ is bounded on $[a,l]$. Then we utilize that $f$ is continuous in $s$ and $b$ and 
+therefore we can construct an upper bound for both.
+
+\begin{forthel}
+
+\begin{lemma}[bounded lemma 1]
+    $a$ bounds $S$ iff $\abs{s} \leq a$ for every $s \in S$.
+\end{lemma}
+
+\begin{lemma}[bounded lemma 2]
+    $S$ is bounded iff there exists a real number $K$ such that $K$ bounds $S$.
+\end{lemma}
+\begin{proof}
+    Case $S$ is bounded. Take an upper bound $u$ of $S$. Take a lower bound $l$ of $S$.
+        Take a real number $K$ such that $K \geq \abs{u}$ and $K \geq \abs{l}$. Then $K$ bounds $S$. 
+    End.
+
+    Case there exists a real number $K$ such that $K$ bounds $S$. Trivial.
+\end{proof}
+
+\begin{theorem}[boundedness theorem]
+    Let $f$ be continuous.
+    $f[[a,b]_{CI}] \subseteq \mathbb{R}$ and
+    $f[[a,b]_{CI}]$ is bounded.
+\end{theorem} 
+\begin{proof}
+    Case $a \geq b$. Trivial.
+    Assume $a < b$.
+
+    For any real number $\xi$ $[a,\xi]_{CI}$ is a subset of $\mathbb{R}$.
+    Define $$h(\xi) = \begin{cases}
+        f[[a,\xi]_{CI}] & : \xi \leq b \\ 
+        \emptyset & : \xi > b
+    \end{cases}$$
+    for $\xi \in \mathbb{R}$.
+
+    For every real number $x$ $h(x)$ is a subset of $\mathbb{R}$. Proof.
+        Let $x$ be a real number.
+        Case $x > b$. Trivial.
+        Case $x \leq b$. $f[M] \subseteq \mathbb{R}$ for any $M\subseteq\mathbb{R}$.
+            Therefore $f[[a,x]_{CI}]$ is a subset of $\mathbb{R}$.
+        End.
+    End.
+
+    (A) For all real number $x,y$ if $x \leq y \leq b$ then $h(x) \subseteq h(y)$. 
+
+    Proof. Let $x,y$ be real numbers. Assume $x \leq y \leq b$. Let $xi \in h(x)$. Then $xi \in f[[a,x]_{CI}]$.
+        Take $xd \in [a,x]_{CI}$ such that $f(xd) = xi$. Then $xd \in [a,y]_{CI}$ and $y \leq b$.
+        $f(xd) \in f[[a,y]_{CI}]$.
+        Therefore $xi = f(xd) \in h(y)$.
+    End.
+
+    Define $B = \{x \in \mathbb{R} | a \leq x \leq b$ and $h(x)$ is bounded$\}$.
+
+    Take supremum $s$ of $B$ (by completeness axiom).
+    Indeed we can show that $B$ is a nonempty subset of $\mathbb{R}$ and bounded above.
+
+        $h(a)$ is bounded. Indeed ($f(a) \geq y$ for all $y \in h(a)$) and ($f(a) \leq y$ for all $y \in h(a)$).
+        Therefore $B$ is nonempty.
+
+        $B$ is bounded above. Indeed for every $x \in B$ $x \leq b$.
+    End.
+
+    (1) $s = b$. Proof by contradiction.
+        $b$ is an upper bound of $B$. Therefore $s \leq b$.
+        Assume $s < b$.
+
+        (10) Take a positive real number $\delta$ such that $\delta$ is a domain restrictor for 1 and $f$ around $s$ and $f(s)$.
+        Indeed $1$ is a positive real number and $f$ is continuous in $s$.
+
+        Take $l \in B$ such that $s-\delta < l$ (by lemma x01). 
+            Indeed $B$ is a nonempty subset of $\mathbb{R}$ and $B$ is bounded above.
+               
+        Take real number $K$ such that $K$ bounds $h(l)$ (by bounded lemma 2). Indeed $h(l)$ is bounded. [prover vampire]
+        Take a real number $u$ such that $s < u < s + \delta$ and $u \leq b$. 
+        Proof. $b - s$ is a positive real number.
+            Take positive real number $\upsilon$ such that $\upsilon < \delta$ and $\upsilon < b - s$ (by ineq lemma 19). 
+            Take $u = s + \upsilon$. $s < u < s + \delta$. Indeed $s < s + \upsilon < s + \delta$. Indeed $0 < \upsilon < \delta$. $u < b$.
+        End.
+
+        $h(u) = f[[a,u]_{CI}]$.
+
+        $h(u)$ is bounded (by bounded lemma 1, bounded lemma 2). Indeed for every $y \in h(u)$ $\abs{y} \leq K + 2$. 
+                Indeed we can show that for every $x \in [a,u]_{CI}$ $\abs{f(x)} \leq K + 2$.
+            Let $x \in [a,u]_{CI}$. Then $x$ is a real number such that $a \leq x \leq u$. [timelimit 20]
+
+            Case $x \leq l$. $f(x) \in f[[a,l]_{CI}]= h(l)$. Therefore $\abs{f(x)} \leq K \leq K+2$. Indeed $K$ bounds $h(l)$.
+            End.
+ 
+            Case $x > l$.
+
+                (1A) $\abs{f(x) - f(s)} < 1$ (by domain restrictor lemma 3, 10, 1 is positive). Proof.
+                    $\abs{x - s} < \delta$. Indeed $s - \delta < x < s + \delta$. $f(x),f(s)$ are real numbers.
+                End.
+
+                (1B) $\abs{f(l) - f(s)} < 1$ (by domain restrictor lemma 3, 10, 1 is positive). Proof.
+                    $\abs{l - s} < \delta$. $f(l),f(s)$ are real numbers.
+                End. [timelimit 3][prover eprover]
+
+                (1C) $\abs{f(x)} < 2 + \abs{f(l)}$ (by ineq lemma 15). Proof.
+
+                    $\abs{f(x)} - \abs{f(l)} \leq \abs{f(x) - f(l)}$ (by absolute lemma 6). 
+
+                    $\abs{f(x) - f(l)} .= \abs{(f(x) - f(l)) + (f(s) - f(s))}$ (by existence zero, additive inverse)
+
+                    $.= \abs{(f(x) - f(s)) + (f(s) - f(l))}$ (by add ass, add comm).
+
+                    $\abs{(f(x) - f(s)) + (f(s) - f(l))} \leq \abs{f(x) - f(s)} + \abs{f(s) - f(l)}$ (by absolute lemma 4).
+
+                    $\abs{f(x) - f(s)} + \abs{f(s) - f(l)} < 1 + \abs{f(s) - f(l)}$ (by ineq lemma 14, 1A).
+
+                    $1 + \abs{f(s) - f(l)} .= \abs{f(l) - f(s)} + 1$ (by add comm, absolute lemma 3).
+
+                    $\abs{f(l) - f(s)} + 1 < 1 + 1 = 2$ (by ineq lemma 14, 1B). 
+
+                    Thus $\abs{f(x)} - \abs{f(l)} < 2$.
+                End. [timelimit 10]
+
+                (1D) $\abs{f(l)} \leq K$. Proof. 
+                     $l \in B$. $h(l)$ is bounded and $K$ bounds $h(l)$. $f(l) \in f[[a,l]_{CI}] = h(l)$. Indeed $l \in [a,l]_{CI}$.
+                End. [timelimit 3]
+
+                Therefore $\abs{f(x)} \leq 2 + \abs{f(l)} = \abs{f(l)} + 2 \leq K + 2$ (by 1C, add comm, ineq lemma 145, 1D).
+                Then $\abs{f(x)} \leq K + 2$ (by transitivity).
+            End. 
+        qed. [timelimit 10]
+
+        Then $u \in B$ and $s < u$. Contradiction. [timelimit 3]
+    End.
+
+    (2) $b \in B$. Proof.
+
+        (20) Take a positive real number $\delta$ such that $\delta$ is a domain restrictor for 1 and $f$ around $b$ and $f(b)$. 
+        Indeed 1 is a positive real number and $f$ is continuous in $b$.
+
+        Take $l \in B$ such that $b - \delta < l$ (by lemma x01).
+            Indeed $B$ is a nonempty subset of $\mathbb{R}$ and $B$ is bounded above and $b$ is the supremum of $B$.
+
+        Take a real number $K$ such that $K$ bounds $h(l)$ (by bounded lemma 2). Indeed $h(l)$ is bounded.
+
+        $h(b) = f[[a,b]_{CI}]$. [timelimit 10]
+
+        (21) For every $y \in h(b)$ $\abs{y} \leq K + 2$.
+            Indeed we can show that for every $x \in [a,b]_{CI}$ $\abs{f(x)} \leq K + 2$.
+            Let $x \in [a,b]_{CI}$. Then $x$ is a real number such that $a \leq x \leq b$. 
+
+            Case $x \leq l$. $f(x) \in f[[a,l]_{CI}] = h(l)$. Therefore $\abs{f(x)} \leq K \leq K+2$. Indeed $K$ bounds $h(l)$.
+            End. 
+            
+            Case $x > l$.
+
+                (2A) $\abs{f(x) - f(b)} < 1$ (by domain restrictor lemma 3, 20, 1 is positive). Proof.
+                    $\abs{x - b} < \delta$. Indeed $b - \delta < x \leq b$.
+                    $f(x),f(b)$ are real numbers.
+                End.
+
+                (2B) $\abs{f(l) - f(b)} < 1$ (by domain restrictor lemma 3, 20, 1 is positive). Proof.
+                    $\abs{l - b} < \delta$. $f(l),f(b)$ are real numbers.
+                End.
+
+                (2C) $\abs{f(x)} < 2 + \abs{f(l)}$ (by ineq lemma 15). Proof. 
+
+                    $\abs{f(x)} - \abs{f(l)} \leq \abs{f(x) - f(l)}$ (by absolute lemma 6). 
+
+                    $\abs{f(x) - f(l)} .= \abs{(f(x) - f(l)) + (f(b) - f(b))}$ (by existence zero, additive inverse) 
+
+                    $.= \abs{((f(x) - f(l)) - f(b)) + f(b)}$ (by add comm, add ass)
+
+                    $.= \abs{(f(x) - f(b)) + (f(b) - f(l))}$ (by add comm, add ass). 
+
+                    $\abs{(f(x) - f(b)) + (f(b) - f(l))} \leq \abs{f(x) - f(b)} + \abs{f(b) - f(l)}$ (by absolute lemma 4). 
+
+                    $\abs{f(x) - f(b)} + \abs{f(b) - f(l)} < 1 + \abs{f(b) - f(l)}$ (by ineq lemma 14, 2A). 
+
+                    $1 + \abs{f(b) - f(l)} .= \abs{f(l) - f(b)} + 1$ (by add comm, absolute lemma 3). 
+
+                    $\abs{f(l) - f(b)} + 1 < 1 + 1 = 2$ (by ineq lemma 14, 2B).
+
+                    Thus $\abs{f(x)} - \abs{f(l)} < 2$.
+                End.
+
+                (2D) $\abs{f(l)} \leq K$. Proof. 
+                     $l \in B$ and $h(l)$ is bounded. $f(l) \in f[[a,l]_{CI}] = h(l)$. Indeed $l \in [a,l]_{CI}$.
+                End. 
+                
+                Therefore $\abs{f(x)} \leq 2 + \abs{f(l)} = \abs{f(l)} + 2 \leq K + 2$ (by 2C, add comm, ineq lemma 145, 2D). 
+
+                Therefore $\abs{f(x)} \leq K + 2$ (by transitivity).
+            End.
+        qed. [prover vampire][timelimit 50]
+
+        $h(b)$ is bounded (by bounded lemma 1, bounded lemma 2, 21). 
+    End. [prover eprover][timelimit 3]
+
+    $h(b) = f[[a,b]_{CI}]$. Thus $f[[a,b]_{CI}]$ is bounded.
+\end{proof}
+\end{forthel}
+
+From the boundedness theorem we know that $f[[a,b]]$ has a supremum that we call $s$. Now we assume, for purpose of contradiction,
+that no such a $c$ as in the theorem exists and therefore is $f(x) < s$ for all $x \in [a,b]$.
+Then we define $$g(x) = \begin{cases}
+    \frac{1}{s - f(a)} & : x \leq a \\
+    \frac{1}{s - f(x)} & : x \in (a,b)\\
+    \frac{1}{s - f(b)} & : x \geq b
+\end{cases}$$
+for all real numbers $x$ and show that $g$ is continuous. The continuity seems obvious to us, but formally it takes up very significant 
+time and most of the space of the proof to show the continuity in any point $x$ for all cases when $x < a$, $x = a$, $x \in (a,b)$, $x = b$,
+and $x > b$. Now that $g$ is continuous, we know from the boundedness theorem that $g[[a,b]]$ is bounded. Therefore we can take 
+a positive real number $K$ that bounds $g[[a,b]]$ and then we can show that $s - 1/K$ is an upper bound of $f[[a,b]]$, which serves us as 
+a contradiction to $s$ being the lowest upper bound of $f[[a,b]]$, i.e. its supremum.
+
+\begin{forthel}
+[timelimit 100]
+\begin{theorem}[extreme value theorem]
+    Let $f$ be continuous and $a < b$.
+    $f[[a,b]_{CI}]$ is a subset of $\mathbb{R}$ and 
+    there exists a $c \in [a,b]_{CI}$ such that $f(c)$ is an upper bound of $f[[a,b]_{CI}]$.
+\end{theorem}
+\begin{proof}
+    Take $S = f[[a,b]_{CI}]$. $S$ is a subset of $\mathbb{R}$. [prover vampire]
+
+    Take a supremum $s$ of $S$ (by completeness axiom). Proof.
+        $S$ is bounded above. Indeed $S$ is bounded (by boundedness theorem).
+        $S$ is nonempty. Indeed $f(a)$ is an element of $S$. 
+    End.
+
+    Case there exists $c \in [a,b]_{CI}$ such that $f(c) = s$. Trivial.
+
+    Case for every $c \in [a,b]_{CI}$ $f(c) \neq s$.
+        Take $\varphi = \flin{-1}{s} \circ f$.
+
+        (A) $\varphi(x) = s - f(x)$ for any $x \in [a,b]_{CI}$. Proof.
+            Let $x \in [a,b]_{CI}$.
+
+            $(\flin{-1}{s} \circ f)(x) .= ((-1) \cdot f(x)) + s$ (by composition, linear function)
+
+            $.= s - f(x)$ (by eq lemma 12, add comm).
+        End.
+
+        (B) $\varphi$ is a continuous real map.
+
+        (C) $\varphi(x)$ is a positive real number for any $x \in [a,b]_{CI}$. Proof.
+            Let $x \in [a,b]_{CI}$. Then $s - f(x)$ is a positive real number. Indeed $f(x) < s$. 
+            $\varphi(x)$ is a positive real number (by A).
+        End.
+
+        For any real number $x$ $x \leq a$ or $x \in (a,b)_{OI}$ or $x \geq b$.
+        $\varphi(x)$ is nonzero for any $x \in [a,b]_{CI}$.
+
+        Define $$g(x) = \begin{cases} 
+            1/\varphi(a) & : x \leq a \\ 
+            1/\varphi(x) & : x \in (a,b)_{OI} \\
+            1/\varphi(b) & : x \geq b
+        \end{cases}$$
+        for $x \in \mathbb{R}$. [prover vampire] $g$ is a real map. 
+        Indeed $g(x)$ is a real number for any real number $x$. Proof.
+            Let $x$ be a real number.
+            Case $x \leq a$ or $x \geq b$.
+                $\varphi(a),\varphi(b)$ are positive real numbers (by C). Indeed $a,b \in [a,b]_{CI}$.
+                $1/\varphi(a), 1/\varphi(b)$ are real numbers (by multiplicative inverse).
+                Therefore $g(x)$ is a real number. 
+            End.
+            Case $x \in (a,b)_{OI}$. Trivial. 
+        End. [timelimit 10][prover eprover]
+
+        $g$ is continuous. Indeed we can show that for any real number $\xi$ $g$ is continuous in $\xi$.
+            Let $\xi$ be a real number. 
+            $\xi < a$ or $\xi > b$ or $\xi \in (a,b)_{OI}$ or $\xi = a$ or $\xi = b$.
+
+            Case $\xi < a$. $a - \xi$ is a positive real number.
+                We can show that for any positive real number $\varepsilon$
+                            $a - \xi$ is a domain restrictor for $\varepsilon$ and $g$ around $\xi$ and $g(\xi)$.
+                    Let $\varepsilon$ be a positive real number.
+
+                    Let $x \in \mathbb{R} \setminus \sset{\xi}{\mathbb{R}}$. Assume $\abs{x - \xi} < a - \xi$.
+
+                    Then $x < a$. Proof. 
+                        If $x < \xi$ then $x < \xi < a$.
+                        If $x \geq \xi$ then $\abs{x - \xi} = x - \xi < a - \xi$ and $x < a$.
+                    End.
+
+                    $\varphi(a)$ is nonzero.
+                    Thus $\abs{g(x) - g(\xi)} = \abs{1/\varphi(a) - 1/\varphi(a)} = 0 < \varepsilon$.
+                End.
+            qed.
+
+            Case $\xi > b$. $\xi - b$ is a positive real number.
+                We can show that for any positive real number $\varepsilon$
+                            $\xi - b$ is a domain restrictor for $\varepsilon$ and $g$ around $\xi$ and $g(\xi)$.
+                    Let $\varepsilon$ be a positive real number.
+
+                    Let $x \in \mathbb{R} \setminus \sset{\xi}{\mathbb{R}}$. Assume $\abs{x - \xi} < \xi - b$.
+
+                    Then $x > b$. Proof.
+                        If $x \geq \xi$ then $b < \xi \leq x$.
+                        If $x < \xi$ then $\abs{x - \xi} = \abs{\xi - x} = \xi - x < \xi - b$ and $b < x$.
+                    End.
+
+                    $\varphi(b)$ is nonzero.
+                    Thus $\abs{g(x) - g(\xi)} = \abs{1/\varphi(b) - 1/\varphi(b)} = 0 < \varepsilon$.
+                End.
+            qed.
+
+            Case $\xi \in (a,b)_{OI}$.
+                $g$ is a division map of $\varphi$ in $\xi$. Proof. 
+                    Then $(a,b)_{OI}$ is an open neighbourhood of $\xi$.
+                    Then ($\varphi(x)$ is nonzero and $g(x) = 1/\varphi(x)$) for all $x \in (a,b)_{OI}$ .
+                End.
+
+                $g$ is continuous in $\xi$ (by continuity division map). Indeed $\varphi$ is continuous in $\xi$.
+            End.[timelimit 50]
+
+            Case $\xi = a$.
+                Take a division map $h$ of $\varphi$ in $a$ (by existence division map, B). 
+                    Indeed $\varphi(a) \neq 0$ (by C).
+                $h$ is continuous in $a$ (by continuity division map, B).
+
+                Let $\varepsilon$ be a positive real number.
+                Take an open neighbourhood $E$ of $a$ such that for every $x \in E$ $\varphi(x)$ is nonzero and $h(x) = 1/\varphi(x)$.
+                Take a positive real number $\tau$ such that $\B_{\tau}(a) \subseteq E$. [prover vampire]
+                Take a positive real number $\theta$ such that $\theta < \tau$ and $\theta < b - a$ (by ineq lemma 19). 
+                    Indeed $\tau, b - a$ are positive real numbers.
+                Take a positive real number $\vartheta$ such that $\vartheta$ is a domain restrictor for $\varepsilon$ and $h$ around $a$ and $h(a)$.
+                Take a positive real number $\delta$ such that $\delta < \theta$ and $\delta < \vartheta$ (by ineq lemma 19).
+                Then $\delta$ is a domain restrictor for $\varepsilon$ and $h$ around $a$ and $h(a)$ (by domain restrictor lemma). 
+                For all real numbers $x$ if $\abs{x - a} < \delta$ then $\abs{x - a} < \theta < \tau$ and $\abs{x - a} < \theta < b - a$.
+                For all real numbers $x$ if $\abs{x - a} < \delta$ then $\abs{x - a} < \tau$ and $x \in E$ and $\varphi(x)$ is nonzero and $h(x) = 1/\varphi(x)$.
+
+                Let us show that $\delta$ is a domain restrictor for $\varepsilon$ and $g$ around $a$ and $g(a)$.
+                    Let $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$. Assume $\abs{x - a} < \delta$.
+
+                    Case $x \leq a$. $\abs{g(x) - g(a)} = \abs{1/\varphi(a) - 1/\varphi(a)} = 0 < \varepsilon$. End.
+
+                    Case $x > a$. $x - a = \abs{x - a} < \delta < b - a$. $x - a < b - a$ and $x < b$. 
+                        Then $x \in [a,b]_{CI}$. [prover eprover]
+                        $g(x) = 1/\varphi(x) = h(x)$. $g(a) = 1/\varphi(a) = h(a)$. 
+                        Therefore $\abs{g(x) - g(a)} = \abs{h(x) - h(a)} < \varepsilon$.
+                    End.
+                qed.
+            End.
+
+            Case $\xi = b$.
+                Take a division map $h$ of $\varphi$ in $b$ (by existence division map, B).
+                    Indeed $\varphi(b) \neq 0$ (by C).
+                $h$ is continuous in $b$ (by continuity division map, B).
+
+                Let $\varepsilon$ be a positive real number.
+                Take an open neighbourhood $E$ of $b$ such that for every $x \in E$ $\varphi(x)$ is nonzero and $h(x) = 1/\varphi(x)$.
+                Take a positive real number $\tau$ such that $\B_{\tau}(b) \subseteq E$. [prover vampire]
+                Take a positive real number $\theta$ such that $\theta < \tau$ and $\theta < b - a$ (by ineq lemma 19).
+                    Indeed $\tau, b - a$ are positive real numbers.
+                Take a positive real number $\vartheta$ such that $\vartheta$ is a domain restrictor for $\varepsilon$ and $h$ around $b$ and $h(b)$.
+                Take a positive real number $\delta$ such that $\delta < \theta$ and $\delta < \vartheta$ (by ineq lemma 19).
+                Then $\delta$ is a domain restrictor for $\varepsilon$ and $h$ around $b$ and $h(b)$ (by domain restrictor lemma).
+                For all real numbers $x$ if $\abs{x - b} < \delta$ then $\abs{x - b} < \theta < \tau$ and $\abs{x - b} < \theta < b - a$.
+                For all real numbers $x$ if $\abs{x - b} < \delta$ then $\abs{x - b} < \tau$ and $x \in E$ and $h(x) = 1/\varphi(x)$. 
+
+                Let us show that $\delta$ is a domain restrictor for $\varepsilon$ and $g$ around $b$ and $g(b)$.
+                    Let $x \in \mathbb{R} \setminus \sset{b}{\mathbb{R}}$. Assume $\abs{x - b} < \delta$.
+
+                    Case $x \geq b$. $\abs{g(x) - g(b)} = \abs{1/\varphi(b) - 1/\varphi(b)} = 0 < \varepsilon$. End. 
+
+                    Case $x < b$. $x \in [a,b]_{CI}$. Indeed $b - x < \delta < b - a$ and $a < x$. Then $g(x) = 1/\varphi(x) = h(x)$. $g(b) = 1/\varphi(b) = h(b)$. 
+                        Therefore $\abs{g(x) - g(b)} = \abs{h(x) - h(b)} < \varepsilon$ (by domain restrictor lemma 3).
+                    End.
+                qed.
+            End.
+        qed. [timelimit 50][prover eprover]
+
+        $g[[a,b]_{CI}]$ is a subset of $\mathbb{R}$.
+        Take a real number $\kappa$ such that $\kappa$ bounds $g[[a,b]_{CI}]$ (by bounded lemma 2). Indeed $g[[a,b]_{CI}]$ is bounded (by boundedness theorem).
+        Take a positive real number $K$ such that $K \geq \kappa$. Then $K$ bounds $g[[a,b]_{CI}]$. 
+
+        Let us show that $s - 1/K$ is an upper bound of $f[[a,b]_{CI}]$.
+            Let $y \in f[[a,b]_{CI}]$. Take $x \in [a,b]_{CI}$ such that $f(x) = y$.
+            Then $g(x) \leq K$. 
+            Therefore $1/\varphi(x) \leq K$. 
+            $1/(1/\varphi(x)) \geq 1/K$ (by ineq lemma 12). Indeed $0 < 1/\varphi(x) \leq K$.
+            $\varphi(x) \geq 1/K$ (by eq lemma 8).
+            $s - f(x) \geq 1/K$ (by A).
+            $f(x) \leq s - 1/K$ (by ineq lemma 30). 
+        End.
+
+        $s - 1/K < s$. Contradiction.
+    End.
+\end{proof}
+
+
+\begin{lemma}[extreme value theorem 2]
+    Let $f$ be continuous and $a < b$.
+    There exists an $i \in [a,b]_{CI}$ such that $f(i)$ is a lower bound of $f[[a,b]_{CI}]$.
+\end{lemma}
+\begin{proof}
+    $\fminus{f}$ is continuous. $\fminus{f}[[a,b]_{CI}]$ is a subset of $\mathbb{R}$.
+    Take $i \in [a,b]_{CI}$ such that $\fminus{f}(i)$ is an upper bound of $\fminus{f}[[a,b]_{CI}]$ (by extreme value theorem).
+
+    Then $f(i)$ is a lower bound of $f[[a,b]_{CI}]$. Proof. [prover vampire]
+
+        Let $y \in f[[a,b]_{CI}]$. Then $y$ is a real number and $-y \in \fminus{f}[[a,b]_{CI}]$. [prover eprover]
+        Thus $-f(i) = \fminus{f}(i) \geq -y$ and $y \geq f(i)$.
+    End.
+\end{proof}
+\end{forthel}
+
+
+\section{Local Extrema}\label{sec.local_extrema}
+
+\begin{forthel}
+Let $f$ denote a real map.
+Let $\xi$ denote a real number.
+
+\begin{definition}
+    A maximum domain restrictor for $f$ around $\xi$ is a positive real number $\delta$ 
+    such that for all $x \in \B_{\delta}(\xi)$ $f(x) \leq f(\xi)$.
+\end{definition}
+
+\begin{definition}
+    A local maximum of $f$ is a real number $\xi$ such that there exists a positive real number $\delta$ such that 
+    $\delta$ is a maximum domain restrictor for $f$ around $\xi$.
+\end{definition}
+
+\end{forthel}
+
+The proof that the derivative of a local maximum is zero, is a proof by contradiction. Assume $f'(\xi) = y$ for some $y \neq 0$.
+If $y > 0$ then however small you choose $\delta$ you can always find an $x$ such that $\frac{f(x) - f(\xi)}{x - \xi} < 0$ and therefore
+having at least a distance $y$ to $y$. In turn if $y < 0$ then again however small you choose $\delta$ you can find an $x$ such that 
+$\frac{f(x) - f(\xi)}{x - \xi} > 0$ and therefore having at least a distance $y$ to $y$.
+\begin{forthel}
+[prover vampire][timelimit 3]
+\begin{theorem}[derivative of maximum]
+    Let $\xi$ be a local maximum of $f$. Let $f$ be differentiable in $\xi$.
+    Then $\derivin{f}(\xi) = 0$.
+\end{theorem}
+\begin{proof}
+    Take a maximum domain restrictor $\tau$ for $f$ around $\xi$.
+    Take $y = \derivin{f}(\xi)$.
+
+    We can show that $y = 0$.
+        Assume $y \neq 0$. Take $\varepsilon = \abs{y}$.
+        Take a positive real number $\theta$ such that $\theta$ is a domain restrictor for $\varepsilon$ and $\Diffquot{f}{\xi}$ around $\xi$ and $y$.
+            Indeed $\limS{\Diffquot{f}{\xi}}{\xi} = y$.
+        Take a positive real number $\delta$ such that $\delta < \tau$ and $\delta < \theta$ (by ineq lemma 19).
+
+        Case $y > 0$. Take a real number $x$ such that $\xi < x < \xi + \delta$ (by ineq lemma 20). Indeed $\xi < \xi + \delta$.
+            Then $\abs{x - \xi} = x - \xi < \delta < \theta$.
+
+            Let us show that $\abs{\Diffquot{f}{\xi}(x) - y} \geq \varepsilon$.
+                $f(x) - f(\xi) \leq 0$ (by ineq lemma 27). Proof.
+                    $f(x),f(\xi)$ are real numbers.
+                    $\xi$ is a local maximum of $f$. $x \in \B_{\tau}(\xi)$. $f(x) \leq f(\xi)$.
+                End.
+                $x - \xi > 0$. Therefore $\Diffquot{f}{\xi}(x) = \frac{f(x) - f(\xi)}{x - \xi} \leq 0$ (by frac lemma 3).
+                $\Diffquot{f}{\xi}(x) - y < 0$. Indeed $-y < 0$ and $\Diffquot{f}{\xi}(x) \leq 0$. 
+                Thus $\abs{\Diffquot{f}{\xi}(x) - y}
+                = - (\Diffquot{f}{\xi}(x) - y)$.
+                $- (\Diffquot{f}{\xi}(x) - y)
+                .= y - \Diffquot{f}{\xi}(x)$ (by eq lemma 15, eq lemma 45, add comm).
+                $y - \Diffquot{f}{\xi}(x) \geq y = \varepsilon$ (by ineq lemma 23). Indeed $-\Diffquot{f}{\xi}(x) \geq 0$. 
+            End.
+
+            [timelimit 10]
+            Thus $\theta$ is not a domain restrictor for $\varepsilon$ and $\Diffquot{f}{\xi}$ around $\xi$ and $y$ (by domain restrictor lemma 2).
+                Indeed $x \in \mathbb{R} \setminus \sset{\xi}{\mathbb{R}}$ and $\abs{x - \xi} < \theta$. [timelimit 3]
+            Contradiction.
+        qed.
+       
+        Case $y < 0$. Take a real number $x$ such that $\xi - \delta < x < \xi$ (by ineq lemma 20). 
+                Indeed $\xi - \delta < \xi$ (by ineq lemma 24).
+            [timelimit 30] Then $\abs{x - \xi} = \abs{\xi - x} = \xi - x < \delta < \theta$.
+
+            Let us show that $\abs{\Diffquot{f}{\xi}(x) - y} \geq \varepsilon$.
+                $f(x) - f(\xi) \leq 0$ (by ineq lemma 27). Proof. 
+                    $f(x),f(\xi)$ are real numbers.
+                    $\xi$ is a local maximum of $f$. $x \in \B_{\tau}(\xi)$. $f(x) \leq f(\xi)$. 
+                End.
+                $x - \xi < 0$. Therefore $\Diffquot{f}{\xi}(x) = \frac{f(x) - f(\xi)}{x - \xi} \geq 0$ (by frac lemma 4).
+                $\Diffquot{f}{\xi}(x) - y \geq 0$ (by ineq lemma 21). Indeed $-y \geq 0$.
+                $\abs{\Diffquot{f}{\xi}(x) - y} = \Diffquot{f}{\xi}(x) - y$.
+                
+                $-y + \Diffquot{f}{\xi}(x) \geq -y = \varepsilon$ (by ineq lemma 23). 
+            End.
+
+            Take $h = \Diffquot{f}{\xi}.$
+            Thus $\theta$ is not a domain restrictor for $\varepsilon$ and $h$ around $\xi$ and $y$ (by domain restrictor lemma 2).
+                Indeed $x \in \mathbb{R} \setminus \sset{\xi}{\mathbb{R}}$ and $\abs{x - \xi} < \theta$ and $h$ is a real map
+                and $\abs{h(x) - y} \geq \varepsilon$. [timelimit 3]
+            Contradiction.
+        qed.
+    QED.
+\end{proof}
+
+\begin{definition}
+    A local minimum of $f$ is a real number $\xi$ such that $\xi$ is a local maximum of $\fminus{f}$.
+\end{definition}
+
+\begin{corollary}[derivative of minimum]
+    Let $\xi$ be a local minimum of $f$. Let $f$ be differentiable in $\xi$.
+    Then $\derivin{f}(\xi) = 0$.
+\end{corollary}
+\begin{proof}
+    (A) $\xi$ is a local maximum of $\fminus{f}$.
+
+    $-\derivin{f}(\xi) = \derivin{\fminus{f}}(\xi) = 0$ (by minus derivative, A, derivative of maximum).
+\end{proof}
+
+\end{forthel}
+
+
+\section{Mean Value Theorem}
+
+In the proof of Rolle's theorem we basically have three cases. If we have an inner local maximum, then the derivative of that local maximum is zero.
+If we have a local minimum, then the derivative of that local minimum is zero. And if we have neither, the function must be constant on the interval
+and therefore the derivative of any value therein must be zero.
+
+\begin{forthel}
+Let $f$ denote a real map.
+Let $a,b$ denote real numbers.
+
+\begin{theorem}[Rolles theorem]
+    Let $f$ be differentiable. Let $a < b$ and $f(a) = f(b)$.
+    Then there exists a $\xi \in (a,b)_{OI}$ such that $\derivin{f}(\xi) = 0$.
+\end{theorem}
+\begin{proof}
+    Take $M = f[[a,b]_{CI}]$. $M$ is a subset of $\mathbb{R}$.
+    Take $s \in [a,b]_{CI}$ such that $f(s)$ is an upper bound of $M$ (by extreme value theorem).
+        Indeed $f$ is continuous and $a < b$.  
+    
+    Case $a \neq s \neq b$. 
+        Then $s$ is a local maximum of $f$. Proof.
+            Take a positive real number $\delta$ such that $\delta < s - a$ and $\delta < b - s$ (by ineq lemma 19). 
+                Indeed $s - a, b - s$ are positive real numbers.
+            Then $\delta$ is a maximum domain restrictor for $f$ around $s$. Proof.
+                Let $x \in \B_{\delta}(s)$. 
+                (A) Then $x \in [a,b]_{CI}$. Proof.
+                    $x \in (s - \delta, s + \delta)_{OI}$ (by ball and open interval).
+                    $a \leq x \leq b$ (by transitivity). Indeed $a < s - \delta < x < s + \delta < b$. 
+                End.
+                Therefore $f(s) \geq f(x)$. Indeed $f(x) \in f[[a,b]_{CI}]$ (by A).
+            End.
+        End.
+    
+        $\derivin{f}(s) = 0$ (by derivative of maximum). 
+    End. 
+
+    Case $s = a$ or $s = b$. 
+        Take $i \in [a,b]_{CI}$ such that $f(i)$ is a lower bound of $M$ (by extreme value theorem 2).
+            Indeed $f$ is continuous and $a < b$.
+
+        Case $a \neq i \neq b$. 
+            $i$ is a local minimum of $f$. Proof.
+                Take a positive real number $\delta$ such that $\delta < i - a$ and $\delta < b - i$ (by ineq lemma 19).
+                    Indeed $i - a, b - i$ are positive real numbers.
+                Then $\delta$ is a maximum domain restrictor for $\fminus{f}$ around $i$. Proof.
+                    Let $x \in \B_{\delta}(i)$. Then $x \in [a,b]_{CI}$. Proof.
+                        $x \in (i - \delta, i + \delta)_{OI}$ (by ball and open interval).
+                        $a \leq x \leq b$ (by transitivity). Indeed $a < i - \delta < x < i + \delta < b$.
+                    End. [timelimit 10]
+                    Therefore $\fminus{f}(i) \geq \fminus{f}(x)$. Indeed $f(i) \leq f(x)$ and $\fminus{f}(i) = -f(i) \geq -f(x) = \fminus{f}(x)$. 
+                    [timelimit 3]
+                End.
+            End.
+
+            Thus $\derivin{f}(i) = 0$ (by derivative of minimum). 
+        End.
+                            
+        Case $i = a$ or $i = b$.  [timelimit 10]
+            (A) Then for all $x \in (a,b)_{OI}$ $f(x) = f(a)$. Proof.
+                $f(s)$ is an upper bound of $M$ and $f(s) = f(a)$.
+                $f(i)$ is a lower bound of $M$ and $f(i) = f(a)$.
+                For all $y \in M$ $y = f(a)$.
+                Therefore for all $x \in (a,b)_{OI}$ $f(x) = f(a)$.
+            End. 
+            Take $e \in (a,b)_{OI}$.
+            Take a positive real number $\delta$ such that $\delta < b - e$ and $\delta < e - a$ (by ineq lemma 19).
+                Indeed $a < e < b$ and $b - e, e - a$ are positive real numbers.
+
+            Let us show that for any positive real number $\varepsilon$ $\delta$ is a domain restrictor for $\varepsilon$
+                    and $\Diffquot{f}{e}$ around $e$ and $0$.
+                Let $\varepsilon$ be a positive real number. 
+                We can show that $\delta$ is a domain restrictor for $\varepsilon$ and $\Diffquot{f}{e}$ around $e$ and $0$.
+                    Let $x \in \mathbb{R} \setminus \sset{e}{\mathbb{R}}$.
+                    Assume $\abs{x - e} < \delta$. $x \in (e - \delta, e + \delta)_{OI}$. 
+                    $(e - \delta, e + \delta)_{OI} \subseteq (a,b)_{OI}$ (by open interval lemma). Indeed $a < e - \delta < e + \delta < b$.
+                    $x - e$ is nonzero.
+                    $\Diffquot{f}{e}(x) .= \frac{f(x) - f(e)}{x - e}$ (by def diffquot)
+                    $.= 0$ (by A, additive inverse, eq lemma 9).
+                    Thus $\abs{\Diffquot{f}{e}(x) - 0} < \varepsilon$.
+                End.
+            End.
+        End.
+    End.[timelimit 3]
+\end{proof}
+
+\end{forthel}
+
+Following the standard proof of the mean value theorem based upon Rolle's theorem we define a function $h(x) = f(x) - \frac{f(b) - f(a)}{b - a}(x - a)$.
+Then $h(a) = f(a) = h(b)$ and using Rolle's theorem we find an $\xi$ such that $h'(\xi) = 0$. Then we know that $f'(\xi) = \frac{f(b) - f(a)}{b - a}$.
+\begin{forthel}
+ [prover eprover]
+\begin{corollary}[mean value theorem]
+    Let $f$ be differentiable and $a < b$.
+    Then there exists $\xi \in (a,b)_{OI}$ such that $\derivin{f}(\xi) = \Diffquot{f}{a}(b)$.
+\end{corollary}
+\begin{proof}
+    (A) Take $h = \fplus{f}{\flin{-\Diffquot{f}{a}(b)}{\Diffquot{f}{a}(b) \cdot a}}$.
+
+    $h$ is differentiable.
+    
+    $h(a) = h(b)$. Proof.
+
+        $h(a) .= f(a) + \left(\left(-\Diffquot{f}{a}(b) \cdot a\right) + \left(\Diffquot{f}{a}(b) \cdot a\right)\right)$ (by A, def add func,linear function) 
+
+        $.= f(a) + \left(\Diffquot{f}{a}(b) \cdot (a - a)\right)$ (by eq lemma 21, distributive law, add comm)
+
+        $.= f(a)$ (by additive inverse, mult comm, eq lemma 9, existence zero).
+
+        $h(b) .= f(b) + \left(\left(-\Diffquot{f}{a}(b) \cdot b\right) + \left(\Diffquot{f}{a}(b) \cdot a\right)\right)$ (by A, def add func,linear function)
+
+        $.= f(b) + \left(\Diffquot{f}{a}(b) \cdot (a - b)\right)$ (by eq lemma 21, distributive law, add comm)
+
+        $.= f(b) + \left((a - b) \cdot \frac{f(b) - f(a)}{b - a}\right)$ (by mult comm, def diffquot)
+
+        $.= f(b) - \left((b - a) \cdot \frac{f(b) - f(a)}{b - a}\right)$ (by eq lemma 15, eq lemma 45, add comm, eq lemma 11)
+
+        $.= (f(b) - f(b)) + f(a)$ (by fraction lemma 2, eq lemma 15, eq lemma 45, add ass)
+
+        $.= f(a)$ (by additive inverse, add comm, existence zero).
+    End. [timelimit 10]
+
+    (B) Take $\xi\in (a,b)_{OI}$ such that $\derivin{h}(\xi) = 0$ (by Rolles theorem). 
+        Indeed $h$ is a differentiable real map and $a < b$ and $h(a) = h(b)$.[timelimit 3]
+
+    $\derivin{f}(\xi) = \Diffquot{f}{a}(b)$. Proof. 
+
+        (C) $\deriv{h} .= \fplus{\deriv{f}}{\flin{0}{-\Diffquot{f}{a}(b)}}$ (by A, derivative addition rule 2, derivative of linear function).
+
+        $\deriv{h}(\xi) .= \deriv{f}(\xi) + \flin{0}{-\Diffquot{f}{a}(b)}(\xi)$ (by C, def add func)
+        $.= \deriv{f}(\xi) - \Diffquot{f}{a}(b)$ (by  linear lem 1).
+
+        $\deriv{h}(\xi) = 0$ (by B).
+        Thus $\deriv{f}(\xi) = \Diffquot{f}{a}(b)$.
+    End.
+\end{proof}
+
+\begin{definition}
+    Let $S$ be a subset of $\mathbb{R}$.
+    $f$ is constant on $S$ iff for all $x,y \in S$ $f(x) = f(y)$.
+\end{definition}
+ 
+\begin{proposition}[derivative zero then constant]
+    Let $I$ be an interval and $f$ be continuous.
+    If $\derivin{f}(x) = 0$ for all $x \in I$ then $f$ is constant on $I$.
+\end{proposition}
+\begin{proof}
+    Assume $\derivin{f}(x) = 0$ for all $x \in I$.
+    Assume $f$ is not constant on $I$. Take $a,b \in I$ such that $f(a) \neq f(b)$.
+    $a = b$ or $a < b$ or $b < a$.
+
+    Case $a = b$. Trivial. [timelimit 10]
+    
+    Case $a < b$. 
+    Then take $\xi \in (a,b)_{OI}$ such that $\derivin{f}(\xi) = \Diffquot{f}{a}(b)$ (by mean value theorem). [timelimit 3]
+    $\derivin{f}(\xi) = \Diffquot{f}{a}(b) = \frac{f(b) - f(a)}{b - a}$ (by def diffquot).
+        $\frac{f(b) - f(a)}{b - a} \neq 0$ (by frac lemma 5). 
+        Indeed $f(b) - f(a), b - a$ are nonzero. $\xi \in I$.
+    Contradiction. End.
+
+    Case $b < a$. [timelimit 20]
+    Then take $\xi \in (b,a)_{OI}$ such that $\derivin{f}(\xi) = \Diffquot{f}{b}(a)$ (by mean value theorem). [timelimit 3]
+    $\derivin{f}(\xi) = \Diffquot{f}{b}(a) = \frac{f(a) - f(b)}{a - b}$ (by def diffquot).
+        $\frac{f(a) - f(b)}{a - b} \neq 0$ (by frac lemma 5). 
+        Indeed $f(a) - f(b), a - b$ are nonzero. $\xi \in I$.
+    End.
+\end{proof}
+
+\end{forthel}
+
+
+\section{Monotonicity}
+
+\begin{forthel}
+Let $f$ denote a real map.
+Let $S$ denote a subset of $\mathbb{R}$.
+
+\begin{definition}
+    $f$ is strictly increasing on $S$ iff 
+    for all $x,y \in S$ if $x < y$ then $f(x) < f(y)$.
+\end{definition}
+
+\begin{definition}
+    $f$ is strictly decreasing on $S$ iff
+    for all $x,y \in S$ if $x < y$ then $f(y) < f(x)$.
+\end{definition}
+
+\begin{definition}
+    $f$ is strictly monotone on $S$ iff $f$ is strictly increasing on $S$ or $f$ is strictly decreasing on $S$.
+\end{definition}
+Let $f$ is strictly monotone stand for $f$ is strictly monotone on $\dom(f)$.
+
+\begin{definition}
+    $f$ is increasing on $S$ iff for all $x,y \in S$ if $x \leq y$ then $f(x) \leq f(y)$.
+\end{definition}
+
+\begin{definition}
+    $f$ is decreasing on $S$ iff for all $x,y \in S$ if $x \leq y$ then $f(x) \geq f(y)$.
+\end{definition}
+
+\begin{lemma}[subset monotone lemma]
+    Let $f$ be strictly monotone on $S$. Let $U$ be a subset of $S$.
+    Then $f$ is strictly monotone on $U$.
+\end{lemma}
+\begin{proof}
+    Case $f$ is strictly increasing on $S$. Trivial.
+    Case $f$ is strictly decreasing on $S$. Trivial.
+\end{proof}[prover vampire]
+
+\begin{lemma}[lemma minus f increasing]
+    $f$ is strictly decreasing on $S$ iff $\fminus{f}$ is strictly increasing on $S$.
+\end{lemma}
+\begin{proof}
+    Case $f$ is strictly decreasing on $S$. Let $x,y \in S$. Assume $x < y$. Then $\fminus{f}(x) < \fminus{f}(y)$.
+        Indeed $-\fminus{f}(x) = f(x) > f(y) = -\fminus{f}(y)$. Indeed $f(x) > f(y)$.
+    End. 
+
+    Case $\fminus{f}$ is strictly increasing on $S$. 
+        Let $x,y \in S$. Assume $x < y$. Then $f(x) > f(y)$. Indeed $-f(x) = \fminus{f}(x) < \fminus{f}(y) = -f(y)$.
+    End.
+\end{proof}
+
+Let $E$ denote an interval. [timelimit 10]
+\begin{corollary}[cor I intermediate value theorem]
+    Let $f$ be a continuous real map such that $f$ be strictly increasing on $E$. Let $x,z \in E$.
+    Then $(f(x),f(z))_{OI} = f[(x,z)_{OI}]$.
+\end{corollary}
+\begin{proof}
+    Let us show that $(f(x),f(z))_{OI} \subseteq f[(x,z)_{OI}]$.
+        Case $x < z$ (by intermediate value theorem I). End.
+        Case $x \geq z$. Then $f(x) \geq f(z)$ and $(f(x),f(z))_{OI} = \emptyset$. End.
+    End.
+
+    Let us show that $f[(x,z)_{OI}] \subseteq (f(x),f(z))_{OI}$.
+        Let $\upsilon \in f[(x,z)_{OI}]$. Take $y \in (x,z)_{OI}$ such that $f(y) = \upsilon$.
+        Then $f(x) < f(y) < f(z)$. Indeed $x,y,z \in E$ and $x < y < z$ and $f$ is strictly increasing on $E$. 
+        Therefore $\upsilon \in (f(x),f(z))_{OI}$.
+    End.
+\end{proof}
+
+\begin{corollary}[cor II intermediate value theorem]
+    Let $f$ be a continuous real map such that $f$ is strictly decreasing on $E$. 
+    Let $x,z \in E$. Then $(f(z),f(x))_{OI} = f[(x,z)_{OI}]$.
+\end{corollary}
+\begin{proof}
+    Let us show that $(f(z),f(x))_{OI} \subseteq f[(x,z)_{OI}]$.
+        Case $x \geq z$. $f(x) \leq f(z)$. End.  
+        Case $x < z$ (by intermediate value theorem II). End.
+    End.
+
+    Let us show that $f[(x,z)_{OI}] \subseteq (f(z),f(x))_{OI}$.
+        Let $\upsilon \in f[(x,z)_{OI}]$. Take $y \in (x,z)_{OI}$ such that $f(y) = \upsilon$.
+        Then $f(x) > f(y) > f(z)$. Indeed $x,y,z \in E$ and $x < y < z$ and $f$ is strictly decreasing on $E$.
+        Therefore $\upsilon \in (f(z),f(x))_{OI}$.
+    End.
+\end{proof} [timelimit 3]
+
+
+\begin{lemma}[derivative strictly increasing]
+    Let $f$ be differentiable. Let $\derivin{f}(x) > 0$ for every $x \in E$. 
+    Then $f$ is strictly increasing on $E$.
+\end{lemma}
+\begin{proof}[by contradiction]
+    Assume the contrary. Take $x,y \in E$ such that $x < y$ and $f(x) \geq f(y)$. Indeed $f$ is not strictly increasing on $E$.
+    Take $\xi \in (x,y)_{OI}$ such that $\derivin{f}(\xi) = \Diffquot{f}{x}(y)$ (by mean value theorem).
+    $\xi \in E$.
+
+    $\derivin{f}(\xi) \leq 0$. Proof.
+        $f(y) - f(x) \leq f(x) - f(x) = 0$. $y - x > 0$.
+
+        Therefore $\derivin{f}(\xi) = \Diffquot{f}{x}(y) = \frac{f(y) - f(x)}{y - x} \leq 0$ (by frac lemma 3).
+    End.
+
+    Contradiction.
+\end{proof}
+
+\begin{corollary}[derivative strictly decreasing]
+    Let $f$ be differentiable and $\derivin{f}(x) < 0$ for every $x \in E$. 
+    Then $f$ is strictly decreasing on $E$.
+\end{corollary}
+\begin{proof}
+    $E$ is a subset of $\mathbb{R}$.
+    $\fminus{f}$ is strictly increasing on $E$ (by derivative strictly increasing).
+    Indeed for every $x \in E$ $\derivin{\fminus{f}}(x)= -\derivin{f}(x) > 0$.
+
+    Thus $f$ is strictly decreasing on $E$.
+    Proof. Let $x,y \in E$. Assume $x < y$. 
+        $\fminus{f}(x) < \fminus{f}(y)$ (by lemma minus f increasing).
+        Thus $-f(x) < -f(y)$ and $f(y) < f(x)$.
+    End. 
+\end{proof}
+
+\begin{lemma}[derivative increasing]
+    Let $f$ be differentiable and $\derivin{f}(x) \geq 0$ for every $x \in E$.
+    Then $f$ is increasing on $E$.
+\end{lemma}
+\begin{proof}
+    Let $x,y \in E$. Assume that $x < y$ and $f(x) > f(y)$.
+    Take $\xi \in (x,y)_{OI}$ such that $\derivin{f}(\xi) = \Diffquot{f}{x}(y)$ (by mean value theorem).
+    $\xi \in E$.
+
+    $\derivin{f}(\xi) < 0$. Proof. [prover eprover]
+        $f(y) - f(x) < f(x) - f(x) = 0$. Indeed $f(y) < f(x)$. $y - x > 0$.
+
+        Therefore $\derivin{f}(\xi) = \Diffquot{f}{x}(y) = \frac{f(y) - f(x)}{y - x} < 0$ (by frac lemma 3, frac lemma 5).
+    End.
+
+    Contradiction.
+\end{proof}
+ 
+\begin{corollary}[derivative decreasing]
+    Let $f$ be differentiable and $\derivin{f}(x) \leq 0$ for every $x \in E$. 
+    Then $f$ is decreasing on $E$.
+\end{corollary}
+\begin{proof}
+    $\fminus{f}$ is increasing on $E$ (by derivative increasing).
+    Indeed for every $x \in E$ $\derivin{\fminus{f}}(x) = -\derivin{f}(x) \geq 0$.
+
+    Thus $f$ is decreasing on $E$.
+    Proof. Let $x,y \in E$. Assume $x < y$.
+        Then
+        
+        $-f(x) = \fminus{f}(x) \leq \fminus{f}(y) = -f(y)$.
+        Thus $-f(x) \leq -f(y)$ and $f(y) \leq f(x)$.
+    End. 
+\end{proof}
+
+
+\end{forthel}
+
+
+\section{Sufficient Condition for a Local Maximum}
+
+If we know that $f'(\xi) = 0$ and $f''(\xi) < 0$, we want to show in (A) that $f$ is increasing on some interval $[\xi - \delta, \xi]$
+and in (B) that $f$ is decreasing on $[\xi, \xi + \delta]$. Knowing (A) and (B) we can show that $\xi$ is a local maximum.
+
+\begin{forthel}
+Let $f$ denote a real map.
+Let $\xi$ denote a real number.
+       [prover eprover]
+\begin{theorem}[sufficient condition local maximum]
+    Let $f$ be differentiable and $\derivin{f}(\xi) = 0$.
+    Let $\deriv{f}$ be differentiable in $\xi$ and $\derivin{\deriv{f}}(\xi) < 0$.
+    Then $\xi$ is a local maximum of $f$.
+\end{theorem}
+\begin{proof}
+    Take $\upsilon = \derivin{\deriv{f}}(\xi)$.
+    Take $\varepsilon = -\upsilon$. $\varepsilon$ is a positive real number. [prover vampire]
+    Take a positive real number $d$ such that $d$ is a domain restrictor for $\varepsilon$ and $\Diffquot{\deriv{f}}{\xi}$ around $\xi$ and $\upsilon$.
+        Indeed $\limS{\Diffquot{\deriv{f}}{\xi}}{\xi} = \upsilon$. [prover eprover]
+    Take a positive real number $\delta$ such that $\delta < d$.
+
+    Take $I = [\xi - \delta, \xi]_{CI}$.
+    Take $J = [\xi, \xi + \delta]_{CI}$. 
+    I is an interval and J is an interval (by interval lemma).
+
+    (A) $f$ is increasing on $I$ (by derivative increasing).
+    Indeed we can show that for every $x \in I$ $\derivin{f}(x) \geq 0$.
+
+        Assume the contrary. Take $x \in I$ such that $\derivin{f}(x) < 0$.
+
+        $\abs{\Diffquot{\deriv{f}}{\xi}(x) - \upsilon} \geq \varepsilon$. Proof.
+
+            (1) $\deriv{f}(\xi) = 0$ and $x - \xi$ is nonzero.
+            $\Diffquot{\deriv{f}}{\xi}(x) = \frac{\deriv{f}(x) - \deriv{f}(\xi)}{x - \xi}$ (by def diffquot). 
+            
+            $\frac{\deriv{f}(x) - \deriv{f}(\xi)}{x - \xi} .= \frac{\deriv{f}(x)}{x - \xi}$ (by 1, eq lemma 0, existence zero).
+
+            $\frac{\deriv{f}(x)}{x - \xi} > 0$ (by frac lemma 4, frac lemma 5).
+                Indeed $x - \xi < 0$ and $\deriv{f}(x) < 0$.
+
+            (AA) Thus $\Diffquot{\deriv{f}}{\xi}(x) > 0$.
+
+            Therefore
+            $\abs{\Diffquot{\deriv{f}}{\xi}(x) - \upsilon} 
+            = \Diffquot{\deriv{f}}{\xi}(x) - \upsilon$ (by ineq lemma 21).
+
+            $-\upsilon + \Diffquot{\deriv{f}}{\xi}(x) \geq -\upsilon + 0 = \varepsilon$ (by ineq axiom addition, AA).
+        End.
+
+        $\abs{x - \xi} < d$. Proof.
+            $\abs{x - \xi} = \abs{\xi - x} = \xi - x \leq \delta < d$. Indeed $\xi - x \leq \xi - (\xi - \delta) = \delta$.
+        End.
+
+        [timelimit 20]
+        $d$ is not a domain restrictor for $\varepsilon$ and $\Diffquot{\deriv{f}}{\xi}$ around $\xi$ and $\upsilon$ (by domain restrictor lemma 2).
+            Indeed $x\in \mathbb{R} \setminus \sset{\xi}{\mathbb{R}}$ and $\Diffquot{\deriv{f}}{\xi}$ is a real map. [timelimit 3]
+        Contradiction.
+    qed.
+  
+    (B) $f$ is decreasing on $J$ (by derivative decreasing).
+    Indeed we can show that for every $x \in J$ $\derivin{f}(x) \leq 0$. 
+        Assume the contrary. Take $x \in J$ such that $\derivin{f}(x) > 0$.
+
+        $\abs{\Diffquot{\deriv{f}}{\xi}(x) - \upsilon} \geq \varepsilon$. Proof.
+            $\Diffquot{\deriv{f}}{\xi}(x)
+            = \frac{\deriv{f}(x) - \deriv{f}(\xi)}{x - \xi}
+            = \frac{\deriv{f}(x)}{x - \xi}$.
+
+            $\frac{\deriv{f}(x)}{x - \xi} > 0$ (by frac lemma 1, frac lemma 5).
+                Indeed $x - \xi > 0$ and $\deriv{f}(x) > 0$.
+
+            (BB) Thus $\Diffquot{\deriv{f}}{\xi}(x) > 0$.
+
+            Therefore 
+            $\abs{\Diffquot{\deriv{f}}{\xi}(x) - \upsilon}
+            = \Diffquot{\deriv{f}}{\xi}(x) - \upsilon$ (by ineq lemma 21). 
+            
+            $-\upsilon + \Diffquot{\deriv{f}}{\xi}(x) \geq -\upsilon + 0 = \varepsilon$ (by ineq axiom addition, BB).
+        End.
+
+        $\abs{x - \xi} < d$. Proof.
+            $\abs{x - \xi} = x - \xi \leq \delta < d$. Indeed $x \leq \xi + \delta$.
+        End.
+        
+        [timelimit 20]
+        $d$ is not a domain restrictor for $\varepsilon$ and $\Diffquot{\deriv{f}}{\xi}$ around $\xi$ and $\upsilon$ (by domain restrictor lemma 2).
+            Indeed $x\in \mathbb{R} \setminus \sset{\xi}{\mathbb{R}}$ and $\Diffquot{\deriv{f}}{\xi}$ is a real map. [timelimit 3]
+        Contradiction.
+    qed. 
+
+    $\delta$ is a maximum domain restrictor for $f$ around $\xi$. Proof.
+        $f(x) \leq f(\xi)$ for all $x \in I$. $f(\xi) \geq f(x)$ for all $x \in J$.
+        $\B_{\delta}(\xi) = (\xi - \delta, \xi + \delta)_{OI} \subseteq [\xi - \delta, \xi + \delta]_{CI} \subseteq I \cup J$.
+    End.
+
+    Therefore $\xi$ is a local maximum of $f$.
+\end{proof}
+
+\begin{corollary}[sufficient condition local minimum]
+    Let $f$ be differentiable and $\derivin{f}(\xi) = 0$.
+    Let $\deriv{f}$ be differentiable in $\xi$ and $\derivin{\deriv{f}}(\xi) > 0$.
+    Then $\xi$ is a local minimum of $f$.
+\end{corollary}
+\begin{proof}
+    $\fminus{f}$ is differentiable and $\derivin{\fminus{f}}(\xi) = 0$.
+    $\deriv{\fminus{f}}$ is differentiable in $\xi$ and $\derivin{\deriv{\fminus{f}}}(\xi) < 0$.
+    Then $\xi$ is a local maximum of $\fminus{f}$ (by sufficient condition local maximum).
+    Therefore $\xi$ is a local minimum of $f$.
+\end{proof}
+
+Let $U$ denote an interval.
+\begin{definition}
+    $f$ is strictly convex on $U$ iff for every $x \in U$ $f$ is differentiable in $x$ and $\deriv{f}$ is differentiable in $x$ and 
+    $\derivin{\deriv{f}}(x) < 0$.
+\end{definition}
+Let $f$ is strictly convex stand for $f$ is strictly convex on $\mathbb{R}$.
+
+\begin{definition}
+    A maximum of $f$ on $U$ is an element $\xi$ of $U$ such that
+    for every $x \in U$ $f(\xi) \geq f(x)$.
+\end{definition}
+Let a maximum of $f$ stand for a maximum of $f$ on $\dom(f)$. [prover vampire]
+
+\begin{corollary}[sufficient condition for maximum on interval]
+    Let $f$ be strictly convex on $U$. Let $\xi$ be an element of $U$.
+    If $\xi$ is a local maximum of $f$ then $\xi$ is a maximum of $f$ on $U$.
+\end{corollary}
+\begin{proof}
+    Let $\xi$ be a local maximum of $f$. (A) Then $\derivin{f}(\xi) = 0$ (by derivative of maximum). 
+    Define $I = \{x \in U | x \leq \xi\}$.
+    Define $J = \{x \in U | x \geq \xi\}$. [timelimit 10]
+    $I \cup J = U$. $I$ is an interval and $J$ is an interval.
+    
+    Let us show that $f(\xi) \geq f(x)$ for any $x \in I$.
+        $\deriv{f}$ is decreasing on $I$ (by derivative decreasing). Indeed for every $x \in I$ $\derivin{\deriv{f}}(x) \leq 0$.
+        For every $x \in I$ $\derivin{f}(x) = \deriv{f}(x) \geq \deriv{f}(\xi) = 0$. [timelimit 20]
+        Therefore $f$ is increasing on $I$ (by derivative increasing). [timelimit 3]
+    End.
+
+    Let us show that $f(\xi) \geq f(x)$ for any $x \in J$.
+        $\deriv{f}$ is decreasing on $J$ (by derivative decreasing). Indeed for every $x \in J$ $\derivin{\deriv{f}}(x) \leq 0$.
+        For every $x \in J$ $\derivin{f}(x) = \deriv{f}(x) \leq \deriv{f}(\xi) = 0$. [timelimit 20]
+        Therefore $f$ is decreasing on $J$ (by derivative decreasing). [timelimit 3]
+    End.
+\end{proof}
+
+\begin{lemma}[maximum is local maximum]
+    Let $E$ be an open neighbourhood of $\xi$ such that $E$ is an interval.
+    Let $\xi$ is a maximum of $f$ on $E$. Then $\xi$ is a local maximum of $f$.
+\end{lemma}
+\begin{proof}
+    Take a positive real number $\delta$ such that $\B_{\delta}(\xi) \subseteq E$.
+    Then $\delta$ is a maximum domain restrictor for $f$ around $\xi$.
+\end{proof}[prover eprover]
+\end{forthel}
+
+
+\end{document}

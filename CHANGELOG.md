@@ -58,6 +58,9 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 ### Changes on the Formalizations
 
+* **New:** A new formalization of the macroeconomic Solow growth model and its mathematical foundation:
+  `math/examples/solow`
+
 * **New:** A new formalization of the "Socrates is mortal" syllogism:
   `math/archive/articles/source/socrates.ftl.en.tex`
 

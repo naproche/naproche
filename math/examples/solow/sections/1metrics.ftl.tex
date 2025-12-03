@@ -1,0 +1,213 @@
+\documentclass[../solow_main.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Metric}\label{chapter:metric}
+
+First we need to import the previous file, which we do by the following command.
+\begin{forthel}
+    [read \path{examples/solow/sections/0preparation.ftl.tex}]
+\end{forthel}
+
+The aim of the first chapter is to introduce absolute values, which are necessary for the following definitions of 
+continuity and differentiability. We do so in the context of metrics as this is commonly done in standard textbooks
+(see \cite{Fuente_2000}). 
+
+
+\section{Definition of a Metric}
+
+
+\begin{forthel}
+    
+Let $X,Y$ denote sets.
+
+\begin{definition}
+    Let $d$ be a map from $(X \times X)$ to $\mathbb{R}$.
+    $d$ is positive definit on $X$ iff 
+    for all $x,y \in X$ $d(x,y) = 0$ iff $x = y$.
+\end{definition}
+\begin{definition}
+    Let $d$ be a map from $X \times X$ to $\mathbb{R}$.
+    $d$ is reflexive on $X$ iff
+    for all $x,y \in X$ $d(x,y) = d(y,x)$.
+\end{definition}
+\begin{definition}
+    Let $d$ be a map from $X \times X$ to $\mathbb{R}$.
+    $d$ holds triangle inequality on $X$ iff 
+    For all $x,y,z \in X$ $d(x,z),d(x,y),d(y,z)$ are real numbers and $d(x,z) \leq d(x,y) + d(y,z)$.
+\end{definition}
+
+\begin{definition}
+    A metric on $X$ is a map $d$ from $X \times X$ to $\mathbb{R}$ such that
+    $d$ is positive definit on $X$ and $d$ is reflexive on $X$ and $d$ holds triangle inequality on $X$.
+\end{definition}
+
+[prover vampire][timelimit 20]
+\begin{lemma}
+    Let $x,y \in X$ and $d$ be a metric on $X$.
+    Then $d(x,y)$ is a real number and $d(x,y) \geq 0$.
+\end{lemma}
+\begin{proof}
+    $d$ holds triangle inequality on $X$. Thus $d(x,x) \leq d(x,y) + d(y,x)$.
+    $0 = d(x,x) \leq d(x,y) + d(y,x) = d(x,y) + d(x,y) = 2 \cdot d(x,y)$.
+    Thus $0 \leq 2 \cdot d(x,y)$. $d(x,y) \geq 0$. Indeed $d(x,y)$ is a real number.
+\end{proof}
+
+
+\begin{lemma}
+    Let $Y$ be a subset of $X$.
+    Then $Y \times Y$ is a subset of $X \times X$.
+\end{lemma}
+
+\begin{lemma}
+    Let $d$ be a map from $X$ to $\mathbb{R}$ and $Y$ be a subset of $X$.
+    Then $d \upharpoonright Y$ is a map from $Y$ to $\mathbb{R}$.
+\end{lemma}
+
+\begin{proposition}
+    Let $d$ be a map from $X \times X$ to $\mathbb{R}$. Let $Y$ be a subset of $X$.
+    If $d$ is a metric on $X$ then $d \upharpoonright (Y \times Y)$ is a metric on $Y$.
+\end{proposition}
+\begin{proof}
+    Take $\delta = d \upharpoonright (Y \times Y)$.
+    [timelimit 20] $\delta$ is a map from $Y \times Y$ to $\mathbb{R}$.
+    Thus for all $x,y \in Y$ $(x,y) \in (Y \times Y)$ and $\delta(x,y)$ is a real number. [timelimit 3]
+
+    Assume $d$ is a metric on $X$.
+    $\delta$ is positive definit on $Y$.
+    $\delta$ is reflexive on $Y$.
+    $\delta$ holds triangle inequality on $Y$. Proof.
+        Let $x,y,z \in Y$. Then $d(x,y),d(y,z)$ are real numbers and
+        $\delta(x,z) = d(x,z) \leq d(x,y) + d(y,z) = \delta(x,y) + \delta(y,z)$.
+        Therefore $\delta(x,z) \leq \delta(x,y) + \delta(y,z)$.
+    End.
+\end{proof}
+
+\end{forthel}
+
+
+
+\section{Absolute Value}
+
+
+\begin{forthel}
+Let $a,x,y$ denote real numbers.
+
+\begin{definition}[def absolute value]
+    $\abs{a}$ is a nonnegative real number such that (if $a \geq 0$ then $\abs{a} = a$) and if $a < 0$ then $\abs{a} = -a$.
+\end{definition}
+
+\begin{lemma}
+    $\abs{a} = a$ or $\abs{a} = -a$.
+\end{lemma}
+
+\begin{lemma}[absolute value nonnegative]
+    $\abs{a}$ is nonnegative.
+\end{lemma}
+
+\begin{lemma}[absolute value positive]
+    Let $a$ be nonzero.
+    $\abs{a}$ is positive.
+\end{lemma}
+
+\begin{lemma}[absolute lemma 1]
+    $\abs{a} = \abs{-a}$.
+\end{lemma}
+
+[timelimit 30]
+\begin{lemma}[absolute lemma 2]
+    $\abs{x \cdot y} = \abs{x} \cdot \abs{y}$.
+\end{lemma}
+\begin{proof}
+    $x \cdot y \geq 0$ or $x \cdot y < 0$.
+    If $x \cdot y \geq 0$ then $\abs{x \cdot y} = x \cdot y = \abs{x} \cdot \abs{y}$. [timelimit 3]
+    If $x \cdot y < 0$ then $\abs{x \cdot y} = - x \cdot y = \abs{x} \cdot \abs{y}$.
+\end{proof}
+
+\begin{lemma}[absolute lemma 3]
+    $\abs{x - y} = \abs{y - x}$.
+\end{lemma}
+\begin{proof}
+    $\abs{x - y} .= \abs{-(x - y)}$ (by absolute lemma 1)
+
+    $.= \abs{-x - (-y)}$ (by eq lemma 15)
+
+    $.= \abs{y - x}$ (by eq lemma 45, add comm).
+\end{proof}
+
+\begin{lemma}[absolute lemma 4]
+    $\abs{x + y} \leq \abs{x} + \abs{y}$.
+\end{lemma}
+\begin{proof}
+    If $x \geq 0$ and $y \geq 0$ then $\abs{x + y} = \abs{x} + \abs{y}$.
+    If $x \leq 0$ and $y \leq 0$ then $\abs{x + y} = \abs{x} + \abs{y}$.
+    Case $x > 0$ and $y < 0$. If $\abs{x} \geq \abs{y}$ then $\abs{x + y} = x + y < x = \abs{x} < \abs{x} + \abs{y}$.
+
+    If $\abs{x} < \abs{y}$ then $\abs{x + y} = - (x + y) = -y - x < -y = \abs{y} < \abs{y} + \abs{x}$. End.
+
+    Case $x < 0$ and $y > 0$. If $\abs{y} \geq \abs{x}$ then $\abs{x + y} = x + y < y = \abs{y} < \abs{x} + \abs{y}$.
+    
+    If $\abs{y} < \abs{x}$ then $\abs{x + y} = - (x + y) = -x - y < -x = \abs{x} < \abs{y} + \abs{x}$. End.
+\end{proof}
+
+\begin{lemma}
+    $\abs{x} + \abs{y} = \abs{\abs{x} + \abs{y}}$.
+\end{lemma}
+
+\begin{lemma}[absolute lemma 5]
+    Let $a$ be nonzero.
+    $\abs{1/a} = 1/\abs{a}$.
+\end{lemma}
+
+\end{forthel}
+
+
+
+\section{The Canonical Metric on the Real Numbers}
+
+
+\begin{forthel}
+    
+\begin{definition}[Manhattan metric]
+    $\Rmetric$ is a map from $\mathbb{R} \times \mathbb{R}$ to $\mathbb{R}$ such that
+    for all $x,y \in \mathbb{R}$ $\Rmetric(x,y) = \abs{x - y}$.
+\end{definition}
+
+\begin{theorem}
+    $\Rmetric$ is a metric on $\mathbb{R}$.
+\end{theorem}
+\begin{proof}
+    $\mathbb{R}$ is a set and $\Rmetric$ is a map from $\mathbb{R} \times \mathbb{R}$ to $\mathbb{R}$.
+
+    (1) $\Rmetric$ is positive definit on $\mathbb{R}$.
+    Indeed we can show that for all real numbers $x,z$ $\Rmetric(x,z) = 0$ iff $x = z$.
+    Let $x,z$ be real numbers.
+    If $x = z$ then $\Rmetric(x,z) = 0$.
+    Case $x \neq z$. Then $x - z \neq 0$ and $- (x - z) \neq 0$. Thus $\abs{x - z} \neq 0$. Thus $\Rmetric(x,z) \neq 0$. End.
+    End.
+
+    (2) $\Rmetric$ is reflexive on $\mathbb{R}$.
+    Indeed $\Rmetric(x,z) = \abs{x - z} = \abs{z - x} = \Rmetric(z,x)$ for all real numbers $x,z$.
+
+    (3) $\Rmetric$ holds triangle inequality on $\mathbb{R}$.
+    Indeed we can show that for all real numbers $x,y,z$ $\Rmetric(x,z) \leq \Rmetric(x,y) + \Rmetric(y,z)$.
+    Let $x,y,z$ be a real number.
+
+    $\Rmetric(x,z) = \abs{x - z} = \abs{(x + (- y + y)) - z} = \abs{(x - y) + (y - z)} \leq \abs{\abs{x - y} + \abs{y - z}} =
+    \abs{x - y} + \abs{y - z} = \Rmetric(x,y) + \Rmetric(y,z)$. End.
+\end{proof}
+
+\begin{lemma}[absolute lemma 6]
+    Let $x,y$ be real numbers.
+    $\abs{x} - \abs{y} \leq \abs{x - y}$.
+\end{lemma}
+\begin{proof}
+    $\Rmetric$ holds triangle inequality on $\mathbb{R}$. Thus $\Rmetric(x,0) \leq \Rmetric(x,y) + \Rmetric(y,0)$. 
+    $\abs{x} - \abs{y} = \Rmetric(x,0) - \abs{y} \leq (\Rmetric(x,y) + \Rmetric(y,0)) - \abs{y}
+    = (\abs{x - y} + \abs{y}) - \abs{y} = \abs{x - y}.$
+\end{proof}
+
+\end{forthel}
+
+\end{document}
+
