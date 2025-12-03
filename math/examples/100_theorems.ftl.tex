@@ -466,6 +466,9 @@ $F$ be a surjection from $S$ onto $T$ and $G$ be
 a surjection from $T$ onto $U$. Then
 $G \circ F$ is a surjection from $S$ onto $U$.
 \end{lemma}
+\begin{proof}
+Then $(G \circ F)[S] = G[F[S]] = G[T] = U$.
+\end{proof}
 
 \begin{signature}
 Let $F$ be an injective map.
@@ -542,9 +545,9 @@ Define \[ H(x) =
             F(x) & : x \in A \\
             G(x) & : x \in B
           \end{cases} \]
-        for $x \in A \cup B$.
+        for $x \in A \cup B$. [timelimit 10]
 
-$H$ is a map from $A \cup B$ to $C \cup D$.
+$H$ is a map from $A \cup B$ to $C \cup D$. [timelimit 3]
 $H$ is a bijection between $A \cup B$ and $C \cup D$.
 \end{proof}
 
@@ -1182,6 +1185,7 @@ $2 \cdot 5 = 10$.
 \begin{lemma}
 $5 \cdot 5 = (2 \cdot 10) + 5$.
 \end{lemma}
+[timelimit 10]
 
 \begin{lemma} Assume that $6 \neq 0$. Then
 $\frac{1}{2} + \frac{1}{3} = \frac{5}{6}$.
@@ -1189,6 +1193,7 @@ $\frac{1}{2} + \frac{1}{3} = \frac{5}{6}$.
 \begin{proof}
 $\frac{1}{2} + \frac{1}{3} = \frac{3}{6} + \frac{2}{6} = \frac{5}{6}$.
 \end{proof}
+[timelimit 3]
 \end{forthel}
 The assumption $6 \neq 0$ makes
 the fractions well-defined. Note that $6 \neq 0$ implies
@@ -1211,7 +1216,7 @@ $x \leq y$ is an atom.
 \end{signature}
 
 
-Let $x \nleq y$ stand for  $\neg x \leq y$.
+Let $x \nleq y$ stand for $\neg x \leq y$.
 
 Let $x \geq y$ stand for $y \leq x$.
 
@@ -1267,17 +1272,18 @@ $x \leq y$ iff $y \nless x$.
 We prove some lemmas, following Rudin \cite{Rudin1953}.
 \begin{forthel}
 
-\begin{lemma}0=0.\end{lemma}
-
 \begin{proposition}
 $x > 0$ iff $-x < 0$.
 \end{proposition}
 
-[timelimit 10] %%%
 \begin{proposition}
 If $x \neq 0$ then $x \cdot x > 0$.
 \end{proposition}
-[timelimit 3]
+\begin{proof}
+Assume $x \neq 0$.
+Case $x \geq 0$. Trivial.
+Case $x \leq 0$. Trivial.
+\end{proof}
 
 \begin{proposition}
 $1 > 0$.
@@ -1356,12 +1362,11 @@ necessary definitions.
 \begin{forthel}
 
 Let $E$ denote a subset of $\mathbb{R}$.
-Let $E$ denote a set.
 Let $x,a,b$ denote real numbers.
 
 \begin{definition}
 An upper bound of $E$ is a
-real number $b$ such that for all elements $x$ of $E$ $x \leq b$.
+real number $b$ such that for all elements $x$ of $E$ $x \leq b$. 
 \end{definition}
 
 \begin{definition}
@@ -1396,7 +1401,7 @@ not a lower bound of $E$.
 The crucial completeness axiom now reads:
 %
 \begin{forthel}
-\begin{axiom}
+\begin{axiom}[existence supremum]
 Assume that $E$ is nonempty and bounded above.
 Then $E$ has a supremum.
 \end{axiom}
@@ -1586,9 +1591,9 @@ $\mathbb{Z}$ is not bounded above.
 \end{theorem}
 \begin{proof}
 Assume the contrary.
-$\mathbb{Z}$ is nonempty. Indeed $0$ is an integer.
-Take a supremum
-$b$ of $\mathbb{Z}$.
+$\mathbb{Z}$ is nonempty. Indeed $0$ is an integer. 
+Take a supremum $b$ of $\mathbb{Z}$ (by existence supremum). 
+Indeed $\mathbb{Z}$ is a subset of $\mathbb{R}$.
 Let us show that $b - 1$ is an upper bound of $\mathbb{Z}$.
 Let $x \in \mathbb{Z}$. $x + 1 \in \mathbb{Z}$.
 $x + 1 \leq b$.
@@ -1603,7 +1608,7 @@ $\mathbb{Z}$ is not bounded below.
 Assume the contrary.
 Take a real number $x$ that is a lower bound of $\mathbb{Z}$.
 Then $-x$ is an upper bound of $\mathbb{Z}$.
-Contradiction.
+Contradiction (by Archimedes 1). Indeed $\mathbb{Z}$ is bounded above.
 \end{proof}
 
 \begin{theorem}[Archimedes 2]
@@ -1613,7 +1618,7 @@ such that $x < a$.\end{theorem}
 \begin{proof}[by contradiction]
 Assume the contrary.
 Then $x$ is an upper bound of $\mathbb{Z}$.
-Contradiction.
+Contradiction (by Archimedes 1). Indeed $\mathbb{Z}$ is bounded above.
 \end{proof}
 
 \end{forthel}
@@ -1661,7 +1666,7 @@ $\mathbb{N} \subsetneq \mathbb{Z} \subsetneq
 \end{theorem}
 \begin{proof}
 $-1 \notin \mathbb{N}$. $-1 \in \mathbb{Z}$.
-$\frac{1}{2} \notin \mathbb{Z}$.
+$\frac{1}{2} \notin \mathbb{Z}$. Indeed $0 < \frac{1}{2} < 1$.
 $\frac{1}{2} \in \mathbb{Q}$.
 \end{proof}
 
@@ -1810,7 +1815,7 @@ Let us show that every element of $\mathbb{N}$ is an element of $A$.
   Let $n \in \mathbb{N}$.
   Assume the contrary.
   Define $F = \{  j \in \mathbb{N} \mid j \notin A\}$.
-  $F$ is nonempty. $F$ is bounded below.
+  $F$ is nonempty and $F$ is bounded below. $F$ is a subset of $\mathbb{R}$.
   Take an infimum $a$ of $F$.
   Let us show that $a+1$ is a lower bound of $F$.
     Let $x \in F$. $x - 1 \in \mathbb{Z}$.
@@ -2059,23 +2064,27 @@ somewhat clumsy, since we are missing proper arithmetic
 parsing and rewriting.
 %
 \begin{forthel}
-[timelimit 10]
+[timelimit 10] 
 \begin{lemma}
 $(x + y)^{2} = (x^{2} + (2 \cdot (x \cdot y))) + y^{2}$.
 \end{lemma}
 \begin{proof}
 $(x + y) \cdot (x + y) =
 (x^{2} + (x \cdot y)) + ((y \cdot x) + y^{2}) =
-(x^{2} + ((x \cdot y) + (y \cdot x))) + y^{2}$.
+(x^{2} + ((x \cdot y) + (y \cdot x))) + y^{2}
+= (x^{2} + (2 \cdot (x \cdot y))) + y^{2}$.
 \end{proof}
 
 \begin{lemma}
 $(x - y)^{2} = (x^{2} - (2 \cdot (x \cdot y))) + y^{2}$.
 \end{lemma}
 \begin{proof}
-$(x - y)^{2} = (x^{2} + (2 \cdot (x \cdot (-y)))) + (-y)^{2}$.
+$(x - y)^{2} = (x^{2} + (2 \cdot (x \cdot (-y)))) + (-y)^{2}
+= (x^{2} + (2 \cdot (x \cdot (-y)))) + y^{2}
+= (x^{2} + (2 \cdot (-(x \cdot y)))) + (-y)^{2}
+= (x^{2} - (2 \cdot (x \cdot y))) + y^{2}$.
 \end{proof}
-[timelimit 3]
+[timelimit 3] 
 \end{forthel}
 
 
@@ -2124,7 +2133,7 @@ Take a natural number $m$ such that $m + 1 = n$.
 $m$ is inductively smaller than $m+1$ and
 $\sumgeom{x}{m} = \frac{1 - x^{m}}{1 - x}$.
 
-Let $a = x^{m}$ and $b = x^{n}$ and $c=1-x$.
+Take $a = x^{m}$ and $b = x^{n}$ and $c=1-x$.
 Then $a,b,c$ are real numbers and
 $\sumgeom{x}{n} =
 \frac{1 - x^{m}}{1 - x} + x^{m} =
@@ -2139,7 +2148,6 @@ $\sumgeom{x}{n} =
 \frac{(1 + (-a + a)) - b}{c} =
 \frac{1 - b}{c} =
 \frac{1 - x^{n}}{1 - x}$. End.
-
 \end{proof}
 \end{forthel}
 
@@ -2241,17 +2249,18 @@ for every natural number $m$ that divides $n$ $m = 1$ or $m = n$.
 \end{definition}
 \end{forthel}
 %
-Remarkably, the following theorem is proved automatically by
-just calling the method of induction, without further details.
-%
 \begin{forthel}
-[timelimit 10]
 \begin{theorem}
 Every nontrivial natural number $m$ has a prime divisor.
 \end{theorem}
 \begin{proof}[by induction on $m$]
+Let $m$ be a nontrivial natural number.
+Case $m$ is a prime natural number. Trivial.
+Take a natural number $n$ such that $n | m$ and $n \neq 1$ and $n \neq m$.
+$n$ is a nontrivial natural number and $n < m$.
+$n$ is inductively smaller than $m$.
+$n$ has a prime divisor.
 \end{proof}
-[timelimit 3]
 \end{forthel}
 
 \section{The Greatest Common Divisor}
@@ -2357,10 +2366,10 @@ is the greatest common divisor of $m-n$ and $n$.
 Case n=0. Trivial.
 
 Case n > 0.
-Let $l$ be the greatest common divisor of $m$ and $n$
-and $k$ be the greatest common divisor of $m-n$ and $n$.
-$0$ not divides $n$. Then $l > 0$ and $k > 0$.
-$l$ is a divisor of $m-n$ and $k$ is a divisor of $m$.
+Take the greatest common divisor $l$ of $m$ and $n$
+and the greatest common divisor $k$ of $m-n$ and $n$.
+$0$ not divides $n$. Then $l > 0$ and $k > 0$.[timelimit 50]
+$l$ is a divisor of $m-n$. $k$ is a divisor of $m$. [timelimit 3]
 Hence $l$ is a divisor of $k$ and $k$ is a divisor of $l$. Therefore $k=l$. End.
 \end{proof}
 
@@ -2407,7 +2416,7 @@ Case $m + n =0$. Trivial.
 Case $m + n > 0$.
 If $m=0$ or $n=0$ then $\gcd(m,n)$ is
 the greatest common divisor of $m$ and $n$.
-Assume $m>0$ and $n>0$.[timelimit 20]
+Assume $m \neq 0$ and $n \neq 0$.[timelimit 20]
 If $m \leq n$ then $m + (n-m)$ is inductively smaller than $m + n$ and
 $\gcd(m,n) = \gcd(m,n-m)$ and
 the greatest common divisor of $m$ and $n$ is
@@ -2424,24 +2433,21 @@ the greatest common divisor of $m-n$ and $n$. End.
 \section{Bezout's Identity (\#60)}
 
 \begin{forthel}
-
 \begin{lemma}
 Let $s,t$ be real numbers such that $s < t$.
 Then there exists a real number $r$ such that $s < r < t$.
 \end{lemma}
 \begin{proof}
-$\frac{s+t}{2}$ is a real number. $s + s < s + t$ and $\frac{s + s}{2} < \frac{s + t}{2}$.
+$\frac{s+t}{2}$ is a real number. [timelimit 30] 
+$s + s < s + t$. $\frac{s + s}{2} < \frac{s + t}{2}$.
 $s = \frac{2}{2} \cdot s = \frac{2 \cdot s}{2} = \frac{s + s}{2} < \frac{s + t}{2}$.
 $s + t < t + t$ and $\frac{s + t}{2} < \frac{t + t}{2}$.
-[timelimit 10]
-$\frac{s+t}{2} < \frac{t+t}{2} = \frac{2 \cdot t}{2} = \frac{2}{2} \cdot t = t$.
-[timelimit 3]
+$\frac{s+t}{2} < \frac{t+t}{2} = \frac{2 \cdot t}{2} = \frac{2}{2} \cdot t = t$. [timelimit 3]
 $s < \frac{s+t}{2} < t$.
 \end{proof}
 
 
-
-Let $m,n$ denote integers.
+Let $m,n$ denote integers.                
 
 
 \begin{proposition}
@@ -2501,7 +2507,7 @@ $0 \leq  m - (k \cdot a) < a$. End.
 End.
 \end{proof}
 
-\begin{lemma}
+\begin{lemma}[lemma Bezout]
 Let $a$ be nonzero natural number and $m$ be an integer.
 Then there exists an integer $k$ such that $0 \leq m - (k \cdot a) < a$.
 \end{lemma}
@@ -2534,7 +2540,8 @@ Case $a \neq  0$ and $b \neq 0$.
   $(a \cdot e) + (b \cdot f) > 0\}$.
   $a > 0$ or $-a > 0$.
   $((a \cdot 1) + (b \cdot 0)) > 0$ or $(a \cdot -1) + (b \cdot 0) > 0$.
-  [timelimit 10] $((a \cdot 1) + (b \cdot 0)) \in S$ or $(a \cdot -1) + (b \cdot 0) \in S$. [timelimit 3]
+  If $((a \cdot 1) + (b \cdot 0)) > 0$ then $((a \cdot 1) + (b \cdot 0)) \in S$.
+  $((a \cdot 1) + (b \cdot 0)) \in S$ or $(a \cdot -1) + (b \cdot 0) \in S$.
   $S$ is nonempty.
 
   Let us show that $S \subseteq \mathbb{N}$.
@@ -2552,7 +2559,8 @@ Case $a \neq  0$ and $b \neq 0$.
 
   Let us show that $d$ divides $a$.
     $d$ is a nonzero natural number and $a$ is an integers.
-    Take an integer $k$ such that $0 \leq a - (k \cdot d) < d$. Let $r = a - (k \cdot d)$.
+    Take an integer $k$ such that $0 \leq a - (k \cdot d) < d$ (by lemma Bezout). 
+    Take $r = a - (k \cdot d)$.
     $r = a - (k \cdot d) = a - (k \cdot ((a \cdot e) + (b \cdot f)))
     = a - ((k \cdot (a \cdot e)) + (k \cdot (b \cdot f)))
     = a + (-(k \cdot (a \cdot e)) - (k \cdot (b \cdot f)))$.
@@ -2566,8 +2574,9 @@ Case $a \neq  0$ and $b \neq 0$.
   End.
 
   Let us show that $d$ divides $b$.
-    $d$ is a nonzero natural number and $b$ is an integers.
-    [timelimit 10] Take an integer $k$ such that $0 \leq b - (k \cdot d) < d$. [timelimit 3] Let $r = b - (k \cdot d)$.
+    $d$ is a nonzero natural number and $b$ is an integers. 
+    Take an integer $k$ such that $0 \leq b - (k \cdot d) < d$ (by lemma Bezout). 
+    Take $r = b - (k \cdot d)$. 
     $r = b - (k \cdot d) = b - (k \cdot ((a \cdot e) + (b \cdot f)))
     = b - ((k \cdot (a \cdot e)) + (k \cdot (b \cdot f)))
     = b + (-(k \cdot (a \cdot e)) - (k \cdot (b \cdot f)))$.
@@ -2661,7 +2670,7 @@ End.
 
 $q = \frac{n}{m}$ and $m \cdot q = n$.
 \end{proof}
-
+[timelimit 30]
     \begin{lemma}
       If $p$ divides $n^{2}$ then $p$ divides $n$.
     \end{lemma}
@@ -2671,9 +2680,9 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
       $n = n \cdot 1 = n \cdot ((p \cdot s) + (n \cdot t)) = (n \cdot (p \cdot s)) + (n \cdot (n \cdot t))$.
       $n \cdot (p \cdot s), n \cdot (n \cdot t)$ are integers.
       $p$ divides $n \cdot (p \cdot s)$. $p$ divides $n \cdot (n \cdot t)$.
-      Thus $p$ divides $(n \cdot (p \cdot s)) + (n \cdot (n \cdot t))$ and $p$ divides $n$. Contradiction.
+      Thus $p$ divides $(n \cdot (p \cdot s)) + (n \cdot (n \cdot t))$ and $p$ divides $n$.
+      Contradiction.
     \end{proof}
-
 
     \begin{theorem}[Pythagoras]
       $q^{2} = p$ for no positive rational number $q$.
@@ -2682,6 +2691,7 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
       Assume the contrary.
       Take a positive rational number $q$ such that $p = q^{2}$.
       Take coprime natural numbers $m,n$ such that $m \cdot q = n$.
+      Then $(m \cdot q) \cdot (m \cdot q) = n^{2}$.
       Then $p \cdot m^{2} = n^{2}$.
       Therefore $p$ divides $n$.
       Take a natural number $k$ such that $n = k \cdot p$.
@@ -2690,7 +2700,7 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
       Therefore $m^{2}$ is equal to $p \cdot k^{2}$.
       Hence $p$ divides $m$.
       Contradiction.
-    \end{proof}
+    \end{proof}[timelimit 3]
   \end{forthel}
 
   \section{Finite and Infinite Sets}
@@ -2706,7 +2716,10 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
   \begin{lemma}
   $\Seq{m}{n}$ is a set.
   \end{lemma}
-
+  \begin{proof}
+  $\Seq{m}{n}$ is a subclass of $\mathbb{N}$.
+  \end{proof}
+[timelimit 10]
   \begin{lemma}
   Assume that $m \leq n \leq k$.
   Then $\Seq{m}{n} \cup \Seq{n+1}{k} = \Seq{m}{k}$.
@@ -2718,7 +2731,6 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
   $x \leq n$ or $n+1 \leq x$. Proof. Assume the contrary. Then $n < x < n+1$. $0 < x - n < 1$. End.
   $x \in \Seq{m}{n}$ or $x \in \Seq{n+1}{k}$. End.
   \end{proof}
-
 
   \begin{lemma} Assume that $m \leq n \leq k$.
   Then $\Seq{m}{n}$ and $\Seq{n+1}{k}$ are disjoint.
@@ -2734,7 +2746,7 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
   $n < x < n+1$.
   $0 < x - n < 1$.
   \end{proof}
-
+[timelimit 3]
   Let $S$ denote a class.
 
   \begin{definition}
@@ -2756,6 +2768,11 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
   determined.
   %
   \begin{forthel}
+
+  \begin{lemma}
+  Let $f$ be an injective map. Let $S$ be a set.
+  $f \upharpoonright S$ is an injective map.
+  \end{lemma}
 
   \begin{lemma}
   For all natural numbers $n$
@@ -2781,22 +2798,19 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
 
   Case $f[\Seq{1}{m'}] \subseteq \Seq{1}{n'}$.
 
-  Let
+  Take
 $$g = f \upharpoonright \Seq{1}{m'}.$$
-  Let $C = \Seq{1}{m'}$. Let $D = \Seq{1}{n'}$.
+  Take $C = \Seq{1}{m'}$ and $D = \Seq{1}{n'}$.
   $f \upharpoonright \Seq{1}{m'}$ is an injective map.
   $\dom(f \upharpoonright \Seq{1}{m'}) = \Seq{1}{m'}$.
   $f[\Seq{1}{m'}] \subseteq \Seq{1}{n'}$.
-  $g$ is a map
-  from $C$ to $D$.
+  $g$ is a map from $C$ to $D$.
 
   (1) $f \upharpoonright \Seq{1}{m'}$ is an injective map
   from $\Seq{1}{m'}$ to $\Seq{1}{n'}$.
 
-  $n'$ is inductively smaller than $n$.
-[timelimit 10] %%%
-  $m' \leq n'$ and $m \leq n$. Qed.
-[timelimit 3] %%%
+  $n'$ is inductively smaller than $n$. [timelimit 10]
+  $m' \leq n'$ and $m \leq n$. Qed. [timelimit 3]
 
   Case $\neg f[\Seq{1}{m'}] \subseteq \Seq{1}{n'}$.
 
@@ -2906,18 +2920,16 @@ Then $m' \leq n'$ and $m \leq n$.
   \end{lemma}
   \begin{proof}
   Define \[ H(k) = k + i \]
-          for $k \in \Seq{m}{n}$.
+          for $k \in \Seq{m}{n}$. [timelimit 30]
   $H$ is a map from $\Seq{m}{n}$ to $\Seq{m+i}{n+i}$.
   $H$ is injective.
   $H$ is a surjection from $\Seq{m}{n}$ onto $\Seq{m+i}{n+i}$.
   Proof.
   Let $u \in \Seq{m+i}{n+i}$. $m + i \leq u \leq n + i$.
   $m  = (m + i) - i \leq u - i \leq (n + i) - i = n$.
-[timelimit 10]
   Hence $u - i \in \Seq{m}{n}$.
-[timelimit 3] $H(u-i) = u$ and
-  $u \in H[\Seq{m}{n}]$.
-  Qed.
+  $H(u-i) = u$ and $u \in H[\Seq{m}{n}]$.
+  Qed.[timelimit 3]
   \end{proof}
 
   \begin{lemma}
@@ -2925,15 +2937,14 @@ Then $m' \leq n'$ and $m \leq n$.
   Then $x \cup y$ is a finite set and $|x \cup y| = |x| + |y|$.
   \end{lemma}
   \begin{proof}
-  Let $m = |x|$ and $n = |y|$.
+  Take $m = |x|$ and $n = |y|$.
   $x \sim \Seq{1}{m}$.
   Consider $u = \Seq{1}{n}$ and $v = \Seq{m}{m+n}$.
   $y \sim \Seq{1}{n} \sim \Seq{1+m}{n+m}$.
-  $y \sim \Seq{m+1}{m+n}$.[timelimit 30]
-  $x \cup y \sim \Seq{1}{m} \cup \Seq{m+1}{m+n} = \Seq{1}{|x|+|y|}$. [timelimit 3]
-  $x \cup y \sim \Seq{1}{|x|+|y|}$.
+  $y \sim \Seq{m+1}{m+n}$.[timelimit 50]
+  $x \cup y \sim \Seq{1}{m} \cup \Seq{m+1}{m+n} = \Seq{1}{|x|+|y|}$. [timelimit 10]
+  $x \cup y \sim \Seq{1}{|x|+|y|}$. $|x \cup y| = |x| + |y|$.
   \end{proof}
-
 
   \begin{definition}
   $S$ is infinite iff $S$ is not finite.
