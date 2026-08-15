@@ -23,26 +23,22 @@ object Naproche_Test {
   ): Unit = {
     val file_format = new Naproche_File_Format
 
-    def relative(file: JFile): Path = File.relative_path(Naproche.NAPROCHE_MATH, File.path(file)).get
-    def relative_name(file: JFile): String = relative(file).implode
-    def contains_flams_dir(path: String): Boolean = path.containsSlice("/.flams/")
     val tests =
-      File.find_files(Naproche.NAPROCHE_MATH.file, file => file_format.detect(file.getName) && !contains_flams_dir(relative(file).implode))
-        .sortBy(relative_name)
+      File.find_files(Naproche.NAPROCHE_MATH, path => file_format.detect(path.file_name),
+        relative = true).filterNot(_.implode.containsSlice("/.flams/")).sortBy(_.implode)
 
     val bad = Synchronized(List.empty[Path])
 
-    val executor = Executors.newFixedThreadPool(max_jobs.getOrElse(1) max 1)
-    for (test <- tests) {
+    val executor = Executors.newFixedThreadPool(max_jobs.getOrElse(1) max 1).nn
+    for (path_relative <- tests) {
       executor.submit(new Runnable {
         def run(): Unit = {
-          val path = File.path(test)
+          val path = Naproche.NAPROCHE_MATH + path_relative
           val text = File.read(path)
 
           val test_failure = text.containsSlice("# test: FAILURE")
           val test_ignore = text.containsSlice("# test: IGNORE")
 
-          val path_relative = relative(test)
           if (test_ignore) {
             progress.echo("Ignoring " + path_relative)
           }

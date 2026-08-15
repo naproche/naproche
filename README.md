@@ -83,8 +83,8 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
 
     The result is for the current repository version, and the underlying
     HW + OS platform. The following reference platforms (x86_64) are
-    used for Isabelle2025-1:
-    - Ubuntu Linux 18.04 LTS
+    used for Isabelle2026:
+    - Ubuntu Linux 20.04 LTS
     - macOS 12 Monterey
     - Windows 10/11
 
