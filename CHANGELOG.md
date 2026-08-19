@@ -1,7 +1,7 @@
 # Changelog
 
-A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
-2021-1)
+A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
+
 
 **NOTES:**
 
@@ -23,9 +23,7 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   resp., of ForTheL.
 
 
---------------------------------------------------------------------------------
-
-## Current development version (for Isabelle 2025-1)
+## Isabelle2025-1/Naproche and Isabelle2025-2/Naproche
 
 ### Changes on the LaTeX Packages
 
@@ -58,8 +56,8 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 ### Changes on the Formalizations
 
-* **New:** A new formalization of the macroeconomic Solow growth model and its mathematical foundation:
-  `math/examples/solow`
+* **New:** A new formalization of the macroeconomic Solow growth model and its
+  mathematical foundation: `math/examples/solow`
 
 * **New:** A new formalization of the "Socrates is mortal" syllogism:
   `math/archive/articles/source/socrates.ftl.en.tex`
@@ -120,7 +118,9 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
   Example:
 
-  `Naproche --mode=render --tex-exe=/usr/local/texlive/2025/bin/x86_64-linux/pdflatex cantor.ftl.tex
+  ```
+  Naproche --mode=render --tex-exe=/usr/local/texlive/2025/bin/x86_64-linux/pdflatex cantor.ftl.tex
+  ```
 
 * **Removed:** The message `Skipping already read file` is no longer printed
   when a read instruction for an already imported file is encountered in the
@@ -131,9 +131,7 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   sTeX dialect of ForTheL.
 
 
---------------------------------------------------------------------------------
-
-## naproche-20250328 (Isabelle_Naproche-20250328)
+## Isabelle_Naproche-20250328
 
 ### Changes on the parser
 
@@ -342,8 +340,8 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
     ```
 
   * **New:** In `definition` and `signature` environments and in
-    `let ... stand for` expressions newly introduced notions can be wrapped in an
-    `\emph{...}` command. Examples:
+    `let ... stand for` expressions newly introduced notions can be wrapped in
+    an `\emph{...}` command. Examples:
 
     ```
     \begin{definition}
@@ -461,9 +459,7 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
     logical symbols.
 
 
---------------------------------------------------------------------------------
-
-## naproche-20240519 (Isabelle 2024)
+## Isabelle2024/Naproche
 
 ### Changes on the example files
 
@@ -547,9 +543,8 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
     `is`, `be`, `are`, `does`, `do`, `has`, `have`, `that`, `with`, `of`,
     `having`, `such`, `so`, `if`, `iff`, `when`, `and`, `or`
 
---------------------------------------------------------------------------------
 
-## naproche-20230902 (Isabelle 2023)
+## Isabelle2023/Naproche
 
 ### Changes on the example files
 
@@ -560,9 +555,8 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
   * **New:** New chapter about cardinality in the arithmetic library.
 
---------------------------------------------------------------------------------
 
-## naproche-20221024 (Isabelle 2022)
+## Isabelle2022/Naproche
 
 ### Changes on ForTheL
 
@@ -649,9 +643,8 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
     any definitions, theorems etc. are now displayed in the PDF, making
     importing and referencing a bit easier.
 
---------------------------------------------------------------------------------
 
-## naproche-20211211 (Isabelle 2021-1)
+## Isabelle2021-1/Naproche
 
 ### Changes on the ontology of Naproche
 
