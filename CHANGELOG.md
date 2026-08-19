@@ -23,6 +23,11 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
   resp., of ForTheL.
 
 
+## Isabelle2026/Naproche
+
+No notable changes since the last release.
+
+
 ## Isabelle2025-1/Naproche and Isabelle2025-2/Naproche
 
 ### Changes on the LaTeX Packages
