@@ -25,7 +25,10 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 
 ## Isabelle2026/Naproche
 
-No notable changes since the last release.
+### Changes on the Formalizations
+
+* **New:** A new formalization of the Clark-Boolos Paradox:
+  `math/archive/articles/source/clark-boolos-paradox.ftl.en.tex`
 
 
 ## Isabelle2025-1/Naproche and Isabelle2025-2/Naproche
