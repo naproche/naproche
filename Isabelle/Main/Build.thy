@@ -6,6 +6,7 @@ Export Isabelle/Naproche Haskell modules.
 
 theory Build
   imports Haskell.Haskell Naproche.Naproche
+  options [condition = "$NAPROCHE_HOME"]
 begin
 
 export_generated_files _ (in Haskell) and _ (in Naproche)
