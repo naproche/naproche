@@ -3,6 +3,7 @@
 *.swp
 *~
 Naproche.cabal
+cabal.project.local
 stack.yaml.lock
 x86_64-darwin/
 x86_64-linux/
@@ -12,6 +13,7 @@ dist-newstyle/
 .envrc
 .metals/
 .scala-build/
+haddocks/
 
 # Ignore profiling output
 *.hp

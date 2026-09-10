@@ -165,6 +165,17 @@ Run `isabelle getenv -b NAPROCHE_EXE` to find the location of the
 executable of command line interface of Naproche.
 
 
+### Documentation
+
+Generate documentation of the Haskell source code:
+
+```
+cabal haddock-project
+```
+
+This creates a `haddocks` directory which can be served with an HTTP server.
+
+
 ## Changelog
 
 See [CHANGELOG.md](CHAMGELOG.md) for a changelog of Naproche.

@@ -1,0 +1,4 @@
+packages:
+  Naproche.cabal
+  https://codeberg.org/McEarl/ftlex/releases/download/v0.3.9/ftlex-0.3.9.tar.gz
+import: https://www.stackage.org/lts-22.44/cabal.config
