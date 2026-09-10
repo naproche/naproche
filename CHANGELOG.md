@@ -1,33 +1,34 @@
 # Changelog
 
-A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
+Notable changes on Naproche since Isabelle2021-1/Naproche.
 
 
-**NOTES:**
+## Terminology
 
-* Each change is tagged with one of the following keywords:
+Each change is tagged with one of the following keywords:
 
-  - `Changed`: Something in the behaviour or  was changed in Naproche. Such
-    changes may break backward compatibility.
+  - `Changed`: A feature/component of Naproche was changed. May break backward
+    compatibility.
 
-  - `New`: A new feature was added to Naproche. In particular, new features
-    should not break backward compatibility.
+  - `Added`: A feature/component was added to Naproche. Does not break backward
+    compatibility.
 
-  - `Fixed`: A bug was fixed.
+  - `Removed`: A feature/component of Naproche was removed. Breaks backward
+    compatibility.
 
-  - `Removed`: A feature of Naproche or a component of its code base was
-    removed.
+  - `Repaired`: Expected behaviour was restored by investigating and eliminating
+    the root cause of a bug.
 
-* Additionally, each change can be annotated with the keywords `FTL`, `TEX` and
-  `STEX` to note that this change only affects the FTL, TeX or sTeX dialect,
-  resp., of ForTheL.
+  - `Fixed`: A quick and temporary change to the codebase that corrects
+    unexpected behaviour. (Should be avoided. Repair broken code instead of
+    fixing it!)
 
+
+--------------------------------------------------------------------------------
 
 ## Isabelle2026/Naproche
 
-### Changes on the Formalizations
-
-* **New:** A new formalization of the Clark-Boolos Paradox:
+* **Added:** A formalization of the Clark-Boolos Paradox:
   `math/archive/articles/source/clark-boolos-paradox.ftl.en.tex`
 
 
@@ -39,14 +40,14 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
   documented LaTeX package in the `dtx` format at `math/examples/latex/`. See
   `math/examples/latex/README.md` for details.
 
-* **New:** Both LaTeX packages provide a new macro `\ForTheL` that prints the
+* **Added:** Both LaTeX packages provide a new macro `\ForTheL` that prints the
   ForTheL logo.
 
-* **New:** An expl3-based LaTeX style file `math/archive/meta-inf/lib/copyright`
+* **Added:** An expl3-based LaTeX style file `math/archive/meta-inf/lib/copyright`
   to insert copyright and license information into a document. This is
   essentially the same as the old `math/latex/lib/license.tex`.
 
-* **New:** The "advanced" LaTeX package allows to annotate top-level section
+* **Added:** The "advanced" LaTeX package allows to annotate top-level section
   environments with `for` and `name` parameters which behave much like sTeX's
   `for` and `name` parameters: `for` paramters are intended to be used with
   `definition`, `signature` and `convention` environments to provide on-hover
@@ -64,22 +65,22 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 
 ### Changes on the Formalizations
 
-* **New:** A new formalization of the macroeconomic Solow growth model and its
+* **Added:** A new formalization of the macroeconomic Solow growth model and its
   mathematical foundation: `math/examples/solow`
 
-* **New:** A new formalization of the "Socrates is mortal" syllogism:
+* **Added:** A new formalization of the "Socrates is mortal" syllogism:
   `math/archive/articles/source/socrates.ftl.en.tex`
 
-* **New:** A new formalization of §1 of Peano's *Principles of Arithmetics*:
+* **Added:** A new formalization of §1 of Peano's *Principles of Arithmetics*:
   `math/archive/articles/source/peano.ftl.en.tex`
 
-* **New:** Documentation of the object-level ontology of Naproche:
+* **Added:** Documentation of the object-level ontology of Naproche:
   `math/archive/documentation/ontology`
 
 * **Changed:** The Knaster-Tarski and the Cantor-Schröder-Bernstein
   formalizations were split into two separate documents.
 
-* **New:** A new library `math/archive/libraries/meta` that provides semantic
+* **Added:** A new library `math/archive/libraries/meta` that provides semantic
   macros for the meta theory of Naproche. Moreover, it contains a file
   `math/archive/libraries/meta/source/preliminaries.ftl.en.tex` that serves as
   the root node of the depencency tree of the `math/archive/libraries` group
@@ -88,13 +89,13 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 * **Changed:** Better separation between "basic" example formalizations
   (`math/examples`) and "advanced" sTeX-based formalizations (`math/archive`).
 
-* **New:** The formalizations in `math/archive` now have associated
+* **Added:** The formalizations in `math/archive` now have associated
   `archive.json` files to list them on the landing page of the FLAMS dashboard.
 
 
 ### Changes on the Parser
 
-* **New:** (TEX) Top-level sections can now contain `for` and `name` parameters.
+* **Added:** (TEX) Top-level sections can now contain `for` and `name` parameters.
   The `for` parameters are ignored by Naproche while the `name` parameters
   replace the (now obsolete) `id` parameters. Moreover, top-level sections can
   be referenced via sTeX's `\sn` and `\sr` commands.
@@ -107,7 +108,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 
 ### Misc
 
-* **New:** (TEX) Isabelle/jEdit now recognizes files with the extension
+* **Added:** (TEX) Isabelle/jEdit now recognizes files with the extension
   `.ftl.en.tex` as ForTheL files. (Needed to ensure compatibility with
   sTeX/FLAMS). Moreover, Naproche expects the formalizations in `math/archive`
   to have that file name extension; otherwise importing them via `\importmodule`
@@ -115,7 +116,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 
 * **Changed:** Change required GHC version from LTS 22.43 to LTS 22.44.
 
-* **New:** In the command line interface there are two new optional arguments:
+* **Added:** In the command line interface there are two new optional arguments:
 
     - `--tex-exe=<TeX executable>` (default value: `pdflatex`)
     - `--bibtex-exe=<BibTeX executable>` (default value: `bibtex`)
@@ -153,7 +154,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 
 ### Changes on ForTheL
 
-  * **New:** Subproofs can now be wrapped in `proof` environments just like
+  * **Added:** Subproofs can now be wrapped in `proof` environments just like
     top-level proofs, e.g.:
 
     ```
@@ -171,7 +172,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     \end{proof}
     ```
 
-  * **New:** Case distinctions can now be written up via a LaTeX environment:
+  * **Added:** Case distinctions can now be written up via a LaTeX environment:
 
     ```
     \begin{case}{<case hypothesis>}
@@ -188,7 +189,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     \end{case}
     ```
 
-  * **New:** Outside of `forthel` groups `verbatim` environments as well as
+  * **Added:** Outside of `forthel` groups `verbatim` environments as well as
     `\\url{...}`, `\\path{...}`, `\\verb<char>...<char>` and
     `\\verb*<char>...<char>` commands (for any TeX character `<char>`) are
     ignored by Naproche's parser. In particular no errors arise if invalid
@@ -201,7 +202,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     it regards the subexpression `%bar|` as a comment and complains about the
     group opened by `\verb|` not being closed.
 
-  * **New:** Macro introductions and variable pretypings can now be wrapped in
+  * **Added:** Macro introductions and variable pretypings can now be wrapped in
     `convention` and `convention*` environments which are rendered in the same
     style as the top-level sections, e.g.:
 
@@ -212,7 +213,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     \end{convention}
     ```
 
-  * **New:** Relation chains can now be typeset with the `align*` environment,
+  * **Added:** Relation chains can now be typeset with the `align*` environment,
     e.g.:
 
     ```
@@ -233,16 +234,16 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     tokenized away instead (i.e. to insert a line break before, e.g., low-level
     proofs, we must insert a `\newline` instead of a `\\` now).
 
-  * **New:** sTeX's `\inputref[<archive path>]{<file path>}` commands
+  * **Added:** sTeX's `\inputref[<archive path>]{<file path>}` commands
     are recognized by Naproche and behave like the instruction
     `[read <archive path>/source/<file path>]`.
 
-  * **New:** sTeX's `\importmodule[<archive path>]{<module path>?<module file>}`
+  * **Added:** sTeX's `\importmodule[<archive path>]{<module path>?<module file>}`
     and `\usemodule[<archive path>]{<module path>?<module file>}` commands
     are recognized by Naproche and behave like the new `importmodule`
     instruction (see below).
 
-  * **New:** A new instruction
+  * **Added:** A new instruction
     `[importmodule <archive path>?<module path>?<module name>]` (where
     the part `<module path>?` can be omitted and in TEX mode the part
     `<archive path>?<module path>?<module name>` may be wrapped in a
@@ -268,7 +269,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     FTL texts can no longer be imported. (This feature was never used and was
     too error-prone since the FTL and TEX tokenizers are too different.)
 
-  * **New:** (TEX) `\text{...}` commands can occur anywhere in a ForTheL text
+  * **Added:** (TEX) `\text{...}` commands can occur anywhere in a ForTheL text
     and only the content of their argument is processed by the parser.
 
     Example:
@@ -277,7 +278,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     $A \cup B = \{ x \mid x \in A \text{ or } x \in B \}$.
     ```
 
-  * **New:** (TEX) The optional argument of proof environments can now contain
+  * **Added:** (TEX) The optional argument of proof environments can now contain
     (any subset of) the following arguments, given as a comma-separated list:
 
     - `forthel`: Allows the top-level section to be recognized by the parser
@@ -295,7 +296,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     \end{proof}
     ```
 
-  * **New:** (TEX) Macro introductions and variable pretypings can now occur
+  * **Added:** (TEX) Macro introductions and variable pretypings can now occur
     at the bottom of signature, definiton and axiom environments. (Theorem
     environments are excluded only because of certain technical difficulties
     involved in their implementation).
@@ -313,7 +314,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     \end{definition}
     ```
 
-  * **New:** (TEX) A new command `\inlineforthel{...}` which behaves like the
+  * **Added:** (TEX) A new command `\inlineforthel{...}` which behaves like the
     `forthel` environment (i.e. in the PDF it renders its content with a gray
     background and its content is parsed by Naproche), but to be used in-line.
 
@@ -324,7 +325,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     \inlineforthel{let $n\mid m$ stand for $n$ divides $m$}.
     ```
 
-  * **New:** (TEX) The optional argument of top-level section environments can
+  * **Added:** (TEX) The optional argument of top-level section environments can
     now contain (any subset of) the following arguments, given as a
     comma-separated list:
 
@@ -347,7 +348,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     \end{axiom*}
     ```
 
-  * **New:** In `definition` and `signature` environments and in
+  * **Added:** In `definition` and `signature` environments and in
     `let ... stand for` expressions newly introduced notions can be wrapped in
     an `\emph{...}` command. Examples:
 
@@ -371,7 +372,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     \end{signature}
     ```
 
-  * **New:** Instead of `if A then B` we can now also write `A implies B` or
+  * **Added:** Instead of `if A then B` we can now also write `A implies B` or
     `A implies that B`.
 
 
@@ -394,7 +395,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 
 ### Changes on Naproche's LaTeX package
 
-  * **New:** Two commands `\showtlsnumbers` and `\hidetlsnumbers` to show and
+  * **Added:** Two commands `\showtlsnumbers` and `\hidetlsnumbers` to show and
     hide, resp., the numbers of top-level sections. Useful to supress the
     numbers of `inputref`ed top-level sections.
 
@@ -412,10 +413,10 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     `\hidetlsnumbers` to the `\inputref` command, it would be rendered as
     "Axiom (Infinity). There exists an infinite set." (without the "1") instead.
 
-  * **New:** The `naproche` package now supports to render Naproche
+  * **Added:** The `naproche` package now supports to render Naproche
     formalizations via RusTeX as HTML.
 
-  * **New:** A new document class `naproche-library` for libraries.
+  * **Added:** A new document class `naproche-library` for libraries.
 
   * **Changed:** The package `puzzles` was merged into the package `naproche`
     and can be invoked by importing the `naproche` package with the argument
@@ -433,7 +434,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     in the `math` directory, every file that *can* be imported will be
     tested at some point.
 
-  * **New:** The command line interface provides a new parameter
+  * **Added:** The command line interface provides a new parameter
     `--mode=<mode>`, where `<mode>` can be one of the following words which
     determines the behaviour of Naproche:
     
@@ -458,7 +459,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 
   * **Removed:** The (deprecated) `init.opt` file was removed.
 
-  * **New:** Instructions etc. regarding Haskell have been added/moved to
+  * **Added:** Instructions etc. regarding Haskell have been added/moved to
     `CONTRIBUTING.md`.
 
   * **Removed:** The (meanigless) drop instructions for commands were removed.
@@ -486,7 +487,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     is no longer necessary to state the in-built axioms of Naproche explicitly
     at the beginning of each formalization.
 
-  * **New:** All bibliography entries used in the `.tex` files are collected in
+  * **Added:** All bibliography entries used in the `.tex` files are collected in
     a global bibliography file `examples/meta-inf/lib/bibliography.bib`.
 
   * **Changed:** The arithmetics, foundations and set theory libraries were
@@ -508,7 +509,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     - Burali-Forti Paradox: `burali-forti-paradox.ftl.tex`
     - Cantor's Paradoxes: `cantor-paradox.ftl.tex`
 
-  * **New:** New formalizations:
+  * **Added:** New formalizations:
   
     - "Little Gauß' Theorem": `gauss.ftl.tex`
     - Curry's Paradox: `curry-paradox.ftl.tex`
@@ -528,14 +529,14 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 
 ### Changes on ForTheL
 
-  * **New:** Variable pretyings can be reset using the new `[resetpretyping]`
+  * **Added:** Variable pretyings can be reset using the new `[resetpretyping]`
     instruction.
 
-  * **New:** (TEX) `\section` triggers a reset of the variable pretypings. Thus
+  * **Added:** (TEX) `\section` triggers a reset of the variable pretypings. Thus
     the pretyping of variables is now per section and no longer for the whole
     document.
 
-  * **New:** Imports of formalizations using the `[read ..]` and `[readtex ..]`
+  * **Added:** Imports of formalizations using the `[read ..]` and `[readtex ..]`
     instruction are now relative to the environment variable
     `NAPROCHE_FORMALIZATIONS`. For Isabelle/Naproche `NAPROCHE_FORMALIZATIONS`
     defaults to `$NAPROCHE_HOME/examples`, which resembles the old behavior. For
@@ -556,12 +557,12 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 
 ### Changes on the example files
 
-  * **New:** New formalization of Wiedijk's "100 Theorems" (`100_theorems.ftl.tex`)
+  * **Added:** New formalization of Wiedijk's "100 Theorems" (`100_theorems.ftl.tex`)
 
-  * **New:** Naproche's built-in separation principle was added to `axioms.ftl`
+  * **Added:** Naproche's built-in separation principle was added to `axioms.ftl`
     and `axioms.ftl.tex`.
 
-  * **New:** New chapter about cardinality in the arithmetic library.
+  * **Added:** New chapter about cardinality in the arithmetic library.
 
 
 ## Isabelle2022/Naproche
@@ -571,7 +572,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
   * **Changed:** The old syntax `Define f((x,y)) = ...` for low-level map
     definitions with two arguments is replaced by `Define f(x,y) = ...`.    
 
-  * **New:** (TEX) Unnumbered top-level environments are now supported via
+  * **Added:** (TEX) Unnumbered top-level environments are now supported via
 
     ```
     \begin{<environment-name>*}
@@ -585,23 +586,23 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     **Deprecation notice:** This change makes the option `unnumbered` of the
     LaTeX package `naproche` obsolete.
 
-  * **New:** In low-level definitions `choose` and `define` terms can now be
+  * **Added:** In low-level definitions `choose` and `define` terms can now be
     enclosed within ``` `` ``` and `''`, e.g.:
 
     ```
     Define $f(n) =$ ``choose a prime $p$ greater than $n$ in $p^{2}$'' for $n \in \Nat$.
     ```
 
-  * **New:** To label a top-level section you can now use `\printlabel{...}`
+  * **Added:** To label a top-level section you can now use `\printlabel{...}`
     instead of `\label{...}` if you want the label to be printed in the PDF.
     `\printlabel` behaves exactly as `\label` (apart from the fact that its
     label is printed); in particular you can use it in conjunction with `\ref`
     or other referencing commands.
 
-  * **New:** To reference top-level sections you can now use `\cref` besides
+  * **Added:** To reference top-level sections you can now use `\cref` besides
     `\ref` and `\nameref`.
 
-  * **New:** (TEX) `\left`, `\middle` and `\right` are tokenized away.
+  * **Added:** (TEX) `\left`, `\middle` and `\right` are tokenized away.
 
   * **Changed:** (TEX) Primitive expressions inherited from FTL (e.g. `!=` or
     `-<-`) are no longer provided.
@@ -623,7 +624,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 
 ### Changes on the example files
 
-  * **New:** `zermelo.ftl.tex`, a formalization of Zermelo's well-ordering
+  * **Added:** `zermelo.ftl.tex`, a formalization of Zermelo's well-ordering
     theorem.
 
   * **Changed:** The set theory library (now stored at `examples/foundations`)
@@ -632,20 +633,20 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     any definitions, theorems etc. are now displayed in the PDF, making
     importing and referencing a bit easier.
 
-  * **New:** A new library on set theory (stored at `examples/set-theory`).
+  * **Added:** A new library on set theory (stored at `examples/set-theory`).
 
-  * **New:** The formalizations of König's theorem (`koenig.ftl(.tex)`) and
+  * **Added:** The formalizations of König's theorem (`koenig.ftl(.tex)`) and
     Hausdorff's theorem (`hausdorff.ftl(.tex)`, formerly
     `regular_successor.ftl(.tex)`) are back!
 
-  * **New:** New file `paradoxes.ftl.tex` which contains formalizations about
+  * **Added:** New file `paradoxes.ftl.tex` which contains formalizations about
     some famous paradoxes. (Note that Russell's paradox was moved to this
     collection.)
 
-  * **New:** New files `axioms.ftl` and `axioms.ftl.tex` that list Naproche's
+  * **Added:** New files `axioms.ftl` and `axioms.ftl.tex` that list Naproche's
     built-in axioms.
 
-  * **New:** The arithmetic library was connected to the foundations library to
+  * **Added:** The arithmetic library was connected to the foundations library to
     provide more robust definitions of the arithmetical operations it provides.
     Moreover, the paths of the source files of all chapters and the labels of
     any definitions, theorems etc. are now displayed in the PDF, making
@@ -656,13 +657,13 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 
 ### Changes on the ontology of Naproche
 
-  * **New:** `collection` is a new synonym for `class`.
+  * **Added:** `collection` is a new synonym for `class`.
 
   * **Changed:** `object` (together with its new synonyms `element` and
     `mathematical object`) is a proper notion now and does not undergo an
     "object elimination" process during parsing.
 
-  * **New:** New built-in notion `map`.
+  * **Added:** New built-in notion `map`.
 
   * **Removed:** The built-in predicate `setsized`.
 
@@ -675,7 +676,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
       - An expression of the form `(x,y)` is only well-defined if `aObject(x)`
         and `aObject(y)` can be derived.
 
-  * **New:** The following axioms are hard-coded into Naproche:
+  * **Added:** The following axioms are hard-coded into Naproche:
 
       - Functions are maps which are objects:
         ```
@@ -734,7 +735,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 
 ### Changes on ForTheL
 
-  * **New:** (TEX) Top-level sections can now be labeled with the `\label{...}`
+  * **Added:** (TEX) Top-level sections can now be labeled with the `\label{...}`
     command.
     There are now four ways the header of a top-level section can look like:
 
@@ -770,22 +771,22 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
         ```
         Just a top-level section without name and label.
 
-  * **New:** (TEX) References to named assertions now support LaTeX's
+  * **Added:** (TEX) References to named assertions now support LaTeX's
     `\ref{...}` and `\nameref{...}` commands.
     I.e. you can now refer to an assertion also via `(by \ref{<identifier>})` or
     `(by \nameref{<identifier>})` besides `(by <identifier>)`, where
     `<identifier>` is the assertion's label.
 
-  * **New:** (TEX) Arguments of argument instructions can be wrapped in
+  * **Added:** (TEX) Arguments of argument instructions can be wrapped in
     `\path{...}`, e.g. `[read \path{some/forthel/text.ftl}]`
 
-  * **New:** (TEX) An alternative syntax for class terms is available now:
+  * **Added:** (TEX) An alternative syntax for class terms is available now:
     `\class{... | ...}`.
     In Naproche it behaves exactly as the common `\{ ... \mid ... \}` notation,
     but in LaTeX (when using the style file `naproche.sty`) it provides
     additional support for flexible sizes of the braces and the vertical bar.
 
-  * **New:** (TEX) Expressions of the following kinds can be enclosed within
+  * **Added:** (TEX) Expressions of the following kinds can be enclosed within
     `\text{...}`:
 
       - Function bodies, e.g.:
@@ -805,7 +806,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
         y \in \bigcup x \iff (\text{$y$ is contained in some element of $x$})
         ```
 
-  * **New:** The RHS of a class term constructed via `\class{... | ...}` can be
+  * **Added:** The RHS of a class term constructed via `\class{... | ...}` can be
     enclosed within `\classtext{...}`.
     When using the style file `naproche.sty`, `\classtext{...}` behaves like
     `\text{...}` but supports automatic line breaks within the class term.
@@ -815,7 +816,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
     \class{p | \classtext{$p$ is a prime number such that $2 < p$ and $p$ is a divisor of some natural number that is less or equal than $5^{2}$}}
     ```
 
-  * **New:** `the collection of` as an alternative to the expression `the class
+  * **Added:** `the collection of` as an alternative to the expression `the class
     of`.
     Moreover, both of them can be followed by an optional `all`.
     I.e. for instance the following formulations are accepted now:
@@ -825,7 +826,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
       - `the class of subsets of x`
       - `the class of all sets x such that x is not an element of x`
 
-  * **New:** (TEX) `\[` and `\]` are a new kind of whitetokens, i.e. like
+  * **Added:** (TEX) `\[` and `\]` are a new kind of whitetokens, i.e. like
     `$` they are completely ignored by Naproche.
 
   * **Changed:** `_` and `"` are regular characters now, i.e. they are treated
@@ -834,7 +835,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
   * **Changed:** Notion separation in descriptive class terms (e.g. something
     like `{set x | ...}`) is no longer supported.
 
-  * **New:** (TEX) In case splits in low-level map definitions the function
+  * **Added:** (TEX) In case splits in low-level map definitions the function
     value and the case condition can be separated by an optional `:`, e.g.:
     ```
     Define \[ f(x) =
@@ -848,7 +849,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 
 ### Changes on the example files
 
-  * **New:** Additional example files in `examples`:
+  * **Added:** Additional example files in `examples`:
 
       - `arithmetic`:
         Basic Peano arithmetic
@@ -867,7 +868,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
       - `russell.ftl`, `russell.ftl.tex`:
         Russell's paradox
 
-  * **New:** New technical files on which some examples are based:
+  * **Added:** New technical files on which some examples are based:
 
       - `classes.ftl`:
         Basic notions about classes.
@@ -890,14 +891,14 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
 
 ### Changes on the LaTeX styles
 
-  * **New:** Additional style files:
+  * **Added:** Additional style files:
 
       - `basic-notions.sty`
         (used e.g. in `examples/arithmetic` and `examples/set-theory`)
       - `naproche-puzzle.sty`
         (used e.g. in `examples/agatha.ftl.tex` and `examples/dwarfs.ftl.tex`)
 
-  * **New:** The style file `naproche.sty` provides a new command `\Naproche` to
+  * **Added:** The style file `naproche.sty` provides a new command `\Naproche` to
     print the word "Naproche" with a 'blackbord N'
 
   * **Removed:** The obsolete style file `forthel.sty` is removed.
@@ -911,7 +912,7 @@ A complete listing of all changes on Naproche since Isabelle2021-1/Naproche
   * **Changed:** The test file directory `examples/test` is moved to
   `test/examples`.
 
-  * **New:** `test/examples/text.ftl.tex`: Tests for the new `\class{...}`,
+  * **Added:** `test/examples/text.ftl.tex`: Tests for the new `\class{...}`,
     `\text{...}` and `\classtext{...}` features.
 
   * **Changed:** Automatic consistency checking is disabled by default, i.e. the
