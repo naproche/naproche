@@ -116,7 +116,7 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
       mkdir e_naproche/$(isabelle_naproche/bin/isabelle getenv -b ISABELLE_PLATFORM64)
       ```
 
-      We then copy the `eprover` exutable into the component:
+      We then copy the `eprover` executable into the component:
       ```shell
       cp eprover/PROVER/eprover e_naproche/$(isabelle_naproche/bin/isabelle getenv -b ISABELLE_PLATFORM64)/
       ```
@@ -140,7 +140,7 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
     
       Then edit the document at `etc/components`. Move the path pointing to the `e_naproche` component above that pointing to the `naproche` component.
   
-      Finally, verify that the path returend by
+      Finally, verify that the path returned by
       ```shell
       isabelle getenv -b NAPROCHE_EPROVER
       ```

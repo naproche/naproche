@@ -49,7 +49,7 @@ Each change is tagged with one of the following keywords:
 
 * **Added:** The "advanced" LaTeX package allows to annotate top-level section
   environments with `for` and `name` parameters which behave much like sTeX's
-  `for` and `name` parameters: `for` paramters are intended to be used with
+  `for` and `name` parameters: `for` parameters are intended to be used with
   `definition`, `signature` and `convention` environments to provide on-hover
   information for the notions and macros declared therein. `name` parameters are
   intended to be used with `axiom` and `theorem` environments to provide
@@ -297,7 +297,7 @@ Each change is tagged with one of the following keywords:
     ```
 
   * **Added:** (TEX) Macro introductions and variable pretypings can now occur
-    at the bottom of signature, definiton and axiom environments. (Theorem
+    at the bottom of signature, definition and axiom environments. (Theorem
     environments are excluded only because of certain technical difficulties
     involved in their implementation).
 
@@ -396,7 +396,7 @@ Each change is tagged with one of the following keywords:
 ### Changes on Naproche's LaTeX package
 
   * **Added:** Two commands `\showtlsnumbers` and `\hidetlsnumbers` to show and
-    hide, resp., the numbers of top-level sections. Useful to supress the
+    hide, resp., the numbers of top-level sections. Useful to suppress the
     numbers of `inputref`ed top-level sections.
 
     For instance if the file `some-archive/source/some-file.ftl.tex` consists of
@@ -462,7 +462,7 @@ Each change is tagged with one of the following keywords:
   * **Added:** Instructions etc. regarding Haskell have been added/moved to
     `CONTRIBUTING.md`.
 
-  * **Removed:** The (meanigless) drop instructions for commands were removed.
+  * **Removed:** The (meaningless) drop instructions for commands were removed.
 
   * **Changed:** Formulas are now pretty printed by using symbolic notation of
     logical symbols.
@@ -490,7 +490,7 @@ Each change is tagged with one of the following keywords:
   * **Added:** All bibliography entries used in the `.tex` files are collected in
     a global bibliography file `examples/meta-inf/lib/bibliography.bib`.
 
-  * **Changed:** The arithmetics, foundations and set theory libraries were
+  * **Changed:** The arithmetic, foundations and set theory libraries were
     moved to `examples/libraries/source/`.
 
   * **Changed:** Some formalizations were moved from the libraries to
@@ -861,7 +861,7 @@ Each change is tagged with one of the following keywords:
         The Cantor-Schröder-Bernstein theorem
       - `group.lean.ftl.tex`:
         Naproche rendering of a Lean file on groups
-      - `hilbert-calculus.ftl`, `hilber-calculus.ftl.tex`:
+      - `hilbert-calculus.ftl`, `hilbert-calculus.ftl.tex`:
         Derivations in a Hilbert calculus
       - `numbers.ftl.tex`:
         Number systems for Rudin's Principles of Mathematical Analysis
@@ -899,7 +899,7 @@ Each change is tagged with one of the following keywords:
         (used e.g. in `examples/agatha.ftl.tex` and `examples/dwarfs.ftl.tex`)
 
   * **Added:** The style file `naproche.sty` provides a new command `\Naproche` to
-    print the word "Naproche" with a 'blackbord N'
+    print the word "Naproche" with a 'blackboard N'
 
   * **Removed:** The obsolete style file `forthel.sty` is removed.
 

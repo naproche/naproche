@@ -159,7 +159,7 @@ All examples were tested on an Intel i5-8400 (mid-range hexa-core desktop CPU
 from 2017, 65 W TDP) with 16 GB of RAM.
 But most examples should also work with slightly older or lower-end hardware.
 For example, an Intel Pentium N3710 (quad-core mobile CPU from 2016, 6 W TDP)
-with 8GB RAM can still check most examples without the accomodations outlined
+with 8GB RAM can still check most examples without the accommodations outlined
 below.
 
 On weaker systems successful checking of texts may require stopping other
