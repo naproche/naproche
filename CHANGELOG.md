@@ -26,7 +26,8 @@ Each change is tagged with one of the following keywords:
 
 --------------------------------------------------------------------------------
 
-## Isabelle2026/Naproche
+
+## TBD
 
 * **Added:** A formalization of the Clark-Boolos Paradox:
   `math/archive/articles/source/clark-boolos-paradox.ftl.en.tex`
@@ -34,6 +35,11 @@ Each change is tagged with one of the following keywords:
 * **Added:** A `cabal.project` file which allows Naproche to be built via Cabal.
   In particular, this allows to generate documentation of the Haskell source
   code of Naproche via `cabal haddock-project`.
+
+
+## Isabelle2026/Naproche
+
+No notable changes.
 
 
 ## Isabelle2025-1/Naproche and Isabelle2025-2/Naproche
