@@ -1,5 +1,18 @@
 # Contributing to Naproche
 
+## Contents
+
+  1. [Resources](#resources)
+  2. [Changelog](#changelog)
+  3. [File and Directory Name Conventions](#file-and-directory-name-conventions)
+  4. [Release Process](#release-process)
+  5. [Abbreviations](#abbreviations)
+  6. [Haskell](#haskell)
+  7. [LaTeX](#latex)
+  8. [Managing Naproche Formalizations With FLAMS](#managing-naproche-formalizations-with-flams)
+  9. [Ideas for Further Development](#ideas-for-further-development)
+
+
 ## Resources
 
   - **[An argument for controlled natural languages in Mathematics](https://jiggerwit.files.wordpress.com/2019/06/header.pdf)**:
@@ -13,152 +26,6 @@
   - **[Handbook of Practical Logic and Automated Reasoning](https://www.cl.cam.ac.uk/~jrh13/atp/)**:
     Textbook on logic and automated theorem proving. Some functions in the code
     base are literal translations of the OCaml code presented in the book.
-
-
-## Haskell
-
-Naproche is written in the functional programming language
-[*Haskell*](https://www.haskell.org/).
-In this section you find information about the Haskell setup that is
-required/recommended to develop Naproche.
-
-
-### Learning Haskell
-
-There are many textbooks and tutorials about Haskell freely available on the
-web. See e.g. <https://www.haskell.org/documentation/> for an overview.
-
-
-### Basic Setup
-
-Make sure, you set up Naproche according to the instructions given at
-<https://github.com/naproche/naproche/blob/master/README.md>.
-
-If you just want to build Naproche from its sources code and run it without
-getting involved in editing the Haskell source files, no further setup is
-needed.
-Just follow the instructions given at
-<https://github.com/naproche/naproche/blob/master/README.md>.
-In this case, you can ignore the remaining sections on this page.
-
-However, if you want to dive into the development of Naproche's source code, it
-is highly recommended to set up a Haskell development environment as described
-at <https://www.haskell.org/get-started/>.
-In this case, you should also read the remaining sections on this page.
-
-
-### Stack
-
-Naproche is provided as a [*Stack*](https://docs.haskellstack.org/en/stable/)
-project.
-Stack is a tool to build Haskell projects and manage their dependencies.
-
-Note that Isabelle automatically downloads Stack to
-`$HOME/.isabelle/contrib/stack-...` when you build Naproche for the first time.
-It is highly recommended to use this automatically downloaded version of Stack
-if you ever have to run Stack (in the context of Naproche) manually.
-
-If you have good reasons to use a different version of Stack though, see
-<https://docs.haskellstack.org/en/stable/#how-to-install-stack> for
-installation instructions.
-
-
-### Hoogle
-
-[*Hoogle*](https://hoogle.haskell.org/) is a search engine for many Haskell
-libraries.
-These libraries can be searched by either function name or by (approximate)
-type signature via Hoogle's web interface: <https://hoogle.haskell.org/>
-
-To be able to use Hoogle also on the code base of Naproche, you have to set up
-a local Hoogle server (via Stack, see [above](#stack)) via the following steps:
-
-  1.  Generate a local Hoogle database for the Naproche code and the libraries
-      it depends on (from within the root directory of your local Naproche
-      repository):
-
-      ```
-      stack hoogle -- generate --local
-      ```
-
-  2.  Start a local Hoogle server (from within the root directory of your local
-      Naproche repository):
-
-      ```
-      stack hoogle -- server --local --port=8080
-      ```
-
-  3.  Open <http://localhost:8080> in your favourite web browser.
-
-
-### Haddock
-
-[*Haddock*](https://haskell-haddock.readthedocs.io/latest/) is a tool for
-automatically generating documentation from annotated Haskell source code.
-When editing the source code of Naproche, it is highly recommended to equip all
-Haskell source files you add or change with Haddock annotations.
-
-See <https://haskell-haddock.readthedocs.io/latest/markup.html> for a guide on
-how to annotate Haskell code with Haddock.
-
-
-## LaTeX
-
-Naproche formalizations can be embedded into
-[LaTeX](https://www.latex-project.org/) documents.
-To this end, Naproche provides two LaTeX packages for typesetting Naproche
-formalizations in LaTeX:
-
-  1.  A "beginner-friendly" package ([`math/examples/latex/naproche.sty`](https://github.com/naproche/naproche/blob/master/math/examples/latex/naproche.sty),
-      documented in [`math/examples/latex/naproche.sty`](https://github.com/naproche/naproche/blob/master/math/examples/latex/naproche.pdf))
-       intended to be used for small example formalizations that
-
-         - do **not** depend on libraries of Naproche formalizations *and*
-         - are **not** intended to be converted to interactive HTML.
-
-  2.  An "advanced" [sTeX](https://ctan.org/pkg/stex)-based package
-      (`math/latex/lib/naproche.sty`) intended to be used for larger
-      formalization projects that
-
-        - may depend on libraries of Naproche formalizations *or*
-        - are intended to be converted to interactive HTML.
-
-
-## Prerequisites
-
-Before contributing to any of the LaTeX packages listed above, ensure that you
-have an up-to-date version of [TeX Live](https://tug.org/texlive/) set up on
-your system. It is strongly recommended to set up TeX Live
-manually and *not* via a package manager. Installation instructions for Linux,
-macOS and Windows can be found via the following links:
-
-  - Linux: <https://tug.org/texlive/quickinstall.html>
-  - macOS: <https://tug.org/texlive/quickinstall.html> or
-    <https://tug.org/mactex/>
-  - Windows: <https://tug.org/texlive/windows.html>
-
-Note that downloading all required LaTeX packages during the setup of TeX Live
-may take some time.
-
-For details and more information about TeX Live see
-[*The TeX Live Guide*](https://tug.org/texlive/doc/texlive-en/texlive-en.pdf).
-
-Moreover, ensure you are familiar with the content of the following documents:
-
-  - [*LaTeX for authors*](https://www.latex-project.org/help/documentation/usrguide.pdf)
-  - [*LaTeX for package and class authors*](https://www.latex-project.org/help/documentation/clsguide.pdf)
-  - [*How to Package Your LaTeX Package*](https://latex.org.uk/info/dtxtut/dtxtut.pdf)
-
-Before contributing to the "advanced" LaTeX package, also ensure that you are
-familiar with LaTeX's L3 programming layer (expl3). The below list provides
-some useful references for expl3.
-
-  - [*The expl3 package and LaTeX3 programming*](https://texdoc.org/serve/expl3.pdf/0):
-    A short introduction to expl3
-  - [*The LaTeX3 Interfaces*](https://texdoc.org/serve/interface3.pdf/0):
-    The reference documentation for expl3
-  - [*The LaTeX3 Sources*](https://texdoc.org/serve/source3.pdf/0):
-    The typset sources for expl3
 
 
 ## Changelog
@@ -338,7 +205,153 @@ symb   | symbol/symbolic
 var    | variable
 
 
-## Managing Naproche Formalizations With FLAMS (Experimental)
+## Haskell
+
+Naproche is written in the functional programming language
+[*Haskell*](https://www.haskell.org/).
+In this section you find information about the Haskell setup that is
+required/recommended to develop Naproche.
+
+
+### Learning Haskell
+
+There are many textbooks and tutorials about Haskell freely available on the
+web. See e.g. <https://www.haskell.org/documentation/> for an overview.
+
+
+### Basic Setup
+
+Make sure, you set up Naproche according to the instructions given at
+<https://github.com/naproche/naproche/blob/master/README.md>.
+
+If you just want to build Naproche from its sources code and run it without
+getting involved in editing the Haskell source files, no further setup is
+needed.
+Just follow the instructions given at
+<https://github.com/naproche/naproche/blob/master/README.md>.
+In this case, you can ignore the remaining sections on this page.
+
+However, if you want to dive into the development of Naproche's source code, it
+is highly recommended to set up a Haskell development environment as described
+at <https://www.haskell.org/get-started/>.
+In this case, you should also read the remaining sections on this page.
+
+
+### Stack
+
+Naproche is provided as a [*Stack*](https://docs.haskellstack.org/en/stable/)
+project.
+Stack is a tool to build Haskell projects and manage their dependencies.
+
+Note that Isabelle automatically downloads Stack to
+`$HOME/.isabelle/contrib/stack-...` when you build Naproche for the first time.
+It is highly recommended to use this automatically downloaded version of Stack
+if you ever have to run Stack (in the context of Naproche) manually.
+
+If you have good reasons to use a different version of Stack though, see
+<https://docs.haskellstack.org/en/stable/#how-to-install-stack> for
+installation instructions.
+
+
+### Hoogle
+
+[*Hoogle*](https://hoogle.haskell.org/) is a search engine for many Haskell
+libraries.
+These libraries can be searched by either function name or by (approximate)
+type signature via Hoogle's web interface: <https://hoogle.haskell.org/>
+
+To be able to use Hoogle also on the code base of Naproche, you have to set up
+a local Hoogle server (via Stack, see [above](#stack)) via the following steps:
+
+  1.  Generate a local Hoogle database for the Naproche code and the libraries
+      it depends on (from within the root directory of your local Naproche
+      repository):
+
+      ```
+      stack hoogle -- generate --local
+      ```
+
+  2.  Start a local Hoogle server (from within the root directory of your local
+      Naproche repository):
+
+      ```
+      stack hoogle -- server --local --port=8080
+      ```
+
+  3.  Open <http://localhost:8080> in your favourite web browser.
+
+
+### Haddock
+
+[*Haddock*](https://haskell-haddock.readthedocs.io/latest/) is a tool for
+automatically generating documentation from annotated Haskell source code.
+When editing the source code of Naproche, it is highly recommended to equip all
+Haskell source files you add or change with Haddock annotations.
+
+See <https://haskell-haddock.readthedocs.io/latest/markup.html> for a guide on
+how to annotate Haskell code with Haddock.
+
+
+## LaTeX
+
+Naproche formalizations can be embedded into
+[LaTeX](https://www.latex-project.org/) documents.
+To this end, Naproche provides two LaTeX packages for typesetting Naproche
+formalizations in LaTeX:
+
+  1.  A "beginner-friendly" package ([`math/examples/latex/naproche.sty`](https://github.com/naproche/naproche/blob/master/math/examples/latex/naproche.sty),
+      documented in [`math/examples/latex/naproche.sty`](https://github.com/naproche/naproche/blob/master/math/examples/latex/naproche.pdf))
+       intended to be used for small example formalizations that
+
+         - do **not** depend on libraries of Naproche formalizations *and*
+         - are **not** intended to be converted to interactive HTML.
+
+  2.  An "advanced" [sTeX](https://ctan.org/pkg/stex)-based package
+      (`math/latex/lib/naproche.sty`) intended to be used for larger
+      formalization projects that
+
+        - may depend on libraries of Naproche formalizations *or*
+        - are intended to be converted to interactive HTML.
+
+
+### Prerequisites
+
+Before contributing to any of the LaTeX packages listed above, ensure that you
+have an up-to-date version of [TeX Live](https://tug.org/texlive/) set up on
+your system. It is strongly recommended to set up TeX Live
+manually and *not* via a package manager. Installation instructions for Linux,
+macOS and Windows can be found via the following links:
+
+  - Linux: <https://tug.org/texlive/quickinstall.html>
+  - macOS: <https://tug.org/texlive/quickinstall.html> or
+    <https://tug.org/mactex/>
+  - Windows: <https://tug.org/texlive/windows.html>
+
+Note that downloading all required LaTeX packages during the setup of TeX Live
+may take some time.
+
+For details and more information about TeX Live see
+[*The TeX Live Guide*](https://tug.org/texlive/doc/texlive-en/texlive-en.pdf).
+
+Moreover, ensure you are familiar with the content of the following documents:
+
+  - [*LaTeX for authors*](https://www.latex-project.org/help/documentation/usrguide.pdf)
+  - [*LaTeX for package and class authors*](https://www.latex-project.org/help/documentation/clsguide.pdf)
+  - [*How to Package Your LaTeX Package*](https://latex.org.uk/info/dtxtut/dtxtut.pdf)
+
+Before contributing to the "advanced" LaTeX package, also ensure that you are
+familiar with LaTeX's L3 programming layer (expl3). The below list provides
+some useful references for expl3.
+
+  - [*The expl3 package and LaTeX3 programming*](https://texdoc.org/serve/expl3.pdf/0):
+    A short introduction to expl3
+  - [*The LaTeX3 Interfaces*](https://texdoc.org/serve/interface3.pdf/0):
+    The reference documentation for expl3
+  - [*The LaTeX3 Sources*](https://texdoc.org/serve/source3.pdf/0):
+    The typset sources for expl3
+
+
+## Managing Naproche Formalizations With FLAMS
 
 [FLAMS](https://github.com/kwarc/flams) – the Flexiformal Annotation Management
 System – can be used to manage Naproche formalizations that are based on
@@ -427,7 +440,7 @@ Download and unpack FLAMS:
 
 ## Ideas for Further Development
 
-i### Better Type Checking
+### Better Type Checking
 
 We currently type check using an approach similar to
 [A Second Look at Overloading](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.27.2072&rep=rep1&type=pdf)
@@ -549,7 +562,7 @@ Possible directions for further work:
     lemma-dependencies changes.
 
 
-## Query-Based Compilers
+### Query-Based Compilers
 
 There are two cases for query-based compilers:
 
