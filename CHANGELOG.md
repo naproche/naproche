@@ -36,6 +36,9 @@ Each change is tagged with one of the following keywords:
   In particular, this allows to generate documentation of the Haskell source
   code of Naproche via `cabal haddock-project`.
 
+* **Added:** The wiki at <https://github.com/naproche/naproche/wiki> was merged
+  into `CONTRIBUTING.md`.
+
 
 ## Isabelle2026/Naproche
 
