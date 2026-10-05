@@ -6,6 +6,7 @@ license:             GPL-3
 extra-source-files:
 - README.md
 - CHANGELOG.md
+- ACKNOWLEDGMENTS.md
 
 description:         <https://github.com/naproche-community/naproche>
 
