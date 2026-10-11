@@ -158,10 +158,9 @@ executable of command line interface of Naproche.
 
 ## Documentation
 
-Generate documentation of the Haskell source code:
+Generate documentation of the Haskell source code which can be served with a
+(local) HTTP server:
 
 ```
-cabal haddock-project
+stack haddock --haddock-deps
 ```
-
-This creates a `haddocks` directory which can be served with an HTTP server.
