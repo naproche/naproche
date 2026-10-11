@@ -11,7 +11,7 @@
 
 module SAD.Core.Thesis (inferNewThesis) where
 
-import Data.Text.Lazy qualified as Text
+import Data.Text qualified as Text
 import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans.Class

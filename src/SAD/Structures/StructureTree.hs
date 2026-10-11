@@ -12,10 +12,9 @@
 
 module SAD.Structures.StructureTree where
 
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as T
+import Data.Text (Text)
+import Data.Text qualified as Text
 import Data.Tree
-import Data.Text.Lazy qualified as Text
 
 import SAD.Data.Formula as Formula
 import SAD.Structures.Formula qualified as F
@@ -68,9 +67,9 @@ pattern a :== b <- Trm _ [a, b] _ EqualityId
 toDeclaration :: ForthelExpr -> F.Declaration
 toDeclaration (ForthelExpr {..}) =
   let work = go []
-      go xs (All d f) = let v = T.pack $ show $ declName d
+      go xs (All d f) = let v = Text.pack $ show $ declName d
         in F.All v (go (v:xs) f)
-      go xs (Exi d f) = let v = T.pack $ show $ declName d
+      go xs (Exi d f) = let v = Text.pack $ show $ declName d
         in F.Exists v (go (v:xs) f)
       go xs (Iff f g) = (go xs f) F.:<-> (go xs g)
       go xs (Imp f g) = (go xs f) F.:-> (go xs g)
@@ -98,7 +97,7 @@ toDeclaration (ForthelExpr {..}) =
 
 varToText :: VariableName -> Text
 varToText (VarConstant t) = t
-varToText v = T.pack $ show v
+varToText v = Text.pack $ show v
 
 termToText :: TermName -> Text
 termToText (TermName t) = t
@@ -109,7 +108,7 @@ termToText (TermUnaryAdjective t) = t
 termToText (TermMultiAdjective t) = t
 termToText (TermUnaryVerb t) = t
 termToText (TermMultiVerb t) = t
-termToText t = T.pack $ show t
+termToText t = Text.pack $ show t
 
 toLeanCode :: [ForthelExpr] -> Text
 toLeanCode fs = "axiom omitted {p : Prop} : p\n\n"

@@ -31,8 +31,8 @@ module SAD.Data.Text.Block (
 
 import Data.Set (Set)
 import Data.Set qualified as Set
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 import Data.Maybe (fromMaybe)
 
 import SAD.Data.Formula hiding (CaseHypothesis)
@@ -141,7 +141,7 @@ canDeclare _ = False
 
 
 file :: Block -> Text
-file = Text.fromStrict . make_text . fromMaybe Bytes.empty . Position.file_of . position
+file = make_text . fromMaybe Bytes.empty . Position.file_of . position
 
 declaredNames :: Block -> Set VariableName
 declaredNames = Set.map declName . declaredVariables

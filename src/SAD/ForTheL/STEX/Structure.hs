@@ -17,8 +17,8 @@ module SAD.ForTheL.STEX.Structure (
 import Data.List
 import Control.Applicative
 import Control.Monad
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 import Data.Functor ((<&>))
 import Data.Foldable (foldr')
 import Data.Maybe (fromMaybe)
@@ -348,12 +348,12 @@ tlsOptions = do
 -- section environment.
 tlsOption :: FTL (Text, TlsOption)
 tlsOption = do
-  key <- Text.fromStrict . tokensText <$> chainLL1 notReservedChar
+  key <- tokensText <$> chainLL1 notReservedChar
   case key of
     "forthel" -> return (key, TlsForthel)
     "title" -> do
       symbol "="
-      title <- Text.fromStrict . tokensText <$> optBraced (chainLL1 notReservedChar)
+      title <- tokensText <$> optBraced (chainLL1 notReservedChar)
       return (key, TlsTitle title)
     "name" -> do
       symbol "="

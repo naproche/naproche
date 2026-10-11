@@ -16,8 +16,8 @@ import Control.Monad
 import Data.Ord (comparing)
 import Data.Maybe (isNothing, mapMaybe)
 import Debug.Trace
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 import System.FilePath.Posix hiding ((</>))
 
 import SAD.Parser.Base

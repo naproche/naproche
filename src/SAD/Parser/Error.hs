@@ -23,8 +23,8 @@ module SAD.Parser.Error (
 
 import Data.List (intercalate)
 import Data.Ord (comparing)
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 
 import SAD.Helpers (notNull, nubOrd)
 import SAD.Core.Message (show_position)

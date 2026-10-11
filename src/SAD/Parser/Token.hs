@@ -33,7 +33,6 @@ module SAD.Parser.Token (
 
 import Data.Text (Text)
 import Data.Text qualified as Text
-import Data.Text.Lazy qualified as Lazy
 import Data.List.NonEmpty qualified as NonEmpty
 import Data.Set (Set)
 import Data.Set qualified as Set
@@ -158,14 +157,14 @@ mergeTokens :: [Token] -> Token
 mergeTokens tokens = Token (tokensText tokens) (tokensPos tokens)
 
 -- | Print a token
-showToken :: Token -> Lazy.Text
-showToken t@Token{} = Lazy.fromStrict $ tokenText t
-showToken EOF{} = Lazy.pack "end of input"
+showToken :: Token -> Text
+showToken t@Token{} = tokenText t
+showToken EOF{} = Text.pack "end of input"
 
 -- | Append tokens separated by a single space if they were separated
 -- by whitespace before
-composeTokens :: [Token] -> Lazy.Text
-composeTokens = Lazy.concat . dive
+composeTokens :: [Token] -> Text
+composeTokens = Text.concat . dive
   where
     dive [] = []
     dive [t] = [showToken t]

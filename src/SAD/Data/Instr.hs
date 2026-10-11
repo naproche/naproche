@@ -25,8 +25,8 @@ module SAD.Data.Instr (
   keywordsDropLimit, keywordsDropFlag
 ) where
 
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Lazy
+import Data.Text (Text)
+import Data.Text qualified as Lazy
 
 import Isabelle.Bytes (Bytes)
 import Isabelle.Library

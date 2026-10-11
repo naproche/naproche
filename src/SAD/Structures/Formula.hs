@@ -8,7 +8,7 @@
 
 module SAD.Structures.Formula where
 
-import Data.Text.Lazy (Text)
+import Data.Text (Text)
 
 
 newtype Document = Document [Declaration] deriving Show

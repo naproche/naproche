@@ -14,8 +14,8 @@ module SAD.Data.Formula.Base where
 import Data.Maybe
 import Data.Monoid qualified as Monoid
 import Control.Monad.Identity
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 import Data.Map qualified as Map
 
 import SAD.Data.Tag (Tag)
@@ -81,8 +81,8 @@ trInfo Var {varInfo = xs} = xs
 trInfo _ = error "Formula.Base.trInfo: undefined"
 
 showTrName :: Formula -> Text
-showTrName Trm{trmName = s} = Text.filter (/= ':') $ toLazyText $ represent s
-showTrName Var{varName = s} = Text.filter (/= ':') $ toLazyText $ represent s
+showTrName Trm{trmName = s} = Text.filter (/= ':') $ represent s
+showTrName Var{varName = s} = Text.filter (/= ':') $ represent s
 showTrName _ = Text.empty
 
 isHole :: Formula -> Bool

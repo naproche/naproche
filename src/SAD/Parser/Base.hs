@@ -35,7 +35,7 @@ import Control.Monad.Fail qualified as Fail
 import Control.Applicative
 import Control.Monad.State.Class (MonadState(put, get))
 import Data.List
-import Data.Text.Lazy qualified as Text
+import Data.Text qualified as Text
 
 import SAD.Helpers (notNull, failWithMessage)
 import SAD.Parser.Token

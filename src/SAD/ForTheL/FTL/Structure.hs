@@ -20,7 +20,7 @@ module SAD.ForTheL.FTL.Structure (
 
 import Control.Applicative
 import Control.Monad.State.Class (modify)
-import Data.Text.Lazy (Text)
+import Data.Text (Text)
 
 import SAD.ForTheL.Structure
 import SAD.ForTheL.Base

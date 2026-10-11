@@ -10,7 +10,8 @@
 
 module SAD.Structures.Translate where
 
-import Data.Text.Lazy (Text, pack)
+import Data.Text (Text)
+import Data.Text qualified as Text
 
 import SAD.Structures.Formula
 import SAD.Structures.Type qualified as Type
@@ -19,7 +20,7 @@ import SAD.Structures.Type ((-->), (/\), (\/), (<@>))
 
 translateDoc :: Document -> [Type.Decl]
 translateDoc (Document decls) =
-  let names = fmap (("h" <>) . pack . show) [1 .. length decls]
+  let names = fmap (("h" <>) . Text.pack . show) [1 .. length decls]
   in zipWith translateDecl names decls
 
 translateDecl :: Text -> Declaration -> Type.Decl

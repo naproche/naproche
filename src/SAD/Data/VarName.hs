@@ -27,9 +27,8 @@ module SAD.Data.VarName (
 import Data.Set (Set)
 import Data.Set qualified as Set
 import GHC.Magic (oneShot)
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
-import Data.Text.Lazy.Builder qualified as Builder
+import Data.Text (Text)
+import Data.Text qualified as Text
 import Data.Function (on)
 
 import SAD.Core.Message (show_position)
@@ -59,21 +58,21 @@ isVarHole (VarHole _) = True
 isVarHole _ = False
 
 instance Show VariableName where
-  show = Text.unpack . toLazyText . represent
+  show = Text.unpack . represent
 
 instance Representation VariableName where
-  represent (VarConstant s) = "x" <> Builder.fromLazyText s
-  represent (VarHole s) = "?" <> Builder.fromLazyText s
+  represent (VarConstant s) = "x" <> s
+  represent (VarHole s) = "?" <> s
   represent VarSlot = "!"
-  represent (VarU s) = "u" <> Builder.fromLazyText s
-  represent (VarHidden n) = "h" <> Builder.fromString (show n)
-  represent (VarAssume n) = "i" <> Builder.fromString (show n)
-  represent (VarSkolem n) = "o" <> Builder.fromString (show n)
+  represent (VarU s) = "u" <> s
+  represent (VarHidden n) = "h" <> Text.pack (show n)
+  represent (VarAssume n) = "i" <> Text.pack (show n)
+  represent (VarSkolem n) = "o" <> Text.pack (show n)
   represent (VarTask s) = "c" <> represent s
-  represent (VarZ s) = "z" <> Builder.fromLazyText s
-  represent (VarW s) = "w" <> Builder.fromLazyText s
+  represent (VarZ s) = "z" <> s
+  represent (VarW s) = "w" <> s
   represent VarEmpty = ""
-  represent (VarDefault s) = Builder.fromLazyText s
+  represent (VarDefault s) = s
 
 data PosVar = PosVar
   { posVarName :: VariableName
@@ -91,7 +90,7 @@ instance Ord PosVar where
 
 instance Representation PosVar where
   represent (PosVar v pos) =
-    "(" <> represent v <> ", " <> Builder.fromString (show_position pos) <> ")"
+    "(" <> represent v <> ", " <> Text.pack (show_position pos) <> ")"
 
 class (Ord a, Representation a) => IsVar a where
   buildVar :: VariableName -> Position.T -> a

@@ -16,7 +16,7 @@ import Data.Maybe (fromMaybe)
 import Data.Either (lefts,rights, isRight)
 import Control.Monad (MonadPlus(..), guard)
 import Control.Monad.Reader
-import Data.Text.Lazy qualified as Text
+import Data.Text qualified as Text
 
 import SAD.Core.Base
 import SAD.Core.Reason as Reason

@@ -8,7 +8,7 @@
 
 module SAD.Structures.Type where
 
-import Data.Text.Lazy (Text)
+import Data.Text (Text)
 
 
 data Expr

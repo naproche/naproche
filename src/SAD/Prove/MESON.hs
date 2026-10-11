@@ -22,7 +22,7 @@ import Control.Monad
 import Control.Exception (evaluate)
 import Data.List
 import Data.Maybe
-import Data.Text.Lazy qualified as Text
+import Data.Text qualified as Text
 
 import SAD.Data.Formula
 import SAD.Prove.Unify

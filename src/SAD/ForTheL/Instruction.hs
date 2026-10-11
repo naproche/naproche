@@ -19,8 +19,8 @@ module SAD.ForTheL.Instruction (
 
 import Control.Monad
 import Control.Applicative ((<|>))
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 
 import SAD.Data.Instr
 import SAD.ForTheL.Base

@@ -15,15 +15,15 @@ module SAD.Data.Formula.Show (
   symEncode
 ) where
 
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 import Data.List qualified as List
 
 import SAD.Data.Formula.Base
 import SAD.Data.Formula.Kit
 import SAD.Data.VarName
 import SAD.Data.Terms
-import SAD.Export.Representation (toLazyText, represent)
+import SAD.Export.Representation (represent)
 
 import Isabelle.Position qualified as Position
 import SAD.Helpers
@@ -88,10 +88,10 @@ showFormula p = dive
     -- Symbolic formula/term:
     dive d Trm{trmName = TermSymbolic tName, trmArgs = tArgs} = decode (Text.unpack tName) tArgs p d ""
     -- Non-symbolic formula/term:
-    dive d Trm{trmName = tName, trmArgs = tArgs} = Text.unpack (toLazyText (represent tName)) ++ showArguments p d tArgs
+    dive d Trm{trmName = tName, trmArgs = tArgs} = Text.unpack (represent tName) ++ showArguments p d tArgs
     -- Free variables:
     dive d Var{varName = VarConstant s} = Text.unpack s
-    dive d Var{varName = vName} = Text.unpack $ toLazyText $ represent vName
+    dive d Var{varName = vName} = Text.unpack $ represent vName
     -- De Brujin index:
     dive d Ind{indIndex = i}
       | i < d = "v" ++ show (d - i - 1)

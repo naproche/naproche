@@ -22,7 +22,7 @@ module SAD.Prove.Normalize (
 ) where
 
 import Data.List
-import Data.Text.Lazy qualified as Text
+import Data.Text qualified as Text
 
 import SAD.Data.Formula
 import SAD.Data.Text.Decl

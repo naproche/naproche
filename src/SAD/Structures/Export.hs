@@ -10,7 +10,8 @@
 
 module SAD.Structures.Export where
 
-import Data.Text.Lazy (Text, intercalate)
+import Data.Text (Text)
+import Data.Text qualified as Text
 
 import SAD.Structures.Type (Expr(..), Decl(..), Constr(..))
 
@@ -20,7 +21,7 @@ class Exportable e where
 
 instance (Exportable e) => Exportable [e] where
   export :: [e] -> Text
-  export es = intercalate "\n" (export `fmap` es)
+  export es = Text.intercalate "\n" (export `fmap` es)
 
 instance Exportable Decl where
   export :: Decl -> Text
@@ -35,7 +36,7 @@ instance Exportable Decl where
       "theorem " <> name <> " : " <> export ty <> " :=\n  " <> export e <> "\n"
     Inductive name ty constrs ->
       "inductive " <> name <> " : " <> export ty <> "\n"
-      <> intercalate "\n" (fmap export constrs)
+      <> Text.intercalate "\n" (fmap export constrs)
       <> "\nopen " <> name <> "\n"
     Subtype ty subty ->
       "axiom is" <> subty <> " : " <> ty <> " → Prop\nnotation  `" <> subty <> "` := {x : "

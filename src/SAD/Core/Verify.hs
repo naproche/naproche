@@ -14,7 +14,7 @@ import Data.IORef (readIORef)
 import Data.Maybe (isJust)
 import Control.Monad (when, unless)
 import Control.Monad.Reader
-import Data.Text.Lazy qualified as Text
+import Data.Text qualified as Text
 
 import SAD.Core.Base
 import SAD.Core.Check (fillDef)

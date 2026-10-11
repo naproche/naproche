@@ -17,8 +17,8 @@ module SAD.Export.TPTP (
   renderSequent
 ) where
 
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 
 import SAD.Data.Formula (Formula(..), showTrName, TermName(..))
 import SAD.Helpers (failWithMessage)
@@ -88,7 +88,7 @@ renderSequent name role (premises, conclusions) =
   <> "])."
 
 tptpName :: Formula -> Text
-tptpName = Text.fromStrict . make_text . atomic_word . make_bytes . showTrName
+tptpName = make_text . atomic_word . make_bytes . showTrName
 
 tptpTerm :: Int -> Formula -> Text
 tptpTerm d = term

@@ -16,8 +16,8 @@ module SAD.ForTheL.Extension (
   ignoreNames
 ) where
 
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 
 import SAD.Data.Formula
 import SAD.ForTheL.Base

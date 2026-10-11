@@ -12,25 +12,24 @@ module SAD.Export.Representation (
   Representation(..),
   buildParens,
   buildArgumentsWith,
-  commaSeparated,
-  Builder.toLazyText
+  commaSeparated
 ) where
 
-import Data.Text.Lazy.Builder (Builder)
-import Data.Text.Lazy.Builder qualified as Builder
+import Data.Text (Text)
+import Data.Text qualified as Text
 
 
 class Representation a where
-  represent :: a -> Builder
+  represent :: a -> Text
 
-buildParens :: Builder -> Builder
+buildParens :: Text -> Text
 buildParens xs = "(" <> xs <> ")"
 
-buildArgumentsWith :: (a -> Builder) -> [a] -> Builder
+buildArgumentsWith :: (a -> Text) -> [a] -> Text
 buildArgumentsWith _ [] = ""
 buildArgumentsWith showTerm ls = buildParens $ commaSeparated showTerm ls
 
-commaSeparated :: (a -> Builder) -> [a] -> Builder
+commaSeparated :: (a -> Text) -> [a] -> Text
 commaSeparated showTerm [] = ""
 commaSeparated showTerm [t] = showTerm t
 commaSeparated showTerm (t:ts) = showTerm t <> "," <> commaSeparated showTerm ts

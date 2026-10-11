@@ -45,7 +45,7 @@ import Control.Monad.Reader
 import Control.Monad.State
 import Data.IORef
 import Data.Maybe (isJust, fromJust)
-import Data.Text.Lazy (Text)
+import Data.Text (Text)
 import Data.Time (NominalDiffTime, getCurrentTime, diffUTCTime)
 import Data.Set qualified as Set
 import Data.Map qualified as Map
