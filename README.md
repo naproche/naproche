@@ -1,3 +1,8 @@
+**_This branch serves as an archive for the code in `src/SAD/Structures` which provides an
+experimental Lean export that has never been integrated in Naproche and was therefore
+removed from the `master` branch._**
+
+
 # Naproche
 
 Proof Checking of Natural Mathematical Documents, with optional support for
