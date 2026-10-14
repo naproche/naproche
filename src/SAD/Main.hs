@@ -205,7 +205,7 @@ pideServer mesonCache proverCache initInstrs socket =
 
 -- * Translating or Verifying the Input Text
 
-lexInputText :: ParserKind -> Bytes -> IO Int
+lexInputText :: Dialect -> Bytes -> IO Int
 lexInputText dialect bytes = do
   -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
@@ -221,7 +221,7 @@ lexInputText dialect bytes = do
   outputMain TRACING Position.none $ make_bytes $ "total " <> timeDifference finishTime
   return 0
 
-tokenizeInputText :: ParserKind -> Bytes -> IO Int
+tokenizeInputText :: Dialect -> Bytes -> IO Int
 tokenizeInputText dialect bytes = do
   -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
@@ -238,7 +238,7 @@ tokenizeInputText dialect bytes = do
   outputMain TRACING Position.none $ make_bytes $ "total " <> timeDifference finishTime
   return 0
 
-translateInputText :: ParserKind -> [ProofText] -> IO Int
+translateInputText :: Dialect -> [ProofText] -> IO Int
 translateInputText dialect proofTexts = do
   -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
@@ -253,7 +253,7 @@ translateInputText dialect proofTexts = do
   outputMain TRACING Position.none $ make_bytes $ "total " <> timeDifference finishTime
   return 0
 
-verifyInputText :: ParserKind -> MESON.Cache -> Prover.Cache -> [ProofText] -> IO Int
+verifyInputText :: Dialect -> MESON.Cache -> Prover.Cache -> [ProofText] -> IO Int
 verifyInputText dialect mesonCache proverCache proofTexts = do
   -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
@@ -368,7 +368,7 @@ readArgs args = do
       getDialectArg ext = exitWithError $
         "Invalid file name extension " ++ quote ext
 
-getDialect :: [Instr] -> ParserKind
+getDialect :: [Instr] -> Dialect
 getDialect instrs = case getInstr dialectParam instrs of
   "ftl" -> Ftl
   "tex" -> Tex

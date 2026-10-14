@@ -47,7 +47,7 @@ import Naproche.Program qualified as Program
 -- * Reader loop
 
 -- | Parse one or more ForTheL texts
-readProofText :: ParserKind -> [ProofText] -> IO [ProofText]
+readProofText :: Dialect -> [ProofText] -> IO [ProofText]
 readProofText dialect text0 = do
   context <- Program.thread_context
   naprocheFormalizationsPath <- getNaprocheFormalizations
@@ -55,7 +55,7 @@ readProofText dialect text0 = do
   when (Program.is_pide context) $ Message.reports reports
   return text
 
-reader :: Int -> ParserKind -> FilePath -> [FilePath] -> [State FState] -> [ProofText] -> IO ([ProofText], [Position.Report])
+reader :: Int -> Dialect -> FilePath -> [FilePath] -> [State FState] -> [ProofText] -> IO ([ProofText], [Position.Report])
 -- Take an archive path, a module path and a module name, turn it into an
 -- absolute file path and continue the reader loop with a read instruction for
 -- this file path.
@@ -162,7 +162,7 @@ reader _ _ _ _ (state : _) [] = return ([], reports $ stUser state)
 reader _ _ _ _ _ _ = failWithMessage "SAD.Parser.Base.reader" "Invalid arguments."
 
 -- | Consequtively lex, tokenize and parse a byte string.
-parse :: ParserKind -> Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
+parse :: Dialect -> Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
 parse dialect pos bytes state = do
   tokens <- case dialect of
     Ftl -> FTL.lex pos bytes >>= FTL.tokenize
@@ -176,31 +176,30 @@ parse dialect pos bytes state = do
       newState = State {
         stUser = addInits $ (stUser state) {tvrExpr = []},
         stInput = tokens,
-        parserKind = dialect,
+        dialect = dialect,
         lastPosition = Position.none
       }
   parseState newState
 
 -- | Parse a byte string.
-parseBytes :: ParserKind -> Bytes -> State FState -> IO ([ProofText], State FState)
+parseBytes :: Dialect -> Bytes -> State FState -> IO ([ProofText], State FState)
 parseBytes dialect bytes state =
   let pos = Position.start
-  in parse dialect pos bytes state{parserKind = dialect}
+  in parse dialect pos bytes state{dialect = dialect}
 
 -- | Parse a file (or the content of stdin if an empty file path is given).
-parseFile :: ParserKind -> FilePath -> State FState -> IO ([ProofText], State FState)
+parseFile :: Dialect -> FilePath -> State FState -> IO ([ProofText], State FState)
 parseFile dialect filePath state = do
   bytes <- catch
     (if null filePath then make_bytes <$> getContents else File.read filePath)
     (Message.errorReader (Position.file_only $ make_bytes filePath) . make_bytes . ioeGetErrorString)
   let pos = Position.file $ make_bytes filePath
-  parse dialect pos bytes state{parserKind = dialect}
+  parse dialect pos bytes state{dialect = dialect}
 
 -- | Parse (the tokens contained in) a state.
 parseState :: State FState -> IO ([ProofText], State FState)
 parseState state =
-  let dialect = parserKind state
-      parser = case dialect of
+  let parser = case dialect state of
         Ftl -> FTL.forthelText
         Tex -> TEX.forthelText
         Stex -> STEX.forthelText

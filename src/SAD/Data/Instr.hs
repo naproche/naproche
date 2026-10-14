@@ -11,7 +11,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Data.Instr (
-  ParserKind(..), Instr(..), Drop(..), Command(..),
+  Dialect(..), Instr(..), Drop(..), Command(..),
   getInstr, addInstr, dropInstr,
   timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam,
   proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisParam,
@@ -39,10 +39,10 @@ import Naproche.Prover qualified as Prover
 
 -- | Indicate which of the parsers is currently used. This is must be recorded in the State
 -- for read instruction to work properly.
-data ParserKind = Ftl | Tex | Stex deriving (Eq, Ord)
+data Dialect = Ftl | Tex | Stex deriving (Eq, Ord)
 
-instance Show ParserKind where
-  show :: ParserKind -> String
+instance Show Dialect where
+  show :: Dialect -> String
   show Ftl = "FTL"
   show Tex = "TeX"
   show Stex = "sTeX"

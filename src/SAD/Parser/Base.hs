@@ -40,7 +40,7 @@ import Data.Text qualified as Text
 import SAD.Helpers (notNull, failWithMessage)
 import SAD.Parser.Token
 import SAD.Parser.Error
-import SAD.Data.Instr (ParserKind)
+import SAD.Data.Instr (Dialect)
 import SAD.Core.Message (errorParser)
 
 import Isabelle.Position qualified as Position
@@ -51,7 +51,7 @@ import Isabelle.Library (show_bytes)
 data State st = State
   { stUser  :: st
   , stInput :: [Token]
-  , parserKind :: ParserKind
+  , dialect :: Dialect
   , lastPosition :: Position.T
   } deriving (Eq, Ord)
 
