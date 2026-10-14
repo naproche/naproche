@@ -24,6 +24,7 @@ module SAD.Helpers (
 
   failureMessage,
   failWithMessage,
+  exitWithError,
 
   getNaprocheHome,
   getNaprocheFormalizations,
@@ -160,6 +161,8 @@ failureMessage functionId message = functionId ++ ": " ++ message ++
 failWithMessage :: String -> String -> a
 failWithMessage functionId message = error $ failureMessage functionId message
 
+exitWithError :: String -> a
+exitWithError message = errorWithoutStackTrace $ "[Error] " ++ message
 
 -- *
 
