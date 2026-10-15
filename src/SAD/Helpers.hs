@@ -18,7 +18,6 @@ module SAD.Helpers (
   failWithMessage,
   exitWithError,
 
-  getNaprocheHome,
   getNaprocheFormalizations,
   getNaprocheMathhub
 ) where
@@ -63,11 +62,6 @@ failWithMessage functionId message = error $ failureMessage functionId message
 exitWithError :: String -> a
 exitWithError message = errorWithoutStackTrace $ "[Error] " ++ message
 
--- *
-
--- | Get the path to the naproche directory.
-getNaprocheHome :: IO FilePath
-getNaprocheHome = make_string <$> getenv (make_bytes "NAPROCHE_HOME")
 
 -- | Get the path to the formalizations directory.
 getNaprocheFormalizations :: IO FilePath
