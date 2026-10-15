@@ -10,7 +10,6 @@
 
 module SAD.Data.Terms where
 
-import Debug.Trace
 import Data.Text (Text)
 import Data.Text qualified as Text
 

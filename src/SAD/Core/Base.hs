@@ -63,7 +63,6 @@ import SAD.Core.Message qualified as Message
 import SAD.Data.Structures.DisTree (DisTree)
 import SAD.Data.Structures.DisTree qualified as DisTree
 import SAD.Data.Text.Context qualified as Context (name)
-import SAD.Data.Text.Decl (newDecl)
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Position qualified as Position

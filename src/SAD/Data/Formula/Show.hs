@@ -26,7 +26,6 @@ import SAD.Data.Terms
 import SAD.Export.Representation (represent)
 
 import Isabelle.Position qualified as Position
-import SAD.Helpers (isAsciiLetter)
 
 
 instance Show Formula where
@@ -124,22 +123,6 @@ parens string = "(" ++ string ++ ")"
 -- the string unmodified.
 parensIf :: Bool -> String -> String
 parensIf pred string = if pred then parens string else string
-
--- | Substitute all @.@ characters in a string by given terms.
-substitute :: String -> [Formula] -> Int -> Int -> String
-substitute s [] _ _ = s
-substitute s (t : ts) p d = dec s
-  where
-    dec ('.' : cs) = parensIf (ambig t) (showFormula p d t) ++ substitute cs ts p d
-    dec (c : cs@('.' : _)) | isAsciiLetter c = c : " " ++ dec cs
-    dec (c : cs) = c : dec cs
-    dec [] = ""
-
-    ambig Trm {trmName = TermSymbolic tName} =
-      ("." `Text.isPrefixOf` tName && Text.drop 2 tName /= "(.)") ||
-      "." `Text.isSuffixOf` tName
-    ambig _ = False
-
 
 
 decode :: String -> [Formula] -> Int -> Int -> ShowS
