@@ -26,7 +26,7 @@ import SAD.Data.Terms
 import SAD.Export.Representation (represent)
 
 import Isabelle.Position qualified as Position
-import SAD.Helpers
+import SAD.Helpers (isAsciiLetter)
 
 
 instance Show Formula where
@@ -115,6 +115,15 @@ showArguments p d terms =
 -- | Show a binding variable.
 showBindingVar :: Int -> Int -> String
 showBindingVar p d = showFormula p (d + 1) (Ind 0 Position.none)
+
+-- | Wrap a string in parentheses.
+parens :: String -> String
+parens string = "(" ++ string ++ ")"
+
+-- | Wrap a string in parentheses if a predicate holds true, otherwise return
+-- the string unmodified.
+parensIf :: Bool -> String -> String
+parensIf pred string = if pred then parens string else string
 
 -- | Substitute all @.@ characters in a string by given terms.
 substitute :: String -> [Formula] -> Int -> Int -> String
