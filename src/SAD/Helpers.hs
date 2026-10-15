@@ -13,10 +13,6 @@ module SAD.Helpers (
   isAsciiLetter,
   isAsciiAlphaNum,
   isAsciiPeriod,
-
-  failureMessage,
-  failWithMessage,
-  exitWithError,
 ) where
 
 import Data.Char qualified as Char
@@ -42,18 +38,4 @@ isAsciiAlphaNum c = isAsciiLetter c || isAsciiDigit c
 
 isAsciiPeriod :: Char -> Bool
 isAsciiPeriod c = c == '\x002E'
-
-
--- * Error Messages
-
-failureMessage :: String -> String -> String
-failureMessage functionId message = functionId ++ ": " ++ message ++
-    " If you see this message, please file an issue at " ++
-    " <https://github.com/naproche/naproche/issues>."
-
-failWithMessage :: String -> String -> a
-failWithMessage functionId message = error $ failureMessage functionId message
-
-exitWithError :: String -> a
-exitWithError message = errorWithoutStackTrace $ "[Error] " ++ message
 

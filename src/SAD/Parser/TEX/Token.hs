@@ -26,7 +26,6 @@ import Text.Megaparsec hiding (State, Token, token)
 import SAD.Parser.Token
 import SAD.Parser.TEX.Lexer qualified as TEX
 import SAD.Core.Message qualified as Message
-import SAD.Helpers (failWithMessage)
 
 import Isabelle.Position qualified as Position
 import Isabelle.Markup qualified as Markup
@@ -957,7 +956,7 @@ catchUnexpected exp p = try p <|> do
         ControlWord{sourceText = s} -> "control word \"" <> s <> "\""
         ControlSymbol{sourceText = s} -> "control symbol \"" <> s <> "\""
         Parameter{sourceText = s} -> "parameter lexeme \"" <> s <> "\""
-        _ -> failWithMessage "SAD.Parser.TEX.Token.catchUnexpected" "Unexpected lexeme."
+        _ -> error "Unexpected lexeme."
   customFailure $ Unexpected pos unexp exp
 
 -- | Parse a single lexeme that satisfies a given property.

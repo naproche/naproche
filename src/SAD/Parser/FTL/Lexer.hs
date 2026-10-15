@@ -17,7 +17,6 @@ import Data.List (intercalate)
 import FTLex.Ftl qualified as FTL
 
 import SAD.Parser.Lexer
-import SAD.Helpers (failureMessage)
 
 import Isabelle.Position qualified as Position
 import Isabelle.Bytes qualified as Bytes
@@ -69,7 +68,7 @@ renderSourceText text = "  Source text: " ++ show text
 renderPosition :: Position.T -> String
 renderPosition pos =
   "  Source position:\n" ++
-  "    Line: " ++ maybe (failureMessage "SAD.Parser.FTL.Lexer.renderLexeme" "Unknown line") show (Position.line_of pos) ++ "\n" ++
-  "    Column: " ++ maybe (failureMessage "SAD.Parser.FTL.Lexer.renderLexeme" "Unknown column") show (Position.column_of pos) ++ "\n" ++
-  "    Offset: " ++ maybe (failureMessage "SAD.Parser.FTL.Lexer.renderLexeme" "Unknown offset") show (Position.offset_of pos) ++ "\n" ++
-  "    End-Offset: " ++ maybe (failureMessage "SAD.Parser.FTL.Lexer.renderLexeme" "Unknown end-offset") show (Position.end_offset_of pos)
+  "    Line: " ++ maybe "unknown" show (Position.line_of pos) ++ "\n" ++
+  "    Column: " ++ maybe "unknown" show (Position.column_of pos) ++ "\n" ++
+  "    Offset: " ++ maybe "unknown" show (Position.offset_of pos) ++ "\n" ++
+  "    End-Offset: " ++ maybe "unknown" show (Position.end_offset_of pos)

@@ -44,7 +44,6 @@ import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Formula
 import SAD.Data.Tag qualified as Tag
-import SAD.Helpers
 
 import Isabelle.Position qualified as Position
 
@@ -428,7 +427,7 @@ proofOption = proofMethodKey </> proofMethodBy
           symbol "="
           method <- optBraced proofMethod
           return (key, ProofMethod method)
-        _ -> failWithMessage "SAD.ForTheL.Structure.proofOption" "Unknown key."
+        _ -> error "Unknown key."
     proofMethodBy = do
       token' "by"
       method <- proofMethod

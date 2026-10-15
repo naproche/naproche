@@ -34,7 +34,6 @@ import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.STEX.Token qualified as STEX
 import SAD.Parser.Token (Token, noTokens)
 import SAD.Core.Message qualified as Message
-import SAD.Helpers (failWithMessage)
 
 import Isabelle.File qualified as File
 import Isabelle.Library (make_bytes, make_string, getenv)
@@ -159,7 +158,7 @@ reader depth dialect naprocheFormalizationsPath doneFiles (pState : oldState : r
 
 reader _ _ _ _ (state : _) [] = return ([], reports $ stUser state)
 
-reader _ _ _ _ _ _ = failWithMessage "SAD.Parser.Base.reader" "Invalid arguments."
+reader _ _ _ _ _ _ = error "Invalid arguments."
 
 -- | Consequtively lex, tokenize and parse a byte string.
 parse :: Dialect -> Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)

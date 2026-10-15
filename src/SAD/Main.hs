@@ -14,11 +14,11 @@
 
 module SAD.Main where
 
-import Control.Monad (unless, when)
+import Control.Monad (when)
 import Data.Time (addUTCTime, getCurrentTime, diffUTCTime)
 import Data.Maybe (mapMaybe)
 import Control.Exception qualified as Exception
-import Control.Exception (catch)
+import Control.Exception (Exception, catch, handle, throwIO)
 import System.Console.GetOpt qualified as GetOpt
 import System.Environment qualified as Environment
 import System.IO
@@ -43,7 +43,6 @@ import SAD.Parser.FTL.Token qualified as FTL
 import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.STEX.Token qualified as STEX
 import SAD.Parser.Token (renderTokens)
-import SAD.Helpers (failWithMessage, exitWithError)
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
@@ -73,7 +72,7 @@ main  = do
   -- the user; when Naproche is run in a PIDE, they are a fixed set of
   -- arguments that are hard-coded into the PIDE integration.
   args <- Environment.getArgs
-  (initInstrs, mbFileArg) <- readArgs args
+  (initInstrs, mbFileArg) <- handle readArgsHandler $ readArgs args
   -- Run Naproche either in PIDE or terminal mode, depending on whether the
   -- server parameter is set to @True@ in the initial options. Note that unless
   -- Naproche is run in a PIDE, it is set to @False@.
@@ -105,9 +104,7 @@ mainTerminal initInstrs mbFileArg = do
           Just filePath -> do
             let dialect = getDialect initInstrs
             fileExists <- doesFileExist filePath
-            inputText <- if fileExists
-              then File.read filePath
-              else exitWithError $ "File " ++ quote filePath ++ " does not exist"
+            inputText <- File.read filePath
             return (dialect, inputText, Just filePath)
           Nothing -> do
             let dialect = getDialect initInstrs
@@ -351,34 +348,44 @@ renderInputFile inputPath texExe bibtexExe = do
 
 -- * Arguments
 
+data ReadArgException =
+    GetOptFailure String
+  | TooManyFiles
+  | InvalidFileNameExt String
+  deriving (Show)
+
+readArgsHandler :: ReadArgException -> IO a
+readArgsHandler (GetOptFailure msg) = errorWithoutStackTrace msg
+readArgsHandler TooManyFiles = errorWithoutStackTrace "more than one file argument"
+readArgsHandler (InvalidFileNameExt ext) = errorWithoutStackTrace $ "invalid file name extension " ++ quote ext
+
+instance Exception ReadArgException
+
 readArgs :: [String] -> IO ([Instr], Maybe FilePath)
 readArgs args = do
   let (instrs, nonInstrArgs, errors) = GetOpt.getOpt GetOpt.Permute options args
-
-  let fail msgs = exitWithError (unlines $ map trim_line msgs)
-  unless (null errors) $ fail errors
+  mapM_ (throwIO . GetOptFailure) errors
 
   case nonInstrArgs of
     [] -> return (instrs, Nothing)
     [fileArg] -> do
       let fileNameExteisionStr = takeExtensions fileArg
-      let dialectArg = getDialectArg fileNameExteisionStr
-          dialectInstr = SetBytes dialectParam dialectArg
+      dialectArg <- getDialectArg fileNameExteisionStr
+      let dialectInstr = SetBytes dialectParam dialectArg
       return (dialectInstr : instrs, Just fileArg)
-    _ -> exitWithError "More than one file argument"
+    _ -> throwIO TooManyFiles
     where
-      getDialectArg ".ftl.en.tex" = "stex"
-      getDialectArg ".ftl.tex" = "tex"
-      getDialectArg ".ftl" = "ftl"
-      getDialectArg ext = exitWithError $
-        "Invalid file name extension " ++ quote ext
+      getDialectArg ".ftl.en.tex" = return "stex"
+      getDialectArg ".ftl.tex" = return "tex"
+      getDialectArg ".ftl" = return "ftl"
+      getDialectArg ext = throwIO (InvalidFileNameExt ext)
 
 getDialect :: [Instr] -> Dialect
 getDialect instrs = case getInstr dialectParam instrs of
   "ftl" -> Ftl
   "tex" -> Tex
   "stex" -> Stex
-  dialectArg -> failWithMessage "SAD.Main.getDialect" "Invalid dialect argument"
+  dialectArg -> error "Invalid dialect argument"
 
 optParam :: [Char] -> Param.T a -> GetOpt.ArgDescr b -> String -> GetOpt.OptDescr b
 optParam chars p = GetOpt.Option chars [name | not (null name)]
