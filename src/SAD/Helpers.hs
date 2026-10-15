@@ -17,14 +17,9 @@ module SAD.Helpers (
   failureMessage,
   failWithMessage,
   exitWithError,
-
-  getNaprocheFormalizations,
-  getNaprocheMathhub
 ) where
 
 import Data.Char qualified as Char
-
-import Isabelle.Library (make_bytes, getenv, make_string)
 
 
 -- * Character Categories
@@ -62,11 +57,3 @@ failWithMessage functionId message = error $ failureMessage functionId message
 exitWithError :: String -> a
 exitWithError message = errorWithoutStackTrace $ "[Error] " ++ message
 
-
--- | Get the path to the formalizations directory.
-getNaprocheFormalizations :: IO FilePath
-getNaprocheFormalizations = make_string <$> getenv (make_bytes "NAPROCHE_FORMALIZATIONS")
-
--- | Get the path to the formalizations directory.
-getNaprocheMathhub :: IO FilePath
-getNaprocheMathhub = make_string <$> getenv (make_bytes "NAPROCHE_MATHHUB")

@@ -34,10 +34,10 @@ import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.STEX.Token qualified as STEX
 import SAD.Parser.Token (Token, noTokens)
 import SAD.Core.Message qualified as Message
-import SAD.Helpers (failWithMessage, getNaprocheFormalizations)
+import SAD.Helpers (failWithMessage)
 
 import Isabelle.File qualified as File
-import Isabelle.Library (make_bytes)
+import Isabelle.Library (make_bytes, make_string, getenv)
 import Isabelle.Position as Position
 import Isabelle.Bytes (Bytes)
 
@@ -50,7 +50,7 @@ import Naproche.Program qualified as Program
 readProofText :: Dialect -> [ProofText] -> IO [ProofText]
 readProofText dialect text0 = do
   context <- Program.thread_context
-  naprocheFormalizationsPath <- getNaprocheFormalizations
+  naprocheFormalizationsPath <- make_string <$> getenv (make_bytes "NAPROCHE_FORMALIZATIONS")
   (text, reports) <- reader 0 dialect naprocheFormalizationsPath [] [initState context noTokens] text0
   when (Program.is_pide context) $ Message.reports reports
   return text

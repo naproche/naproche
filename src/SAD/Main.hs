@@ -43,7 +43,7 @@ import SAD.Parser.FTL.Token qualified as FTL
 import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.STEX.Token qualified as STEX
 import SAD.Parser.Token (renderTokens)
-import SAD.Helpers (getNaprocheMathhub, failWithMessage, exitWithError)
+import SAD.Helpers (failWithMessage, exitWithError)
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
@@ -324,7 +324,7 @@ renderInputFile inputPath texExe bibtexExe = do
   else do
     putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
 
-    mathhubVar <- getNaprocheMathhub
+    mathhubVar <- make_string <$> getenv "NAPROCHE_MATHHUB"
 
     putStrLn $ "[Info] PDFLaTeX binary:  " ++ texExe
     putStrLn $ "[Info] BibTeX binary:    " ++ bibtexExe
