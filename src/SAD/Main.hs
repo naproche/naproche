@@ -30,7 +30,12 @@ import Network.Socket (Socket)
 import SAD.Prove.MESON qualified as MESON
 import SAD.Export.Prover qualified as Prover
 import SAD.Data.Instr
-import SAD.API hiding (error)
+import SAD.Data.Text.Block (ProofText(..), parseErrors)
+import SAD.Core.Base (sumCounter, showTimeDiff, sumTimer, maximalTimer, Timer(..), Counter(..))
+import SAD.Core.Message (outputMain, errorParser, Kind(..))
+import SAD.Core.Verify (verifyRoot)
+import SAD.Import.Reader (readProofText)
+import SAD.Parser.Error (ParseError(..))
 import SAD.Parser.FTL.Lexer qualified as FTL
 import SAD.Parser.TEX.Lexer qualified as TEX
 import SAD.Parser.STEX.Lexer qualified as STEX

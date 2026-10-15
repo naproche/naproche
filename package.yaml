@@ -82,7 +82,6 @@ library:
     - Isabelle.Isabelle_Thread
     - Isabelle.Library
     - Isabelle.Naproche
-    - SAD.API
     - SAD.Main
     - SAD.Core.ProofTask
     - SAD.Data.Formula.Kit
