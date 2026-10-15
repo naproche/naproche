@@ -1,24 +1,15 @@
 -- |
--- Module      : SAD.Helpers
--- Copyright   : (c) 2019, Adrian De Lon,
---               (c) 2019, Anton Lorenzen
+-- Module      : SAD.Parser.Char
+-- Copyright   : (c) 2026 Marcel Schütz
 -- License     : GPL-3
 --
--- Helper functions.
+-- Character Categories.
 
 
-module SAD.Helpers (
-  isAsciiSymbol,
-  isAsciiDigit,
-  isAsciiLetter,
-  isAsciiAlphaNum,
-  isAsciiPeriod,
-) where
+module SAD.Parser.Char where
 
 import Data.Char qualified as Char
 
-
--- * Character Categories
 
 isAsciiSymbol :: Char -> Bool
 isAsciiSymbol c =

@@ -47,7 +47,7 @@ import Data.Text qualified as Text
 import SAD.Parser.Base
 import SAD.Parser.Error
 import SAD.Parser.Token
-import SAD.Helpers
+import SAD.Parser.Char (isAsciiPeriod, isAsciiDigit, isAsciiLetter, isAsciiSymbol)
 
 import Isabelle.Position qualified as Position
 

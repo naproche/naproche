@@ -36,8 +36,8 @@ import SAD.ForTheL.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
+import SAD.Parser.Char (isAsciiLetter, isAsciiAlphaNum)
 import SAD.Data.Formula
-import SAD.Helpers
 
 
 -- add expressions to the state of ForTheL

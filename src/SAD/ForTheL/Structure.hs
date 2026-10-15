@@ -29,11 +29,11 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
+import SAD.Parser.Char (isAsciiAlphaNum)
 import SAD.Data.Text.Block (Block, ProofText(..), Section(..))
 import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Formula
 import SAD.Data.Text.Decl
-import SAD.Helpers
 
 
 -- ** Adding meta data

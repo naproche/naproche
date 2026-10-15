@@ -26,9 +26,9 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.Parser.Token (showToken)
+import SAD.Parser.Char (isAsciiLetter)
 import SAD.Data.Text.Decl
 import SAD.Export.Representation (represent)
-import SAD.Helpers(isAsciiLetter)
 
 import Isabelle.Position qualified as Position
 
