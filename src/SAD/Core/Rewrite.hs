@@ -15,6 +15,7 @@ module SAD.Core.Rewrite (
 ) where
 
 import Data.List
+import Data.List.Extra (notNull)
 import Data.Set qualified as Set
 import Control.Monad (MonadPlus(..), guard, when, unless)
 import Control.Monad.State
@@ -29,7 +30,6 @@ import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Rules (Rule)
 import SAD.Data.Text.Context (Context)
-import SAD.Helpers (notNull)
 import SAD.Export.Representation
 import SAD.Core.Message qualified as Message
 import SAD.Data.Rules qualified as Rule

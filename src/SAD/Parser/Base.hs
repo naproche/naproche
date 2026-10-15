@@ -35,9 +35,10 @@ import Control.Monad.Fail qualified as Fail
 import Control.Applicative
 import Control.Monad.State.Class (MonadState(put, get))
 import Data.List
+import Data.List.Extra (notNull)
 import Data.Text qualified as Text
 
-import SAD.Helpers (notNull, failWithMessage)
+import SAD.Helpers (failWithMessage)
 import SAD.Parser.Token
 import SAD.Parser.Error
 import SAD.Data.Instr (Dialect)

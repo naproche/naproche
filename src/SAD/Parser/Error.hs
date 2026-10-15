@@ -22,11 +22,11 @@ module SAD.Parser.Error (
 ) where
 
 import Data.List (intercalate)
+import Data.List.Extra (notNull, nubOrd)
 import Data.Ord (comparing)
 import Data.Text (Text)
 import Data.Text qualified as Text
 
-import SAD.Helpers (notNull, nubOrd)
 import SAD.Core.Message (show_position)
 
 import Isabelle.Position qualified as Position

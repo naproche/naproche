@@ -18,6 +18,7 @@ module SAD.Core.Completion (
 ) where
 
 import Data.List
+import Data.List.Extra (nubOrd)
 import Data.Maybe
 import Data.Function (on)
 import Data.Map qualified as Map
@@ -28,8 +29,6 @@ import Data.Set qualified as Set
 import SAD.Data.Formula
 import SAD.Core.Rewrite
 import SAD.Prove.Unify
-import SAD.Helpers
-
 
 data Equation = Equation Formula Formula
   deriving (Eq, Ord)

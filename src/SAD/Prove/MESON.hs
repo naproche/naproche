@@ -21,6 +21,7 @@ module SAD.Prove.MESON (
 import Control.Monad
 import Control.Exception (evaluate)
 import Data.List
+import Data.List.Extra (notNull)
 import Data.Maybe
 import Data.Text qualified as Text
 
@@ -28,7 +29,6 @@ import SAD.Data.Formula
 import SAD.Prove.Unify
 import SAD.Prove.Normalize
 import SAD.Data.Text.Context (Context, MRule(MR, conclusion))
-import SAD.Helpers (notNull)
 import SAD.Data.Text.Context qualified as Context
 import SAD.Data.Structures.DisTree (DisTree)
 import SAD.Data.Structures.DisTree qualified as DisTree

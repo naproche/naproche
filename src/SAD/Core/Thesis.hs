@@ -17,6 +17,7 @@ import Control.Monad
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.State
 import Data.List
+import Data.List.Extra (notNull)
 import Data.Maybe
 import Data.Map qualified as Map
 import Data.Set (Set)
@@ -27,7 +28,6 @@ import SAD.Core.Reason
 import SAD.Data.Definition (Definitions)
 import SAD.Data.Formula
 import SAD.Data.Text.Context (Context)
-import SAD.Helpers (notNull)
 import SAD.Data.Text.Context qualified as Context
 
 
