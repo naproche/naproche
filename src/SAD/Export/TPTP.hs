@@ -18,11 +18,12 @@ import Data.Text qualified as Text
 
 import SAD.Data.Text.Context (Context(..))
 import SAD.Data.Text.Block qualified as Block
-import SAD.Data.Formula (Formula(..), showTrName, TermName(..))
+import SAD.Data.Formula (Formula(..), TermName(..))
+import SAD.Data.VarName (VariableName(..))
 
 import Isabelle.Bytes (Bytes)
 import Isabelle.Position qualified as Position
-import Isabelle.Library (cat_lines, make_bytes, show_bytes, commas)
+import Isabelle.Library (cat_lines, make_bytes, show_bytes,show_text, commas)
 
 import Naproche.TPTP (atomic_word)
 
@@ -58,8 +59,39 @@ exportAssertion name role formula =
   <> ")."
 
 -- | Export a term name to TPTP.
-exportTermName :: Formula -> Bytes
-exportTermName = atomic_word . make_bytes . showTrName
+exportTermName :: TermName -> Bytes
+exportTermName = atomic_word . show_bytes . Text.filter (/= ':') . exportTermName'
+  where
+    exportTermName' (TermName t) = t
+    exportTermName' (TermSymbolic t) = "s" <> t
+    exportTermName' (TermNotion t) = "a" <> t
+    exportTermName' (TermThe t) = "the" <> t
+    exportTermName' (TermUnaryAdjective t) = "is" <> t
+    exportTermName' (TermMultiAdjective t) = "mis" <> t
+    exportTermName' (TermUnaryVerb t) = "do" <> t
+    exportTermName' (TermMultiVerb t) = "mdo" <> t
+    exportTermName' (TermTask n) = "tsk " <> show_text n
+    exportTermName' TermEquality = "="
+    exportTermName' TermLess  = "iLess"
+    exportTermName' TermThesis = "#TH#"
+    exportTermName' TermEmpty = ""
+
+-- | Export a variable name to TPTP.
+exportVariableName :: VariableName -> Bytes
+exportVariableName = atomic_word . show_bytes . Text.filter (/= ':') . exportVariableName'
+  where
+    exportVariableName' (VarConstant s) = "x" <> s
+    exportVariableName' (VarHole s) = "?" <> s
+    exportVariableName' VarSlot = "!"
+    exportVariableName' (VarU s) = "u" <> s
+    exportVariableName' (VarHidden n) = "h" <> show_text n
+    exportVariableName' (VarAssume n) = "i" <> show_text n
+    exportVariableName' (VarSkolem n) = "o" <> show_text n
+    exportVariableName' (VarTask s) = "c" <> exportVariableName' s
+    exportVariableName' (VarZ s) = "z" <> s
+    exportVariableName' (VarW s) = "w" <> s
+    exportVariableName' VarEmpty = ""
+    exportVariableName' (VarDefault s) = s
 
 -- | Export a formula to TPTP.
 exportFormula :: Formula -> Bytes
@@ -76,11 +108,11 @@ exportFormula = exportFormula' 0
     exportFormula' d Top = "$true"
     exportFormula' d Bot = "$false"
     exportFormula' d t@Trm {trmName = TermEquality} = let [l, r] = trmArgs t in sinfix d " = " l r
-    exportFormula' d t@Trm {}
-      | null (trmArgs t) = exportTermName t
-      | otherwise = exportTermName t <> "(" <> commas (map (exportFormula' d) $ trmArgs t) <> ")"
-    exportFormula' d v@Var {}= exportTermName v
-    exportFormula' d i@Ind {}= "W" <> show_bytes (d - 1 - indIndex i)
+    exportFormula' d t@Trm {trmName = s}
+      | null (trmArgs t) = exportTermName s
+      | otherwise = exportTermName s <> "(" <> commas (map (exportFormula' d) $ trmArgs t) <> ")"
+    exportFormula' d v@Var {varName = s} = exportVariableName s
+    exportFormula' d i@Ind {} = "W" <> show_bytes (d - 1 - indIndex i)
     exportFormula' d ThisT = error "unexpected \"ThisT\""
 
     sinfix d o f g  = "(" <> exportFormula' d f <> o <> exportFormula' d g <> ")"
