@@ -10,16 +10,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Export.TPTP (
-  Role(..),
-  renderRole,
-  Sequent,
-  renderLogicFormula,
-  renderSequent
+  exportProofTask
 ) where
 
 import Data.Text (Text)
 import Data.Text qualified as Text
 
+import SAD.Data.Text.Context (Context(..))
+import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Formula (Formula(..), showTrName, TermName(..))
 
 import Isabelle.Position qualified as Position
@@ -27,89 +25,63 @@ import Isabelle.Library
 
 import Naproche.TPTP (atomic_word)
 
+-- | The role of an assertion, i.e. whether it is a hypothesis or a conjecture.
 data Role =
-    Axiom
-  | Hypothesis
-  | Definition
-  | Assumption
-  | Lemma
-  | Theorem
-  | Corollary
+    Hypothesis
   | Conjecture
-  | NegatedConjecture
-  | Plain
-  | Type
-  | Interpretation
-  | FiDomain
-  | FiFunctors
-  | FiPredicates
-  | Unknown
 
--- | Render a role.
-renderRole :: Role -> Text
-renderRole Axiom = "axiom"
-renderRole Hypothesis = "hypothesis"
-renderRole Definition = "definition"
-renderRole Assumption = "assumption"
-renderRole Lemma = "lemma"
-renderRole Theorem = "theorem"
-renderRole Corollary = "corollary"
-renderRole Conjecture = "conjecture"
-renderRole NegatedConjecture = "negated_conjecture"
-renderRole Plain = "plain"
-renderRole Type = "type"
-renderRole Interpretation = "interpretation"
-renderRole FiDomain = "fi_domain"
-renderRole FiFunctors = "fi_functors"
-renderRole FiPredicates = "fi_predicates"
-renderRole Unknown = "unknown"
+-- | Export a role to TPTP.
+exportRole :: Role -> Text
+exportRole Hypothesis = "hypothesis"
+exportRole Conjecture = "conjecture"
 
-type Sequent = ([Formula], [Formula])
+-- | Export a proof task to TPTP.
+exportProofTask :: [Context] -> Context -> Text
+exportProofTask contexts goal =
+  Text.unlines (map (exportContext Hypothesis) $ reverse contexts)
+  <> "\n" <> exportContext Conjecture goal
 
--- | Render a formula.
-renderLogicFormula :: Text -> Role -> Formula -> Text
-renderLogicFormula name role formula =
+-- | Export a context to TPTP.
+exportContext :: Role -> Context -> Text
+exportContext role (Context formula (Block.Block { Block.name = name } : _) _) =
+  exportAssertion name role formula
+exportContext _ _ = ""
+
+-- | Export an assertion to TPTP.
+exportAssertion :: Text -> Role -> Formula -> Text
+exportAssertion name role formula =
   "fof(m"
   <> (if Text.null name then "_" else name)
-  <> ", " <> renderRole role <> ", "
-  <> tptpTerm 0 formula
+  <> ", " <> exportRole role <> ", "
+  <> exportFormula formula
   <> ")."
 
--- | Render a sequent.
-renderSequent :: Text -> Role -> Sequent -> Text
-renderSequent name role (premises, conclusions) =
-  "fof(m"
-  <> (if Text.null name then "_" else name)
-  <> ", " <> renderRole role <> ", ["
-  <> Text.intercalate ", " (map (tptpTerm 0) premises)
-  <> "] --> ["
-  <> Text.intercalate ", " (map (tptpTerm 0) conclusions)
-  <> "])."
+-- | Export a term name to TPTP.
+exportTermName :: Formula -> Text
+exportTermName = make_text . atomic_word . make_bytes . showTrName
 
-tptpName :: Formula -> Text
-tptpName = make_text . atomic_word . make_bytes . showTrName
-
-tptpTerm :: Int -> Formula -> Text
-tptpTerm d = term
+-- | Export a formula to TPTP.
+exportFormula :: Formula -> Text
+exportFormula = exportFormula' 0
   where
-    term (All _ f)  =  "( ! " <> binder f <> ")"
-    term (Exi _ f)  = "( ? " <> binder f <> ")"
-    term (Iff f g)  = sinfix " <=> " f g
-    term (Imp f g)  = sinfix " => " f g
-    term (Or  f g)  = sinfix " | " f g
-    term (And f g)  = sinfix " & " f g
-    term (Tag _ f)  = term f
-    term (Not f)    = "( ~ " <> term f <> ")"
-    term Top        = "$true"
-    term Bot        = "$false"
-    term t@Trm {trmName = TermEquality} = let [l, r] = trmArgs t in sinfix " = " l r
-    term t@Trm {}
-      | null (trmArgs t) = tptpName t
-      | otherwise = tptpName t <> "(" <> Text.intercalate "," (map term $ trmArgs t) <> ")"
-    term v@Var {}   = tptpName v
-    term i@Ind {}   = "W" <> Text.pack (show (d - 1 - indIndex i))
-    term ThisT      = "Didn't expect ThisT here"
+    exportFormula' d (All _ f) =  "( ! " <> binder d f <> ")"
+    exportFormula' d (Exi _ f) = "( ? " <> binder d f <> ")"
+    exportFormula' d (Iff f g) = sinfix d " <=> " f g
+    exportFormula' d (Imp f g) = sinfix d " => " f g
+    exportFormula' d (Or  f g) = sinfix d " | " f g
+    exportFormula' d (And f g) = sinfix d " & " f g
+    exportFormula' d (Tag _ f) = exportFormula' d f
+    exportFormula' d (Not f) = "( ~ " <> exportFormula' d f <> ")"
+    exportFormula' d Top = "$true"
+    exportFormula' d Bot = "$false"
+    exportFormula' d t@Trm {trmName = TermEquality} = let [l, r] = trmArgs t in sinfix d " = " l r
+    exportFormula' d t@Trm {}
+      | null (trmArgs t) = exportTermName t
+      | otherwise = exportTermName t <> "(" <> Text.intercalate "," (map (exportFormula' d) $ trmArgs t) <> ")"
+    exportFormula' d v@Var {}= exportTermName v
+    exportFormula' d i@Ind {}= "W" <> show_text (d - 1 - indIndex i)
+    exportFormula' d ThisT = "Didn't expect ThisT here"
 
-    sinfix o f g  = "(" <> term f <> o <> term g <> ")"
+    sinfix d o f g  = "(" <> exportFormula' d f <> o <> exportFormula' d g <> ")"
 
-    binder f  = "[" <> tptpTerm (d + 1) (Ind 0 Position.none) <> "] : " <> tptpTerm (d + 1) f
+    binder d f  = "[" <> exportFormula' (d + 1) (Ind 0 Position.none) <> "] : " <> exportFormula' (d + 1) f

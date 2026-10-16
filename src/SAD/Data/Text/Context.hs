@@ -7,9 +7,6 @@
 -- TODO: Add description.
 
 
-{-# LANGUAGE OverloadedStrings #-}
-
-
 module SAD.Data.Text.Context (
   Context(..),
   MRule(..),
@@ -20,20 +17,17 @@ module SAD.Data.Text.Context (
   head,
   isAssumption,
   declaredNames,
-  isTopLevel,
-  output
+  isTopLevel
 ) where
 
 import Prelude hiding (head, tail)
 import Prelude qualified (head, tail)
 import Data.Text (Text)
-import Data.Text qualified as Text
 import Data.Set (Set)
 
 import SAD.Data.Text.Block (Section(..))
 import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Formula (Formula, VariableName)
-import SAD.Export.TPTP qualified as TPTP
 
 
 data Context = Context {
@@ -78,16 +72,3 @@ isAssumption = (==) Assumption . Block.kind . head
 setFormula :: Context -> Formula -> Context
 setFormula context f = context { formula = f }
 
-
--- TPTP rendering
-
-output :: [Context] -> Context -> Text
-output contexts goal =
-  Text.unlines (map (tptpForm TPTP.Hypothesis) $ reverse contexts)
-  <> "\n" <> tptpForm TPTP.Conjecture goal
-
--- Formula print
-tptpForm :: TPTP.Role -> Context -> Text
-tptpForm role (Context formula (Block.Block { Block.name = name } : _) _) =
-  TPTP.renderLogicFormula name role formula
-tptpForm _ _ = ""

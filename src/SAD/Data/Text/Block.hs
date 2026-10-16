@@ -40,7 +40,6 @@ import SAD.Data.Instr
 import SAD.Parser.Token
 import SAD.Data.Text.Decl
 import SAD.Parser.Error (ParseError)
-import SAD.Export.TPTP qualified as TPTP
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Position qualified as Position
@@ -179,15 +178,15 @@ showForm :: Int -> Block -> String -> String
 showForm p block@Block {formula = formula, name = name, kind = kind} =
   showIndent p . sform (needsProof block) . showString "\n"
   where
-    sform False = showString . Text.unpack $ TPTP.renderLogicFormula name TPTP.Hypothesis formula
-    sform True  = showString . Text.unpack $ TPTP.renderLogicFormula name TPTP.Conjecture formula
+    sform False = showString $ "hypothesis" ++ (if Text.null name then "" else "(" ++ Text.unpack name ++ ")") ++ " " ++ show formula
+    sform True = showString $ "conjecture" ++ (if Text.null name then "" else "(" ++ Text.unpack name ++ ")") ++ " " ++ show formula
 
 showBlockForm :: Int -> Block -> String -> String
 showBlockForm p block =
   showIndent p . sform (needsProof block) . showString "\n"
   where
-    sform False = showString . Text.unpack $ TPTP.renderLogicFormula "" TPTP.Hypothesis (formulate block)
-    sform True  = showString . Text.unpack $ TPTP.renderLogicFormula "" TPTP.Conjecture (formulate block)
+    sform False = showString $ "hypothesis " ++ " " ++ show (formulate block)
+    sform True = showString $ "conjecture " ++ " " ++ show (formulate block)
 
 showIndent :: Int -> ShowS
 showIndent n = showString $ replicate (n * 2) ' '
