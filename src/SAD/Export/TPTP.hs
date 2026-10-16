@@ -74,7 +74,6 @@ exportTermName = atomic_word . show_bytes . Text.filter (/= ':') . exportTermNam
     exportTermName' TermEquality = "="
     exportTermName' TermLess  = "iLess"
     exportTermName' TermThesis = "#TH#"
-    exportTermName' TermEmpty = ""
 
 -- | Export a variable name to TPTP.
 exportVariableName :: VariableName -> Bytes
