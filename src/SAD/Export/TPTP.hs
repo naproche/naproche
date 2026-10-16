@@ -81,7 +81,7 @@ exportFormula = exportFormula' 0
       | otherwise = exportTermName t <> "(" <> commas (map (exportFormula' d) $ trmArgs t) <> ")"
     exportFormula' d v@Var {}= exportTermName v
     exportFormula' d i@Ind {}= "W" <> show_bytes (d - 1 - indIndex i)
-    exportFormula' d ThisT = "Didn't expect ThisT here"
+    exportFormula' d ThisT = error "unexpected \"ThisT\""
 
     sinfix d o f g  = "(" <> exportFormula' d f <> o <> exportFormula' d g <> ")"
 
