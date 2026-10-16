@@ -52,7 +52,7 @@ newUnexpect tok = ExpectMsg {unexpect = tok, expect = []   , message = []   }
 newExpect   msg = ExpectMsg {unexpect = "" , expect = [msg], message = []   }
 
 newWellFormednessMessage :: [Text] -> Message
-newWellFormednessMessage msgs = WellFormednessMessage msgs
+newWellFormednessMessage = WellFormednessMessage
 
 compareImportance :: Message -> Message -> Ordering
 compareImportance msg1 msg2 =
@@ -127,7 +127,7 @@ setExpectMessage expe pe@(ParseError pos msg)
   | otherwise        = ParseError pos $ msg {expect = [expe]}
 
 unexpectError :: Text -> Position.T -> ParseError
-unexpectError uex pos = newErrorMessage (newUnexpect uex) pos
+unexpectError uex = newErrorMessage (newUnexpect uex)
 
 errorMessage :: ParseError -> Message
 errorMessage (ParseError _ msg) = msg
@@ -141,7 +141,7 @@ showErrorMessage msg = case msg of
   Unknown -> "unknown parse error"
   WellFormednessMessage m -> commasOr $ clean $ map Text.unpack m
   ExpectMsg unexpected expected msgs -> case clean $ map Text.unpack msgs of
-    [] -> unlines $ clean $ ["unexpected " ++ Text.unpack unexpected, showMany "expecting" (clean $ map Text.unpack expected)]
+    [] -> unwords $ clean ["Unexpected \"" ++ Text.unpack unexpected ++ "\".", showMany "Expecting" (clean $ map Text.unpack expected) ++ "."]
     messages -> commasOr messages
   where
     showMany :: String -> [String] -> String

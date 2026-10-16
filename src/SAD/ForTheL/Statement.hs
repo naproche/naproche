@@ -47,12 +47,12 @@ sTerm = iTerm
     iTerm = lTerm >>= iTl
     iTl t = opt t $ (primIfn sTerm <*> return t <*> iTerm) >>= iTl
 
-    lTerm = rTerm -|- label "symbolic term" (primLfn sTerm <*> lTerm)
+    lTerm = rTerm -|- label "a symbolic term" (primLfn sTerm <*> lTerm)
 
     rTerm = cTerm >>= rTl
     rTl t = opt t $ (primRfn sTerm <*> return t) >>= rTl
 
-    cTerm = label "symbolic term" $ sVar -|- parenthesised sTerm -|- primCfn sTerm
+    cTerm = label "a symbolic term" $ sVar -|- parenthesised sTerm -|- primCfn sTerm
 
 sVar :: FTL Formula
 sVar = fmap pVar var

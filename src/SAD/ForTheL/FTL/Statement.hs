@@ -50,7 +50,7 @@ headed = quantifiedStatement <|> ifThenStatement <|> wrongStatement
 
 
 chained :: FTL Formula
-chained = label "chained statement" $ (andOr <|> neitherNor) >>= chainEnd
+chained = label "a chained statement" $ (andOr <|> neitherNor) >>= chainEnd
   where
     andOr = atomic >>= \f -> opt f (andChain f <|> orChain f)
     andChain f =
@@ -81,7 +81,7 @@ chainEnd f = optLL1 f $ and_st <|> or_st <|> iff_st <|> imp_st <|> where_st
 
 
 atomic :: FTL Formula
-atomic = label "atomic statement"
+atomic = label "an atomic statement"
   thereIs <|> (simple </> (weHave >> symbolicStatement <|> thesis))
   where
     weHave = optLL1 () $ tokenSeqOf' [
@@ -99,16 +99,16 @@ thesis = (thes </> contrary) <|> contradiction
 
 
 thereIs :: FTL Formula
-thereIs = label "there-is statement" $ token' "there" >> tokenOf' ["is", "are", "exist", "exists"] >> (noNotion -|- notions)
+thereIs = label "a \"there is\" statement" $ token' "there" >> tokenOf' ["is", "are", "exist", "exists"] >> (noNotion -|- notions)
   where
-    noNotion = label "no-notion" $ do
+    noNotion = label "a \"no\" notion" $ do
       token' "no"; (q, f, vs) <- declared =<< notion;
       return $ Not $ foldr mbdExi (q f) vs
     notions = fmap multExi $ opt () (tokenOf' ["a", "an"]) >> (declared =<< notion) `sepBy` tokenOf' [",", "and"]
 
 
 simple :: FTL Formula
-simple = label "simple statement" $ do
+simple = label "a simple statement" $ do
   (q, ts) <- terms
   p  <- conjChain doesPredicate
   q' <- lateQuantifiers
@@ -135,7 +135,7 @@ lateQuantifiers = optLL1 id quantifierChain
 
 
 doesPredicate :: FTL Formula
-doesPredicate = label "does predicate" $
+doesPredicate = label "a \"does\" predicate" $
   (opt () (tokenOf' ["does", "do"]) >> (doP -|- multiDoP)) <|> hasP <|> isChain
   where
     doP = predicate primVer
@@ -145,7 +145,7 @@ doesPredicate = label "does predicate" $
 
 
 isPredicate :: FTL Formula
-isPredicate = label "is predicate" $
+isPredicate = label "an \"is\" predicate" $
   pAdj -|- pMultiAdj -|- (tokenOf' ["with", "of", "having"] >> hasPredicate)
   where
     pAdj = predicate primAdj
@@ -153,7 +153,7 @@ isPredicate = label "is predicate" $
 
 
 isAPredicate :: FTL Formula
-isAPredicate = label "isA predicate" $ notNotion <|> notion
+isAPredicate = label "an \"is a\" predicate" $ notNotion <|> notion
   -- Unlike the language description, we distinguish positive and negative
   -- rather than notions and fixed terms.
   where
@@ -164,7 +164,7 @@ isAPredicate = label "isA predicate" $ notNotion <|> notion
       optLLx (q $ Not f) $ fmap (q. Tag Dig . Not) unfinished
 
 hasPredicate :: FTL Formula
-hasPredicate = label "has predicate" $ noPossessive <|> possessive
+hasPredicate = label "a \"has\" predicate" $ noPossessive <|> possessive
   where
     possessive = opt () (tokenOf' ["a", "an"]) >> common <|> nonbinary
     nonbinary = fmap (Tag Dig . multExi) $ (declared =<< possess) `sepBy` (tokenOf' [",", "and"] >> opt () (tokenOf' ["a", "an"]))
@@ -232,31 +232,31 @@ gnotion nt ra = do
   where
     la = opt [] $ liftA2 (:) lc la
     lc = predicate primUnAdj </> multiPredicate primMultiUnAdj
-    thatClause = token' "that" >> conjChain doesPredicate <?> "that clause"
+    thatClause = token' "that" >> conjChain doesPredicate <?> "a \"that\" clause"
 
 
 anotion :: FTL (Formula -> Formula, Formula)
-anotion = label "notion (at most one name)" $
+anotion = label "a notion (at most one name)" $
   opt () (tokenOf' ["a", "an", "the"]) >> gnotion baseNotion rat >>= single >>= hole
   where
     hole (q, f, v) = return (q, subst (mkVar (VarHole "")) (posVarName v) f)
     rat = fmap (Tag Dig) suchThatAttr
 
 notion :: FTL (Formula -> Formula, Formula, Set PosVar)
-notion = label "notion" $ gnotion (baseNotion </> symNotion) suchThatAttr >>= digNotion
+notion = label "a notion" $ gnotion (baseNotion </> symNotion) suchThatAttr >>= digNotion
 
 possess :: FTL (Formula -> Formula, Formula, Set PosVar)
-possess = label "possesive notion" $ gnotion (primOfNotion term) suchThatAttr >>= digNotion
+possess = label "a possesive notion" $ gnotion (primOfNotion term) suchThatAttr >>= digNotion
 
 
 suchThatAttr :: FTL Formula
-suchThatAttr = label "such-that attribute" $ tokenOf' ["such", "so"] >> token' "that" >> statement
+suchThatAttr = label "a \"such that\" attribute" $ tokenOf' ["such", "so"] >> token' "that" >> statement
 
 
 --- terms
 
 terms :: FTL (Formula -> Formula, [Formula])
-terms = label "terms" $
+terms = label "one or more terms" $
   foldl1 alg <$> (subTerm `sepBy` tokenOf' [",", "and"])
   where
     subTerm = quantifiedNotion -|- fmap toMulti definiteTerm
@@ -271,7 +271,7 @@ term = label "a term" $ (quantifiedNotion >>= toSing) -|- definiteTerm
 
 -- Returns a quantifying function and a list of variables as expression
 quantifiedNotion :: FTL (Formula -> Formula, [Formula])
-quantifiedNotion = label "quantified notion" $
+quantifiedNotion = label "a quantified notion" $
   optParenthesised (universal <|> existential <|> no)
   where
     universal = do
@@ -291,9 +291,9 @@ quantifiedNotion = label "quantified notion" $
 
 
 definiteTerm :: FTL (Formula -> Formula, Formula)
-definiteTerm = label "definiteTerm" $  symbolicTerm -|- definiteNoun
+definiteTerm = label "a definite term" $  symbolicTerm -|- definiteNoun
   where
-    definiteNoun = label "definiteNoun" $ optParenthesised (opt () (token' "the") >> primFun term)
+    definiteNoun = label "a definite noun" $ optParenthesised (opt () (token' "the") >> primFun term)
 
 
 
@@ -391,7 +391,7 @@ classEquality = label "a class equality" $ twoClassTerms </> oneClassTerm
 choice :: FTL Formula
 choice = fmap (foldl1 And) $ (opt () (tokenOf' ["a", "an", "the"]) >> takeLongest namedNotion) `sepByLL1` tokenOf' [",", "and"]
   where
-    namedNotion = label "named notion" $ do
+    namedNotion = label "a named notion" $ do
       (q, f, vs) <- notion; guard (all isExplicitName $ map posVarName $ Set.toList vs); return $ q f
     isExplicitName (VarConstant _) = True; isExplicitName _ = False
 
@@ -406,7 +406,7 @@ classNotion = do
   dig (Tag Dig f) [pVar v]
 
 collection :: FTL MNotion
-collection = label "class definition" $ symbClass <|> classOf
+collection = label "a class definition" $ symbClass <|> classOf
   where
     classOf = do
       tokenOf' ["class", "classes", "collection", "collections"];
@@ -482,7 +482,7 @@ mapNotion = sVar <**> (wordMap <|> (token "=" >> lambda))
     return $ \f -> mkMap f `And` Tag Domain (dom f) `And` body f
 
 lambdaBody :: FTL (Formula -> Formula)
-lambdaBody = label "map definition" $ optParenthesised $ cases <|> quotedChooseInTerm <|> chooseInTerm
+lambdaBody = label "a map definition" $ optParenthesised $ cases <|> quotedChooseInTerm <|> chooseInTerm
   where
     quotedChooseInTerm = do
       symbol "\"\""

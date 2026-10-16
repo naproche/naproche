@@ -230,7 +230,7 @@ proofHeader = do
 -- | Proof end (FTL):
 -- @"qed" | "end" | "trivial" | "obvious"@
 proofEnd :: FTL ()
-proofEnd = label "qed" $ markupTokenOf Reports.proofEnd ["qed", "end", "trivial", "obvious"]
+proofEnd = label "\"qed\"/\"end\"/\"trivial\"/\"obvious\"" $ markupTokenOf Reports.proofEnd ["qed", "end", "trivial", "obvious"]
 
 
 -- ** Proof initiation

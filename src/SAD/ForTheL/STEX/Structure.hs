@@ -83,11 +83,11 @@ topLevelSection =
 -- where @<keyword>@ is a member of @keywords@.
 beginTopLevelSection :: [Text] -> FTL (Text,Bool)
 beginTopLevelSection keywords = do
-  texCommand "begin" <?> "\\begin"
-  symbol "{" <?> "{"
+  texCommand "begin" <?> "\"\\begin\""
+  symbol "{" <?> "\"{\""
   key <- getMarkupTokenOf Reports.sectionHeader keywords
   starred <- optLL1 False $ getMarkupToken Reports.sectionHeader "*" >> pure True
-  symbol "}" <?> "}"
+  symbol "}" <?> "\"}\""
   return (key,starred)
 
 -- | @endTopLevelSection <key> <starred>@ parses either
@@ -95,11 +95,11 @@ beginTopLevelSection keywords = do
 -- whether @starred == False@ or @starred == True@.
 endTopLevelSection :: Text -> Bool -> FTL ()
 endTopLevelSection keyword starred = do
-  texCommand "end" <?> "\\end"
-  symbol "{" <?> "{"
-  getMarkupToken Reports.sectionHeader keyword <?> keyword
-  when starred (markupToken Reports.sectionHeader "*" <?> "*")
-  symbol "}" <?> "}"
+  texCommand "end" <?> "\"\\end\""
+  symbol "{" <?> "\"{\""
+  getMarkupToken Reports.sectionHeader keyword <?> "\"" <> keyword <> "\""
+  when starred (markupToken Reports.sectionHeader "*" <?> "\"*\"")
+  symbol "}" <?> "\"}\""
 
 -- | Parse a signature (TEX):
 -- @"\\begin" "{" "signature" "}" ["[" <name> "]"] [<label>] <signatureBody>
@@ -120,17 +120,17 @@ signatureSection = do
     structSig label = do
       (structVarAssumption, structContent) <- structSignatureBody
       structMetadata <- addMetadata Signature structContent label
-      texCommand "begin" <?> "\\begin"
-      symbol "{" <?> "{"
-      env <- getTokenOf ["itemize", "enumerate"] <?> "\"itemize\" or \"enumerate\""
-      symbol "}" <?> "}"
+      texCommand "begin" <?> "\"\\begin\""
+      symbol "{" <?> "\"{\""
+      env <- getTokenOf ["itemize", "enumerate"] <?> "\"itemize\"/\"enumerate\""
+      symbol "}" <?> "\"}\""
       compMetadata <- chainLL1 $ do
-        texCommand "item" <?> "\\item"
+        texCommand "item" <?> "\"\\item\""
         inlineSig structVarAssumption </> inlineDef structVarAssumption </> inlineAx structVarAssumption
-      texCommand "end" <?> "\\end"
-      symbol "{" <?> "{"
+      texCommand "end" <?> "\"\\end\""
+      symbol "{" <?> "\"{\""
       token env <?> env
-      symbol "}" <?> "}"
+      symbol "}" <?> "\"}\""
       return $ structMetadata : compMetadata
     inlineSig assumptions = do
       label <- optCompLabel
