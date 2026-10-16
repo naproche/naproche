@@ -30,7 +30,7 @@ import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Rules (Rule)
 import SAD.Data.Text.Context (Context)
-import SAD.Export.Representation
+import SAD.Export.Presentation
 import SAD.Core.Message qualified as Message
 import SAD.Data.Rules qualified as Rule
 import SAD.Data.Text.Block qualified as Block (body, link, position)
@@ -56,12 +56,12 @@ lpoGt w tr@Trm {trmName = t, trmArgs = ts} sr@Trm {trmName = s, trmArgs = ss} =
    any (\ti -> lpoGe w ti sr) ts
     || (all (lpoGt w tr) ss
     && ((t == s && lexord (lpoGt w) ts ss)
-    || w (represent t) (represent s)))
+    || w (present t) (present s)))
 lpoGt w Trm { trmName = t, trmArgs = ts} v@Var {varName = x} =
-  w (represent t) (represent x) || any (\ti -> lpoGe w ti v) ts
+  w (present t) (present x) || any (\ti -> lpoGe w ti v) ts
 lpoGt w v@Var {varName = x} Trm {trmName = t, trmArgs = ts} =
-  w (represent x) (represent t) && all (lpoGt w v) ts
-lpoGt w Var{varName = x} Var {varName = y} = w (represent x) (represent y)
+  w (present x) (present t) && all (lpoGt w v) ts
+lpoGt w Var{varName = x} Var {varName = y} = w (present x) (present y)
 lpoGt _ _ _ = False
 
 

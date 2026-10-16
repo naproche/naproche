@@ -22,7 +22,7 @@ import SAD.Data.Tag (Tag)
 import SAD.Data.Terms
 import SAD.Data.Text.Decl (Decl)
 import SAD.Data.VarName
-import SAD.Export.Representation
+import SAD.Export.Presentation
 
 import Isabelle.Position qualified as Position
 
@@ -81,8 +81,8 @@ trInfo Var {varInfo = xs} = xs
 trInfo _ = error "Formula.Base.trInfo: undefined"
 
 showTrName :: Formula -> Text
-showTrName Trm{trmName = s} = Text.filter (/= ':') $ represent s
-showTrName Var{varName = s} = Text.filter (/= ':') $ represent s
+showTrName Trm{trmName = s} = Text.filter (/= ':') $ present s
+showTrName Var{varName = s} = Text.filter (/= ':') $ present s
 showTrName _ = Text.empty
 
 isHole :: Formula -> Bool

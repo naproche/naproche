@@ -32,7 +32,7 @@ import Data.Text qualified as Text
 import Data.Function (on)
 
 import SAD.Core.Message (show_position)
-import SAD.Export.Representation
+import SAD.Export.Presentation
 
 import Isabelle.Position qualified as Position
 
@@ -58,21 +58,21 @@ isVarHole (VarHole _) = True
 isVarHole _ = False
 
 instance Show VariableName where
-  show = Text.unpack . represent
+  show = Text.unpack . present
 
-instance Representation VariableName where
-  represent (VarConstant s) = "x" <> s
-  represent (VarHole s) = "?" <> s
-  represent VarSlot = "!"
-  represent (VarU s) = "u" <> s
-  represent (VarHidden n) = "h" <> Text.pack (show n)
-  represent (VarAssume n) = "i" <> Text.pack (show n)
-  represent (VarSkolem n) = "o" <> Text.pack (show n)
-  represent (VarTask s) = "c" <> represent s
-  represent (VarZ s) = "z" <> s
-  represent (VarW s) = "w" <> s
-  represent VarEmpty = ""
-  represent (VarDefault s) = s
+instance Presentation VariableName where
+  present (VarConstant s) = "x" <> s
+  present (VarHole s) = "?" <> s
+  present VarSlot = "!"
+  present (VarU s) = "u" <> s
+  present (VarHidden n) = "h" <> Text.pack (show n)
+  present (VarAssume n) = "i" <> Text.pack (show n)
+  present (VarSkolem n) = "o" <> Text.pack (show n)
+  present (VarTask s) = "c" <> present s
+  present (VarZ s) = "z" <> s
+  present (VarW s) = "w" <> s
+  present VarEmpty = ""
+  present (VarDefault s) = s
 
 data PosVar = PosVar
   { posVarName :: VariableName
@@ -88,11 +88,11 @@ instance Eq PosVar where
 instance Ord PosVar where
   compare = compare `on` posVarName
 
-instance Representation PosVar where
-  represent (PosVar v pos) =
-    "(" <> represent v <> ", " <> Text.pack (show_position pos) <> ")"
+instance Presentation PosVar where
+  present (PosVar v pos) =
+    "(" <> present v <> ", " <> Text.pack (show_position pos) <> ")"
 
-class (Ord a, Representation a) => IsVar a where
+class (Ord a, Presentation a) => IsVar a where
   buildVar :: VariableName -> Position.T -> a
 
 instance IsVar VariableName where

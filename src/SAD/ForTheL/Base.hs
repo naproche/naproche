@@ -28,7 +28,7 @@ import SAD.Parser.Primitives
 import SAD.Parser.Token (showToken)
 import SAD.Parser.Char (isAsciiLetter)
 import SAD.Data.Text.Decl
-import SAD.Export.Representation (represent)
+import SAD.Export.Presentation
 
 import Isabelle.Position qualified as Position
 
@@ -392,7 +392,7 @@ varList = var `sepBy` token' "," >>= nodups
 nodups :: IsVar a => [a] -> FTL (Set a)
 nodups vs = do
   unless ((null :: [b] -> Bool) $ duplicateNames vs) $
-    fail $ "duplicate names: " ++ show (map (Text.unpack . represent) vs)
+    fail $ "duplicate names: " ++ show (map (Text.unpack . present) vs)
   pure $ Set.fromList vs
 
 hidden :: FTL PosVar
@@ -585,4 +585,4 @@ upperGreek = [
 -- | Print a variable (just for now).
 showVar :: VariableName -> Text
 showVar (VarConstant nm) = nm
-showVar nm = represent nm
+showVar nm = present nm

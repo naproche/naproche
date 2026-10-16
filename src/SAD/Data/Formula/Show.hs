@@ -23,7 +23,7 @@ import SAD.Data.Formula.Base
 import SAD.Data.Formula.Kit
 import SAD.Data.VarName
 import SAD.Data.Terms
-import SAD.Export.Representation (represent)
+import SAD.Export.Presentation
 
 import Isabelle.Position qualified as Position
 
@@ -87,10 +87,10 @@ showFormula p = dive
     -- Symbolic formula/term:
     dive d Trm{trmName = TermSymbolic tName, trmArgs = tArgs} = decode (Text.unpack tName) tArgs p d ""
     -- Non-symbolic formula/term:
-    dive d Trm{trmName = tName, trmArgs = tArgs} = Text.unpack (represent tName) ++ showArguments p d tArgs
+    dive d Trm{trmName = tName, trmArgs = tArgs} = Text.unpack (present tName) ++ showArguments p d tArgs
     -- Free variables:
     dive d Var{varName = VarConstant s} = Text.unpack s
-    dive d Var{varName = vName} = Text.unpack $ represent vName
+    dive d Var{varName = vName} = Text.unpack $ present vName
     -- De Brujin index:
     dive d Ind{indIndex = i}
       | i < d = "v" ++ show (d - i - 1)

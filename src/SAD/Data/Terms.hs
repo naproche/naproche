@@ -13,7 +13,7 @@ module SAD.Data.Terms where
 import Data.Text (Text)
 import Data.Text qualified as Text
 
-import SAD.Export.Representation
+import SAD.Export.Presentation
 
 
 data TermName
@@ -56,20 +56,20 @@ termSplit (TermUnaryVerb t) = (TermUnaryVerb, t)
 termSplit (TermMultiVerb t) = (TermMultiVerb, t)
 termSplit _ = undefined
 
-instance Representation TermName where
-  represent (TermName t) = t
-  represent (TermSymbolic t) = "s" <> t
-  represent (TermNotion t) = "a" <> t
-  represent (TermThe t) = "the" <> t
-  represent (TermUnaryAdjective t) = "is" <> t
-  represent (TermMultiAdjective t) = "mis" <> t
-  represent (TermUnaryVerb t) = "do" <> t
-  represent (TermMultiVerb t) = "mdo" <> t
-  represent (TermTask n) = "tsk " <> Text.pack (show n)
-  represent TermEquality = "="
-  represent TermLess  = "iLess"
-  represent TermThesis = "#TH#"
-  represent TermEmpty = ""
+instance Presentation TermName where
+  present (TermName t) = t
+  present (TermSymbolic t) = "s" <> t
+  present (TermNotion t) = "a" <> t
+  present (TermThe t) = "the" <> t
+  present (TermUnaryAdjective t) = "is" <> t
+  present (TermMultiAdjective t) = "mis" <> t
+  present (TermUnaryVerb t) = "do" <> t
+  present (TermMultiVerb t) = "mdo" <> t
+  present (TermTask n) = "tsk " <> Text.pack (show n)
+  present TermEquality = "="
+  present TermLess  = "iLess"
+  present TermThesis = "#TH#"
+  present TermEmpty = ""
 
 data TermId
   = EqualityId
