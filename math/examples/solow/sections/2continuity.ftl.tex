@@ -1,0 +1,496 @@
+
+
+\documentclass[../solow_main.tex]{subfiles}
+\begin{document}
+
+\chapter{Continuity}\label{chapter:continuity}
+
+
+\begin{forthel}
+    [read \path{examples/solow/sections/1metrics.ftl.tex}][prover eprover]
+\end{forthel}
+
+In this chapter we introduce the concept of continuity and prove some common notions such as that 
+linear functions are continuous and if $f$ and $g$ are continuous, then
+so are $\fplus{f}{g}$, $\fmult{f}{g}$, and $(f \circ g)$.
+
+
+
+\section{Definition of Continuity}
+
+The typical definition of continuity is the famous $\varepsilon$-$\delta$ criterion.
+$f: \mathbb{R} \rightarrow \mathbb{R}$ is continuous in $a$ iff
+$$\forall \varepsilon > 0 \exists \delta > 0 \forall x \in \mathbb{R}:\ \abs{x - a} < \delta \implies \abs{f(x) - f(a)} < \varepsilon.$$
+This definition is overwhelms, however, the type verification system. Instead we will use Skolem-functions 
+to break this definitions apart.
+
+Thus we introduce the term "domain restrictor" referring to the $\delta = \delta(\varepsilon)$ such that 
+$$\forall x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}:\ \abs{x - a} < \delta \implies \abs{f(x) - f(a)} < \varepsilon.$$
+We exclude $a$ from the set of real numbers, for which it should hold, because we want to reuse the concept of
+domain restrictor in the following chapter for our definition of differentiation. 
+There we will have that $$\abs{\frac{f(x) - f(a)}{x - a} - f'(a)} < \varepsilon,$$
+where the option of $x$ being equal to $a$ would result in a division by zero error.
+
+We define $f$ being continuous in $a$ as $\limS{f}{a} = f(a)$, where $\limS{f}{a}$ is a real number, for which 
+we can find a domain restrictor for every positive real number $\varepsilon$.
+
+Furthermore, we introduce a more general notion of domain restrictor, which would allow to define continuity more 
+generally for any real-valued function and not just those with a domain of $\mathbb{R}$. We do show that our 
+specific definition for $\mathbb{R}$ is equivalent to the more general one when it is applied to $\mathbb{R}$.
+The choice to define continuity only on $\mathbb{R}$ is, however, a very deliberate one, as this is the case
+that we need for almost all the following theorems that we are interested in. In order to make our definition more
+focussed, we reduce the complexity for the theorem prover.
+
+\begin{forthel}
+
+Let $a,x,y$ denote real numbers. Let $\delta,\varepsilon$ denote positive real numbers.
+Let $f$ denote a real maps.
+
+\begin{definition}[def domain restrictor]
+    A domain restrictor for $\varepsilon$ and $f$ around $a$ and $y$ is a positive real number $\delta$ such that
+    for all $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$ 
+    if $\Rmetric(x,a) < \delta$ then $\Rmetric(f(x),y) < \varepsilon$.
+\end{definition}
+
+\begin{lemma}[domain restrictor lemma]
+    Let $\delta$ be a domain restrictor for $\varepsilon$ and $f$ around $a$ and $y$ and 
+        $d$ be a positive real number such that $d < \delta$.
+    Then $d$ is a domain restrictor for $\varepsilon$ and $f$ around $a$ and $y$.
+\end{lemma}
+\begin{proof}
+    Let us show that for all $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$ 
+            if $\Rmetric(x,a) < d$ then $\Rmetric(f(x),y) < \varepsilon$.
+        Let $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$. Assume $\Rmetric(x,a) < d$. $d < \delta$.
+        Thus $\Rmetric(x,a) < \delta$. Therefore $\Rmetric(f(x),y) < \varepsilon$.
+    End.
+\end{proof}
+[timelimit 100]
+\begin{lemma}[domain restrictor lemma 2]
+    If there exists $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$ such that 
+    $\abs{x - a} < \delta$ and $\abs{f(x) - y} \geq \varepsilon$ then 
+    $\delta$ is not a domain restrictor for $\varepsilon$ and $f$ around $a$ and $y$.
+\end{lemma}
+[timelimit 10]
+\begin{lemma}[domain restrictor lemma 3]
+    Let $\varepsilon$ be a positive real number.
+    Let $\delta$ be a domain restrictor for $\varepsilon$ and $f$ around $a$ and $f(a)$.
+    If $\abs{x - a} < \delta$ then $\abs{f(x) - f(a)} < \varepsilon$.
+\end{lemma}
+\begin{proof}
+    Case $x = a$. Trivial. 
+
+    Case $x \neq a$. Then  $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$. 
+        Assume $\abs{x - a} < \delta$. $(x,a),(f(x),f(a)) \in \dom(\Rmetric)$.
+        Then $\Rmetric(x,a) < \delta$. $\abs{f(x) - f(a)} = \Rmetric(f(x),f(a)) < \varepsilon$.
+    End.
+\end{proof} 
+
+\begin{definition}
+    $\limS{f}{a}$ is a real number $y$ such that for every positive real number $\varepsilon$ there exists a domain restrictor
+    for $\varepsilon$ and $f$ around $a$ and $y$.
+\end{definition}
+
+\begin{definition}
+    $f$ is continuous in $a$ iff $\limS{f}{a} = f(a)$.
+\end{definition}
+
+\begin{definition}
+    $f$ is continuous iff for every real number $a$ $f$ is continuous in $a$.
+\end{definition}
+
+\end{forthel}
+
+
+
+\section{Continuity in the Real Numbers}
+
+\subsection{Linear Function}
+
+\begin{forthel}
+Let $a,b$ denote real numbers.
+\begin{definition}[linear function]
+    $\flin{a}{b}$ is a real map such that $\flin{a}{b}(x) = (a \cdot x) + b$ for all real numbers $x$.
+\end{definition}
+
+
+\begin{lemma}[linear lem 1]
+    $\flin{0}{a}(b) = a$.
+\end{lemma}
+
+\begin{lemma}[linear lem 2]
+    $\flin{a}{0}(b) = a \cdot b$.
+\end{lemma}
+
+\begin{lemma}[linear lem 3]
+    $\flin{a}{b}(0) = b$.
+\end{lemma}
+
+\end{forthel}
+
+To prove that a function $f(x) = a \cdot x + b$ is continuous, we let $\varepsilon$ be a positive real number and 
+take $\delta = \frac{\varepsilon}{\abs{a}}$. Then for all $x$ with a distance smaller $\delta$ to $a$ we know
+$$\abs{f(x) - f(a)} = \abs{(a \cdot x + b) - (a \cdot a + b)} = \abs{a} \cdot \abs{x - a} < 
+\abs{a} \cdot \frac{\varepsilon}{\abs{a}} = \varepsilon.$$
+
+\begin{forthel}
+
+\begin{theorem}[continuity linear function]
+    $\flin{a}{b}$ is continuous.
+\end{theorem}
+\begin{proof}
+    Take $f=\flin{a}{b}$. Let $\xi$ be a real number.
+    
+    Case $a = 0$. 
+    Let $\varepsilon$ be a positive real number.
+    For all $x \in \mathbb{R} \setminus \sset{\xi}{\mathbb{R}}$ $\Rmetric(f(x),f(\xi)) = \Rmetric(b,b) = 0 < \varepsilon$. 
+    Therefore 1 is a domain restrictor for $\varepsilon$ and $f$ around $\xi$ and $f(\xi)$. End. 
+    
+    Case $a \neq 0$. 
+    Let $\varepsilon$ be a positive real number. 
+    Take $\delta = \abs{\frac{\varepsilon}{a}}$. Then $\delta$ is a positive real number.
+    
+    $\delta$ is a domain restrictor for $\varepsilon$ and $f$ around $\xi$ and $f(\xi)$. Proof.
+
+    Let $x \in \mathbb{R} \setminus \sset{\xi}{\mathbb{R}}$. Assume $\abs{x - \xi} < \delta$.
+
+    $\abs{f(x) - f(\xi)} = \abs{((a \cdot x) + b) - ((a \cdot \xi) + b)}$.
+
+    $\abs{((a \cdot x) + b) - ((a \cdot \xi) + b)}
+     .= \abs{((a \cdot x) + (b - b)) - (a \cdot \xi)}$
+
+      (by eq lemma 15, add comm, add ass)
+
+    $.= \abs{(a \cdot x) + (a \cdot -\xi)}$
+    
+    (by additive inverse, existence zero, mult comm, eq lemma 11)
+
+    $.= \abs{a} \cdot \abs{x - \xi}$ (by distributive law, absolute lemma 2).
+
+    Then $\abs{a} \cdot \abs{x - \xi} < \abs{a} \cdot \delta
+    = \abs{a} \cdot \abs{\frac{\varepsilon}{a}} = \varepsilon$. End.
+    QED.
+\end{proof}
+
+\end{forthel}
+
+
+
+\subsection{Continuity Under Addition}
+
+\begin{forthel}
+Let $f,g$ denote real maps.
+
+\begin{definition}[def add func]
+    $\fplus{f}{g}$ is a real map such that $\fplus{f}{g}(x) = f(x) + g(x)$ for all real numbers $x$.
+\end{definition}
+
+\end{forthel}
+
+For the proof of the continuity of $\fplus{f}{g}$ we take an $\delta$ so small that it serves 
+as a domain restrictor for both $f$ and $g$ for $\varepsilon / 2$.
+Then 
+\begin{align*}
+    \abs{\fplus{f}{g}(x) - \fplus{f}{g}(a)} & = \abs{(f(x) - f(a)) + (g(x) - g(a))} \\
+    & \leq \abs{f(x) - f(a)} + \abs{g(x) - g(a)} < \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon.
+\end{align*}
+
+\begin{forthel}
+[timelimit 10]
+\begin{theorem}[continuity of plus]
+    Let $f,g$ be continuous in $a$.
+    Then $\fplus{f}{g}$ is continuous in $a$.
+\end{theorem}
+\begin{proof}
+    Let $\varepsilon$ be a positive real number. Take $\epsilon = \frac{\varepsilon}{2}$. Then $\epsilon$ is a positive real number.
+  
+    Take a positive real number $\tau$ such that $\tau$ is a domain restrictor for $\epsilon$ and $f$ around $a$ and $f(a)$.
+    Take a positive real number $\theta$ such that $\theta$ is a domain restrictor for $\epsilon$ and $g$ around $a$ and $g(a)$.
+    Take a positive real number $\delta$ such that $\delta < \tau$ and $\delta < \theta$ (by ineq lemma 19).
+
+    We can show that $\delta$ is a domain restrictor for $\varepsilon$ and $\fplus{f}{g}$ around $a$ and $\fplus{f}{g}(a)$.
+
+        Let $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$. Assume $\abs{x - a} < \delta$.
+
+        Let us show that $\abs{\fplus{f}{g}(x) - \fplus{f}{g}(a)} \leq \abs{f(x) - f(a)} + \abs{g(x) - g(a)}$.
+
+            $\abs{\fplus{f}{g}(x) - \fplus{f}{g}(a)} .= \abs{(f(x) + g(x)) - (f(a) + g(a))}$ (by def add func)
+
+            $.= \abs{(f(x) - f(a)) + (g(x) - g(a))}$ 
+
+                (by eq lemma 15, add ass, add comm).
+
+            $\abs{(f(x) - f(a)) + (g(x) - g(a))} \leq \abs{f(x) - f(a)} + \abs{g(x) - g(a)}$ (by absolute lemma 4).
+        End.
+
+        $\abs{f(x) - f(a)} + \abs{g(x) - g(a)} < \varepsilon$.
+        Proof. 
+            $\abs{f(x) - f(a)}$, $\abs{g(x) - g(a)}$ and $\epsilon$ are real numbers.
+
+            (A) $\abs{f(x) - f(a)} < \epsilon$ (by domain restrictor lemma 3). Indeed
+            $\delta$ is a domain restrictor for $\epsilon$ and $f$ around $a$ and $f(a)$ (by domain restrictor lemma).
+
+            (B) $\abs{g(x) - g(a)} < \epsilon$ (by domain restrictor lemma 3). Indeed
+            $\delta$ is a domain restrictor for $\epsilon$ and $g$ around $a$ and $g(a)$ (by domain restrictor lemma). 
+
+            Therefore $\abs{f(x) - f(a)} + \abs{g(x) - g(a)} < \epsilon + \epsilon$ (by ineq lemma 13, A, B).
+            $\epsilon + \epsilon = 2 \cdot \epsilon = \varepsilon$. 
+        End.
+
+        Thus $\abs{\fplus{f}{g}(x) - \fplus{f}{g}(a)}  \leq \varepsilon$ (by transitivity).
+    QED.
+\end{proof}
+
+\begin{corollary}
+    Let $f$ be continuous. Let $g$ be continuous.
+    Then $\fplus{f}{g}$ is continuous.
+\end{corollary}
+[timelimit 3]
+\end{forthel}
+
+
+
+\subsection{Continuity Under Multiplication}
+
+\begin{forthel}
+
+\begin{definition}[def mult func]
+    $\fmult{f}{g}$ is a real map such that $\fmult{f}{g}(x) = f(x) \cdot g(x)$ for all real numbers $x$.
+\end{definition}
+
+\begin{lemma}[lemma 2]
+    $\fmult{f}{g} = \fmult{g}{f}$.
+\end{lemma}
+\begin{proof}
+    We can show that for every real number $x$ $\fmult{f}{g}(x) = \fmult{g}{f}(x)$.
+    Let $x$ be a real number.
+
+    $\fmult{f}{g}(x) .= f(x) \cdot g(x) 
+     .= g(x) \cdot f(x)$ (by mult comm) 
+    $.= \fmult{g}{f}(x)$.
+    End.
+\end{proof}
+
+\end{forthel}
+
+The proof of the continuity of $\fmult{f}{g}$ is certainly not winning any beauty contests, but it is working.
+We Take a positive real number $\delta$ such that $\delta$ is a domain restrictor that is so small that $\abs{f(x) - f(a)} < \frac{\varepsilon}{2 \cdot (\abs{g(a)} + \varepsilon)} =: \nu$,
+$\abs{g(x) - g(a)} < \frac{\varepsilon}{2 \cdot (\abs{f(a)} + 1)} =: \pi$, and $\abs{g(x) - g(a)} < \varepsilon$.
+
+In (1) we first show that $\abs{\fmult{f}{g}(x) - \fmult{f}{g}(a)} \leq \abs{f(x) - f(a)} \cdot \abs{g(x)} + \abs{f(a)}\cdot \abs{g(x) - g(a)}$ 
+by proving in particular (11).
+
+In (2) we show that $\abs{f(x) - f(a)} \cdot \abs{g(x)} < \varepsilon/2$ using (21),(22), and (23).
+
+In (3) we show that also $\abs{f(a)}\cdot \abs{g(x) - g(a)} < \varepsilon/2$ using (31) and (32).
+
+Altogether we get then that $\abs{\fmult{f}{g}(x) - \fmult{f}{g}(a)} < \varepsilon$.
+
+
+\begin{forthel}
+
+\begin{theorem}[continuity under multiplication]
+    Let $f,g$ be continuous in $a$.
+    Then $\fmult{f}{g}$ is continuous in $a$.
+\end{theorem}
+\begin{proof}
+        Let $\varepsilon$ be a positive real number.
+
+
+        $2 \cdot (\abs{g(a)} + \varepsilon)$ is a positive real number.
+        Proof. $\abs{g(a)} \geq 0$ and $\varepsilon > 0$. Thus $\abs{g(a)} + \varepsilon > 0$. [timelimit 20]
+            Therefore $2 \cdot (\abs{g(a)} + \varepsilon) > 0$. [timelimit 3] End.
+        
+        (01) Take $\nu = \frac{\varepsilon}{2 \cdot (\abs{g(a)} + \varepsilon)}$. $\nu$ is a positive real number.
+
+        $2 \cdot (\abs{f(a)} + 1)$ is a positive real number.
+        Proof. $\abs{f(a)} \geq 0$. [timelimit 20] Therefore $\abs{f(a)} + 1 > 0$. Thus $2 \cdot (\abs{f(a)} + 1) > 0$. End.
+        
+
+        (02) Take $\pi = \frac{\varepsilon}{2 \cdot (\abs{f(a)} + 1)}$. $\pi$ is a positive real number.
+
+
+        Take a positive real number $\tau$ such that $\tau$ is a domain restrictor for $\nu$ and $f$ around $a$ and $f(a)$.
+        Take a positive real number $\theta$ such that $\theta$ is a domain restrictor for $\pi$ and $g$ around $a$ and $g(a)$.
+        Take a positive real number $\vartheta$ such that $\vartheta$ is a domain restrictor for $\varepsilon$ and $g$ around $a$ and $g(a)$.
+        Take a positive real number $\Theta$ such that $\Theta < \theta$ and $\Theta < \vartheta$.
+        Take a positive real number $\delta$ such that $\delta < \tau$ and $\delta < \Theta$. [timelimit 3]
+
+        Let us show that
+        $\delta$ is a domain restrictor for for $\varepsilon$ and $\fmult{f}{g}$ around $a$ and $\fmult{f}{g}(a)$.
+            Let $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$. Then $x$ is a real number. 
+            
+            Assume $\abs{x - a} < \delta$.
+
+
+            (1) $\Rmetric(\fmult{f}{g}(x),\fmult{f}{g}(a)) \leq 
+                        (\abs{f(x) - f(a)} \cdot \abs{g(x)}) + (\abs{f(a)} \cdot \abs{g(x) - g(a)})$. Proof.
+
+                (11) $(f(x) \cdot g(x)) - (f(a) \cdot g(a)) = ((f(x) - f(a)) \cdot g(x)) + (f(a) \cdot (g(x) - g(a)))$. Indeed
+
+                    $(f(x) \cdot g(x)) - (f(a) \cdot g(a)) $
+
+                    $.= ((f(x) \cdot g(x)) - (f(a) \cdot g(a))) + ((f(a) \cdot g(x)) - (f(a)\cdot g(x)))$
+
+                        (by existence zero, additive inverse)
+
+                    $.= ((f(x) \cdot g(x)) - (f(a) \cdot g(x))) + ((f(a) \cdot g(x)) - (g(a) \cdot f(a)))$ 
+
+                        (by add ass, add comm, mult comm)
+
+                    $.= ((f(x) - f(a)) \cdot g(x)) + (f(a) \cdot (g(x) - g(a)))$ 
+
+                        (by distributive law, eq lemma 1,mult comm, eq lemma 11).
+
+
+                $\Rmetric(\fmult{f}{g}(x),\fmult{f}{g}(a)) 
+                .= \abs{\fmult{f}{g}(x) - \fmult{f}{g}(a)}$ (by Manhattan metric)
+
+                $.= \abs{(f(x) \cdot g(x)) - (f(a) \cdot g(a))}$ (by def mult func)
+
+                $.= \abs{((f(x) - f(a)) \cdot g(x)) + (f(a) \cdot (g(x) - g(a)))}$ (by 11).
+
+                $\abs{((f(x) - f(a)) \cdot g(x)) + (f(a) \cdot (g(x) - g(a)))}
+                \leq \abs{(f(x) - f(a)) \cdot g(x)} + \abs{f(a) \cdot (g(x) - g(a))}$ (by absolute lemma 4).
+
+                $\abs{(f(x) - f(a)) \cdot g(x)} + \abs{f(a) \cdot (g(x) - g(a))}$
+
+                $.= (\abs{f(x) - f(a)} \cdot \abs{g(x)}) + (\abs{f(a)} \cdot \abs{g(x) - g(a)})$ (by absolute lemma 2).
+            qed.
+            
+            (2) $\abs{f(x) - f(a)} \cdot \abs{g(x)} < \frac{\varepsilon}{2}$. Proof. [timelimit 20]         
+
+                (21) $\abs{f(x) - f(a)} < \nu$ (by domain restrictor lemma 3). Indeed
+                    $\delta$ is a domain restrictor for $\nu$ and $f$ around $a$ and $f(a)$ (by domain restrictor lemma). 
+                
+            
+                (22) $\abs{g(x)} < \abs{g(a)} + \varepsilon$.
+
+                Proof.
+                    $\delta$ is a domain restrictor for $\varepsilon$ and $g$ around $a$ and $g(a)$ (by domain restrictor lemma). 
+                    Indeed $\delta < \vartheta$.
+
+                    $\abs{g(x)} - \abs{g(a)} \leq \abs{g(x) - g(a)} = \Rmetric(g(x),g(a)) < \varepsilon$. 
+
+                    Therefore $\abs{g(x)} < \varepsilon + \abs{g(a)}$ (by ineq lemma 15). Indeed $\abs{g(x)} - \abs{g(a)} < \varepsilon$.
+                End.[timelimit 3]
+
+                $\abs{f(x) - f(a)} \cdot \abs{g(x)} < \nu \cdot (\abs{g(a)} + \varepsilon)$. Proof.
+                    Take $r = \abs{f(x) - f(a)}, \rho = \abs{g(x)}, p = (\abs{g(a)} + \varepsilon)$.
+                    [timelimit 10]
+                    $r,\rho,p,\nu$ are nonnegative real numbers. 
+                    $r \cdot \rho < \nu \cdot p$ (by ineq lemma 16).
+                    Indeed $r < \nu$ and $\rho < p$ (by 21, 22). [timelimit 3]
+                End.
+
+                (23) $\nu \cdot (\abs{g(a)} + \varepsilon) = \frac{\varepsilon}{2}$.
+
+                Proof. (231) Take $c = \abs{g(a)} + \varepsilon$.
+                    $\nu \cdot (\abs{g(a)} + \varepsilon)
+                    .= \frac{\varepsilon}{2 \cdot (\abs{g(a)} + \varepsilon)} \cdot (\abs{g(a)} + \varepsilon)$ (by 01)
+
+                    $.= \frac{\varepsilon}{2 \cdot c} \cdot c$ (by 231) 
+
+                    $.= (\frac{\varepsilon}{2} \cdot 1/c) \cdot c$ (by fraction lemma)
+
+                    $.= \frac{\varepsilon}{2} \cdot (c \cdot 1/c)$ (by mult ass, mult comm)
+
+                    $.= \frac{\varepsilon}{2}$ (by multiplicative inverse, mult comm, existence one).
+                End.
+            qed.
+
+            (3) $\abs{f(a)} \cdot \abs{g(x) - g(a)} < \frac{\varepsilon}{2}$. Proof. [timelimit 20]
+
+                (31) $\abs{g(x) - g(a)} < \pi$ (by domain restrictor lemma 3). Indeed
+                    Thus $\delta$ is a domain restrictor for $\pi$ and $g$ around $a$ and $g(a)$ (by domain restrictor lemma). 
+                    Indeed $\delta < \theta$.[timelimit 3]
+
+                $\abs{f(a)} \cdot \abs{g(x) - g(a)} < (\abs{f(a)} + 1) \cdot \pi$. Proof.
+                    Take $q = \abs{f(a)}$, $R = \abs{g(x) - g(a)}$, $P = \abs{f(a)} + 1$.
+                    [timelimit 10]
+                    $q,R,P,\pi$ are nonnegative real numbers.
+                    $q \cdot R < P \cdot \pi$ (by ineq lemma 16).
+                    Indeed $q < P$ and $R < \pi$. [timelimit 3]
+                End.
+
+
+                (32) $(\abs{f(a)} + 1) \cdot \pi = \frac{\varepsilon}{2}$.
+
+                Proof. (321) Take $c= \abs{f(a)} + 1$.
+
+                    $(\abs{f(a)} + 1) \cdot \pi
+                    .= (\abs{f(a)} + 1) \cdot \frac{\varepsilon}{2 \cdot (\abs{f(a)} + 1)}$ (by 02)
+
+                    $.= c \cdot \frac{\varepsilon}{2 \cdot c}$ (by 321)      
+
+                    $.= c \cdot (\frac{\varepsilon}{2} \cdot 1/c)$ (by fraction lemma)
+
+                    $.= (c \cdot 1/c) \cdot \frac{\varepsilon}{2}$ (by mult comm, mult ass)
+
+                    $.= \frac{\varepsilon}{2}$ (by multiplicative inverse, mult comm, existence one). 
+                End.
+
+            qed. 
+            
+            (4) $\Rmetric(\fmult{f}{g}(x),\fmult{f}{g}(a)) < \varepsilon$. 
+            Proof. 
+
+                Take $Q = (\abs{f(x) - f(a)} \cdot \abs{g(x)})$, $S = (\abs{f(a)} \cdot \abs{g(x) - g(a)})$, $\epsilon = \frac{\varepsilon}{2}$.
+                
+                $Q + S < \epsilon + \epsilon$ (by ineq lemma 13).
+                Indeed $Q < \epsilon$ and $S < \epsilon$ (by 2,3).
+                $\epsilon + \epsilon = 2 \cdot \frac{\varepsilon}{2} = \varepsilon$.
+
+                $\Rmetric(\fmult{f}{g}(x),\fmult{f}{g}(a)) \leq \varepsilon$ (by transitivity).
+                
+                Indeed $\Rmetric(\fmult{f}{g}(x),\fmult{f}{g}(a)) \leq Q + S < \varepsilon$ (by 1).
+            End.
+        End.
+\end{proof}
+
+\begin{corollary}
+    Let $f$ be continuous. Let $g$ be continuous.
+    $\fmult{f}{g}$ is continuous.
+\end{corollary}
+
+\end{forthel}
+
+
+
+\subsection{Continuity Under composition}
+
+The proof of continuity of $g \circ f$ is straightforward. Let $d$ be a domain restrictor for $f$ and $\varepsilon$.
+Then Take a positive real number $\delta$ such that $\delta$ is a domain restrictor for $g$ and $d$. Then $\delta$ also serves as a domain restrictor for $g \circ f$ and $\varepsilon$.
+
+\begin{forthel}
+
+[timelimit 50]
+\begin{theorem}[continuity of composition]
+    Let $f$ be continuous in $a$ and $g$ be continuous in $f(a)$.
+    Then $g \circ f$ is continuous in $a$.
+\end{theorem}
+\begin{proof}
+    $g \circ f$ is a real map.
+    Let $\varepsilon$ be a positive real number. 
+    
+    (1) Take a positive real number $d$ such that $d$ is a domain restrictor for $\varepsilon$ and $g$ around $f(a)$ and $g(f(a))$.
+
+    (2) Take a positive real number $\delta$ such that $\delta$ is a domain restrictor for $d$ and $f$ around $a$ and $f(a)$.
+
+    Let us show that $\delta$ is a domain restrictor for $\varepsilon$ and $(g \circ f)$ around $a$ and $g(f(a))$.
+        Let $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$. Assume $\abs{x - a} < \delta$. Then $\abs{f(x) - f(a)} < d$.
+        $\abs{g(f(x)) - g(f(a))} < \varepsilon$ (by domain restrictor lemma 3, 1). Indeed $f(x),f(a)$ are real numbers.
+    End.
+\end{proof}
+[timelimit 3]
+
+\begin{corollary}
+    Let $f$ be continuous. Let $g$ be continuous.
+    $g \circ f$ is continuous.
+\end{corollary}
+
+
+\end{forthel}
+
+
+\end{document}
+

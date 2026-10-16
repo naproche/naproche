@@ -1,0 +1,619 @@
+\documentclass[../solow_main.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Preparations}\label{chapter:preparation}
+
+\begin{forthel}
+    [read \path{examples/100_theorems.ftl.tex}]
+\end{forthel}
+
+In the first section we want to name all those small lemmata that we will need for the following formalization.
+Especially for Frerix' rewriting algorithm any rewriting step needs to be explicitly mentioned. Therefore, many 
+small lemmata are mentioned here, although automated theorem provers do not have any difficulty proving those theorems
+even without any provided proof. In the subsection \ref{Prep.old} some lemmata, axioms and definitions are 
+repeated as lemmata that are already given in \texttt{100\_theorems.ftl.tex}, just in order to give them names so that
+they can be referenced later.
+
+One term we already define here: as a "real map" we understand a function from and onto the real numbers.
+
+\section{Old Lemmata}\label{Prep.old}
+
+\begin{forthel}
+
+\begin{lemma}[composition]
+Let $F,G$ be maps such that $\range(G) \subseteq \dom(F)$.
+$F \circ G$ is a map $H$ such that $\dom(H) = \dom(G)$ and
+$H(x) = F(G(x))$ for all $x \in \dom(H)$.
+\end{lemma}
+
+\begin{lemma}[inverse]
+Let $F$ be an injective map.
+$\inv{F}$ is the map $G$ such that $\dom(G) = \range(F)$
+and for all $v \in \dom(G)$ $G(v) \in \dom(F)$ and $F(G(v))=v$.
+\end{lemma}
+
+
+Let $x,y,z$ denote real numbers.
+
+\begin{lemma}[add comm]
+$x + y = y + x$.
+\end{lemma}
+
+\begin{lemma}[add ass]
+$(x + y) + z = x + (y + z)$.
+\end{lemma}
+
+\begin{lemma}[existence zero]
+$0$ is a real number such that
+for every real number $x$ $x + 0 = x$.
+\end{lemma}
+
+\begin{lemma}[additive inverse]
+$-x$ is a real number such that $x + (-x) = 0$.
+\end{lemma}
+
+\begin{lemma}[mult comm]
+$x \cdot y = y \cdot x$.
+\end{lemma}
+
+\begin{lemma}[mult ass]
+$((x \cdot y)) \cdot z = x \cdot (y \cdot z)$.
+\end{lemma}
+
+\begin{lemma}[existence one]
+$1$ is a real number such that $1 \neq 0$ and
+for every real number $x$ $1 \cdot x = x$.
+\end{lemma}
+
+\begin{lemma}[multiplicative inverse]
+Assume $x \neq 0$. $1/x$ is a real number
+such that $x \cdot (1/x) = 1$.
+\end{lemma}
+
+\begin{lemma}[distributive law]
+$x \cdot (y + z) = (x \cdot y) + (x \cdot z)$.
+\end{lemma}
+
+\begin{proposition}[eq lemma 1]
+$((y \cdot x)) + (z \cdot x) = (y + z) \cdot x$.
+\end{proposition}
+
+\begin{proposition}[eq lemma 2]
+Let $x + y = x + z$. Then $y = z$.
+\end{proposition}
+
+\begin{proposition}[eq lemma 3]
+If $x + y = x$ then $y = 0$.
+\end{proposition}
+
+\begin{proposition}[eq lemma 4]
+If $x + y = 0$ then $y = -x$.
+\end{proposition}
+
+\begin{proposition}[eq lemma 45]
+$-(-x) = x$.
+\end{proposition}
+
+
+\begin{proposition}[eq lemma 5]
+Let $x$ be nonzero and $x \cdot y = x \cdot z$.
+Then $y = z$.
+\end{proposition}
+
+\begin{proposition}[eq lemma 6]
+If $x$ is nonzero and $x \cdot y = x$ then $y = 1$.
+\end{proposition}
+
+\begin{proposition}[eq lemma 7]
+If $x$ is nonzero and $x \cdot y = 1$ then $y = 1/x$.
+\end{proposition}
+
+\begin{proposition}[eq lemma 8]
+If $x$ is nonzero then $1/(1/x) = x$.
+\end{proposition}
+
+\begin{proposition}[eq lemma 9]
+$0 \cdot x = 0$.
+\end{proposition}
+
+\begin{proposition}[eq lemma 10]
+If $x$ is nonzero and $y \neq 0$ then $x \cdot y \neq 0$.
+\end{proposition}
+
+\begin{proposition}[eq lemma 11]
+$(-x) \cdot y = -(x \cdot y)$.
+\end{proposition}
+
+\begin{proposition}[eq lemma 12]
+$-x = -1 \cdot x$.
+\end{proposition}
+
+\begin{proposition}[eq lemma 13]
+$(-x) \cdot (-y) = x \cdot y$.
+\end{proposition}
+
+\begin{lemma}[eq lemma 14]
+$(1 - x) \cdot y = y - (x \cdot y)$.
+\end{lemma}
+
+\begin{lemma}[eq lemma 15]
+$-(x + y) = -x - y$.
+\end{lemma}
+
+\begin{lemma}[eq lemma 16]
+    Let $x$ be a real number.
+    $x + x = 2 \cdot x$.
+\end{lemma}
+\begin{proof}
+    $x + x = (1 \cdot x) + (1 \cdot x) = (1 + 1) \cdot x = 2 \cdot x$.
+\end{proof}
+
+\begin{lemma}[eq lemma 17]
+Let $z \neq 0$. Then
+$x = \frac{z \cdot x}{z}$.
+\end{lemma}
+
+
+\begin{lemma}[eq lemma 18]
+Let $w$ be a nonzero real number. Then
+$\frac{x - y}{w} + \frac{y - z}{w} = \frac{x - z}{w}$.
+\end{lemma}
+
+
+\begin{lemma}[reflexivity]
+$x \leq x$.
+\end{lemma}
+
+\begin{lemma}[antisymmetry]
+If $x \leq y$ and $x \geq y$ then $x=y$.
+\end{lemma}
+
+\begin{lemma}[transitivity]
+If $x \leq y$ and $y \leq z$ then $x \leq z$.
+\end{lemma}
+
+\begin{lemma}[completeness]
+$x \leq y$ or $x \geq y$.
+\end{lemma}
+
+\begin{lemma}[ineq axiom addition]
+If $y \leq z$ then $x + y \leq x + z$ and $y + x \leq z + x$.
+\end{lemma}
+
+\begin{lemma}[ineq axiom multiplication]
+If $x \geq 0$ and $y \leq z$ then $x \cdot y \leq x \cdot z$.
+\end{lemma}
+
+
+\begin{lemma}[ineq lemma 1]
+$x \leq y$ iff $y \nless x$.
+\end{lemma}
+
+\begin{proposition}[ineq lemma 2]
+$x > 0$ iff $-x < 0$.
+\end{proposition}
+
+\begin{proposition}[ineq lemma 3]
+If $x \neq 0$ then $x \cdot x > 0$.
+\end{proposition}
+
+\begin{proposition}[ineq lemma 4]
+$1 > 0$.
+\end{proposition}
+
+\begin{proposition}[ineq lemma 5]
+$x \leq y$ iff $-x \geq -y$.
+\end{proposition}
+
+\begin{proposition}[ineq lemma 6]
+If $x < 0$ and $y < z$ then
+$x \cdot y > x \cdot z$.
+\end{proposition}
+
+\begin{proposition}[ineq lemma 7]
+$-1 < 0$.
+\end{proposition}
+
+\begin{proposition}[ineq lemma 8]
+$x - 1 < x$.
+\end{proposition}
+
+\begin{proposition}[ineq lemma 9]
+$x < y < x + 1$ iff $0 < y - x < 1$.
+\end{proposition}
+
+\begin{proposition}[ineq lemma 10]
+If $0 < y$ then $0 < 1/y$.
+\end{proposition}
+
+\begin{lemma}[ineq lemma 11]
+If $\neg x \leq y$ then $x \geq y$.
+\end{lemma}
+
+\begin{proposition}[ineq lemma 12]
+Assume $0 < x \leq y$.
+Then $1/y \leq 1/x$.
+\end{proposition}
+
+Let $E$ denote a subset of $\mathbb{R}$.
+
+\begin{lemma}[completeness axiom]
+Assume that $E$ is nonempty and bounded above.
+Then $E$ has a supremum.
+\end{lemma}
+
+\begin{lemma}[potence lemma 1]
+$x^{1} = x$.
+\end{lemma}
+
+\begin{lemma}[potence lemma 2]
+$x^{2} = x \cdot x$.
+\end{lemma}
+
+\begin{lemma}[potence lemma 3]
+$x \cdot x^{i} = x^{i+1}$ for any natural number $i$.
+\end{lemma}
+
+\end{forthel}
+
+
+
+
+
+
+
+
+
+
+
+
+\section{New Lemmata}
+
+\begin{forthel}
+Let a real map stand for a map from $\mathbb{R}$ to $\mathbb{R}$.
+
+Let $w,x,y,z$ denote real numbers. [timelimit 10]
+\begin{lemma}[fraction lemma]
+    Assume $y \cdot z \neq 0$.
+    Then $y \neq 0$ and $z \neq 0$ and $\frac{x}{y \cdot z} = \frac{x}{y} \cdot 1/z$.
+\end{lemma}
+\begin{proof}
+    If $y = 0$ or $z = 0$ then $y \cdot z = 0$. Therefore $y,z$ are nonzero.
+    $1 / (y \cdot z) = 1/y \cdot 1/z$.
+    Indeed then $(y \cdot z) \cdot (1/y \cdot 1/z) = 1$. 
+\end{proof}
+
+\begin{lemma}[fraction lemma 2]
+    Assume $y$ is nonzero.
+    Then $y \cdot \frac{x}{y} = x$.
+\end{lemma}
+
+\begin{lemma}[frac lemma 1]
+    Let $x \geq 0$ and $y > 0$.
+    Then $\frac{x}{y} \geq 0$.
+\end{lemma}
+
+\begin{lemma}[frac lemma 2]
+    Let $x \geq 0$ and $y < 0$.
+    Then $\frac{x}{y} \leq 0$.
+\end{lemma}
+\begin{proof}
+    $\frac{x}{-y} \geq 0$ (by frac lemma 1). Indeed $-y$ is positive.
+    $-\frac{x}{y} = \frac{x}{-y}$.
+\end{proof}
+
+\begin{lemma}[frac lemma 3]
+    Let $x \leq 0$ and $y > 0$.
+    Then $\frac{x}{y} \leq 0$.
+\end{lemma}
+\begin{proof}
+    $\frac{-x}{y} \geq 0$ (by frac lemma 1). Indeed $-x \geq 0$.
+    $-\frac{x}{y} = \frac{-x}{y}$.
+\end{proof}
+
+\begin{lemma}[frac lemma 4]
+    Let $x \leq 0$ and $y < 0$.
+    Then $\frac{x}{y} \geq 0$.
+\end{lemma}
+\begin{proof}
+    $ \frac{-x}{y} \leq 0$ (by frac lemma 2). Indeed $-x \geq 0$.
+\end{proof}
+
+\begin{lemma}[frac lemma 5]
+    Let $x,y$ be nonzero.
+    $\frac{x}{y} \neq 0$.
+\end{lemma}
+
+
+\begin{lemma}[eq lemma 0]
+    $0 = -0$.
+\end{lemma}
+
+\begin{lemma}[eq lemma 20]
+    Assume $z$ is nonzero.
+    If $x = y \cdot z$ then $y = \frac{x}{z}$.
+\end{lemma}
+
+\begin{lemma}[eq lemma 21]
+    $(-x) \cdot y = x \cdot (-y)$.
+\end{lemma}
+
+\begin{lemma}[eq lemma 26]
+    Let $x,y$ be nonzero.
+    $\frac{x}{y} \cdot \frac{y}{x} = 1$.
+\end{lemma}
+
+\begin{lemma}[eq lemma 27]
+    $x + y = z$ iff $x = z - y$.
+\end{lemma}
+
+\begin{lemma}[eq lemma 28]
+    Let $x$ be nonzero.
+    $-1/x = 1/(-x)$.
+\end{lemma}
+\begin{proof}
+    $(-x) \cdot (-1/x) = 1$.
+\end{proof}
+
+\begin{lemma}[eq lemma 29]
+    Let $x,y$ be nonzero.
+    $\frac{x}{x \cdot y} = 1/y$.
+\end{lemma}
+
+\begin{lemma}[eq lemma 30]
+    Let $x,y$ be nonzero.
+    $1/x \cdot 1/y = 1/(x \cdot y)$.
+\end{lemma}
+\begin{proof}
+    $(x \cdot y) \cdot (1/x \cdot 1/y)
+    .= ((x \cdot y) \cdot 1/x) \cdot 1/y$ (by mult ass, mult comm)
+
+    $.= 1$ (by mult ass, mult comm, multiplicative inverse, existence one).
+\end{proof}
+
+\begin{lemma}[eq lemma 22]
+    Let $x,y$ be nonzero.
+    $1/\frac{x}{y} = \frac{y}{x}$.
+\end{lemma}
+\begin{proof}
+    $1/\frac{x}{y} = \frac{y}{x}$ (by eq lemma 7, eq lemma 26). Indeed $\frac{x}{y}$ is a nonzero real number.
+\end{proof}
+
+\begin{lemma}[eq lemma 23]
+    $\frac{x}{2} = x - \frac{x}{2}$.
+\end{lemma}
+\begin{proof}
+    $\frac{x}{2} + \frac{x}{2} .= 2 \cdot \frac{x}{2}$ (by eq lemma 16)
+
+    $.= x$ (by fraction lemma 2).
+    $\frac{x}{2} = x - \frac{x}{2}$ (by eq lemma 27).
+\end{proof}
+
+\begin{lemma}[eq lemma 24]
+    Let $x,y$ be nonzero.
+    $1/x + 1/y = \frac{x + y}{x \cdot y}$.
+\end{lemma}
+\begin{proof}
+    $1/x + 1/y .= \frac{y}{y \cdot x} + \frac{x}{x \cdot y}$ (by eq lemma 29)
+    $.= \frac{x + y}{x \cdot y}$ (by mult comm, eq lemma 1, add comm).
+\end{proof}
+
+\begin{lemma}[eq lemma 25]
+    Let $x,y$ be nonzero.
+    $1/x - 1/y = \frac{y - x}{x \cdot y}$.
+\end{lemma}
+\begin{proof}
+    $1/x - 1/y .= \frac{x - y}{x \cdot (-y)}$ (by eq lemma 28, eq lemma 24).
+    $\frac{x - y}{x \cdot (-y)} .= \frac{-(y - x)}{x \cdot (-y)}$ (by eq lemma 15, eq lemma 45, add comm)
+    $.= \frac{-(y - x)}{-(x \cdot y)}$ (by eq lemma 21, eq lemma 11)
+    $.= \frac{y - x}{x \cdot y}$ (by eq lemma 28, eq lemma 13).
+\end{proof}
+
+
+
+\begin{lemma}
+    Let $y$ be positive.
+    $x - y < x + y$.
+\end{lemma}
+
+\begin{lemma}[ineq lemma 13]
+    If $w < x$ and $y < z$ then $w + y < x + z$.
+\end{lemma}
+
+\begin{lemma}[ineq lemma 14]
+    If $y < z$ then $y + x < z + x$. 
+\end{lemma}
+
+\begin{lemma}[ineq lemma 145]
+    If $y \leq z$ then $y + x \leq z + x$.
+\end{lemma}
+
+\begin{lemma}[ineq lemma 15]
+    $x - y < z$ iff $x < z + y$.
+\end{lemma}
+\begin{proof}
+    Case $x - y < z$. $x = (x - y) + y < z + y$. End.
+
+    Case $x < z + y$. $x - y < (z + y) - y = z$. End.
+\end{proof}
+
+\begin{lemma}[ineq lemma 16]
+    Let $w,x,y,z$ be nonnegative real numbers such that $w < x$ and $y < z$.
+    Then $w \cdot y < x \cdot z$.
+\end{lemma}
+\begin{proof}
+    $w \cdot y \leq w \cdot z = z \cdot w \leq z \cdot x$ (by ineq axiom multiplication, mult comm).
+    $w \cdot y \neq x \cdot z$.
+\end{proof}
+
+\begin{lemma}[ineq lemma 17]
+    Let $x,y,z$ be nonnegative.
+    If $y < z$ then $x \cdot y \leq x \cdot z$.
+\end{lemma}
+
+\begin{lemma}[ineq lemma 18]
+    $x - y < z$ iff $x - z < y$.
+\end{lemma}
+\begin{proof}
+    $x - y < z$ iff $x < z + y$ (by ineq lemma 15).
+    
+    $x < y + z$ iff $x - z < y$ (by ineq lemma 15).
+\end{proof}
+
+\begin{lemma}[ineq lemma x1]
+    Let $y$ be positive.
+    Then there exists a positive real number $x$ such that $x < y$.
+\end{lemma}
+
+\begin{lemma}[ineq lemma 19]
+    Let $x,y$ be positive.
+    Then there exists a positive real number $z$ such that $z < x$ and $z < y$.
+\end{lemma}
+\begin{proof}
+    Case $x \leq y$. There exists a positive real number $z$ such that $z < x$. End.
+
+    Case $x > y$. There exists a positive real number $z$ such that $z < y$. End.
+\end{proof}
+
+\begin{lemma}[ineq lemma 195]
+    Let $x,y,z$ be positive.
+    Then there exists a positive real number $w$ such that 
+    $w < x$ and ($w < y$ and $w < z$).
+\end{lemma}
+\begin{proof}
+    Take a positive real number $v$ such that $v < x$ and $v < y$ (by ineq lemma 19).
+    Take a positive real number $w$ such that $w < v$ and $w < z$ (by ineq lemma 19).
+    Then $w < x$ and $w < y$ and $w < z$.
+\end{proof}
+
+\begin{lemma}[ineq lemma 20]
+    Assume $x < y$.
+    There exists a real number $z$ such that $x < z < y$.
+\end{lemma}
+\begin{proof}
+    $y - x$ is a positive real number.
+    Take a positive real number $z$ such that $z < y - x$ (by ineq lemma x1).
+    $x + z$ is a real number and $x < x + z < y$.
+\end{proof}
+
+\begin{lemma}[ineq lemma 21]
+    Let $x,y$ be nonnegative.
+    $x + y$ is a nonnegative real number.
+\end{lemma}
+
+\begin{lemma}[ineq lemma 215]
+    Let $x,y$ be positive.
+    $x \cdot y$ is a positive real number.
+\end{lemma}
+\begin{lemma}[ineq lemma 22]
+    Assume $y \geq z$.
+    $x - y \leq x - z$.
+\end{lemma} 
+\begin{proof}
+    $-y \leq -z$. Therefore $x - y \leq x - z$.
+\end{proof}
+
+\begin{lemma}[ineq lemma 23]
+    Let $y$ be nonnegative.
+    $x + y \geq x$.
+\end{lemma}
+
+\begin{lemma}[ineq lemma 24]
+    Assume $y$ is positive.
+    $x - y < x$.
+\end{lemma}
+
+\begin{lemma}[ineq lemma 25]
+    Let $z$ be positive.
+    If $x < y$ then $x \cdot z < y \cdot z$.
+\end{lemma}
+
+\begin{lemma}[ineq lemma 26]
+    If $x \geq 0$ and $y \leq z$ then $y \cdot x \leq z \cdot x$.
+\end{lemma}
+
+\begin{lemma}[ineq lemma 27]
+    $x \leq y$ iff $x - y \leq 0$.
+\end{lemma}
+
+\begin{lemma}[ineq lemma 28]
+    $x < y - z$ iff $x + z < y$.
+\end{lemma}
+\begin{proof}
+    Case $x < y - z$. $x + z < (y - z) + z = y$. End. 
+    
+    Case $x + z < y$. $x = (x + z) - z. (x + z) - z < y - z$ (by ineq lemma 14). End.
+\end{proof}
+
+\begin{lemma}[ineq lemma 285]
+   $x + z < y$ iff $z < y - x$.
+\end{lemma}
+
+\begin{lemma}[ineq lemma 29]
+    If $x \leq y < z$ then $x < z$.
+\end{lemma}
+
+\begin{lemma}[ineq lemma 30]
+    If $x - y \geq z$ then $x - z \geq y$.
+\end{lemma}
+
+
+
+\begin{lemma}[inverse lemma]
+    Let $f$ be an injective map. For all $x \in \dom(f)$ and all $y \in \range(f)$
+    $f(x) = y$ iff $\inv{f}(y) = x$.
+\end{lemma}
+
+\begin{lemma}[function lemma 2]
+    Let $f,g$ be maps such that $\dom(f) = \dom(g)$.
+    If for every $x \in \dom(g)$ $f(x) = g(x)$ then $f = g$.
+\end{lemma}
+
+\begin{lemma}
+    Let $f$ be a real map and $x$ be a real number.
+    Then $f(x)$ is a real number.
+\end{lemma}
+\begin{proof}
+    $f(x) \in \mathbb{R}$.
+\end{proof}
+
+\begin{lemma}
+    Let $f,g$ be real maps.
+    $g \circ f$ is a real map.
+\end{lemma}
+\begin{proof}
+    $\dom(g \circ f) = \dom(f) = \mathbb{R}$.
+\end{proof}
+
+\begin{lemma}[1 is positive]
+    1 is a positive real number.
+\end{lemma}
+
+\begin{lemma}[lemma x01]
+    Let $S$ be a nonempty subset of $\mathbb{R}$.
+    Let $s$ be the supremum of $S$. Let $\varepsilon$ be a positive real number.
+    Then there exists $x \in S$ such that $s-\varepsilon < x$.
+\end{lemma}
+\begin{proof}
+    Take $K = s-\varepsilon$.
+    Assume the contrary. Then $s-\varepsilon$ is an upper bound of $S$.
+    Indeed we can show that for all $x \in S$ $x \leq K$.
+        Assume the contrary. Take $x \in S$ such that $x > K$.
+        Case $x > s$. $x \notin S$. End.
+        Case $x \leq s$. Then there exists $\xi \in S$ such that $s-\varepsilon < \xi$. End.
+    End.
+\end{proof}
+
+\begin{lemma}[lemma inverse]
+    Let $f$ be an injective map.
+    For all $v \in \dom(f)$ $f(v) \in \dom(\inv{f})$ and $\inv{f}(f(v)) = v$.
+\end{lemma}
+\begin{proof}
+    Let $v \in \dom(f)$. Then $f(v) \in \dom(\inv{f})$. Indeed $\range(f) = \dom(\inv{f})$. Take $w = \inv{f}(f(v))$.
+    $f(w) .= f(\inv{f}(f(v))) .= f(v)$ (by inverse). $w = v$. Indeed $f$ is injective.
+\end{proof}
+[timelimit 3]
+\end{forthel}
+
+\end{document}

@@ -33,7 +33,7 @@ import Control.Monad (MonadPlus(..), guard, when, unless, msum, liftM2, liftM3)
 import Control.Monad.Writer qualified as W
 import Data.Map qualified as Map
 import Data.Set qualified as Set
-import Data.Text.Lazy qualified as Text
+import Data.Text qualified as Text
 
 import SAD.Core.Base
 import SAD.Data.Definition

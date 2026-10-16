@@ -8,6 +8,7 @@ section \<open>Naproche texts within the Isabelle context\<close>
 
 theory Test
   imports Naproche.Naproche
+  options [condition = "$NAPROCHE_HOME"]
 begin
 
 subsection \<open>Inlined text\<close>

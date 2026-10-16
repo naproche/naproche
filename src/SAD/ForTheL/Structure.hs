@@ -16,8 +16,8 @@ import Data.List
 import Data.Maybe
 import Control.Applicative
 import Control.Monad
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 import Data.Set qualified as Set
 import Data.Set (Set)
 
@@ -29,11 +29,11 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
+import SAD.Parser.Char (isAsciiAlphaNum)
 import SAD.Data.Text.Block (Block, ProofText(..), Section(..))
 import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Formula
 import SAD.Data.Text.Decl
-import SAD.Helpers
 
 
 -- ** Adding meta data

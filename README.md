@@ -1,21 +1,12 @@
 # Naproche
 
-Proof Checking of Natural Mathematical Documents, with optional support
-for [Isabelle Prover IDE (Isabelle/PIDE – Isabelle/jEdit)][isabelle-jedit].
+Proof Checking of Natural Mathematical Documents, with optional support for
+[Isabelle Prover IDE (Isabelle/PIDE – Isabelle/jEdit)](https://isabelle.in.tum.de/dist/doc/jedit.pdf).
 
 
-## For End-Users
+## Isabelle/Naproche Prover IDE
 
-You can get a fully integrated version of Naproche for Linux, macOS and Windows
-that is bundled with [Isabelle][isabelle].
-See <https://naproche.github.io/download.html> for more information.
-
-
-## For Developers
-
-### Isabelle/Naproche Prover IDE
-
-#### Prerequisites
+### Prerequisites
 
 Ensure that `curl`, `g++`, `gcc`, `git`, `gmp`, `make`, and `hg` (Mercurial) are installed:
 
@@ -35,7 +26,7 @@ tools and packages are installed:
     `texlive-collection-pstricks` and `texlive-collection-bibtexextra`
 
 
-#### Repository Management
+### Repository Management
 
 Commands below assume the same current directory: repository clones
 `isabelle_naproche` and `naproche` are put side-by-side.
@@ -55,7 +46,7 @@ Commands below assume the same current directory: repository clones
   isabelle_naproche/Admin/init -V ./naproche/Isabelle
   ```
 
-#### Development
+### Development
 
 * Isabelle executable: there is no need to have `isabelle_naproche/bin/isabelle`
 in the PATH, but it is convenient to put it into a standard place once, e.g.:
@@ -82,9 +73,9 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
     ```
 
     The result is for the current repository version, and the underlying
-    HW + OS platform. The following reference platforms (x86_64) are
-    used for Isabelle2025-1:
-    - Ubuntu Linux 18.04 LTS
+    HW + OS platform. The following reference platforms (x86_64 and arm64) are
+    used for Isabelle2026:
+    - Ubuntu Linux 20.04 LTS
     - macOS 12 Monterey
     - Windows 10/11
 
@@ -116,7 +107,7 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
       mkdir e_naproche/$(isabelle_naproche/bin/isabelle getenv -b ISABELLE_PLATFORM64)
       ```
 
-      We then copy the `eprover` exutable into the component:
+      We then copy the `eprover` executable into the component:
       ```shell
       cp eprover/PROVER/eprover e_naproche/$(isabelle_naproche/bin/isabelle getenv -b ISABELLE_PLATFORM64)/
       ```
@@ -140,14 +131,14 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
     
       Then edit the document at `etc/components`. Move the path pointing to the `e_naproche` component above that pointing to the `naproche` component.
   
-      Finally, verify that the path returend by
+      Finally, verify that the path returned by
       ```shell
       isabelle getenv -b NAPROCHE_EPROVER
       ```
       points to the `eprover` executable inside the `e_naproche` component.
 
 
-### Command Line Interface
+## Command Line Interface
 
 Set the environment variables listed in the first column of the below table to
 the output of the commands listed in its second column.
@@ -165,26 +156,11 @@ Run `isabelle getenv -b NAPROCHE_EXE` to find the location of the
 executable of command line interface of Naproche.
 
 
-## Changelog
+## Documentation
 
-See [CHANGELOG.md](CHAMGELOG.md) for a changelog of Naproche.
+Generate documentation of the Haskell source code which can be served with a
+(local) HTTP server:
 
-
-## License
-
-Naproche is licensed under the [GPL-3][gpl-3]. See [LICENSE.md](LICENSE.md) for
-details.
-
-
-## References
-
-Naproche is based on the [System for Automated Deduction (SAD)][sad] by
-[Andrei Paskevich][andrei-paskevich].
-You can find more resources in our [CONTRIBUTING.md](CONTRIBUTING.md).
-
-
-[isabelle]: <https://isabelle.in.tum.de/>
-[sad]: <https://github.com/tertium/SAD>
-[andrei-paskevich]: <http://www.tertium.org/>
-[isabelle-jedit]: <https://isabelle.in.tum.de/dist/doc/jedit.pdf>
-[gpl-3]: <https://www.gnu.org/licenses/gpl-3.0.en.html>
+```
+stack haddock --haddock-deps
+```

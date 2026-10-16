@@ -1,0 +1,92 @@
+\documentclass{stex}
+\libusepackage{naproche}
+\libusepackage{copyright}
+\libinput{preamble}
+
+\NewDocumentCommand\K{}{\mathbf K}
+
+\title{The Clark-Boolos Paradox}
+\author{Marcel Schütz}
+\date{2026}
+
+\begin{document}
+
+\begin{smodule}{clark-boolos-paradox.ftl}
+
+\usemodule[libraries/meta]{preliminaries.ftl}
+
+\symdecl*{Clark-Boolos Paradox}
+\symdecl*{Comprehension Principle}
+\symdef{kprop}{\mathbf K}
+
+\maketitle
+
+\noindent
+In \cite{KirchnerBenzmuellerZalta2019} Kirchner, Benzmüller and Zalta present
+the \emph{Abstract Object Theory} (AOT), a formal metaphysical
+theory that distinguishes between ordinary and abstract
+objects.
+The authors describe that in a naive version of AOT the \emph{Clark-Boolos
+Paradox} arises, a paradox similar to Russell's Paradox in naive set theory.
+
+This formalization reconstructs a fragment of this naive version of AOT in
+Naproche and shows how it entails the Clark-Boolos Paradox.
+
+\begin{forthel}
+  \begin{signature*}
+    Let $x$ be an object.
+    $x$ is abstract is a relation.
+  \end{signature*}
+
+  Let a property stand for a set.
+  Let $x$ exemplifies $F$ stand for $x$ is an element of $F$.
+
+  \begin{signature*}
+    Let $F$ be a property and $x$ be an object.
+    $x$ encodes $F$ is a relation.
+  \end{signature*}
+\end{forthel}
+
+The key axiom from which the Clark-Boolos Paradox arises
+is the comprehension principle for abstract objects:
+
+\begin{forthel}
+  \begin{axiom*}[title=Comprehension Principle,name=Comprehension Principle]
+    Let $\Phi$ be a class.
+    There exists an abstract object $x$ such that for all properties $F$ $x$ encodes $F$ iff $F \Elem \Phi$.
+  \end{axiom*}
+\end{forthel}
+
+Similar to Russell's Paradox -- which shows that the
+assumption of naive set theory that the extension of
+every predicate is a set yields a contradiction -- the
+Clark-Boolos Paradox shows that assuming that every
+predicate is a property yields a contradiction as
+well.\footnote{%
+  In this formalization which interprets (unary) predicates
+  as classes and properties as sets these two assumptions
+  coincide.
+}
+
+\begin{forthel}
+  \begin{definition*}
+    $\kprop$ is the class of all objects $x$ such that $x$ encodes some property $F$ such that $x$ does not exemplify $F$.
+  \end{definition*}
+
+  \begin{theorem*}[title=Clark Boolos Paradox,name=Clark-Boolos Paradox]
+    Assume that $\kprop$ is a property.
+    Then we have a contradiction.
+  \end{theorem*}
+  \begin{proof}
+    Define $\Phi \DefEq \EClass{\kprop}$.
+    Consider an abstract object $a$ such that for all properties $F$ $a$ encodes $F$ iff $F \Elem \Phi$.
+    Then $a$ encodes $\kprop$ and $a$ does not encode any property that is not equal to $\kprop$.
+    Hence $a$ exemplifies $\kprop$ iff $a$ does not exemplify $\kprop$.
+    Contradiction.
+  \end{proof}
+\end{forthel}
+
+\printbibliography
+\printlicense[CcByNcSa]{Marcel Schütz (2026)}
+\end{smodule}
+\end{document}

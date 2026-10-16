@@ -15,18 +15,17 @@ module SAD.Data.Formula.Show (
   symEncode
 ) where
 
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 import Data.List qualified as List
 
 import SAD.Data.Formula.Base
 import SAD.Data.Formula.Kit
 import SAD.Data.VarName
 import SAD.Data.Terms
-import SAD.Export.Representation (toLazyText, represent)
+import SAD.Export.Representation (represent)
 
 import Isabelle.Position qualified as Position
-import SAD.Helpers
 
 
 instance Show Formula where
@@ -88,10 +87,10 @@ showFormula p = dive
     -- Symbolic formula/term:
     dive d Trm{trmName = TermSymbolic tName, trmArgs = tArgs} = decode (Text.unpack tName) tArgs p d ""
     -- Non-symbolic formula/term:
-    dive d Trm{trmName = tName, trmArgs = tArgs} = Text.unpack (toLazyText (represent tName)) ++ showArguments p d tArgs
+    dive d Trm{trmName = tName, trmArgs = tArgs} = Text.unpack (represent tName) ++ showArguments p d tArgs
     -- Free variables:
     dive d Var{varName = VarConstant s} = Text.unpack s
-    dive d Var{varName = vName} = Text.unpack $ toLazyText $ represent vName
+    dive d Var{varName = vName} = Text.unpack $ represent vName
     -- De Brujin index:
     dive d Ind{indIndex = i}
       | i < d = "v" ++ show (d - i - 1)
@@ -116,21 +115,14 @@ showArguments p d terms =
 showBindingVar :: Int -> Int -> String
 showBindingVar p d = showFormula p (d + 1) (Ind 0 Position.none)
 
--- | Substitute all @.@ characters in a string by given terms.
-substitute :: String -> [Formula] -> Int -> Int -> String
-substitute s [] _ _ = s
-substitute s (t : ts) p d = dec s
-  where
-    dec ('.' : cs) = parensIf (ambig t) (showFormula p d t) ++ substitute cs ts p d
-    dec (c : cs@('.' : _)) | isAsciiLetter c = c : " " ++ dec cs
-    dec (c : cs) = c : dec cs
-    dec [] = ""
+-- | Wrap a string in parentheses.
+parens :: String -> String
+parens string = "(" ++ string ++ ")"
 
-    ambig Trm {trmName = TermSymbolic tName} =
-      ("." `Text.isPrefixOf` tName && Text.drop 2 tName /= "(.)") ||
-      "." `Text.isSuffixOf` tName
-    ambig _ = False
-
+-- | Wrap a string in parentheses if a predicate holds true, otherwise return
+-- the string unmodified.
+parensIf :: Bool -> String -> String
+parensIf pred string = if pred then parens string else string
 
 
 decode :: String -> [Formula] -> Int -> Int -> ShowS

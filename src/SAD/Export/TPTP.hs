@@ -17,11 +17,10 @@ module SAD.Export.TPTP (
   renderSequent
 ) where
 
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 
 import SAD.Data.Formula (Formula(..), showTrName, TermName(..))
-import SAD.Helpers (failWithMessage)
 
 import Isabelle.Position qualified as Position
 import Isabelle.Library
@@ -88,7 +87,7 @@ renderSequent name role (premises, conclusions) =
   <> "])."
 
 tptpName :: Formula -> Text
-tptpName = Text.fromStrict . make_text . atomic_word . make_bytes . showTrName
+tptpName = make_text . atomic_word . make_bytes . showTrName
 
 tptpTerm :: Int -> Formula -> Text
 tptpTerm d = term
@@ -109,7 +108,7 @@ tptpTerm d = term
       | otherwise = tptpName t <> "(" <> Text.intercalate "," (map term $ trmArgs t) <> ")"
     term v@Var {}   = tptpName v
     term i@Ind {}   = "W" <> Text.pack (show (d - 1 - indIndex i))
-    term ThisT      = failWithMessage "SAD.Export.TPTP" "Didn't expect ThisT here"
+    term ThisT      = "Didn't expect ThisT here"
 
     sinfix o f g  = "(" <> term f <> o <> term g <> ")"
 

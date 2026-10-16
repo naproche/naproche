@@ -14,12 +14,11 @@
 
 module SAD.Main where
 
-import Control.Monad (unless, when)
+import Control.Monad (when)
 import Data.Time (addUTCTime, getCurrentTime, diffUTCTime)
 import Data.Maybe (mapMaybe)
-import Data.List.Split (wordsBy)
 import Control.Exception qualified as Exception
-import Control.Exception (catch)
+import Control.Exception (Exception, catch, handle, throwIO)
 import System.Console.GetOpt qualified as GetOpt
 import System.Environment qualified as Environment
 import System.IO
@@ -31,7 +30,12 @@ import Network.Socket (Socket)
 import SAD.Prove.MESON qualified as MESON
 import SAD.Export.Prover qualified as Prover
 import SAD.Data.Instr
-import SAD.API hiding (error)
+import SAD.Data.Text.Block (ProofText(..), parseErrors)
+import SAD.Core.Base (sumCounter, showTimeDiff, sumTimer, maximalTimer, Timer(..), Counter(..))
+import SAD.Core.Message (outputMain, errorParser, Kind(..))
+import SAD.Core.Verify (verifyRoot)
+import SAD.Import.Reader (readProofText)
+import SAD.Parser.Error (ParseError(..))
 import SAD.Parser.FTL.Lexer qualified as FTL
 import SAD.Parser.TEX.Lexer qualified as TEX
 import SAD.Parser.STEX.Lexer qualified as STEX
@@ -39,7 +43,6 @@ import SAD.Parser.FTL.Token qualified as FTL
 import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.STEX.Token qualified as STEX
 import SAD.Parser.Token (renderTokens)
-import SAD.Helpers (getNaprocheMathhub)
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
@@ -69,19 +72,19 @@ main  = do
   -- the user; when Naproche is run in a PIDE, they are a fixed set of
   -- arguments that are hard-coded into the PIDE integration.
   args <- Environment.getArgs
-  (initInstrs, fileArgs) <- readArgs args
+  (initInstrs, mbFileArg) <- handle readArgsHandler $ readArgs args
   -- Run Naproche either in PIDE or terminal mode, depending on whether the
   -- server parameter is set to @True@ in the initial options. Note that unless
   -- Naproche is run in a PIDE, it is set to @False@.
   if getInstr serverParam initInstrs
     then mainPIDE initInstrs
-    else mainTerminal initInstrs fileArgs
+    else mainTerminal initInstrs mbFileArg
 
 
 -- * Terminal Mode
 
-mainTerminal :: [Instr] -> [String] -> IO ()
-mainTerminal initInstrs fileArgs = do
+mainTerminal :: [Instr] -> Maybe FilePath -> IO ()
+mainTerminal initInstrs mbFileArg = do
   if getInstr helpParam initInstrs
     then putStr $ GetOpt.usageInfo usageHeader options
     else do
@@ -97,39 +100,20 @@ mainTerminal initInstrs fileArgs = do
       -- Get the input text (either via a given file path or if no file path is
       -- provided via the stdin stream) as a proof text:
       (dialect, inputText, mbInputPath) <- do
-        case fileArgs of
-          -- If a single non-instruction command line argument is given, regard it
-          -- as the path to the input text file and determine the ForTheL dialect
-          -- of its contents via its file name extension:
-          [filePath] -> do
-            let fileNameExteisionStr = takeExtensions filePath
-                fileNameExtensions = wordsBy isExtSeparator fileNameExteisionStr
-            let dialect = case reverse fileNameExtensions of
-                  "ftl" : _ -> Ftl
-                  "tex" : "ftl" : _ -> Tex
-                  "tex" : "en" : "ftl" : _ -> Stex
-                  _ -> error $ "Invalid file name extension: " ++ fileNameExteisionStr
-            inputText <- make_bytes <$> File.read filePath
+        case mbFileArg of
+          Just filePath -> do
+            let dialect = getDialect initInstrs
+            fileExists <- doesFileExist filePath
+            inputText <- File.read filePath
             return (dialect, inputText, Just filePath)
-          -- If no non-instruction command line argument is given, regard the
-          -- content of the stdin stream as the input text. Determind the ForTheL
-          -- dialect of the text by whether the @tex@ flag is set in the command
-          -- line arguments or not.
-          [] -> do
-            let dialect = case getInstr dialectParam initInstrs of
-                  "ftl" -> Ftl
-                  "tex" -> Tex
-                  "stex" -> Stex
-                  dialectArg -> error $ "Invalid dialect: " ++ make_string dialectArg
+          Nothing -> do
+            let dialect = getDialect initInstrs
             hSetBuffering stdout LineBuffering
             putStrLn $ "Enter a ForTheL text (in the " ++ show dialect ++ " dialect)."
               ++ " Type CTRL+D to finish your input.\n"
             inputText <- make_bytes <$> getContents'
             putStr "\n"
             return (dialect, inputText, Nothing)
-          -- If more than one non-instruction command line arguments are given,
-          -- throw an error:
-          _ -> error "More than one file argument"
       -- Append the input text proof text to the instruction proof texts:
       let inputTextProofTexts = [ProofTextInstr Position.none $ GetText inputText]
           proofTexts = initInstrProofTexts ++ inputTextProofTexts
@@ -199,15 +183,11 @@ pideServer mesonCache proverCache initInstrs socket =
               thread_uuid <- Isabelle_Thread.my_uuid
               mapM_ (\uuid -> exchange_message0 [Naproche.threads_command, UUID.print uuid]) thread_uuid
 
-              (moreInstrs, nonInstrArgs) <- readArgs $ lines (make_string more_args)
+              (moreInstrs, _) <- readArgs $ lines (make_string more_args)
               let instrs = initInstrs ++ moreInstrs
                   locatedInstrs = map (Position.none,) instrs
                   instrProofTexts = map (uncurry ProofTextInstr) locatedInstrs
-                  dialect = case getInstr dialectParam instrs of
-                    "ftl" -> Ftl
-                    "tex" -> Tex
-                    "stex" -> Stex
-                    dialectArg -> error ""
+                  dialect = getDialect instrs
                   inputTextProofTexts = [ProofTextInstr Position.none (GetText text)]
               let proofTexts = instrProofTexts ++ inputTextProofTexts
 
@@ -227,7 +207,7 @@ pideServer mesonCache proverCache initInstrs socket =
 
 -- * Translating or Verifying the Input Text
 
-lexInputText :: ParserKind -> Bytes -> IO Int
+lexInputText :: Dialect -> Bytes -> IO Int
 lexInputText dialect bytes = do
   -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
@@ -243,7 +223,7 @@ lexInputText dialect bytes = do
   outputMain TRACING Position.none $ make_bytes $ "total " <> timeDifference finishTime
   return 0
 
-tokenizeInputText :: ParserKind -> Bytes -> IO Int
+tokenizeInputText :: Dialect -> Bytes -> IO Int
 tokenizeInputText dialect bytes = do
   -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
@@ -260,7 +240,7 @@ tokenizeInputText dialect bytes = do
   outputMain TRACING Position.none $ make_bytes $ "total " <> timeDifference finishTime
   return 0
 
-translateInputText :: ParserKind -> [ProofText] -> IO Int
+translateInputText :: Dialect -> [ProofText] -> IO Int
 translateInputText dialect proofTexts = do
   -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
@@ -275,7 +255,7 @@ translateInputText dialect proofTexts = do
   outputMain TRACING Position.none $ make_bytes $ "total " <> timeDifference finishTime
   return 0
 
-verifyInputText :: ParserKind -> MESON.Cache -> Prover.Cache -> [ProofText] -> IO Int
+verifyInputText :: Dialect -> MESON.Cache -> Prover.Cache -> [ProofText] -> IO Int
 verifyInputText dialect mesonCache proverCache proofTexts = do
   -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
@@ -341,7 +321,7 @@ renderInputFile inputPath texExe bibtexExe = do
   else do
     putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
 
-    mathhubVar <- getNaprocheMathhub
+    mathhubVar <- make_string <$> getenv "NAPROCHE_MATHHUB"
 
     putStrLn $ "[Info] PDFLaTeX binary:  " ++ texExe
     putStrLn $ "[Info] BibTeX binary:    " ++ bibtexExe
@@ -368,13 +348,44 @@ renderInputFile inputPath texExe bibtexExe = do
 
 -- * Arguments
 
-readArgs :: [String] -> IO ([Instr], [String])
+data ReadArgException =
+    GetOptFailure String
+  | TooManyFiles
+  | InvalidFileNameExt String
+  deriving (Show)
+
+readArgsHandler :: ReadArgException -> IO a
+readArgsHandler (GetOptFailure msg) = errorWithoutStackTrace msg
+readArgsHandler TooManyFiles = errorWithoutStackTrace "more than one file argument"
+readArgsHandler (InvalidFileNameExt ext) = errorWithoutStackTrace $ "invalid file name extension " ++ quote ext
+
+instance Exception ReadArgException
+
+readArgs :: [String] -> IO ([Instr], Maybe FilePath)
 readArgs args = do
   let (instrs, nonInstrArgs, errors) = GetOpt.getOpt GetOpt.Permute options args
+  mapM_ (throwIO . GetOptFailure) errors
 
-  let fail msgs = errorWithoutStackTrace (unlines $ map trim_line msgs)
-  unless (null errors) $ fail errors
-  return (instrs, nonInstrArgs)
+  case nonInstrArgs of
+    [] -> return (instrs, Nothing)
+    [fileArg] -> do
+      let fileNameExteisionStr = takeExtensions fileArg
+      dialectArg <- getDialectArg fileNameExteisionStr
+      let dialectInstr = SetBytes dialectParam dialectArg
+      return (dialectInstr : instrs, Just fileArg)
+    _ -> throwIO TooManyFiles
+    where
+      getDialectArg ".ftl.en.tex" = return "stex"
+      getDialectArg ".ftl.tex" = return "tex"
+      getDialectArg ".ftl" = return "ftl"
+      getDialectArg ext = throwIO (InvalidFileNameExt ext)
+
+getDialect :: [Instr] -> Dialect
+getDialect instrs = case getInstr dialectParam instrs of
+  "ftl" -> Ftl
+  "tex" -> Tex
+  "stex" -> Stex
+  dialectArg -> error "Invalid dialect argument"
 
 optParam :: [Char] -> Param.T a -> GetOpt.ArgDescr b -> String -> GetOpt.OptDescr b
 optParam chars p = GetOpt.Option chars [name | not (null name)]

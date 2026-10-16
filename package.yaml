@@ -1,20 +1,22 @@
-name:                Naproche
-version:             0.1.0.0
-github:              "naproche-community/naproche"
-license:             GPL-3
+name: Naproche
+version: 0.1.0.0
+github: "naproche/naproche"
+license: GPL-3
 
 extra-source-files:
 - README.md
+- LICENSE.md
 - CHANGELOG.md
+- ACKNOWLEDGMENTS.md
+- TODO.md
 
-description:         <https://github.com/naproche-community/naproche>
+description: Write formal proofs in natural language and LaTeX. (See <https://naproche.github.io/>)
 
 flags:
   debug:
     description: "Enable special debugging support"
     manual: true
     default: false
-
 
 when:
   condition: flag(debug)
@@ -80,7 +82,6 @@ library:
     - Isabelle.Isabelle_Thread
     - Isabelle.Library
     - Isabelle.Naproche
-    - SAD.API
     - SAD.Main
     - SAD.Core.ProofTask
     - SAD.Data.Formula.Kit
@@ -93,8 +94,8 @@ library:
 
 executables:
   Naproche:
-    main:                Main.hs
-    source-dirs:         app
+    main: Main.hs
+    source-dirs: app
     ghc-options:
     - -threaded
     - -rtsopts
@@ -104,14 +105,3 @@ executables:
     when:
     - condition: false
       other-modules: Paths_Naproche_SAD
-
-tests:
-  Naproche-test:
-    main:                Spec.hs
-    source-dirs:         test
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - Naproche

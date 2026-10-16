@@ -45,14 +45,14 @@ import Prelude hiding (or)
 import Control.Applicative
 import Control.Monad.State.Class (modify)
 import Data.List hiding (or)
+import Data.List.Extra (nubOrd)
 import Data.Set (Set)
 
-import SAD.Helpers (nubOrd)
 import SAD.ForTheL.Base
 import SAD.Data.Text.Block (Block)
 import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Text.Decl
-import Data.Text.Lazy (Text)
+import Data.Text (Text)
 import SAD.Data.Formula
 import SAD.Parser.Base
 import SAD.Parser.Primitives

@@ -16,7 +16,7 @@ import Data.List
 import Control.Applicative
 import Control.Monad
 import Control.Monad.State.Class (modify)
-import Data.Text.Lazy (Text)
+import Data.Text (Text)
 import Data.Functor ((<&>))
 import Data.Foldable (foldr')
 import Data.Maybe (fromMaybe)

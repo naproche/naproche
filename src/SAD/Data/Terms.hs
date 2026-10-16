@@ -10,12 +10,10 @@
 
 module SAD.Data.Terms where
 
-import Debug.Trace
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy.Builder (fromLazyText, fromString)
+import Data.Text (Text)
+import Data.Text qualified as Text
 
 import SAD.Export.Representation
-import SAD.Helpers (failureMessage)
 
 
 data TermName
@@ -59,15 +57,15 @@ termSplit (TermMultiVerb t) = (TermMultiVerb, t)
 termSplit _ = undefined
 
 instance Representation TermName where
-  represent (TermName t) = fromLazyText t
-  represent (TermSymbolic t) = "s" <> fromLazyText t
-  represent (TermNotion t) = "a" <> fromLazyText t
-  represent (TermThe t) = "the" <> fromLazyText t
-  represent (TermUnaryAdjective t) = "is" <> fromLazyText t
-  represent (TermMultiAdjective t) = "mis" <> fromLazyText t
-  represent (TermUnaryVerb t) = "do" <> fromLazyText t
-  represent (TermMultiVerb t) = "mdo" <> fromLazyText t
-  represent (TermTask n) = "tsk " <> fromString (show n)
+  represent (TermName t) = t
+  represent (TermSymbolic t) = "s" <> t
+  represent (TermNotion t) = "a" <> t
+  represent (TermThe t) = "the" <> t
+  represent (TermUnaryAdjective t) = "is" <> t
+  represent (TermMultiAdjective t) = "mis" <> t
+  represent (TermUnaryVerb t) = "do" <> t
+  represent (TermMultiVerb t) = "mdo" <> t
+  represent (TermTask n) = "tsk " <> Text.pack (show n)
   represent TermEquality = "="
   represent TermLess  = "iLess"
   represent TermThesis = "#TH#"
@@ -92,20 +90,18 @@ data TermId
   deriving (Eq, Ord, Show)
 
 specialId :: Int -> TermId
-specialId n =
-  let msg = failureMessage "SAD.Data.Terms.TermId" "Invalid term ID."
-  in case n of
-  ( -1) -> trace msg EqualityId
-  ( -2) -> trace msg LessId
-  ( -3) -> trace msg ThesisId
-  ( -4) -> trace msg FunctionId
-  ( -5) -> trace msg ApplicationId
-  ( -6) -> trace msg DomainId
-  ( -7) -> trace msg SetId
-  ( -8) -> trace msg ElementId
-  ( -9) -> trace msg ClassId
-  (-10) -> trace msg PairId
-  (-11) -> trace msg ObjectId
-  (-12) -> trace msg MapId
-  (-15) -> trace msg NewId
+specialId n = case n of
+  ( -1) -> EqualityId
+  ( -2) -> LessId
+  ( -3) -> ThesisId
+  ( -4) -> FunctionId
+  ( -5) -> ApplicationId
+  ( -6) -> DomainId
+  ( -7) -> SetId
+  ( -8) -> ElementId
+  ( -9) -> ClassId
+  (-10) -> PairId
+  (-11) -> ObjectId
+  (-12) -> MapId
+  (-15) -> NewId
   n -> SpecialId n

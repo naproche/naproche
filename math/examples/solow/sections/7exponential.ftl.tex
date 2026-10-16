@@ -1,0 +1,727 @@
+\documentclass[../solow_main.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Exponential Function and Logarithm}\label{chapterexponential}
+
+
+\begin{forthel} 
+    [read \path{examples/solow/sections/6inverse.ftl.tex}]
+
+\begin{signature}
+    $\mathbb{R}_{>0}$ is the collection of positive real numbers.
+\end{signature}
+
+\begin{lemma}
+    $\mathbb{R}_{>0}$ is an open set.
+\end{lemma}
+\begin{proof}
+    Let $x \in \mathbb{R}_{>0}$. Then $\B_{x}(x) \subseteq \mathbb{R}_{>0}$. Indeed
+        $\B_{x}(x) = (x - x, x + x)_{OI} = (0, x + x)_{OI} \subseteq \mathbb{R}_{>0}$.
+\end{proof}
+
+\begin{lemma}[positive reals open neighbourhood]
+    Let $a$ be a positive real number.
+    $\mathbb{R}_{>0}$ is an open neighbourhood of $a$.
+\end{lemma}
+
+\end{forthel}
+
+
+
+\section{e and Logarithm}
+
+
+\begin{forthel}
+Let $a,b,x,y$ denote real numbers.
+
+\begin{signature}[natural exponential function]
+    $\exp$ is a real map such that $\deriv{\exp} = \exp$.
+\end{signature}
+
+\begin{axiom}[exp of 0]
+    $\exp(x) = 1$ iff $x = 0$.
+\end{axiom}
+
+\begin{axiom}[exp calculation axiom]
+    $\exp(a + b) = \exp(a) \cdot \exp(b)$.
+\end{axiom}
+
+\begin{corollary}
+    $\exp$ is continuously differentiable.
+\end{corollary}
+
+\begin{lemma}[lemma exp nonzero]
+    $\exp(x) \neq 0$.
+\end{lemma}
+\begin{proof}[by contradiction]
+    Assume the contrary. Take a real number $x$ such that $\exp(x) = 0$.
+    $0 = 0 \cdot \exp(-x) = \exp(x) \cdot \exp(-x) = \exp(x - x) = \exp(0) = 1$.
+\end{proof}
+
+\begin{lemma}[lemma exp positive]
+    $\exp(x)$ is a positive real number.
+\end{lemma}
+\begin{proof}
+    Assume $\exp(x) < 0$.
+    
+    (1) Case $x = 0$. Trivial.
+
+    (2) Case $x < 0$. Then $\exp(x) < 0 < \exp(0)$ and $\exp$ is continuous. [timelimit 10]
+
+        There exists $c \in (x, 0)_{OI}$ such that $\exp(c) = 0$ (by Bolzanos Theorem).
+
+        Contradiction (by lemma exp nonzero). [timelimit 3]
+    End.
+
+    (3) Case $x > 0$. Then $\fminus{\exp}(0) < 0 < \fminus{\exp}(x)$ and $\fminus{\exp}$ is continuous. [timelimit 10]
+        There exists $c \in (0,x)_{OI}$ such that $\fminus{\exp}(c) = 0$ (by Bolzanos Theorem). 
+        [timelimit 3] Contradiction (by lemma exp nonzero).
+    End.
+\end{proof}
+
+\begin{proposition}[exp inequality]
+    $1 + x \leq \exp(x)$.
+\end{proposition}
+\begin{proof}
+    Take $f = \fplus{\flin{1}{1}}{\fminus{\exp}}$.
+
+    $0$ is a maximum of $f$ (by sufficient condition for maximum on interval). Proof. 
+        $\mathbb{R}$ is an interval.
+        (A) $f$ is differentiable and $\deriv{f} = \fplus{\flin{0}{1}}{\fminus{\exp}}$
+
+        (by minus derivative 2, derivative addition rule 2, natural exponential function, derivative of linear function).
+
+        Let us show that for every real number $y$ $\derivin{\deriv{f}}(y) < 0$.
+            Let $y$ be a real number. 
+
+            $\derivin{\deriv{f}}(y) .=\deriv{\fplus{\flin{0}{1}}{\fminus{\exp}}}(y)$ (by deriv and derivin, A) 
+
+            $.= \fplus{\deriv{\flin{0}{1}}}{\deriv{\fminus{\exp}}}(y)$ (by derivative addition rule 2)
+
+            $.= \fplus{\flin{0}{0}}{\fminus{\deriv{\exp}}}(y)$ (by minus derivative 2, derivative of linear function)
+
+            $.= \fplus{\flin{0}{0}}{\fminus{\exp}}(y)$ (by natural exponential function)
+
+            $.= ((0 \cdot y) + 0) - \exp(y)$ (by def add func, linear function, def func minus)
+
+            $.= -\exp(y) + 0$ (by eq lemma 9, existence zero, add comm)
+
+            $.= -\exp(y)$ (by existence zero).
+
+            $-\exp(y) < 0$ (by ineq lemma 2, lemma exp positive). 
+
+            Therefore $\derivin{\deriv{f}}(y) < 0$.
+        End.
+
+        $0$ is a local maximum of $f$ (by sufficient condition local maximum). Proof.
+
+            (B) $\exp(0) = 1$.
+
+            $\derivin{f}(0) .= \fplus{\flin{0}{1}}{\fminus{\exp}}(0)$ (by A, deriv and derivin)
+
+            $.= \flin{0}{1}(0) - \exp(0)$ (by def add func, def func minus) 
+
+            $.= 1 - 1$ (by linear lem 1, B)
+
+            $.= 0$ (by additive inverse).
+            $\derivin{\deriv{f}}(0) < 0$. 
+        End.
+
+        $f$ is strictly convex on $\mathbb{R}$. 
+    End.
+
+    Thus $1 + x \leq \exp(x)$. Proof.
+        $f(x) \leq f(0)$.
+
+        $(1 + x) - \exp(x) = ((1 \cdot x) + 1) - \exp(x) = \flin{1}{1}(x) - \exp(x) =
+        \flin{1}{1}(x) + \fminus{\exp}(x) = \fplus{\flin{1}{1}}{\fminus{\exp}}(x) 
+        = f(x)$
+        
+        $\leq f(0)
+        = \fplus{\flin{1}{1}}{\fminus{\exp}}(0) = ((1 \cdot 0) + 1) - \exp(0) = 1 - \exp(0) = 0$.
+
+        Thus $(1 + x) - \exp(x) \leq 0$. Therefore $(1 + x) \leq \exp(x)$ (by ineq lemma 27).
+    End.
+\end{proof}
+
+\begin{proposition}[range exp]
+    $\range(\exp) = \mathbb{R}_{>0}$.
+\end{proposition}
+\begin{proof}
+    $\range(\exp) \subseteq \mathbb{R}_{>0}$. Proof.
+        Let $y \in \range(\exp)$. Then $y$ is nonzero (by lemma exp nonzero).
+        Take a real number $x$ such that $\exp(x) = y$.
+        Then $\exp(x)$ is positive (by lemma exp positive).
+    qed.
+
+    $\mathbb{R}_{>0} \subseteq \range(\exp)$. Proof.
+        Let $y \in \mathbb{R}_{>0}$.
+
+        (1) Case $y = 1$. Trivial.
+
+        (2) Case $y > 1$. Then $y < 1 + y \leq \exp(y)$.
+                $y \in (\exp(0), \exp(y))_{OI}$. [timelimit 20]
+                Thus $y \in \exp[(0,y)_{OI}]$.
+                    Indeed $(\exp(0), \exp(y))_{OI} \subseteq \exp[(0,y)_{OI}]$ (by intermediate value theorem I).
+                    Indeed $0 < y$ and $\exp$ is continuous. [timelimit 3]
+                Therefore there exists $x \in (0,y)_{OI}$ such that $\exp(x) = y$.
+            End.
+
+        (3) Case $y < 1$. Take $\upsilon = 1/y$. Then $\upsilon = 1/y > 1/1 = 1$. 
+                Then $\upsilon < 1 + \upsilon \leq \exp(\upsilon)$.
+                $\upsilon \in (\exp(0), \exp(\upsilon))_{OI}$. [timelimit 20]
+                Thus $\upsilon \in \exp[(0,\upsilon)_{OI}]$.
+                    Indeed $(\exp(0), \exp(\upsilon))_{OI} \subseteq \exp[(0,\upsilon)_{OI}]$ (by intermediate value theorem I).
+                    Indeed $0 < \upsilon$ and $\exp$ is continuous. [timelimit 3]
+                Take $x \in (0,\upsilon)_{OI}$ such that $\exp(x) = \upsilon$.
+                Then $-x \in \dom(\exp)$.
+                $\exp(-x) = 1/\exp(x) = 1/\upsilon = y$.
+            End.
+    qed.
+\end{proof}
+
+\begin{lemma}[lemma 1]
+    $\exp(-a) = 1/\exp(a)$.
+\end{lemma}
+\begin{proof}
+    $\exp(a) \cdot \exp(-a) = \exp(a - a) = \exp(0) = 1$.
+\end{proof}
+
+\begin{proposition}[exp is injective]
+    $\exp$ is injective.
+\end{proposition}
+\begin{proof}[by contradiction]
+    Assume $\exp$ is not injective.
+
+    Take distinct real numbers $x,y$ such that $\exp(x) = \exp(y)$.
+    $1 = \exp(x) \cdot \exp(-x) = \exp(y) \cdot \exp(-x) = \exp(y - x)$.
+    Thus $y - x = 0$. $x = y$. Contradiction.
+\end{proof}
+
+\begin{definition}[log]
+    $\ln = \inv{\exp}$.
+\end{definition}
+
+\begin{lemma}[domain log]
+    $\dom(\ln) = \mathbb{R}_{>0}$.
+\end{lemma}
+
+\begin{corollary}
+    For every positive real number $y$ there exists a real number $x$ such that 
+    $\exp(x) = y$.
+\end{corollary}
+\begin{proof}
+    Let $y$ be a positive real number. Take $x = \ln(y)$.
+    $x$ is a real number and $\exp(x) = y$.
+\end{proof}
+
+
+
+
+\begin{lemma}
+    Let $x,y$ be positive.
+    Then $x \cdot y$ is a positive real number and
+    $\ln(x) + \ln(y) = \ln(x \cdot y)$.
+\end{lemma}
+\begin{proof}
+    Take a real number $a$ such that $x = \exp(a)$. Take a real number $b$ such that $y = \exp(b)$.
+    $\exp(a) \cdot \exp(b)$ is a positive real number.
+    $\ln(x) + \ln(y) = \ln(\exp(a)) + \ln(\exp(b)) = a + b = \ln(\exp(a + b)) =
+    \ln(\exp(a) \cdot \exp(b)) = \ln(x \cdot y)$.
+\end{proof}
+
+\begin{lemma}
+    Let $x,y$ be positive.
+    Then $\frac{x}{y}$ is a positive real number and
+    $\ln(x) - \ln(y) = \ln\left(\frac{x}{y}\right)$.
+\end{lemma}
+\begin{proof}
+    $\frac{x}{y}$ is a positive real number.
+    Take a real number $a$ such that $x = \exp(a)$. Take a real number $b$ such that $y = \exp(b)$.
+    $\ln(x) - \ln(y) = \ln(\exp(a)) - \ln(\exp(b)) = a - b = \ln(\exp(a - b)) =
+    \ln(\exp(a) \cdot \exp(-b)) = \ln(\exp(a) \cdot (1/\exp(b))) = \ln(x \cdot (1/y)) = \ln\left(\frac{x}{y}\right)$.
+\end{proof}
+
+\end{forthel}
+
+
+
+\section{Exponential and Power Function}
+
+
+\begin{forthel}
+Let $a,x,y$ denote real numbers.
+
+\begin{definition}[exponential function]
+    Let $a$ be positive.
+    $\fexp{a} = \exp \circ \flin{\ln(a)}{0}$.
+\end{definition}
+
+\begin{lemma}[evaluated exponential function]
+    Let $a$ be positive.
+    $\fexp{a}(x) = \exp(\ln(a) \cdot x)$.
+\end{lemma}
+\begin{proof}
+    $\fexp{a}(x).= (\exp \circ \flin{\ln(a)}{0})(x)$ 
+
+    $.= \exp(\flin{\ln(a)}{0}(x))$ (by composition)
+
+    $.= \exp((\ln(a) \cdot x) + 0)$ (by linear function)
+
+    $.= \exp(\ln(a) \cdot x)$ (by existence zero).
+\end{proof}
+
+\begin{lemma}[lemma exponential function]
+    $\fexp{\exp(x)}(y) = \exp(x \cdot y)$.
+\end{lemma}
+\begin{proof}
+    $\fexp{\exp(x)}(y)
+     .= \exp(\ln(\exp(x)) \cdot y)$ (by evaluated exponential function)
+
+    $.= \exp(x \cdot y)$ (by log, lemma inverse).
+\end{proof}
+
+\begin{lemma}[lemma 2 exponential function]
+    Let $a$ be positive.
+    $\fexp{\fexp{a}(x)}(y) = \fexp{a}(x \cdot y)$.
+\end{lemma}
+\begin{proof}
+    $\fexp{\fexp{a}(x)}(y) .= \fexp{\exp(\ln(a) \cdot x)}(y)$ (by evaluated exponential function)
+
+    $.= \exp((\ln(a) \cdot x) \cdot y)$ (by lemma exponential function)
+
+    $.= \fexp{a}(x \cdot y)$ (by mult ass, evaluated exponential function).
+\end{proof}
+
+\begin{lemma}[lemma 3]
+    Let $a$ be a positive real number.
+    $\fexp{a}(x) \cdot \fexp{a}(y) = \fexp{a}(x + y)$.
+\end{lemma}
+\begin{proof}
+    $\fexp{a}(x) \cdot \fexp{a}(y)$
+
+    $.= \exp(\ln(a) \cdot x) \cdot \exp(\ln(a) \cdot y)$ (by evaluated exponential function)
+
+    $.= \exp((\ln(a) \cdot x) + (\ln(a) \cdot y))$ (by exp calculation axiom)
+
+    $.= \exp(\ln(a) \cdot (x + y))$ (by distributive law)
+
+    $.= \fexp{a}(x + y)$ (by evaluated exponential function).
+\end{proof}
+
+\begin{lemma}[lemma 4]
+    Let $x$ be a positive real number.
+    $1/x = \fexp{x}(-1)$.
+\end{lemma}
+\begin{proof}
+    $\ln(x) \cdot (-1), \fexp{x}(-1)$ are a real numbers.
+
+    $x \cdot \fexp{x}(-1)$
+
+    $.= x \cdot \exp(\ln(x) \cdot (-1))$ (by evaluated exponential function)
+
+    $.= x \cdot \exp(-\ln(x))$ (by mult comm, eq lemma 12)
+
+    $.= x \cdot 1/\exp(\ln(x))$ (by lemma 1)
+
+    $.= x \cdot (1/x)$ (by log, inverse)
+
+    $.= 1$.
+\end{proof}
+
+
+\begin{definition}[power function]
+    $\fpot{a} = ((\exp \circ \flin{a}{0}) \circ \ln) \upharpoonright \dom(\ln)$.
+\end{definition}
+
+\begin{lemma}
+    $\fpot{a}$ is a real map on $\mathbb{R}_{>0}$.
+\end{lemma}
+\begin{proof}
+    $\dom(\fpot{a}) = \dom(\ln) = \mathbb{R}_{>0}$.
+
+    We can show that $\fpot{a}(x)$ is a real number for all $x \in \mathbb{R}_{>0}$.
+        Let $x \in \mathbb{R}_{>0}$.
+        $\fpot{a} = ((\exp \circ \flin{a}{0}) \circ \ln) \upharpoonright \dom(\ln)$. 
+        $(((\exp \circ \flin{a}{0}) \circ \ln) \upharpoonright \dom(\ln))(x) = ((\exp \circ \flin{a}{0}) \circ \ln)(x)$.
+        $((\exp \circ \flin{a}{0}) \circ \ln)(x) = \exp(\flin{a}{0}(\ln(x)))$ (by composition).
+        $\ln(x)$, $\flin{a}{0}(\ln(x))$, $\exp(\flin{a}{0}(\ln(x)))$ are real numbers.
+    End.
+
+    Thus $\range(\fpot{a}) \subseteq \mathbb{R}$.
+\end{proof}
+
+\begin{lemma}[evaluated power function]
+    Let $b$ be a positive real number.
+    $\fpot{a}(b) = \exp(a \cdot \ln(b))$.
+\end{lemma}
+\begin{proof} 
+    $\dom(\fpot{a}) = \dom(\ln)$ and $b \in \dom(\ln)$.
+
+    $\fpot{a}(b) = ((\exp \circ \flin{a}{0}) \circ \ln)(b) = \exp(\flin{a}{0}(\ln(b))) = \exp(a \cdot \ln(b))$.
+\end{proof}
+
+\begin{proposition}[equivalence of exponential and power function]
+    Let $b$ be a positive real number.
+    $\fpot{a}(b) = \fexp{b}(a)$.
+\end{proposition}
+\begin{proof}
+    $\fpot{a}(b) .= \exp(a \cdot \ln(b))$ (by evaluated power function) 
+
+    $.= \exp(\ln(b) \cdot a)$ (by mult comm) 
+
+    $.= \fexp{b}(a)$ (by evaluated exponential function).
+\end{proof}
+
+\end{forthel}
+In \texttt{100\_theorems.ftl.tex} $x^{n}$ was already defined recursively as $x^{n-1} \cdot x$ with $x^{0} = 1$ for any natural number $n$. 
+Here we just want to show that our concept of exponentiation is merely an extension thereof.
+\begin{forthel}
+
+\begin{theorem}[equivalence exponential function and exponent]
+    Let $x$ be a positive real number. For every natural numbers $n$
+    $\fexp{x}(n) = x^{n}$.
+\end{theorem}
+\begin{proof}[by induction on $n$]
+    Let $n$ be a natural number.
+
+    Case $n = 0$. $\fexp{x}(0) = \exp(\ln(x) \cdot 0) = \exp(0) = 1 = x^{0}$. End.
+
+    Case $n = 1$. $\fexp{x}(1) = \exp(\ln(x) \cdot 1) = \exp(\ln(x)) = x = x^{1}$. End.
+
+    Case $n > 1$. Take a natural number $m$ such that $m = n - 1$.$m$ is inductively smaller than $n$.
+        Thus $\fexp{x}(m) = x^{m}$ and $\fexp{x}(1) = x^{1}$. $\fexp{x}(m)$, $\fexp{x}(1)$ are real numbers.
+        $\fexp{x}(m + 1) .= \fexp{x}(m) \cdot \fexp{x}(1)$ (by lemma 3).
+
+        $\fexp{x}(n) = \fexp{x}(m + 1)$
+
+        $= \fexp{x}(m) \cdot \fexp{x}(1)$
+
+        $= x^{m} \cdot \fexp{x}(1)$
+
+        $= x^{m} \cdot x^{1} = x^{m + 1} = x^{n}$. End.[timelimit 3]
+\end{proof}
+
+\begin{corollary}[equivalence exponential function and exponent 2]
+    Let $x$ be a positive real number and $n$ be a natural number.
+    $x^{n}$ is positive and $1/x^{n} = \fexp{x}(-n)$.
+\end{corollary}
+\begin{proof}
+    $x^{n}$ is positive. Indeed $x^{n} = \fexp{x}(n)$ and $\fexp{x}(n)$ is positive.
+    $\fexp{x}(-n) .= \fexp{\fexp{x}(n)}(-1)$ (by eq lemma 12, mult comm, lemma 2 exponential function)
+    $.= 1/x^{n}$ (by equivalence exponential function and exponent, lemma 4).
+\end{proof}
+
+\begin{corollary}
+    Let $n$ be a natural number and $x$ be a positive real number. $\fpot{n}(x) = x^{n}$.
+\end{corollary}
+\begin{proof}
+    $\fpot{n}(x) .= \fexp{x}(n)$ (by equivalence of exponential and power function)
+
+    $.= x^{n}$ (by equivalence exponential function and exponent).
+\end{proof}
+
+\begin{lemma}
+    Let $x$ be a real number and $a$ be a positive real number. 
+    $\fexp{a}(x)$ is a positive real number and
+    $x \cdot \ln(a) = \ln(\fexp{a}(x))$.
+\end{lemma}
+\begin{proof}
+    Take a real number $\alpha$ such that $a = \exp(\alpha)$.
+    $x \cdot \ln(a) = x \cdot \ln(\exp(\alpha)) = x \cdot \alpha = \ln(\exp(x \cdot \alpha)) 
+    = \ln(\exp(\ln(a) \cdot x)) = \ln(\exp(\flin{\ln(a)}{0}(x))) = \ln(\fexp{a}(x))$.
+\end{proof}
+
+\end{forthel}
+
+
+
+\section{Derivative Theorems}
+
+
+\begin{forthel}
+Let $a$ denote a real number.
+Let $f$ denote a real map.
+
+\begin{theorem}[derivative log]
+    Let $x$ be a positive real number.
+    $\ln$ is locally differentiable in $x$ and $\lderivin{\ln}(x) = 1/x$.
+\end{theorem}
+\begin{proof}
+    Let us show that for any real map extension $ext$ of $\ln$ $ext$ is differentiable in $x$ and $\derivin{ext}(x) = 1/x$.
+        Let $ext$ be a real map extension of $\ln$.
+        Take $\xi = \ln(x)$. 
+            
+        We can show that $ext$ is a locally inverse function to $\exp$ in $\xi$.
+            $\mathbb{R}$ is an open neighbourhood of $x$ (by R is open).
+            $\exp \upharpoonright \mathbb{R}$ is injective (by exp is injective).
+
+            $ext \upharpoonright \exp[\mathbb{R}] = \inv{(\exp \upharpoonright \mathbb{R})}$. Proof.
+
+                $ext \upharpoonright \exp[\mathbb{R}] = ext \upharpoonright \dom(\ln)$. Indeed $\exp[\mathbb{R}] = \dom(\ln)$.
+                [timelimit 20]
+                $ext \upharpoonright \dom(\ln) = \ln$ (by function lemma 2). Proof.
+                    $ext \upharpoonright \dom(\ln), \ln$ are maps such that
+                    $\dom(ext \upharpoonright \dom(\ln)) = \dom(\ln)$.
+                    $(ext \upharpoonright (\exp[\mathbb{R}]))(y) = \ln(y)$ for all $y \in \dom(\ln)$. 
+                End. [timelimit 3]
+                
+                $\ln = \inv{\exp} = \inv{(\exp \upharpoonright \mathbb{R})}$. Indeed $\exp = (\exp \upharpoonright \mathbb{R})$.
+            End.
+        End.
+
+        $\exp$ is continuously differentiable and $\derivin{\exp}(\xi) \neq 0$.
+        $\derivin{ext}(\exp(\xi))= 1/\derivin{\exp}(\xi)$ (by inverse function theorem II).
+        Therefore $\derivin{ext}(x) = \derivin{ext}(\exp(\xi))= 1/\derivin{\exp}(\xi) = 1/\exp(\xi) = 1/x$.
+    End.
+    
+    Thus $\lderivin{\ln}(x) = \derivin{ext|_{\ln}}(x) = 1/x$. 
+\end{proof}
+
+\begin{theorem}[derivative exponential function]
+    Let $a$ be a positive real number.
+    $\fexp{a}$ is differentiable and $\deriv{\fexp{a}} = \fmult{\flin{0}{\ln(a)}}{\fexp{a}}$.
+\end{theorem}
+\begin{proof}
+    $\deriv{\fexp{a}} .= \deriv{\exp \circ \flin{\ln(a)}{0}}$ (by exponential function)
+
+        $.= \fmult{\deriv{\exp} \circ \flin{\ln(a)}{0}}{\deriv{\flin{\ln(a)}{0}}}$ (by derivative chain rule 2)
+
+        $.= \fmult{\exp \circ \flin{\ln(a)}{0}}{\flin{0}{\ln(a)}}$ (by natural exponential function, derivative of linear function)
+
+        $.= \fmult{\fexp{a}}{\flin{0}{\ln(a)}}$ (by exponential function)
+
+        $.= \fmult{\flin{0}{\ln(a)}}{\fexp{a}}$ (by lemma 2).
+\end{proof}
+
+
+\begin{theorem}[derivative power function]
+    Let $x$ be a positive real number. 
+    $\fpot{a}$ is locally differentiable in $x$ and $\lderivin{\fpot{a}}(x) = a \cdot \fpot{a - 1}(x)$.
+\end{theorem}
+\begin{proof}
+    (0) Take $h = (\flin{a}{0} \circ ext|_{\ln})$. Then $h$ is a real map and differentiable in $x$.[timelimit 10]
+    $\exp \circ h$ is a real map and differentiable in $x$.
+    
+    (A) $\exp \circ h$ is a real map extension of $\fpot{a}$. Proof.
+
+        Let $y \in \dom(\ln)$. (A1) $ext|_{\ln}(y) = \ln(y)$.
+
+        (A2) Take $\eta = (\exp \circ \flin{a}{0})$. $\eta$ is a real map.
+
+        $\eta \circ \ln$ is a real map on $\dom(\ln)$. Indeed $\dom(\eta \circ \ln) = \dom(\ln)$.
+
+        $(\exp \circ (\flin{a}{0} \circ ext|_{\ln}))(y)
+        .= \exp(\flin{a}{0}(ext|_{\ln}(y)))$ (by composition)
+
+        $.= \exp(\flin{a}{0}(\ln(y)))$ (by A1)
+
+        $.= ((\exp \circ \flin{a}{0}) \circ \ln)(y)$ (by composition)
+
+        $.= (\eta \circ \ln)(y)$ (by A2).
+
+        Take $\mu = \eta \circ \ln$. Therefore $\mu(y) = (\mu \upharpoonright \dom(\ln))(y)$.
+        Then $(\eta \circ \ln)(y) = ((\eta \circ \ln) \upharpoonright \dom(\ln))(y). 
+        ((\eta \circ \ln) \upharpoonright \dom(\ln))(y) = \fpot{a}(y).$
+    End.
+  
+    (B) $\derivin{ext|_{\ln}}(x) = \lderivin{\ln}(x) = 1/x$. 
+
+    (C) $\exp(h(x)) = \fpot{a}(x)$. Indeed then $(\exp \circ h)(x) = \fpot{a}(x)$. [timelimit 3]
+
+    $\derivin{\exp \circ h}(x)$ 
+        $.=  \derivin{\exp}(h(x)) \cdot \derivin{h}(x)$ (by derivative chain rule)
+        $.= \derivin{\exp}(h(x)) \cdot \derivin{(\flin{a}{0} \circ ext|_{\ln})}(x)$ (by 0)
+
+        $.= \exp(h(x)) \cdot (\derivin{\flin{a}{0}}(ext|_{\ln}(x)) \cdot \derivin{ext|_{\ln}}(x))$
+            (by deriv and derivin, natural exponential function, derivative chain rule)
+
+        $.= \fpot{a}(x) \cdot (\flin{0}{a}(ext|_{\ln}(x)) \cdot (1/x))$ 
+            (by C, deriv and derivin, derivative of linear function, B)
+
+        $.= (\fexp{x}(a) \cdot (1/x)) \cdot a$ (by linear lem 1, equivalence of exponential and power function,
+        mult comm, mult ass)
+
+        $.= (\fexp{x}(a) \cdot \fexp{x}(-1)) \cdot a$ (by lemma 4)
+
+        $.= \fexp{x}(a - 1) \cdot a$ (by lemma 3)
+
+        $.= a \cdot \fpot{(a - 1)}(x)$ (by mult comm, equivalence of exponential and power function).
+
+    (D) $\mathbb{R}_{>0}$ is an open neighbourhood of $x$ and $\fpot{a}$ is a real map on $\mathbb{R}_{>0}$.
+    
+    [timelimit 10]
+    Therefore $\lderivin{\fpot{a}}(x) = \derivin{(\exp \circ h)}(x)$ (by open set differentiation extension, A, D).
+        Indeed $h$ is differentiable in $x$. [timelimit 3]
+    $\fpot{(a - 1)}(x)$ is a real number.
+    Therefore $\lderivin{\fpot{a}}(x) = \derivin{(\exp \circ h)}(x) = a \cdot \fpot{(a - 1)}(x)$.
+\end{proof}
+
+
+\begin{lemma}[lemma derivative of division map]
+    Let $f$ be differentiable in $a$ and $f(a)$ be positive. Let $g$ be a division map of $f$ in $a$.
+    Then $g$ is differentiable in $a$ and $\derivin{g}(a) = -\frac{\derivin{f}(a)}{(f(a))^{2}}$.
+\end{lemma}
+\begin{proof}
+    Take an open neighbourhood $N$ of $a$ such that for any $x \in N$ $f(x)$ is nonzero and $g(x) = 1/f(x)$.
+    Take a positive real number $\tau$ such that $\B_{\tau}(a)$ is a subset of $N$.
+    Take a positive real number $\theta$ such that $\theta$ is a domain restrictor for $f(a)$ and $f$ around $a$ and $f(a)$.
+        Indeed $f$ is continuous in $a$.
+    Take a positive real number $\delta$ such that $\delta < \tau$ and $\delta < \theta$ (by ineq lemma 19).
+    Take $E = \B_{\delta}(a)$.
+    
+    For every $x \in E$ $f(x)$ is nonzero and $g(x) = 1/f(x)$. Proof. 
+        Let $x \in E$. $x$ is an element of $N$. 
+        Indeed $\B_{\delta}(a) \subseteq \B_{\tau}(a) \subseteq N$.
+    End.
+
+    (1) For every $x \in E$ $f(x)$ is positive and $g(x) = 1/f(x)$. Proof. [prover vampire]
+        Assume the contrary. Take $x \in E$ such that $f(x)$ is not positive. 
+
+        (1A) $f(a),-f(x)$ are nonnegative real numbers. Indeed $f(x) = 0$ or $f(x)$ is negative. [prover eprover]
+        Then $\abs{f(x) - f(a)} = \abs{f(a) - f(x)} = f(a) - f(x)$.
+        Indeed $f(a) - f(x)$ is nonnegative (by ineq lemma 21, 1A).
+        $f(a) - f(x) \geq f(a)$ (by ineq lemma 23, 1A). [timelimit 20]
+        $\theta$ is not a domain restrictor for $f(a)$ and $f$ around $a$ and $f(a)$ (by domain restrictor lemma 2). 
+        Indeed we can show that there exists $y \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$ such that 
+                $\abs{y - a} < \theta$ and $\abs{f(y) - f(a)} \geq f(a)$.
+            $\abs{x - a} < \theta$. Indeed $\abs{x - a} < \delta < \theta$. 
+            $\abs{f(x) - f(a)} \geq f(a)$.
+            $x \in \mathbb{R} \setminus \sset{a}{\mathbb{R}}$. 
+        End.
+            [timelimit 3]
+    End.
+
+    Take $ext = ext|_{\fpot{(-1)}}$. $ext \circ f$ is a real map.
+
+    (2) Then $ext \circ f$ is a real map extension of $g \upharpoonright E$.
+    Indeed we can show that $g(x) = (ext \circ f)(x)$ for any $x \in E$.
+        Let $x \in E$. 
+        Then $(ext \circ f)(x) = ext(f(x)) = \fpot{(-1)}(f(x)) = 1/f(x) = g(x)$. 
+        Indeed $f(x) \in \dom(\fpot{(-1)})$ and $ext(f(x)) = \fpot{(-1)}(f(x))$.
+    End.
+
+    (3) $\derivin{(ext \circ f)}(a) = -\frac{\derivin{f}(a)}{(f(a))^{2}}$. Proof.
+
+        (3A) $-1 - 1 = -2$.
+
+        (3B) $\fpot{-2}(f(a)) .= 1/(f(a))^{2}$ (by equivalence exponential function and exponent 2). Indeed $2$ is a natural number.
+
+        (3C) $ext$ is differentiable in $f(a)$ and $\derivin{ext}(f(a)) = \lderivin{\fpot{(-1)}}(f(a))$ 
+            (by open set differentiation extension, positive reals open neighbourhood).
+
+        $\derivin{(ext \circ f)}(a) .= \derivin{ext}(f(a)) \cdot \derivin{f}(a)$ (by derivative chain rule)
+
+        $.= \lderivin{\fpot{(-1)}}(f(a)) \cdot \derivin{f}(a)$ (by 3C)
+
+        $.= ((-1) \cdot \fpot{-2}(f(a))) \cdot \derivin{f}(a)$ (by derivative power function, 3A)
+
+        $.= -\frac{\derivin{f}(a)}{(f(a))^{2}}$ (by 3B, mult ass, mult comm, eq lemma 12).
+    End.
+   
+    (4) $g \upharpoonright E$ is a real map on $E$. [timelimit 30]
+
+    (5) $g \upharpoonright E$ is locally differentiable in $a$ and
+    $\lderivin{(g \upharpoonright E)}(a) = \derivin{(ext \circ f)}(a)$ (by open set differentiation extension, 2, 4). 
+    Proof.
+        $E$ is an open neighbourhood of $a$. $ext \circ f$ is a real map extension of $g \upharpoonright E$ such that 
+        $ext \circ f$ is differentiable in $a$.
+    End.
+
+    (6) $\derivin{g}(a) = \lderivin{(g \upharpoonright E)}(a)$ (by lemma differentiation extension, 4, 5). Proof. 
+        $E$ is a subset of $\mathbb{R}$. $a$ is an element of $E$.
+        $g$ is a real map extension of $g \upharpoonright E$.
+    End. [timelimit 3]
+
+    Therefore $\derivin{g}(a) = -\frac{\derivin{f}(a)}{(f(a))^{2}}$ (by 3,5,6).
+\end{proof}
+                   
+[timelimit 20]
+\begin{theorem}[derivative of division map]
+    Let $f$ be differentiable in $a$. Let $g$ be a division map of $f$ in $a$.
+    Then $g$ is differentiable in $a$ and $\derivin{g}(a) = -\frac{\derivin{f}(a)}{(f(a))^{2}}$.
+\end{theorem}
+\begin{proof}
+    Case $f(a)$ is positive. Trivial (by lemma derivative of division map). [prover vampire]
+
+    Case $f(a)$ is negative. 
+        Take $\varphi = \fminus{f}$. Take $\gamma = \fminus{g}$.
+        $\varphi$ is a real map and $\varphi$ is differentiable in $a$ and $\varphi(a)$ is positive. Indeed $-f(a)$ is positive.
+        $\gamma$ is a division map of $\varphi$ in $a$. Proof. 
+            Take an open neighbourhood $E$ of $a$ such that for any $x \in E$ $f(x)$ is nonzero and $g(x) = 1/f(x)$.
+            For all $x \in E$ $x$ is a real number and $-g(x) = -1/f(x) = 1/(-f(x))= 1/\fminus{f}(x)$.
+            Then $E$ is an open neighbourhood of $a$ such that for any $x \in E$ $\fminus{f}(x)$ is nonzero and 
+                $\fminus{g}(x) = 1/\fminus{f}(x)$.
+        End.[timelimit 3][prover eprover]
+
+        $\derivin{\gamma}(a)$
+        $=-\frac{\derivin{\varphi}(a)}{(\varphi(a))^{2}}$ (by lemma derivative of division map).
+
+        (A) $(\fminus{f}(a))^{2}
+            .= (-f(a)) \cdot (-f(a))$ (by def func minus, potence lemma 2)
+            $.= (f(a))^{2}$ (by eq lemma 13, potence lemma 2).
+
+        $-\frac{\derivin{\fminus{f}}(a)}{(\fminus{f}(a))^{2}}$
+        $.= \frac{\derivin{f}(a)}{(\fminus{f}(a))^{2}}$ (by minus derivative, eq lemma 11, eq lemma 45)
+        $.= \frac{\derivin{f}(a)}{(f(a))^{2}}$ (by A). 
+        $\derivin{g}(a) = -\derivin{\fminus{g}}(a) = -\left(-\frac{\derivin{\varphi}(a)}{(\varphi(a))^{2}}\right) 
+        = -\frac{\derivin{f}(a)}{(f(a))^{2}}$.
+    End.
+
+    $f(a)$ is positive or $f(a)$ is negative. Indeed $f(a)$ is nonzero. [prover eprover]
+\end{proof}
+
+\begin{definition}
+    A real map with positive range is a real map $f$ such that $f(x)$ is positive for any real number $x$.
+\end{definition}
+Let $g$ denote a real map with positive range.
+
+\begin{definition}[def div map]
+    $\fdiv{f}{g}$ is a real map such that $\fdiv{f}{g}(x) = \frac{f(x)}{g(x)}$ for any real number $x$.
+\end{definition}
+
+\begin{theorem}[derivative of a fraction]
+    Let $f,g$ be differentiable in $a$.
+
+    Then $\fdiv{f}{g}$ is differentiable in $a$ and 
+    $$\derivin{\fdiv{f}{g}}(a) = \frac{(\derivin{f}(a) \cdot g(a)) - (f(a) \cdot \derivin{g}(a))}{(g(a))^{2}}.$$
+\end{theorem}
+\begin{proof}
+    (0) Define $h(x) = 1/g(x)$ for $x \in \mathbb{R}$. $h$ is a real map.
+
+    (1) $\fdiv{f}{g} = \fmult{f}{h}$.
+
+    (2) $\derivin{h}(a) = -\frac{\derivin{g}(a)}{(g(a))^{2}}$ (by derivative of division map).
+    Indeed $h$ is a division map of $g$ in $a$.
+
+    $\derivin{\fdiv{f}{g}}(a) .= \derivin{\fmult{f}{h}}(a)$ (by 1) 
+
+    $.= (\derivin{f}(a) \cdot h(a)) + (f(a) \cdot \derivin{h}(a))$ (by derivative multiplication rule) 
+
+    $.= \frac{\derivin{f}(a)}{g(a)} + \left(-f(a) \cdot \frac{\derivin{g}(a)}{(g(a))^{2}}\right)$ (by 0,2, eq lemma 21) 
+
+    $.= \frac{\derivin{f}(a) \cdot g(a)}{(g(a))^{2}} + \frac{-f(a) \cdot \derivin{g}(a)}{(g(a))^{2}}$ 
+        (by fraction lemma, fraction lemma 2, potence lemma 2, mult ass, mult comm)
+
+    $.= \frac{(\derivin{f}(a) \cdot g(a)) - (f(a) \cdot \derivin{g}(a))}{(g(a))^{2}}$ (by eq lemma 1, eq lemma 11).
+\end{proof}
+
+\begin{corollary}[derivative of a fraction 2]
+    Let $f$ be differentiable and $g$ be differentiable. Then $\fdiv{f}{g}$ is differentiable and
+    $\deriv{\fdiv{f}{g}} = \fdiv{\fplus{\fmult{\deriv{f}}{g}}{\fminus{\fmult{f}{\deriv{g}}}}}{\fmult{g}{g}}$.
+\end{corollary}
+\begin{proof}
+    Let $a$ be a real number.
+
+    $\deriv{\fdiv{f}{g}}(a) .= \derivin{\fdiv{f}{g}}(a)$ (by deriv and derivin)
+
+    $.= \frac{(\derivin{f}(a) \cdot g(a)) - (f(a) \cdot \derivin{g}(a))}{(g(a))^{2}}$ (by derivative of a fraction)
+    
+    $.= \fdiv{\fplus{\fmult{\deriv{f}}{g}}{\fminus{\fmult{f}{\deriv{g}}}}}{\fmult{g}{g}}(a)$
+        (by deriv and derivin, potence lemma 2, def div map, def add func, def mult func, def func minus).
+\end{proof}
+
+\end{forthel}
+
+\end{document}

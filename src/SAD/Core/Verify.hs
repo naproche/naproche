@@ -12,9 +12,10 @@ module SAD.Core.Verify (verifyRoot) where
 
 import Data.IORef (readIORef)
 import Data.Maybe (isJust)
+import Data.List.Extra (notNull)
 import Control.Monad (when, unless)
 import Control.Monad.Reader
-import Data.Text.Lazy qualified as Text
+import Data.Text qualified as Text
 
 import SAD.Core.Base
 import SAD.Core.Check (fillDef)
@@ -27,7 +28,6 @@ import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import SAD.Data.Text.Context (Context(Context))
-import SAD.Helpers (notNull)
 import SAD.Core.Message qualified as Message
 import SAD.Data.Tag qualified as Tag
 import SAD.Data.Text.Block qualified as Block

@@ -16,7 +16,7 @@ module SAD.ForTheL.STEX.Pattern (
 
 import Control.Applicative
 import Control.Monad
-import Data.Text.Lazy qualified as Text
+import Data.Text qualified as Text
 
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives

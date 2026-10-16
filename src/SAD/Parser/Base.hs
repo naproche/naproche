@@ -35,12 +35,12 @@ import Control.Monad.Fail qualified as Fail
 import Control.Applicative
 import Control.Monad.State.Class (MonadState(put, get))
 import Data.List
-import Data.Text.Lazy qualified as Text
+import Data.List.Extra (notNull)
+import Data.Text qualified as Text
 
-import SAD.Helpers (notNull, failWithMessage)
 import SAD.Parser.Token
 import SAD.Parser.Error
-import SAD.Data.Instr (ParserKind)
+import SAD.Data.Instr (Dialect)
 import SAD.Core.Message (errorParser)
 
 import Isabelle.Position qualified as Position
@@ -51,7 +51,7 @@ import Isabelle.Library (show_bytes)
 data State st = State
   { stUser  :: st
   , stInput :: [Token]
-  , parserKind :: ParserKind
+  , dialect :: Dialect
   , lastPosition :: Position.T
   } deriving (Eq, Ord)
 
@@ -109,7 +109,7 @@ launchParser parser state =
   case runP parser state of
     Error err -> errorParser (errorPos err) (show_bytes err)
     Ok [PR a st] -> return (a, st)
-    Ok _ -> failWithMessage "SAD.Parser.Base.launchParser" "Invalid parsing result."
+    Ok _ -> error "Invalid parsing result."
 
 -- This function is simple, but unfriendly to read because of all the
 -- accumulators involved. A clearer definition would be welcome.

@@ -45,7 +45,7 @@ import Control.Monad.Reader
 import Control.Monad.State
 import Data.IORef
 import Data.Maybe (isJust, fromJust)
-import Data.Text.Lazy (Text)
+import Data.Text (Text)
 import Data.Time (NominalDiffTime, getCurrentTime, diffUTCTime)
 import Data.Set qualified as Set
 import Data.Map qualified as Map
@@ -63,7 +63,6 @@ import SAD.Core.Message qualified as Message
 import SAD.Data.Structures.DisTree (DisTree)
 import SAD.Data.Structures.DisTree qualified as DisTree
 import SAD.Data.Text.Context qualified as Context (name)
-import SAD.Data.Text.Decl (newDecl)
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Position qualified as Position

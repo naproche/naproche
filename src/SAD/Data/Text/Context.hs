@@ -26,8 +26,8 @@ module SAD.Data.Text.Context (
 
 import Prelude hiding (head, tail)
 import Prelude qualified (head, tail)
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 import Data.Set (Set)
 
 import SAD.Data.Text.Block (Section(..))

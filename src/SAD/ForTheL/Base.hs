@@ -16,8 +16,8 @@ import Control.Applicative
 import Control.Monad
 import Control.Monad.State.Class (gets, modify)
 import Data.Char (isAlpha, isAlphaNum)
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 import Data.Set (Set)
 import Data.Set qualified as Set
 
@@ -26,9 +26,9 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.Parser.Token (showToken)
+import SAD.Parser.Char (isAsciiLetter)
 import SAD.Data.Text.Decl
-import SAD.Export.Representation (represent, toLazyText)
-import SAD.Helpers(isAsciiLetter)
+import SAD.Export.Representation (represent)
 
 import Isabelle.Position qualified as Position
 
@@ -392,7 +392,7 @@ varList = var `sepBy` token' "," >>= nodups
 nodups :: IsVar a => [a] -> FTL (Set a)
 nodups vs = do
   unless ((null :: [b] -> Bool) $ duplicateNames vs) $
-    fail $ "duplicate names: " ++ show (map (Text.unpack . toLazyText . represent) vs)
+    fail $ "duplicate names: " ++ show (map (Text.unpack . represent) vs)
   pure $ Set.fromList vs
 
 hidden :: FTL PosVar
@@ -585,4 +585,4 @@ upperGreek = [
 -- | Print a variable (just for now).
 showVar :: VariableName -> Text
 showVar (VarConstant nm) = nm
-showVar nm = toLazyText $ represent nm
+showVar nm = represent nm

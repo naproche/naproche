@@ -29,15 +29,15 @@ import Data.Set qualified as Set
 import Data.List
 import Data.Char (toUpper)
 import Control.Monad
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 
 import SAD.ForTheL.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
+import SAD.Parser.Char (isAsciiLetter, isAsciiAlphaNum)
 import SAD.Data.Formula
-import SAD.Helpers
 
 
 -- add expressions to the state of ForTheL

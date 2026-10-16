@@ -37,7 +37,7 @@ object Naproche_Component {
         for {
           line <- git_show.out_lines.headOption
           id <- Library.try_unprefix("commit ", line)
-        } yield id.substring(0, 12)
+        } yield id.substring(0, 12).nn
       opt_version.getOrElse(
         error("Malformed output of git show:\n" + cat_lines(git_show.out_lines.take(1))))
     }
@@ -66,7 +66,7 @@ object Naproche_Component {
     Isabelle_System.copy_file(Naproche.jar, component_dir + Path.explode("Isabelle"))
 
     File.change(component_dir + Path.explode("etc/build.props")) {
-      s => s.replaceAll("no_build\\s*=.*", "no_build = true")
+      s => s.replacing("no_build\\s*=.*".r -> "no_build = true")
     }
 
     File.change(component_dir + Path.explode("etc/settings")) {
@@ -85,18 +85,15 @@ object Naproche_Component {
       val math_pdf = component_dir + Path.explode("math_pdf")
       Isabelle_System.copy_dir(math, math_pdf)
 
-      def relative(file: JFile): Path = File.relative_path(math_pdf, File.path(file)).get
-      def relative_name(file: JFile): String = relative(file).implode
-
       for {
-        file <- File.find_files(math_pdf.file, _.getName.endsWith(".tex")).sortBy(relative_name)
-        text = File.read(file)
+        tex_path <-
+          File.find_files(math_pdf, _.file_name.endsWith(".tex"), relative = true).sortBy(_.implode)
+        text = File.read(math_pdf + tex_path)
         if text.containsSlice("\\documentclass")
       } {
         val archive_pdf = math_pdf + Path.explode("archive")
         val mathhub_pdf = archive_pdf.absolute.implode
-        val tex_path = relative(file)
-        val tex_dir = File.path(file).dir
+        val tex_dir = math_pdf + tex_path.dir
         val tex_name = tex_path.base.implode
         val tex_program =
           split_lines(text).collectFirst({ case TeX_Program(prg) => prg }).getOrElse("pdflatex")
@@ -150,8 +147,8 @@ object Naproche_Component {
 
     /* cleanup */
 
-    File.find_files(component_dir.absolute_file,
-      pred = file => cleanup_names.contains(file.getName)).foreach(_.delete)
+    File.find_files(component_dir.absolute,
+      pred = path => cleanup_names.contains(path.file_name)).foreach(_.file.delete)
 
     cleanup_trees.foreach(name =>
       Isabelle_System.rm_tree(component_dir + Path.explode(name)))

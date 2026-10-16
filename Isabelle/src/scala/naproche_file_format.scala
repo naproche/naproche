@@ -38,10 +38,10 @@ object Naproche_File_Format {
 
     override def toString: String = server_info.get.toString
 
-    override def prover_options(options: Options): Options =
-      options +
-        ("naproche_server_address=" + server_info.get.address) +
-        ("naproche_server_password=" + server_info.get.password)
+    override def prover_options: Options.Update =
+      List(
+        Options.Spec.eq("naproche_server_address", server_info.get.address),
+        Options.Spec.eq("naproche_server_password", server_info.get.password))
 
     override def stop(): Unit = {
       process.terminate()

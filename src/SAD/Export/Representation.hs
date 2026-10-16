@@ -6,31 +6,12 @@
 -- TODO: Add description.
 
 
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Export.Representation (
-  Representation(..),
-  buildParens,
-  buildArgumentsWith,
-  commaSeparated,
-  Builder.toLazyText
+  Representation(..)
 ) where
 
-import Data.Text.Lazy.Builder (Builder)
-import Data.Text.Lazy.Builder qualified as Builder
+import Data.Text (Text)
 
 
 class Representation a where
-  represent :: a -> Builder
-
-buildParens :: Builder -> Builder
-buildParens xs = "(" <> xs <> ")"
-
-buildArgumentsWith :: (a -> Builder) -> [a] -> Builder
-buildArgumentsWith _ [] = ""
-buildArgumentsWith showTerm ls = buildParens $ commaSeparated showTerm ls
-
-commaSeparated :: (a -> Builder) -> [a] -> Builder
-commaSeparated showTerm [] = ""
-commaSeparated showTerm [t] = showTerm t
-commaSeparated showTerm (t:ts) = showTerm t <> "," <> commaSeparated showTerm ts
+  represent :: a -> Text

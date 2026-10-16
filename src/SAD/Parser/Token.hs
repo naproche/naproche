@@ -33,7 +33,6 @@ module SAD.Parser.Token (
 
 import Data.Text (Text)
 import Data.Text qualified as Text
-import Data.Text.Lazy qualified as Lazy
 import Data.List.NonEmpty qualified as NonEmpty
 import Data.Set (Set)
 import Data.Set qualified as Set
@@ -42,7 +41,6 @@ import Data.Bifunctor (bimap)
 import Text.Megaparsec hiding (State, Pos, Token)
 
 import SAD.Core.Message qualified as Message
-import SAD.Helpers (failureMessage)
 
 import Isabelle.Position qualified as Position
 
@@ -68,10 +66,10 @@ renderToken (Token text pos) =
   "Token:\n" ++
   "  Text: " ++ show text ++ "\n" ++
   "  Position:\n" ++
-  "    Line: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown line") show (Position.line_of pos) ++ "\n" ++
-  "    Column: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown column") show (Position.column_of pos) ++ "\n" ++
-  "    Offset: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown offset") show (Position.offset_of pos) ++ "\n" ++
-  "    End-Offset: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown end-offset") show (Position.end_offset_of pos)
+  "    Line: " ++ maybe "unknown" show (Position.line_of pos) ++ "\n" ++
+  "    Column: " ++ maybe "unknown" show (Position.column_of pos) ++ "\n" ++
+  "    Offset: " ++ maybe "unknown" show (Position.offset_of pos) ++ "\n" ++
+  "    End-Offset: " ++ maybe "unknown" show (Position.end_offset_of pos)
 renderToken EOF{} = ""
 
 
@@ -113,7 +111,7 @@ showError (ParseErrorBundle parseErrors _) errorHandler = case NonEmpty.head par
 -- of type "Error" during tokenizing.
 unknownError :: (Text, Position.T)
 unknownError =
-  let msg = Text.pack $ failureMessage "SAD.Parser.Token.unknownError" "Unknown tokenizing error."
+  let msg = "Unknown tokenizing error."
       pos = Position.none
   in (msg, pos)
 
@@ -158,14 +156,14 @@ mergeTokens :: [Token] -> Token
 mergeTokens tokens = Token (tokensText tokens) (tokensPos tokens)
 
 -- | Print a token
-showToken :: Token -> Lazy.Text
-showToken t@Token{} = Lazy.fromStrict $ tokenText t
-showToken EOF{} = Lazy.pack "end of input"
+showToken :: Token -> Text
+showToken t@Token{} = tokenText t
+showToken EOF{} = Text.pack "end of input"
 
 -- | Append tokens separated by a single space if they were separated
 -- by whitespace before
-composeTokens :: [Token] -> Lazy.Text
-composeTokens = Lazy.concat . dive
+composeTokens :: [Token] -> Text
+composeTokens = Text.concat . dive
   where
     dive [] = []
     dive [t] = [showToken t]

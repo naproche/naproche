@@ -21,7 +21,7 @@ module SAD.Data.Structures.DisTree (
 import Prelude hiding (lookup, head)
 import Data.List qualified as List
 import Data.Maybe
-import Data.Text.Lazy (Text)
+import Data.Text (Text)
 
 import SAD.Data.Formula (Formula(..))
 import SAD.Data.Terms (TermId)

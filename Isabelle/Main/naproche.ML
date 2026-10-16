@@ -40,7 +40,7 @@ sig
   val get_problem: theory -> string -> problem option
   val check_problem: Proof.context -> xstring * Position.T -> string
   val define_problem: binding -> sequent -> theory -> string * theory
-  val state_problem: xstring * Position.T -> bool -> local_theory -> Proof.state
+  val state_problem: xstring * Position.T -> local_theory -> Proof.state
   val pretty_problems: Proof.context -> Pretty.T list
 end;
 
@@ -65,7 +65,7 @@ fun naproche_options ctxt pos =
     val pos_file = the_default "" (Position.file_of pos);
     val pos_offset = the_default 0 (Position.offset_of pos);
   in
-    Options.default ()
+    Options.default []
     |> Options.put_string \<^system_option>\<open>naproche_pos_id\<close> pos_id
     |> Options.put_string \<^system_option>\<open>naproche_pos_file\<close> pos_file
     |> Options.put_int \<^system_option>\<open>naproche_pos_shift\<close> (pos_offset - 1)
@@ -256,7 +256,7 @@ fun have_sequent (asms, concls) =
   Context_Position.set_visible false
   #> Proof.init
   #> Proof.begin_block
-  #> Proof.have false NONE (K I) [] (make_assumes asms) (make_shows concls) false #> #2;
+  #> Proof.have false NONE (K I) [] (make_assumes asms) (make_shows concls) #> #2;
 
 fun prove_sequent binding sequent method ctxt =
   let
@@ -313,8 +313,8 @@ fun check_problem ctxt =
 fun print_problem ctxt name =
   let
     val thy = Proof_Context.theory_of ctxt;
-    val (markup, xname) = Name_Space.markup_extern ctxt (problem_space thy) name;
-  in Markup.markup markup xname end;
+    val (markups, xname) = Name_Space.markups_extern ctxt (problem_space thy) name;
+  in Markup.markups markups xname end;
 
 fun define_problem binding sequent thy =
   let
@@ -335,7 +335,7 @@ fun solve_problem name fact =
 
 end;
 
-fun state_problem (xname, pos) int lthy =
+fun state_problem (xname, pos) lthy =
   let
     val _ = Local_Theory.assert lthy;
     val thy = Proof_Context.theory_of lthy;
@@ -354,7 +354,8 @@ fun state_problem (xname, pos) int lthy =
     val binding = Binding.make (Long_Name.base_name name, pos);
     val ({fixes, assumes, shows}, _) = present_sequent sequent lthy;
   in
-    Specification.theorem true "" NONE after_qed (binding, []) [] (fixes @ assumes) shows int lthy
+    Specification.theorem {verbose = false, long = true, kind = ""}
+      NONE after_qed (binding, []) [] (fixes @ assumes) shows lthy
   end;
 
 fun pretty_problems ctxt =
@@ -367,7 +368,7 @@ fun pretty_problems ctxt =
       |> List.partition (is_some o #fact o #2);
     fun pretty ((name, xname), problem) =
       Pretty.item
-       [Pretty.mark_str (Name_Space.markup space name, xname), Pretty.str ":", Pretty.fbrk,
+       [Pretty.marks_str (Name_Space.markups space name, xname), Pretty.str ":", Pretty.fbrk,
         pretty_sequent ctxt (#sequent problem)];
     fun pretty_list head list =
       if null list then []
@@ -440,13 +441,13 @@ val _ =
 
 val _ =
   Outer_Syntax.command \<^command_keyword>\<open>forthel_file\<close> "check Naproche text file"
-    (Resources.provide_parse_file >> (fn get_file =>
+    (Resources.parse_file >> (fn get_file =>
       Toplevel.theory (fn thy =>
-        let val ({src_path, lines, pos, ...}, thy') = get_file thy
-        in check_forthel (file_dialect src_path) (cat_lines lines, pos) thy' end)));
+        let val {src_path, lines, pos, ...} = get_file thy
+        in check_forthel (file_dialect src_path) (cat_lines lines, pos) thy end)));
 
 val _ =
-  Outer_Syntax.local_theory_to_proof' \<^command_keyword>\<open>naproche_problem\<close> "prove Naproche problem"
+  Outer_Syntax.local_theory_to_proof \<^command_keyword>\<open>naproche_problem\<close> "prove Naproche problem"
     (Parse.name_position >> state_problem);
 
 val _ =

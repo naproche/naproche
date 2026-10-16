@@ -41,13 +41,13 @@ module SAD.Parser.Primitives (
 
 import Control.Applicative
 import Control.Monad (void, guard)
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.Text (Text)
+import Data.Text qualified as Text
 
 import SAD.Parser.Base
 import SAD.Parser.Error
 import SAD.Parser.Token
-import SAD.Helpers
+import SAD.Parser.Char (isAsciiPeriod, isAsciiDigit, isAsciiLetter, isAsciiSymbol)
 
 import Isabelle.Position qualified as Position
 
@@ -55,12 +55,12 @@ import Isabelle.Position qualified as Position
 -- | Parse the current token or return an @EmptyFail@
 -- if the input is empty, eof or the supplied test functions returns @Nothing@.
 tokenPrim :: (Token -> Maybe a) -> Parser st a
-tokenPrim test = Parser $ \(State st input parserKind _) ok _ eerr ->
+tokenPrim test = Parser $ \(State st input dialect _) ok _ eerr ->
   case input of
     []   -> eerr $ unexpectError "" Position.none
     t:ts -> case guard (not $ isEOF t) >> test t of
       Just x  ->
-        let newstate = State st ts parserKind (tokenPos t)
+        let newstate = State st ts dialect (tokenPos t)
             newerr   = newErrorUnknown $ tokenPos t
         in  ok newerr [] [PR x newstate]
       Nothing -> eerr $ unexpectError (showToken t) (tokenPos t)
@@ -78,13 +78,13 @@ tokenGuard test p = Parser $ \st@(State _ input  _ _) ok cerr eerr ->
 
 -- | Parse the end of input
 eof :: Parser st ()
-eof = Parser $ \(State st input parserKind _) ok _ eerr ->
+eof = Parser $ \(State st input dialect _) ok _ eerr ->
   case input of
     [] -> eerr $ unexpectError "" Position.none
     (t:ts) ->
       if isEOF t
       then
-        let newstate = State st ts parserKind (tokenPos t)
+        let newstate = State st ts dialect (tokenPos t)
             newerr   = newErrorUnknown $ tokenPos t
         in  ok newerr [] [PR () newstate]
       else eerr $ unexpectError (showToken t) (tokenPos t)
