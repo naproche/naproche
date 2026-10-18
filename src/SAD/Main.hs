@@ -358,7 +358,7 @@ data ReadArgException =
 readArgsHandler :: ReadArgException -> IO a
 readArgsHandler (GetOptFailure msg) = errorWithoutStackTrace msg
 readArgsHandler TooManyFiles = errorWithoutStackTrace "more than one file argument"
-readArgsHandler (InvalidFileNameExt ext) = errorWithoutStackTrace $ "invalid file name extension " ++ quote ext
+readArgsHandler (InvalidFileNameExt ext) = errorWithoutStackTrace $ "invalid file name extension: " ++ quote ext
 
 instance Exception ReadArgException
 
@@ -370,17 +370,16 @@ readArgs args = do
   case nonInstrArgs of
     [] -> return (instrs, Nothing)
     [fileArg] -> do
-      let fileNameExteisionStr = takeExtensions fileArg
-      dialectArg <- getDialectArg fileNameExteisionStr
+      dialectArg <- getDialectArg fileArg
       let dialectInstr = SetBytes dialectParam dialectArg
       return (dialectInstr : instrs, Just fileArg)
     _ -> throwIO TooManyFiles
     where
-      getDialectArg ext
-        | ".ftl.en.tex" `isSuffixOf` ext = return "stex"
-        | ".ftl.tex" `isSuffixOf` ext = return "tex"
-        | ".ftl" `isSuffixOf` ext = return "ftl"
-        | otherwise = throwIO (InvalidFileNameExt ext)
+      getDialectArg fileName
+        | ".ftl.en.tex" `isSuffixOf` fileName = return "stex"
+        | ".ftl.tex" `isSuffixOf` fileName = return "tex"
+        | ".ftl" `isSuffixOf` fileName = return "ftl"
+        | otherwise = throwIO (InvalidFileNameExt fileName)
 
 getDialect :: [Instr] -> Dialect
 getDialect instrs = case getInstr dialectParam instrs of
