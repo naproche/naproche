@@ -8,9 +8,6 @@
 
 * More robust treatment of prover errors (return code): genuine error vs. timeout!?
 
-* Why is `Text.filter (/= ':')` necessary in TPTP export of term and variable
-  names?
-
 
 # Isabelle/Naproche integration
 

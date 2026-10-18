@@ -60,7 +60,7 @@ exportAssertion name role formula =
 
 -- | Export a term name to TPTP.
 exportTermName :: TermName -> Bytes
-exportTermName = atomic_word . show_bytes . Text.filter (/= ':') . exportTermName'
+exportTermName = atomic_word . make_bytes . exportTermName'
   where
     exportTermName' (TermName t) = t
     exportTermName' (TermSymbolic t) = "s" <> t
@@ -77,7 +77,7 @@ exportTermName = atomic_word . show_bytes . Text.filter (/= ':') . exportTermNam
 
 -- | Export a variable name to TPTP.
 exportVariableName :: VariableName -> Bytes
-exportVariableName = atomic_word . show_bytes . Text.filter (/= ':') . exportVariableName'
+exportVariableName = atomic_word . make_bytes . exportVariableName'
   where
     exportVariableName' (VarConstant s) = "x" <> s
     exportVariableName' (VarHole s) = "?" <> s
