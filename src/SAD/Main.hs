@@ -17,6 +17,7 @@ module SAD.Main where
 import Control.Monad (when)
 import Data.Time (addUTCTime, getCurrentTime, diffUTCTime)
 import Data.Maybe (mapMaybe)
+import Data.List (isSuffixOf)
 import Control.Exception qualified as Exception
 import Control.Exception (Exception, catch, handle, throwIO)
 import System.Console.GetOpt qualified as GetOpt
@@ -375,10 +376,11 @@ readArgs args = do
       return (dialectInstr : instrs, Just fileArg)
     _ -> throwIO TooManyFiles
     where
-      getDialectArg ".ftl.en.tex" = return "stex"
-      getDialectArg ".ftl.tex" = return "tex"
-      getDialectArg ".ftl" = return "ftl"
-      getDialectArg ext = throwIO (InvalidFileNameExt ext)
+      getDialectArg ext
+        | ".ftl.en.tex" `isSuffixOf` ext = return "stex"
+        | ".ftl.tex" `isSuffixOf` ext = return "tex"
+        | ".ftl" `isSuffixOf` ext = return "ftl"
+        | otherwise = throwIO (InvalidFileNameExt ext)
 
 getDialect :: [Instr] -> Dialect
 getDialect instrs = case getInstr dialectParam instrs of
