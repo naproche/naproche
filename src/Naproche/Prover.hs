@@ -11,7 +11,7 @@
 module Naproche.Prover (
   Prover, Status (..), get_name, run, status, run_status,
   verbose, timeout, memory_limit, by_contradiction,
-  list, find, eprover, eproververb, spass, vampire
+  list, find, eprover, spass, vampire
 ) where
 
 import Data.List qualified as List
@@ -157,7 +157,7 @@ prover_status prover result =
 {- list of provers -}
 
 list :: [Prover]
-list = [eprover, eproververb, spass, vampire]
+list = [eprover, spass, vampire]
 
 find :: Bytes -> Maybe Prover
 find name = List.find (\prover -> get_name prover == name) list
@@ -188,23 +188,6 @@ eprover_messages =
     _failure = ["# SZS status CounterSatisfiable"],
     _unknown = ["# SZS status ResourceOut", "# SZS status GaveUp"]
   }
-
-
-{- eproververb -}
-
-eproververb :: Prover
-eproververb =
-  make_prover "eproververb" "NAPROCHE_EPROVER" eproververb_command
-    prover_status eprover_messages
-
-eproververb_command :: Prover_Command
-eproververb_command prover = prover_command args prover
-  where
-    Prover{_timeout, _memory_limit} = prover
-    args =
-      ["-xAuto", "-tAuto", "-mAuto", "--tstp-in", "-l", "2"] ++
-      ["--cpu-limit=" <> print_seconds _timeout | _timeout > Time.zero] ++
-      ["--memory-limit=" <> Value.print_int _memory_limit | _memory_limit > 0]
 
 
 {- spass -}

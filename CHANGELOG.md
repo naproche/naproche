@@ -35,6 +35,9 @@ Each change is tagged with one of the following keywords:
 * **Added:** The wiki at <https://github.com/naproche/naproche/wiki> was merged
   into `CONTRIBUTING.md`.
 
+* **Removed:** The unused verbose variant of the E prover (`eproververb`) was
+  discontinued.
+
 
 ## Isabelle2026/Naproche
 
