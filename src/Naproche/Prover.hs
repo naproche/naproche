@@ -10,7 +10,7 @@
 
 module Naproche.Prover (
   Prover, Status (..), get_name, run, status, run_status,
-  verbose, timeout, memory_limit, by_contradiction,
+  timeout, memory_limit, by_contradiction,
   list, find, eprover, spass, vampire
 ) where
 
@@ -40,7 +40,6 @@ data Prover = Prover {
   _status :: Prover_Status,
   _messages :: Messages,
 
-  _verbose :: Bool,
   _timeout :: Time,
   _memory_limit :: Int,
   _by_contradiction :: Bool
@@ -73,7 +72,6 @@ make_prover name variable command status messages =
   _status = status,
   _messages = messages,
 
-  _verbose = False,
   _timeout = Time.zero,
   _memory_limit = 0,
   _by_contradiction = False
@@ -98,9 +96,6 @@ run_status context prover input =
 
 
 {- prover parameters -}
-
-verbose :: Prover -> Prover
-verbose prover = prover { _verbose = True }
 
 timeout :: Time -> Prover -> Prover
 timeout timeout prover = prover { _timeout = timeout }
@@ -173,10 +168,10 @@ eprover =
 eprover_command :: Prover_Command
 eprover_command prover = prover_command args prover
   where
-    Prover{_verbose, _timeout, _memory_limit} = prover
+    Prover{_timeout, _memory_limit} = prover
     args =
       ["--auto"] ++
-      [if _verbose then "--verbose" else "--silent"] ++
+      ["--silent"] ++
       ["--cpu-limit=" <> print_seconds _timeout | _timeout > Time.zero] ++
       ["--memory-limit=" <> Value.print_int _memory_limit | _memory_limit > 0]
 
