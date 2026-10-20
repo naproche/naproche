@@ -372,21 +372,21 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{axiom}[Reflexivity of congruence] % SST A1
+    \begin{axiom}[Reflexivity of congruence]\label{congruence_reversal} % SST A1
       We have $\Cong{a}{b}{b}{a}$.
     \end{axiom}
   \end{forthel}
 
 
   \begin{forthel}
-    \begin{axiom}[Pseudotransitivity of congruence] % SST A2
+    \begin{axiom}[Pseudotransitivity of congruence]\label{pseudotransitivity_of_congruence} % SST A2
       If $\Cong{c}{d}{a}{b}$ and $\Cong{c}{d}{e}{f}$ then $\Cong{a}{b}{e}{f}$.
     \end{axiom}
   \end{forthel}
 
 
   \begin{forthel}
-    \begin{axiom}[Identity of congruence] % SST A3
+    \begin{axiom}[Identity of congruence]\label{identity_of_congruence} % SST A3
       If $\Cong{a}{b}{c}{c}$ then $a = b$.
     \end{axiom}
   \end{forthel}
@@ -479,7 +479,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{axiom}[Inner Pasch] % SST A7
+    \begin{axiom}[Inner Pasch]\label{inner_pasch} % SST A7
       If $\Betw{x}{u}{z}$ and $\Betw{y}{v}{z}$ then there exists a point $w$
       such that $\Betw{u}{w}{y}$ and $\Betw{v}{w}{x}$.
     \end{axiom}
@@ -594,7 +594,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{lemma}[Concatenation of segments] % Satz 2.11
+    \begin{lemma}[Concatenation of segments]\label{concatenation_of_segments} % Satz 2.11
       Assume $\Betw{x}{y}{z}$ and $\Betw{r}{v}{w}$.
       Assume $\Cong{x}{y}{r}{v}$ and $\Cong{y}{z}{v}{w}$.
       Then $\Cong{x}{z}{r}{w}$.
@@ -609,7 +609,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{lemma}[Uniqueness of segment construction] % Satz 2.12
+    \begin{lemma}[Uniqueness of segment construction]\label{uniqueness_of_segment_construction} % Satz 2.12
       Assume $a \neq b$.
       Suppose $\Betw{a}{b}{c}$ and $\Cong{b}{c}{d}{e}$.
       Suppose $\Betw{a}{b}{c'}$ and $\Cong{b}{c'}{d}{e}$.
@@ -629,6 +629,11 @@ including Gupta's result that outer Pasch follows from inner Pasch.
     \begin{lemma}[Right betweenness] % Satz 3.1
       For all points $x, y$ we have $\Betw{x}{y}{y}$.
     \end{lemma}
+    \begin{proof}
+      Let $x, y$ be points.
+      Take $z$ such that $\Betw{x}{y}{z}$ and $\Cong{y}{z}{y}{y}$ (by \ref{segment_construction}).
+      Then $y = z$ (by \ref{identity_of_congruence}).
+    \end{proof}
   \end{forthel}
 
 
@@ -684,9 +689,10 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Then $\Betw{x}{z}{v}$.
     \end{lemma}
     \begin{proof}
-      If $y = z$ then $\Betw{x}{z}{v}$.
-      Assume $y \neq z$.
-      We have $\Betw{x}{y}{z}$.
+      Case $y \neq z$.
+        We have $\Betw{x}{y}{z}$.
+        Thus $\Betw{x}{z}{v}$.
+      End.
     \end{proof}
 
     \begin{lemma} % Satz 3.6 (first part)
@@ -720,7 +726,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       %There exist nonequal points $x,y$.
     \end{lemma}
 
-    \begin{lemma} % Satz 3.14
+    \begin{lemma}\label{nontrivial_extension} % Satz 3.14
       There exist $z$ such that $\Betw{x}{y}{z}$ and $y \neq z$.
     \end{lemma}
   \end{forthel}
@@ -734,9 +740,9 @@ including Gupta's result that outer Pasch follows from inner Pasch.
     \end{lemma}
     \begin{proof}
       We have $\Betw{x}{p}{u}$ and $\Betw{z}{v}{u}$.
-      Take $r$ such that $\Betw{v}{r}{x}$ and $\Betw{p}{r}{z}$. % inner Pasch.
-      [prover vampire]
-      Take $q$ such that $\Betw{r}{q}{z}$ and $\Betw{v}{q}{y}$. % inner Pasch.
+      Take $r$ such that $\Betw{v}{r}{x}$ and $\Betw{p}{r}{z}$ (by \ref{inner_pasch}).
+      We have $\Betw{z}{y}{x}$.
+      Take $q$ such that $\Betw{r}{q}{z}$ and $\Betw{y}{q}{v}$ (by \ref{inner_pasch}).
     \end{proof}
   \end{forthel}
 
@@ -757,8 +763,6 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   We can swap $x, y$ with $v, w$.
 
   \begin{forthel}
-    [timelimit 70]
-    [prover vampire]
     \begin{lemma} % Satz 4.2
       Assume $\IFS{x}{y}{z}{r}{v}{w}{p}{q}$.
       Then $\Cong{y}{r}{w}{q}$.
@@ -766,16 +770,8 @@ including Gupta's result that outer Pasch follows from inner Pasch.
     \begin{proof}
       
       Case $x \neq z$.
-        Take points $g,h$ such that
-        % We want to extend both figures.
-        %
-        % The disequality for the other side follows from the congruence of
-        % the two extensions.
-        %
-        $g \neq z$ and
-        $\Betw{x}{z}{g}$ and
-        $\Betw{v}{p}{h}$ and
-        $\Cong{p}{h}{z}{g}$.
+        Take a point $g$ such that $\Betw{x}{z}{g}$ and $z \neq g$ (by \ref{nontrivial_extension}).
+        Take a point $h$ such that $\Betw{v}{p}{h}$ and $\Cong{p}{h}{z}{g}$ (by \ref{segment_construction}).
         %
         Then $\OFS{x}{z}{g}{r}{v}{p}{h}{q}$.
         Thus $\Cong{g}{r}{h}{q}$.
@@ -829,7 +825,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   can be transferred congruently onto the other segment.
 
   \begin{forthel}
-    \begin{lemma} % SST Satz 4.5
+    \begin{lemma}\label{transfer_between_points} % SST Satz 4.5
       Assume $\Betw{x}{y}{z}$ and $\Cong{x}{z}{r}{w}$.
       Then there exists $v$ such that $\Betw{r}{v}{w}$ and $\SenaryCong{x}{y}{z}{r}{v}{w}$.
     \end{lemma}
@@ -837,8 +833,11 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Take $u$ such that $\Betw{w}{r}{u}$ and $r \neq u$.
       Then take $v$ such that $\Betw{u}{r}{v}$ and $\Cong{r}{v}{x}{y}$.
       Take a point $g$ such that $\Betw{u}{v}{g}$ and $\Cong{v}{g}{y}{z}$.
-      Then $\Cong{x}{z}{r}{w}$.
-      Therefore $g = w$.
+      We have $\Betw{r}{v}{g}$ and $\Betw{u}{r}{g}$.
+      Then $\Cong{r}{g}{x}{z}$ (by \ref{concatenation_of_segments}).
+      We have $\Cong{r}{w}{x}{z}$.
+      We have $\Betw{u}{r}{w}$.
+      Therefore $g = w$ (by \ref{uniqueness_of_segment_construction}).
     \end{proof}
 
     \begin{lemma} % SST Satz 4.6
@@ -846,7 +845,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Then $\Betw{r}{v}{w}$.
     \end{lemma}
     \begin{proof}
-      Take $u$ such that $\Betw{r}{u}{w}$ and $\SenaryCong{x}{y}{z}{r}{u}{w}$.
+      Take $u$ such that $\Betw{r}{u}{w}$ and $\SenaryCong{x}{y}{z}{r}{u}{w}$ (by \ref{transfer_between_points}).
       Then $\SenaryCong{r}{u}{w}{r}{v}{w}$ and $\IFS{r}{u}{w}{u}{r}{u}{w}{v}$.
       Then $\Cong{u}{u}{u}{v}$.
       Hence $u = v$.
@@ -917,7 +916,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Then $\Cong{b}{c}{b'}{c'}$.
       End.
       Then $\Betw{a}{c}{b}$.
-      Take $c'$ such that $\Betw{a'}{c'}{b'}$ and $\SenaryCong{a}{c}{b}{a'}{c'}{b'}$.
+      Take $c'$ such that $\Betw{a'}{c'}{b'}$ and $\SenaryCong{a}{c}{b}{a'}{c'}{b'}$ (by \ref{transfer_between_points}).
     \end{proof}
   \end{forthel}
 
@@ -968,7 +967,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   \end{forthel}
 
   \begin{forthel}
-    \begin{lemma} % Satz 4.17
+    \begin{lemma}\label{collinear_equidistance} % Satz 4.17
       Assume $x \neq y$.
       Assume $x$ is collinear with $y$ and $z$.
       Assume
@@ -993,7 +992,10 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Then $z = p$.
     \end{lemma}
     \begin{proof}
-      Assume $x = y$. Then $x = z$ and $x = p$. Hence $z = p$. Assume $x \neq y$.
+      Case $x = y$.
+        Then $x = z$ and $x = p$.
+        Hence $z = p$.
+      End.
     \end{proof}
   \end{forthel}
 
@@ -1150,9 +1152,9 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
     \begin{proof}
       Take a point $c'$ such that
-        $\Betw{a}{d}{c'}$ and $\Cong{d}{c'}{c}{d}$.
+        $\Betw{a}{d}{c'}$ and $\Cong{d}{c'}{c}{d}$ (by \ref{segment_construction}).
       Take a point $d'$ such that
-        $\Betw{a}{c}{d'}$ and $\Cong{c}{d'}{c}{d}$.
+        $\Betw{a}{c}{d'}$ and $\Cong{c}{d'}{c}{d}$ (by \ref{segment_construction}).
       Then $c = c'$ or $d = d'$.
 
       Proof.
@@ -1170,19 +1172,21 @@ including Gupta's result that outer Pasch follows from inner Pasch.
         Then $\BetwFive{a}{b}{d}{c'}{b'}$.
 
         %
-        [timelimit 90]
-        Thus $\Cong{b}{c'}{b''}{c}$.
+        We have $\Betw{b}{d}{c'}$ and $\Betw{b''}{d'}{c}$.
+        We have $\Cong{b}{d}{b''}{d'}$ and $\Cong{d}{c'}{d'}{c}$.
+        Thus $\Cong{b}{c'}{b''}{c}$ (by \ref{concatenation_of_segments}).
 
-        Thus $\Cong{b}{b'}{b''}{b}$.
+        We have $\Betw{b}{c'}{b'}$ and $\Betw{b''}{c}{b}$.
+        Thus $\Cong{b}{b'}{b''}{b}$ (by \ref{concatenation_of_segments}).
 
         We have $\Betw{a}{b}{b'}$ and $\Betw{a}{b}{b''}$.
-        Thus $b'' = b'$. % (by UniqueConstruct).
+        Thus $b'' = b'$ (by \ref{uniqueness_of_segment_construction}, \ref{congruence_reversal}).
 
         We have $\OFS{b}{c}{d'}{c'}{b'}{c'}{d}{c}$.
         Thus $\Cong{c'}{d'}{c}{d}$.
-        [timelimit 65]
+        We have $\Betw{c'}{d}{b}$ and $\Betw{d'}{c}{b}$.
         Take a point $e$ such that
-          $\Betw{c}{e}{c'}$ and $\Betw{d}{e}{d'}$.
+          $\Betw{c}{e}{c'}$ and $\Betw{d}{e}{d'}$ (by \ref{inner_pasch}).
         Then $\IFS{d}{e}{d'}{c}{d}{e}{d'}{c'}$
         and $\IFS{c}{e}{c'}{d}{c}{e}{c'}{d'}$.
         Thus $\Cong{e}{c}{e}{c'}$ and $\Cong{e}{d}{e}{d'}$.
@@ -1191,18 +1195,18 @@ including Gupta's result that outer Pasch follows from inner Pasch.
           We have $c\neq d'$.
 
           Take a point $p$ such that
-            $\Betw{c'}{c}{p}$ and $\Cong{c}{p}{c}{d'}$.
+            $\Betw{c'}{c}{p}$ and $\Cong{c}{p}{c}{d'}$ (by \ref{segment_construction}).
           Take a point $r$ such that
-            $\Betw{d'}{c}{r}$ and $\Cong{c}{r}{c}{e}$.
+            $\Betw{d'}{c}{r}$ and $\Cong{c}{r}{c}{e}$ (by \ref{segment_construction}).
           Take a point $q$ such that
-            $\Betw{p}{r}{q}$ and $\Cong{r}{q}{r}{p}$.
+            $\Betw{p}{r}{q}$ and $\Cong{r}{q}{r}{p}$ (by \ref{segment_construction}).
 
           Then $\OFS{d'}{c}{r}{p}{p}{c}{e}{d'}$.
           Thus $\Cong{r}{p}{e}{d'}$.
           Thus $\Cong{r}{q}{e}{d}$.
 
           Then $\OFS{d'}{e}{d}{c}{p}{r}{q}{c}$.
-          Thus $\Cong{d'}{d}{p}{q}$.
+          Thus $\Cong{d'}{d}{p}{q}$ (by \ref{concatenation_of_segments}).
           Thus $\Cong{c}{q}{c}{d}$.
           Thus $\Cong{c}{p}{c}{q}$.
 
@@ -1210,19 +1214,19 @@ including Gupta's result that outer Pasch follows from inner Pasch.
           We have $r \neq c$.
 
           Then $r$ is collinear with $c$ and $d'$.
-          Thus $\Cong{d'}{p}{d'}{q}$.
+          Thus $\Cong{d'}{p}{d'}{q}$ (by \ref{collinear_equidistance}).
 
           We have $c \neq d'$.
           Then $c$ is collinear with $d'$ and $b$.
           Then $c$ is collinear with $d'$ and $b'$.
-          Thus $\Cong{b}{p}{b}{q}$ and $\Cong{b'}{p}{b'}{q}$.
+          Thus $\Cong{b}{p}{b}{q}$ and $\Cong{b'}{p}{b'}{q}$ (by \ref{collinear_equidistance}).
 
           Thus $b \neq b'$.
-          Then $b$ is collinear with $c'$ and $b'$.
-          Thus $\Cong{c'}{p}{c'}{q}$.
+          Then $b$ is collinear with $b'$ and $c'$.
+          Thus $\Cong{c'}{p}{c'}{q}$ (by \ref{collinear_equidistance}).
 
           $c'$ is collinear with $c$ and $p$.
-          Thus $\Cong{p}{p}{p}{q}$.
+          Thus $\Cong{p}{p}{p}{q}$ (by \ref{collinear_equidistance}).
           Thus $p = q$.
           Thus $d = d'$.
         End.
@@ -1232,7 +1236,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   \end{forthel}
 
   \begin{forthel}
-    \begin{lemma} %[D5o2]
+    \begin{lemma}\label{outer_connexity} %[D5o2]
       Assume $a \neq b$.
       If $\Betw{a}{b}{c}$ and $\Betw{a}{b}{d}$
       then $\Betw{b}{c}{d}$ or $\Betw{b}{d}{c}$.
@@ -1241,6 +1245,12 @@ including Gupta's result that outer Pasch follows from inner Pasch.
     \begin{theorem} %[D5o3]
       If $\Betw{x}{y}{w}$ and $\Betw{x}{z}{w}$ then $\Betw{x}{y}{z}$ or $\Betw{x}{z}{y}$.
     \end{theorem}
+    \begin{proof}
+      Assume $\Betw{x}{y}{w}$ and $\Betw{x}{z}{w}$.
+      Take $v$ such that $\Betw{x}{w}{v}$ and $w \neq v$ (by \ref{nontrivial_extension}).
+      We have $\Betw{v}{w}{y}$ and $\Betw{v}{w}{z}$.
+      Then $\Betw{w}{y}{z}$ or $\Betw{w}{z}{y}$ (by \ref{outer_connexity}).
+    \end{proof}
   \end{forthel}
 
   \begin{tikzpicture}
@@ -1376,7 +1386,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Then $\Leq{a}{b}{c}{d}$.
     \end{lemma}
     \begin{proof}
-      Take $b'$ such that $\Betw{c}{b'}{d}$ and $\SenaryCong{a}{b}{x}{c}{b'}{d}$.
+      Take $b'$ such that $\Betw{c}{b'}{d}$ and $\SenaryCong{a}{b}{x}{c}{b'}{d}$ (by \ref{transfer_between_points}).
     \end{proof}
   \end{forthel}
 
@@ -1412,14 +1422,14 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Take $y$ such that $\Betw{c}{d}{y}$ and $\Cong{c}{y}{e}{f}$.
     \end{proof}
 
-    \begin{lemma}[Antisymmetry of comparison] % Satz 5.9
+    \begin{lemma}[Antisymmetry of comparison]\label{antisymmetry_of_comparison} % Satz 5.9
       Assume $\Leq{a}{b}{c}{d}$ and $\Leq{c}{d}{a}{b}$.
       Then $\Cong{a}{b}{c}{d}$.
     \end{lemma}
     \begin{proof}
       Take $x$ such that $\Betw{c}{x}{d}$ and $\Cong{a}{b}{c}{x}$.
       Take $y$ such that $\Betw{c}{d}{y}$ and $\Cong{a}{b}{c}{y}$.
-      Then $\Cong{c}{x}{c}{y}$.
+      Then $\Cong{c}{x}{c}{y}$ (by \ref{pseudotransitivity_of_congruence}).
       Thus $x = d = y$.
     \end{proof}
 
@@ -1456,6 +1466,18 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Assume $\Leq{a}{b}{a}{c}$ and $\Leq{b}{c}{a}{c}$.
       Then $\Betw{a}{b}{c}$.
     \end{lemma}
+    \begin{proof}
+      Case $\Betw{a}{c}{b}$.
+        We have $\Leq{a}{c}{a}{b}$.
+        Thus $\Cong{a}{b}{a}{c}$ (by \ref{antisymmetry_of_comparison}).
+        Hence $b = c$.
+      End.
+      Case $\Betw{b}{a}{c}$.
+        We have $\Leq{a}{c}{b}{c}$.
+        Thus $\Cong{b}{c}{a}{c}$ (by \ref{antisymmetry_of_comparison}).
+        Hence $a = b$.
+      End.
+    \end{proof}
   \end{forthel}
 
 
@@ -1501,7 +1523,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   iff they determine the same ray with origin $u$.
 
   \begin{forthel}
-    \begin{lemma} % SST 6.2
+    \begin{lemma}\label{same_ray_opposite_point} % SST 6.2
       Suppose $a,b,c \neq u$.
       Suppose $\Betw{a}{u}{c}$.
       Then $\Betw{b}{u}{c}$ iff
@@ -1509,7 +1531,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
         $\RelEquiv{a}{b}{u}$.
     \end{lemma}
 
-    \begin{lemma} % SST 6.3 (first part)
+    \begin{lemma}\label{same_ray_common_opposite} % SST 6.3 (first part)
       Suppose $a$ and $b$ are equivalent with respect to $u$.
       Then $a, b\neq u$ and there exists a point $c$ such that
         $c\neq u$ and $\Betw{a}{u}{c}$ and $\Betw{b}{u}{c}$.
@@ -1569,8 +1591,14 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Then there exists a point $x$ such that
         $\RelEquiv{x}{r}{a}$ and $\Cong{a}{x}{b}{c}$.
     \end{lemma}
+    \begin{proof}
+      Take $u$ such that $\Betw{r}{a}{u}$ and $a \neq u$ (by \ref{nontrivial_extension}).
+      Take $x$ such that $\Betw{u}{a}{x}$ and $\Cong{a}{x}{b}{c}$ (by \ref{segment_construction}).
+      Then $x \neq a$.
+      We have $\Betw{x}{a}{u}$.
+      Thus $\RelEquiv{x}{r}{a}$ (by \ref{same_ray_opposite_point}).
+    \end{proof}
 
-    [timelimit 120]
     \begin{lemma} % SST 6.11 (uniqueness)
       Suppose $r\neq a$ and $b\neq c$.
       Let $x$ be a point such that
@@ -1579,6 +1607,13 @@ including Gupta's result that outer Pasch follows from inner Pasch.
         $\RelEquiv{x'}{r}{a}$ and $\Cong{a}{x'}{b}{c}$.
       Then $x' = x$.
     \end{lemma}
+    \begin{proof}
+      We have $\RelEquiv{x}{x'}{a}$.
+      Take $u$ such that $u \neq a$ and $\Betw{x}{a}{u}$ and $\Betw{x'}{a}{u}$
+        (by \ref{same_ray_common_opposite}).
+      We have $\Betw{u}{a}{x}$ and $\Betw{u}{a}{x'}$.
+      Thus $x' = x$ (by \ref{uniqueness_of_segment_construction}).
+    \end{proof}
 
     \begin{lemma} % SST 6.13 (first implication)
       Suppose $\RelEquiv{a}{b}{u}$ and $\Leq{u}{a}{u}{b}$.
