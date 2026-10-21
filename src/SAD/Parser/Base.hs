@@ -135,7 +135,7 @@ tryParses f ok consumedFail emptyFail err = go err [] [] [] []
       ([],[]) -> if
         | notNull (accEmptyOk ++ accConsumedOk) -> ok accErr (reverse accEmptyOk) (reverse accConsumedOk)
         | notNull accEmptyFails -> emptyFail $ foldl' (<>) err $ accEmptyFails ++ accConsumedFails
-        | notNull accConsumedFails -> consumedFail $ foldl' (<>) err $ accConsumedFails
+        | notNull accConsumedFails -> consumedFail $ foldl' (<>) err accConsumedFails
         | otherwise -> error "tryParses: parser has empty result"
 
       -- If we have further input first work on the 'emptyOk' results
@@ -186,8 +186,8 @@ runP :: Parser st a -> State st -> Reply (ParseResult st a)
 runP p st = runParser p st ok consumedFail emptyFail
   where
     ok _ emptyOk consumedOk = Ok (emptyOk ++ consumedOk)
-    consumedFail err = Error err
-    emptyFail err = Error err
+    consumedFail = Error
+    emptyFail = Error
 
 
 -- Parser state management

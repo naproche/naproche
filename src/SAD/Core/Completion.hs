@@ -22,6 +22,7 @@ import Data.Map qualified as Map
 import Data.Text (Text)
 import Data.Text qualified as Text
 import Data.Set qualified as Set
+import Data.Functor ((<&>))
 
 import SAD.Data.Formula
 import SAD.Core.Rewrite
@@ -45,8 +46,8 @@ normalizeAndOrient :: (Formula -> Formula -> Bool)
 normalizeAndOrient ord rules (Equation s t) =
   let nfs = rewriter rules s
       nft = rewriter rules t
-  in if (ord nfs nft) then return (nfs,nft)
-                      else if (ord nft nfs) then return (nft,nfs)
+  in if ord nfs nft then return (nfs,nft)
+                      else if ord nft nfs then return (nft,nfs)
                                             else Nothing
 
 
@@ -59,7 +60,7 @@ updateTrip (Just (s,t)) (eqs,def,eq:ocrits)
   | otherwise =
       let eq' = Equation s t
           eqs' = eq':eqs
-      in (eqs',def,ocrits ++ foldr ((++) . (criticalPairs  eq')) [] eqs')
+      in (eqs',def,ocrits ++ concatMap (criticalPairs  eq') eqs')
 updateTrip _ (eqs,def,eq:ocrits) = (eqs,eq:def,ocrits)
 updateTrip _ _ = error "updateTrip: no critical pairs"
 
@@ -73,11 +74,11 @@ complete ord (eqs,def,eq:ocrits) =
       trip = updateTrip st (eqs,def,eq:ocrits)
   in complete ord trip
 complete ord (eqs,def,_)
-  | def == [] = eqs
+  | null def = eqs
   | otherwise =
       let e = maybeToList (find (isJust . normalizeAndOrient ord eqs) def)
-      in if e == [] then error "complete: non-orientable equation" --prevent infinite loop
-                    else complete ord (eqs, (nub def) \\ e,e)
+      in if null e then error "complete: non-orientable equation" --prevent infinite loop
+                    else complete ord (eqs, nub def \\ e,e)
 
 
 {-removing redundant rules from a completed term rewriting system-}
@@ -87,7 +88,7 @@ interreduce = dive []
     dive dun eqs = case eqs of
         (Equation l r):oeqs ->
             let dun' = if twins (rewriter (dun ++ oeqs) l) l
-                        then (Equation l (rewriter (dun ++ eqs) r)):dun
+                        then Equation l (rewriter (dun ++ eqs) r):dun
                         else dun
             in dive dun' oeqs
         [] -> reverse dun
@@ -95,16 +96,16 @@ interreduce = dive []
 
 {-gets a list of strings as weights (descending weights) and completes and interreduces a term rewriting system-}
 completeAndSimplify :: [Text] -> [Equation] -> [Equation]
-completeAndSimplify wts eqs = (interreduce . (complete ord)) (eqs',[], allCriticalPairs eqs')
+completeAndSimplify wts eqs = (interreduce . complete ord) (eqs',[], allCriticalPairs eqs')
   where
     ord = lpoGe (weight wts)
-    eqs' = catMaybes $ map help_normalize eqs
-    help_normalize fml = normalizeAndOrient ord [] fml >>= pure . uncurry Equation
+    eqs' = mapMaybe help_normalize eqs
+    help_normalize fml = normalizeAndOrient ord [] fml <&> uncurry Equation
 
 
 {-tests whether the critical pairs in a term rewriting system are joinable-}
 confluence_crit_pairs :: [Equation] -> [Equation] -> Bool
-confluence_crit_pairs cp trs = all (\(Equation l r) -> ((==) `on` (rewriter trs)) l r) cp
+confluence_crit_pairs cp trs = all (\(Equation l r) -> ((==) `on` rewriter trs) l r) cp
 
 
 {-tests whether a terminating term rewriting system is confluent-}
@@ -175,7 +176,7 @@ rewrite1 :: [Equation] -> Formula -> Maybe Formula
 rewrite1 eqs t =
   case eqs of
   (Equation l r):oeqs ->
-    let trmM = term_match (Just (\ a -> Nothing)) [(l,t)]
+    let trmM = term_match (Just (const Nothing)) [(l,t)]
     in case trmM of
          Just fn -> Just (tsubst fn r)
          Nothing -> rewrite1 oeqs t
@@ -220,7 +221,7 @@ overlaps :: (Formula, Formula)
 overlaps (l,r) = dive
   where
     dive tm@(Trm _ args _ _) rfn = listcases (\i a -> rfn i $ tm {trmArgs = a}) args
-                                ++ (maybeToList $ rfn (unify l tm) r)
+                                ++ maybeToList (rfn (unify l tm) r)
     dive _ _ = []
 
     listcases _ [] = []
@@ -239,7 +240,7 @@ criticalPairs fma fmb = map fromFormula $
   let (fm1,fm2) = renamepair fma fmb in
   if twins (toFormula fma) (toFormula fmb)
     then crit1 fm1 fm2
-    else union (crit1 fm1 fm2) (crit1 fm2 fm1)
+    else crit1 fm1 fm2 `union` crit1 fm2 fm1
   where
     fromFormula (Trm TermEquality [l,r] _ EqualityId) = Equation l r
     fromFormula _ = error "fromFormula: cannot happen"
@@ -247,4 +248,4 @@ criticalPairs fma fmb = map fromFormula $
 
 {-computes all critical pairs of a term rewriting system-}
 allCriticalPairs :: [Equation] -> [Equation]
-allCriticalPairs trs = nubOrd $ concat $ [criticalPairs a b | (a:rest) <- tails trs, b <- (a:rest)]
+allCriticalPairs trs = nubOrd $ concat $ [criticalPairs a b | (a:rest) <- tails trs, b <- a:rest]

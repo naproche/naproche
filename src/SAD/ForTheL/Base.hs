@@ -408,26 +408,15 @@ var = do
   return (PosVar (VarConstant v) pos)
   where
     plainVarName = do
-      v <- satisfy $ \s -> and [
-          Text.all isAlphaNum s,
-          isAlpha (Text.head s),
-          s `notElem` keywords
-        ]
+      v <- satisfy $ \s -> Text.all isAlphaNum s && isAlpha (Text.head s) && (s `notElem` keywords)
       primes <- Text.concat . fmap (const "'") <$> many (symbolNotAfterSpace "'")
       return $ v <> primes
     greekVarName = do
-      command <- satisfy $ \s -> and [
-          Text.head s == '\\',
-          Text.tail s `elem` greek
-        ]
+      command <- satisfy $ \s -> (Text.head s == '\\') && (Text.tail s `elem` greek)
       primes <- Text.concat . fmap (const "'") <$> many (symbolNotAfterSpace "'")
       return $ command <> primes
     structVarName = do
-      command <- satisfy $ \s -> and [
-          Text.head s == '\\',
-          all isAsciiLetter (Text.unpack . Text.tail $ s),
-          Text.isSuffixOf "var" s
-        ]
+      command <- satisfy $ \s -> (Text.head s == '\\') && all isAsciiLetter (Text.unpack . Text.tail $ s) && Text.isSuffixOf "var" s
       optLLx () $ components </> (notation >> optLLx () (eqComponents command))
       return command
     components = do

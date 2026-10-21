@@ -165,18 +165,16 @@ typings (context:restContext) term =
             let newInfo = sign predicate {trmArgs = reverse ls ++ (ThisT : rs)}
             return $ newInfo : notionEvidence ls predicate ++ trInfo arg
 
-    dive e@Trm {trmName = TermEquality, trmArgs = [l,r]} =
-      if   twins l term
-      then return $ joinEvidences (trInfo l) (trInfo r)
-      else if   twins r term
-           then return $ joinEvidences (trInfo r) (trInfo l)
-           else mzero
+    dive e@Trm {trmName = TermEquality, trmArgs = [l, r]}
+      | twins l term = return $ joinEvidences (trInfo l) (trInfo r)
+      | twins r term = return $ joinEvidences (trInfo r) (trInfo l)
+      | otherwise = mzero
     dive (And f g) = albetDive g `mplus` albetDive f
     dive (Tag _ f) = albetDive f
     dive _ = mzero
 
     joinEvidences ls rs =
-      filter (\l -> all (not . infoTwins term l) rs) ls ++ rs
+      filter (\l -> not (any (infoTwins term l) rs)) ls ++ rs
 
     notionEvidence [] prd | isNotion prd = trInfo prd
     notionEvidence _ _ = []

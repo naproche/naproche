@@ -488,9 +488,7 @@ environment p = do
               endEnvCommand = concatTokWarn [endMacro, beginGroup', envName', endGroup']
           -- Check whether the environment of the @\\begin{...}@ and the @\\end{...}@
           -- commands match:
-          let warning_2 = if envNameText' /= envNameText
-                then [Warning ("LaTeX: Unexpected \"\\begin{" <> envNameText' <> "}\". \"\\end{" <> envNameText <> "}\" expected.") (tokensPos (fst endEnvCommand))]
-                else []
+          let warning_2 = ([Warning ("LaTeX: Unexpected \"\\begin{" <> envNameText' <> "}\". \"\\end{" <> envNameText <> "}\" expected.") (tokensPos (fst endEnvCommand)) | envNameText' /= envNameText])
           -- If the environment name is "@forthel@" then unset the @insideForthel@ flag:
           when (envNameText == "forthel") $ modify (\state -> state{insideForthel = False})
           -- If the environment is a TLS environment with set @forthel@ flag outside a

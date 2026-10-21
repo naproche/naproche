@@ -109,7 +109,7 @@ current goal-}
 relevantSbs :: Formula -> (Formula -> Formula) -> (Formula -> Formula)
 relevantSbs f sb =
   let relevant = gatherUs [] $ ltAtomic f
-  in  foldr (.) id $ map (\u -> subst (sb (mkVar u)) u) relevant
+  in  foldr ((.) . (\u -> subst (sb (mkVar u)) u)) id relevant
   where
     gatherUs ls Var {varName = x@(VarU _)} | x `notElem` ls = x : ls
     gatherUs ls t@Trm {trmArgs = tArgs} = foldl gatherUs ls tArgs
@@ -122,7 +122,7 @@ rename :: [Formula] -> (Formula -> Formula)
 rename fs = insertU
   where
     -- find the maximal 'u'-index and convert the '?'-names to 'u'
-    insertU v@Var {varName = VarHole m} = v{varName = VarU $ Text.pack $ show(maxU + read (Text.unpack m) + 1)}
+    insertU v@Var {varName = VarHole m} = v{varName = VarU $ Text.pack $ show (maxU + read (Text.unpack m) + 1)}
     insertU f = mapF insertU f
 
     maxU = myMaximum $ concatMap (foldF getU) fs

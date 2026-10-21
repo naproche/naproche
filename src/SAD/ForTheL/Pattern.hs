@@ -41,7 +41,7 @@ import SAD.Parser.Token
 -- add expressions to the state of ForTheL
 
 giveId :: Bool -> Int -> Formula -> Formula
-giveId p n t = t {trId = if p then specialId n else (trmId t)}
+giveId p n t = t {trId = if p then specialId n else trmId t}
 
 incId :: Enum p => Bool -> p -> p
 incId p n = if p then succ n else n
@@ -68,7 +68,7 @@ addExpr t@Trm{trmName = TermMultiAdjective _, trmArgs = vs} f p st
   = put ns >> return nf
   where
     n = idCount st
-    ((hp:tp), nf) = extractWordPattern st (giveId p n t) f
+    (hp:tp, nf) = extractWordPattern st (giveId p n t) f
     pt = hp : Word [] : Vr : tp
     fm = substs nf $ map varName vs
     ns = st {adjectiveExpr = (pt, fm) : adjectiveExpr st, idCount = incId p n}
@@ -77,7 +77,7 @@ addExpr t@Trm{trmName = TermMultiVerb _, trmArgs = vs} f p st
   = put ns >> return nf
   where
     n = idCount st
-    ((hp:tp), nf) = extractWordPattern st (giveId p n t) f
+    (hp:tp, nf) = extractWordPattern st (giveId p n t) f
     pt = hp : Word [] : Vr : tp
     fm = substs nf $ map varName vs
     ns = st {verbExpr = (pt, fm) : verbExpr st, idCount = incId p n}
@@ -157,7 +157,7 @@ extractWordPattern st t@Trm {trmName = s, trmArgs = vs} f = (pt, nf)
     pt = map getPattern ws
     nt = t {trmName = pr $ getName pt}
     nf = replace nt t {trId = NewId} f
-    (pr, ws) = fmap Text.words $ termSplit s
+    (pr, ws) = Text.words <$> termSplit s
     dict = strSyms st
 
     getPattern "." = Nm

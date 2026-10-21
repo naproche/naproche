@@ -118,7 +118,7 @@ instance Alternative CRM where
   (<|>) = mplus
 
 instance MonadPlus CRM where
-  mzero = CRM (\z _ -> z)
+  mzero = CRM const
   mplus m n = CRM (\z k -> runCRM m (runCRM n z k) k)
 
 

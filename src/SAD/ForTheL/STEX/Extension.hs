@@ -63,7 +63,7 @@ defNotion = do
     defn = do
       (n, u) <- newNotion; isOrEq; (q, f) <- STEX.anotion
       let v = pVar u; fn = replace v (trm n)
-      h <- (fn . q) <$> dig f [v]
+      h <- fn . q <$> dig f [v]
       return ((n,h),u)
 
     isOrEq = texCommand "DefEq" <|> isEq
@@ -90,7 +90,7 @@ sigNotion = do
       token' "is"
       (q, f) <- STEX.anotion -|- noInfo
       let v = pVar u
-      h <- (replace v (trm n) . q) <$> dig f [v]
+      h <- replace v (trm n) . q <$> dig f [v]
       return ((n,h),u)
 
     noInfo =
@@ -164,7 +164,7 @@ pretypeVariable = do
 
     holedNotion = do
       (q, f) <- STEX.anotion
-      g <- q <$> dig f [(mkVar (VarHole ""))]
+      g <- q <$> dig f [mkVar (VarHole "")]
       (_, pos2) <- dot
       return (g, pos2)
 

@@ -87,7 +87,7 @@ verify (ProofTextInstr pos (Command cmd) : rest) = command cmd >> verify rest
     command _ = do
       message "unsupported instruction"
     message :: String -> VerifyMonad ()
-    message msg = reasonLog Message.WRITELN (Position.no_range_position pos) msg
+    message = reasonLog Message.WRITELN (Position.no_range_position pos)
 verify (ProofTextInstr _ instr : rest) = local (addInstruction instr) (verify rest)
 verify (ProofTextDrop _ instr : rest) = local (dropInstruction instr) (verify rest)
 verify (_ : rest) = verify rest
@@ -254,7 +254,7 @@ verifyProof restProofText = do
           (_, _, newThesis) =
             inferNewThesis (definitions state) newContext $ Context.setFormula thesis f
       whenInstruction printthesisParam $ when (
-        noInductionOrCase (Context.formula newThesis) && not (null $ restProofText)) $
+        noInductionOrCase (Context.formula newThesis) && not (null restProofText)) $
           thesisLog Message.WRITELN
           (Block.position $ head $ Context.branch $ head context) (length branch - 2) $
           "new thesis " <> show (Context.formula newThesis)

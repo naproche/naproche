@@ -1,5 +1,4 @@
 {-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE MultiWayIf #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
@@ -235,8 +234,7 @@ var = guardM isMathMode *> lexeme (Variable . make_bytes <$> var')
     subscriptNumber :: Lexer Text
     subscriptNumber = do
         Char.char '_'
-        n <- takeWhile1P (Just "subscript number") isDigit
-        pure n
+        takeWhile1P (Just "subscript number") isDigit
 
     -- 0 or more ASCII apostrophes (0x27): always succeeds.
     -- Apostrophes have a special use in TPTP, so we replace
@@ -296,9 +294,7 @@ command :: Lexer (Located Tok)
 command = lexeme $ try do
     Char.char '\\'
     cmd <- takeWhile1P (Just "TeX command") isAlpha
-    if
-        | cmd == "begin" || cmd == "end" -> empty
-        | otherwise                      -> pure (Command (make_bytes cmd))
+    (if cmd == "begin" || cmd == "end" then empty else pure (Command (make_bytes cmd)))
 
 
 topLevelEnvs :: [Text]

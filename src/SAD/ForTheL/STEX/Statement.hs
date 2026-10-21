@@ -94,7 +94,7 @@ thesis = (thes </> contrary) <|> contradiction
   where
     thes = tokenSeq' ["the", "thesis"] >> return mkThesis
     contrary = tokenSeq' ["the", "contrary"] >> return (Not mkThesis)
-    contradiction = opt() (token' "a") >> token' "contradiction" >> return Bot
+    contradiction = opt () (token' "a") >> token' "contradiction" >> return Bot
 
 
 thereIs :: FTL Formula
@@ -159,7 +159,7 @@ isAPredicate = label "an \"is a\" predicate" $ notNotion <|> notion
     notion = fmap (uncurry ($)) anotion
     notNotion = do
       token' "not"; (q, f) <- anotion
-      let unfinished = dig f [(mkVar (VarHole ""))]
+      let unfinished = dig f [mkVar (VarHole "")]
       optLLx (q $ Not f) $ fmap (q. Tag Dig . Not) unfinished
 
 hasPredicate :: FTL Formula
@@ -300,7 +300,7 @@ definiteTerm = label "a definite term" $  symbolicTerm -|- definiteNoun
 
 
 symbolicFormula :: FTL Formula
-symbolicFormula = label "a symbolic formula" $ biimplication
+symbolicFormula = label "a symbolic formula" biimplication
   where
     biimplication = implication >>= binary Iff (symbolicIff >> implication)
     implication = disjunction >>= binary Imp (symbolicImp >> implication)
@@ -411,7 +411,7 @@ choice :: FTL Formula
 choice = fmap (foldl1 And) $ (opt () (tokenOf' ["a", "an", "the"]) >> takeLongest namedNotion) `sepByLL1` tokenOf' [",", "and"]
   where
     namedNotion = label "a named notion" $ do
-      (q, f, vs) <- notion; guard (all isExplicitName $ map posVarName $ Set.toList vs); return $ q f
+      (q, f, vs) <- notion; guard (all (isExplicitName . posVarName) (Set.toList vs)); return $ q f
     isExplicitName (VarConstant _) = True; isExplicitName _ = False
 
 
@@ -430,10 +430,10 @@ collection = label "a class definition" $ symbClass <|> classOf
     classOf = do
       tokenOf' ["class", "classes", "collection", "collections"];
       nm <- var -|- hidden;
-      token' "of" >> (optLL1 () (token' "all"));
+      token' "of" >> optLL1 () (token' "all");
       (q, f, u) <- notion >>= single; vnm <- hidden;
       vnmDecl <- makeDecl vnm;
-      return (id, setFormula mkClass vnmDecl $ (subst (pVar vnm) (posVarName u) $ q f) `blAnd` mkObject (pVar vnm) , Set.singleton nm)
+      return (id, setFormula mkClass vnmDecl $ subst (pVar vnm) (posVarName u) (q f) `blAnd` mkObject (pVar vnm) , Set.singleton nm)
     symbClass = do
       (cnd, (nm, mkColl)) <- symbClassNotation; h <- hidden
       nmDecl <- makeDecl nm
@@ -452,7 +452,7 @@ symbClassNotation = stexEnumerationClass </> stexComprehensionClass </> stexSepa
       ts <- sTerm `sepByLL1` token ","
       h <- hidden
       symbol "}"
-      pure (\tr -> mkObject tr `And` (foldr1 Or $ map (mkEquality tr) ts), (h, mkSet))
+      pure (\tr -> mkObject tr `And` foldr1 Or (map (mkEquality tr) ts), (h, mkSet))
     -- sTeX-style comprehension class, e.g. "\CClass{x}{x < y}"
     stexComprehensionClass = do
       texCommand "CClass"
@@ -528,7 +528,7 @@ cases = do
   texBegin (token "cases")
   stanza <- sepBy line (token "\\\\")
   texEnd (token "cases")
-  return $ \fx -> foldr1 And $ map ((&) fx) stanza
+  return $ \fx -> foldr1 And $ map (fx &) stanza
   where
     line :: FTL (Formula -> Formula)
     line = do
@@ -560,7 +560,7 @@ chooseInTerm = do
       return $ \fx -> dExi hDecl $
         And (Tag Defined $ ap hv) (Tag Evaluation $ mkEquality fx hv)
 
-    ld_class = do (_, t, _) <- collection; return $ (\f -> subst f (VarHole "") t)
+    ld_class = do (_, t, _) <- collection; return (\f -> subst f (VarHole "") t)
 
 
 lambda :: FTL (Formula -> Formula)
@@ -568,7 +568,7 @@ lambda = do
   (t, df_head, dom) <- ld_head
   vs <- fvToVarSet <$> freeVars t
   df <- addDecl vs lambdaBody
-  return $ \f -> mkMap f `And` Tag Domain (dom f) `And` (df_head f $ df $ mkApp f t)
+  return $ \f -> mkMap f `And` Tag Domain (dom f) `And` df_head f (df $ mkApp f t)
   where
     ld_head = token "\\Map" >> lambdaIn
 

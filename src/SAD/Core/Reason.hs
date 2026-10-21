@@ -146,10 +146,9 @@ launchProver pos iteration = do
     Prover.Success -> pure ()
     Prover.Contradictory_Axioms -> do
       checkConsistency <- asks (getInstruction checkconsistencyParam)
-      if checkConsistency then do
+      when checkConsistency $ do
         reasonLog Message.WARNING pos "Found contradictory axioms. Make sure you are in a proof by contradiction!"
         mzero
-      else pure ()
     _ -> mzero
   case trackers of
     Timer _ time : _ -> do

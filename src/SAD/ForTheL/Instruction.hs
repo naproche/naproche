@@ -56,7 +56,7 @@ instrRead =
   instrPos addInstrReport $ readInstr >>=
     (\case
       i@(GetRelativeFilePath _) -> return i
-      i@(GetModule _ _ _) -> return i
+      i@(GetModule {}) -> return i
       _ -> mzero)
 
 instrExit :: FTL (Position.T, Instr)

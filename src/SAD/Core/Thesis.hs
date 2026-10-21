@@ -69,7 +69,7 @@ reductionInViewOf g = reduce
       | any (equivalentTo f) hs = changed Top
       | any (equivalentTo $ Not f) hs = changed Bot
       | isExi f && f `hasInstantiationIn` hs = changed Top
-      | isAll f && (albet $ Not f) `hasInstantiationIn` hs = changed Bot
+      | isAll f && albet (Not f) `hasInstantiationIn` hs = changed Bot
       | isTrm f = return f
       | isIff f = reduce $ albet f
       | otherwise = bool <$> mapFM reduce f
@@ -126,7 +126,7 @@ instantiations n currentInst f hs =
     subInfo :: Instantiation -> Int -> [Formula]
     subInfo sub n =
       let sub' = applySub sub $ mkVar $ VarAssume n
-      in  map (replace sub' ThisT) $ trInfo $ sub'
+      in  map (replace sub' ThisT) $ trInfo sub'
 
 
 {- finds an instantiation to make a formula equal to a second formula.

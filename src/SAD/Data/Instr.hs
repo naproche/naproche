@@ -90,7 +90,7 @@ getInstr p = Param.get p . foldr instr Param.empty
 addInstr :: Instr -> [Instr] -> [Instr]
 addInstr (Synonym _) = id
 addInstr (GetRelativeFilePath _) = id
-addInstr (GetModule _ _ _) = id
+addInstr (GetModule {}) = id
 addInstr i = (:) i
 
 dropInstr :: Drop -> [Instr] -> [Instr]
@@ -208,8 +208,7 @@ keywordsDropFlag = map (paramKeyword DropBool) textFlags
 
 keywordsArgument :: [(Text -> Instr, Text)]
 keywordsArgument =
- [(GetRelativeFilePath . Lazy.unpack, "read")] ++
-  map (paramKeyword (\p -> SetBytes p . make_bytes)) textArgs
+ (GetRelativeFilePath . Lazy.unpack, "read") : map (paramKeyword (\p -> SetBytes p . make_bytes)) textArgs
 
 keywordsModule :: [((FilePath, FilePath, String) -> Instr, Text)]
 keywordsModule =

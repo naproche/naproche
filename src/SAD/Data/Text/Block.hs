@@ -167,7 +167,7 @@ instance Show Block where
         showIndent p . showString "Proof:\n" . showProof (body block) .
         showIndent p . showString "Qed.\n"
     where
-      showProof proofTexts = foldr ((.) . showsPrec (p + 1)) id proofTexts
+      showProof = foldr ((.) . showsPrec (p + 1)) id
       name' = Text.unpack name
       addName = if null name' then "" else " (" ++ name' ++ ")"
 

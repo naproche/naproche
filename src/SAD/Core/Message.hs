@@ -48,7 +48,7 @@ reports_text args = do
           let
             pos' = Program.adjust_position context pos
             markup' = Markup.properties (Position.properties_of pos') markup
-            body = if Bytes.null txt then [] else [XML.Text txt]
+            body = ([XML.Text txt | not (Bytes.null txt)])
           in YXML.string_of $ XML.Elem (markup', body)) args)
 
 report_text :: Position.T -> Markup.T -> Bytes -> IO ()
