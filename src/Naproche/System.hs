@@ -1,9 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Authors: Makarius Wenzel (2021)
---
--- System process support for Naproche: with and without Isabelle/PIDE.
+-- Module      : Naproche.System
+-- Description : System process support for Naproche: with and without
+--               Isabelle/PIDE.
+-- Copyright   : (c) 2021, Makarius Wenzel
+-- License     : GPL-3
 module Naproche.System (
   is_windows, bash_process
 ) where

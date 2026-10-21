@@ -3,10 +3,9 @@
 
 -- |
 -- Module      : SAD.Data.VarName
+-- Description : TODO
 -- Copyright   : (c) 2019, Anton Lorenzen
 -- License     : GPL-3
---
--- TODO: Add description.
 module SAD.Data.VarName (
   VariableName(..),
   FV,

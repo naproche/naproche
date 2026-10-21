@@ -2,10 +2,9 @@
 
 -- |
 -- Module      : SAD.ForTheL.STEX.Base
--- Copyright   : (c) 2025 Marcel Schütz
+-- Description : ForTheL state (sTeX).
+-- Copyright   : (c) 2025, Marcel Schütz
 -- License     : GPL-3
---
--- ForTheL state (sTeX).
 module SAD.ForTheL.STEX.Base (
   addInits
 ) where

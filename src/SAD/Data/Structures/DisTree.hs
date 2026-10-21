@@ -2,10 +2,9 @@
 
 -- |
 -- Module      : SAD.Data.Structures.DisTree
+-- Description : Discrimination tree data structure.
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Discrimination tree data structure.
 module SAD.Data.Structures.DisTree (
   DisTree,
   empty,

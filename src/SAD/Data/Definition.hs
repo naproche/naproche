@@ -1,10 +1,9 @@
 -- |
 -- Module      : SAD.Data.Definition
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : TODO
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- TODO: Add description.
 module SAD.Data.Definition where
 
 import Data.Map (Map)

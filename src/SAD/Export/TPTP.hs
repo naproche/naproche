@@ -2,12 +2,11 @@
 
 -- |
 -- Module      : SAD.Export.TPTP
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
---               (c) 2017 - 2018, Steffen Frerix,
+-- Description : Print proof task in TPTP (fof) syntax.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
+--               (c) 2017 - 2018, Steffen Frerix
 --               (c) 2026, Marcel Schütz
 -- License     : GPL-3
---
--- Print proof task in TPTP (fof) syntax.
 module SAD.Export.TPTP (
   exportProofTask
 ) where

@@ -2,10 +2,9 @@
 
 -- |
 -- Module      : SAD.ForTheL.TEX.Pattern
--- Copyright   : (c) 2025 Marcel Schütz
+-- Description : Pattern parsing (TeX).
+-- Copyright   : (c) 2025, Marcel Schütz
 -- License     : GPL-3
---
--- Pattern parsing (TeX).
 module SAD.ForTheL.TEX.Pattern (
   newPrdPattern,
   unnamedNotion,

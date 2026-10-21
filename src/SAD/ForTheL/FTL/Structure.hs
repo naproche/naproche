@@ -2,11 +2,10 @@
 
 -- |
 -- Module      : SAD.ForTheL.FTL.Structure
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : Document parsing (FTL).
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Document parsing (FTL).
 module SAD.ForTheL.FTL.Structure (
   forthelText,
 

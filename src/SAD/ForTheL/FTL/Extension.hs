@@ -2,11 +2,10 @@
 
 -- |
 -- Module      : SAD.ForTheL.FTL.Extension
+-- Description : Language extensions (FTL).
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Language extensions (FTL).
 module SAD.ForTheL.FTL.Extension (
   defExtend,
   sigExtend,

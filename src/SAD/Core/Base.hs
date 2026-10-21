@@ -4,11 +4,10 @@
 
 -- |
 -- Module      : SAD.Core.Base
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : Verifier state monad and common functions.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Verifier state monad and common functions.
 module SAD.Core.Base (
   CRM,
   readTrackers,

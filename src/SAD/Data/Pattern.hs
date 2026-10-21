@@ -1,9 +1,8 @@
 -- |
 -- Module      : SAD.Data.Pattern
+-- Description : TODO
 -- Copyright   : (c) 2019, Anton Lorenzen
 -- License     : GPL-3
---
--- TODO: Add description.
 module SAD.Data.Pattern where
 
 import Data.Text (Text)

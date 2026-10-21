@@ -3,11 +3,10 @@
 
 -- |
 -- Module      : SAD.ForTheL.Pattern
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : Pattern parsing and pattern state management.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Pattern parsing and pattern state management.
 module SAD.ForTheL.Pattern (
   patHead,
   patTail,

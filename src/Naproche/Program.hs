@@ -1,7 +1,8 @@
 -- |
--- Authors: Makarius Wenzel (2021)
---
--- Naproche program context: Console or PIDE.
+-- Module      : Naproche.Program
+-- Description : Naproche program context: Console or PIDE.
+-- Copyright   : (c) Makarius Wenzel, 2021
+-- License     : GPL-3
 module Naproche.Program (
   Context, console, is_pide, check_pide,
   write_message, read_message, exchange_message, exchange_message0,

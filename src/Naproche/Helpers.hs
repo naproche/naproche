@@ -1,7 +1,8 @@
 -- |
--- Authors: Adrian De Lon (2021)
---
--- TODO: Add description.
+-- Module      : Naproche.Helpers
+-- Description : TODO
+-- Copyright   : (c) 2021, Adrian De Lon
+-- License     : GPL-3
 module Naproche.Helpers where
 
 import Control.Monad

@@ -3,10 +3,9 @@
 
 -- |
 -- Module      : SAD.Core.Message
+-- Description : Formal output messages, with PIDE (Prover IDE) support.
 -- Copyright   : (c) 2018, 2021, Makarius Wenzel
 -- License     : GPL-3
---
--- Formal output messages, with PIDE (Prover IDE) support.
 module SAD.Core.Message (
   reports_text, report_text, reports, report,
   console_position, show_position,

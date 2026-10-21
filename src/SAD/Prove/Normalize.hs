@@ -2,10 +2,9 @@
 
 -- |
 -- Module      : SAD.Prove.Normalize
+-- Description : Normalization of formulas.
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Normalization of formulas.
 module SAD.Prove.Normalize (
   simplify,
   dec,

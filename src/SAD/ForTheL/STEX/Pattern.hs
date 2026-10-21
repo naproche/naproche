@@ -2,10 +2,9 @@
 
 -- |
 -- Module      : SAD.ForTheL.STEX.Pattern
--- Copyright   : (c) 2025 Marcel Schütz
+-- Description : Pattern parsing (sTeX).
+-- Copyright   : (c) 2025, Marcel Schütz
 -- License     : GPL-3
---
--- Pattern parsing (sTeX).
 module SAD.ForTheL.STEX.Pattern (
   newPrdPattern,
   unnamedNotion,

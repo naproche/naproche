@@ -2,11 +2,10 @@
 
 -- |
 -- Module      : SAD.Core.Thesis
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : Maintain the current thesis.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Maintain the current thesis.
 module SAD.Core.Thesis (inferNewThesis) where
 
 import Control.Applicative

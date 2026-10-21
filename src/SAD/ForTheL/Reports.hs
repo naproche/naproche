@@ -3,11 +3,10 @@
 
 -- |
 -- Module      : SAD.ForTheL.Reports
--- Copyright   : (c) 2017 - 2018, Steffen Frerix,
+-- Description : PIDE markup reports for ForTheL text elements.
+-- Copyright   : (c) 2017 - 2018, Steffen Frerix
 --               (c) 2018, Makarius Wenzel
 -- License     : GPL-3
---
--- PIDE markup reports for ForTheL text elements.
 module SAD.ForTheL.Reports (
   addMarkup,
   markupToken,

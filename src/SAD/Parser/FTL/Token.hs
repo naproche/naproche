@@ -2,10 +2,9 @@
 
 -- |
 -- Module      : SAD.Parser.FTL.Token
+-- Description : Tokenization of input.
 -- Copyright   : (c) 2024, Marcel Schütz
 -- License     : GPL-3
---
--- Tokenization of input.
 module SAD.Parser.FTL.Token (
   tokenize
 ) where

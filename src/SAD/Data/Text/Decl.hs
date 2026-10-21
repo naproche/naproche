@@ -1,9 +1,8 @@
 -- |
 -- Module      : SAD.Data.Text.Decl
+-- Description : Variable declarations.
 -- Copyright   : (c) 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Variable declarations.
 module SAD.Data.Text.Decl (
   Decl(..),
   Serial,

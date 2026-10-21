@@ -2,10 +2,9 @@
 
 -- |
 -- Module      : SAD.ForTheL.FTL.Base
--- Copyright   : (c) 2025 Marcel Schütz
+-- Description : ForTheL state (FTL).
+-- Copyright   : (c) 2025, Marcel Schütz
 -- License     : GPL-3
---
--- ForTheL state (FTL).
 module SAD.ForTheL.FTL.Base (
   addInits
 ) where

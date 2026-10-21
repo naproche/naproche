@@ -1,11 +1,10 @@
 -- |
 -- Module      : SAD.Import.Reader
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : Main text reading functions.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 --               (c) 2024, Marcel Schütz
 -- License     : GPL-3
---
--- Main text reading functions.
 module SAD.Import.Reader (
   readProofText
 ) where

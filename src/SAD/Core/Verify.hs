@@ -1,11 +1,10 @@
 -- |
 -- Module      : SAD.Core.Verify
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
---               (c) 2017 - 2018, Steffen Frerix,
+-- Description : Main verification loop.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
+--               (c) 2017 - 2018, Steffen Frerix
 --               (c) 2021 - 2022, Makarius Wenzel
 -- License     : GPL-3
---
--- Main verification loop.
 module SAD.Core.Verify (verifyRoot) where
 
 import Control.Monad (unless, when)

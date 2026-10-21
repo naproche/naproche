@@ -2,11 +2,10 @@
 
 -- |
 -- Module      : SAD.Data.Formula.Kit
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : Various functions on formulas.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Various functions on formulas.
 module SAD.Data.Formula.Kit where
 
 import Control.Monad

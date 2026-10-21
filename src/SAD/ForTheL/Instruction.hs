@@ -2,12 +2,11 @@
 
 -- |
 -- Module      : SAD.ForTheL.Instruction
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
---               (c) 2017 - 2018, Steffen Frerix,
+-- Description : Syntax of ForThel Instructions.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
+--               (c) 2017 - 2018, Steffen Frerix
 --               (c) 2018, Makarius Wenzel
 -- License     : GPL-3
---
--- Syntax of ForThel Instructions.
 module SAD.ForTheL.Instruction (
   instr,
   instrDrop,

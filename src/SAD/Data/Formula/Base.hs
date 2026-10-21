@@ -2,11 +2,10 @@
 
 -- |
 -- Module      : SAD.Data.Formula.Base
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : Core functions on formulas.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Core functions on formulas.
 module SAD.Data.Formula.Base where
 
 import Control.Monad.Identity

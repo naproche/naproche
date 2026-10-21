@@ -3,10 +3,9 @@
 
 -- |
 -- Module      : SAD.Core.Rewrite
+-- Description : Term rewriting: extraction of rules and proof of equlities.
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Term rewriting: extraction of rules and proof of equlities.
 module SAD.Core.Rewrite (
   equalityReasoning,
   lpoGe

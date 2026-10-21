@@ -3,11 +3,10 @@
 
 -- |
 -- Module      : SAD.Core.Check
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : Well-definedness check and evidence collection.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Well-definedness check and evidence collection.
 module SAD.Core.Check (fillDef) where
 
 import Control.Monad (MonadPlus(..), guard)

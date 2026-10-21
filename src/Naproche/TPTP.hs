@@ -1,7 +1,8 @@
 -- |
--- Authors: Makarius Wenzel (2021)
---
--- Support for TPTP syntax.
+-- Module      : Naproche.TPTP
+-- Description : Support for TPTP syntax.
+-- Copyright   : (c) 2021, Makarius Wenzel
+-- License     : GPL-3
 --
 -- See also http://www.tptp.org/TPTP/SyntaxBNF.html
 module Naproche.TPTP (

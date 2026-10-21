@@ -3,10 +3,9 @@
 
 -- |
 -- Module      : SAD.Parser.Combinators
+-- Description : Parser combinators.
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Parser combinators.
 module SAD.Parser.Combinators where
 
 import Control.Applicative

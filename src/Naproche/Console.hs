@@ -1,7 +1,8 @@
 -- |
--- Authors: Makarius Wenzel (2021)
---
--- Access to physical console.
+-- Module      : Naproche.Console
+-- Description : Access to physical console.
+-- Copyright   : (c) 2021, Makarius Wenzel
+-- License     : GPL-3
 module Naproche.Console (
   setup,
   stdout,

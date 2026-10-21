@@ -3,9 +3,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Authors: Makarius Wenzel (2021)
---
--- External provers.
+-- Module      : Naproche.Prover
+-- Description : External provers.
+-- Copyright   : (c) 2021, Makarius Wenzel
+-- License     : GPL-3
 module Naproche.Prover (
   Prover, Status (..), get_name, run, status, run_status,
   timeout, memory_limit, by_contradiction,

@@ -2,12 +2,11 @@
 
 -- |
 -- Module      : SAD.Parser.Token
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
---               (c) 2017 - 2018, Steffen Frerix,
+-- Description : Generic tokenization setup.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
+--               (c) 2017 - 2018, Steffen Frerix
 --               (c) 2024, Marcel Schütz
 -- License     : GPL-3
---
--- Generic tokenization setup
 module SAD.Parser.Token (
   Token(..),
   renderTokens,

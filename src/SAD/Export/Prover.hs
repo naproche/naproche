@@ -2,12 +2,11 @@
 
 -- |
 -- Module      : SAD.Export.Prover
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
---               (c) 2017 - 2018, Steffen Frerix,
+-- Description : Prover interface: export a proof task to an external prover.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
+--               (c) 2017 - 2018, Steffen Frerix
 --               (c) 2018, 2021, Makarius Wenzel
 -- License     : GPL-3
---
--- Prover interface: export a proof task to an external prover.
 module SAD.Export.Prover (
   Cache,
   init_cache,

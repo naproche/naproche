@@ -3,10 +3,9 @@
 
 -- |
 -- Module      : SAD.Parser.Lexer
+-- Description : Generic lexing setup.
 -- Copyright   : (c) 2024, Marcel Schütz
 -- License     : GPL-3
---
--- Generic lexing setup
 module SAD.Parser.Lexer where
 
 import Data.Set qualified as Set

@@ -2,12 +2,11 @@
 
 -- |
 -- Module      : SAD.ForTheL.Base
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : FoTheL state and state management, parsing of primitives,
+--               operations on variables and macro expressions.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- FoTheL state and state management, parsing of primitives, operations on
--- variables and macro expressions.
 module SAD.ForTheL.Base where
 
 import Control.Applicative

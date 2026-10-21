@@ -3,11 +3,10 @@
 
 -- |
 -- Module      : SAD.Core.Reason
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : The reasoner handles proof tasks.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- The reasoner handles proof tasks.
 --
 -- Trivial proof tasks can be discharged quickly without calling an external
 -- prover. Non-trivial proof tasks are exported to an external prover. If the

@@ -7,10 +7,9 @@
 
 -- |
 -- Module      : SAD.Parser.Base
+-- Description : Parser datatype and monad instance.
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Parser datatype and monad instance.
 module SAD.Parser.Base (
   Parser(..),
   Continuation,

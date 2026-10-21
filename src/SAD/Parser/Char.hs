@@ -1,9 +1,8 @@
 -- |
 -- Module      : SAD.Parser.Char
--- Copyright   : (c) 2026 Marcel Schütz
+-- Description : Character Categories.
+-- Copyright   : (c) 2026, Marcel Schütz
 -- License     : GPL-3
---
--- Character Categories.
 module SAD.Parser.Char where
 
 import Data.Char qualified as Char

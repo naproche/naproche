@@ -2,11 +2,10 @@
 
 -- |
 -- Module      : SAD.ForTheL.STEX.Extension
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : Language extensions (sTeX).
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Language extensions (sTeX).
 module SAD.ForTheL.STEX.Extension (
   defExtend,
   sigExtend,

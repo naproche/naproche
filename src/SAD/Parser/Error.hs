@@ -2,10 +2,9 @@
 
 -- |
 -- Module      : SAD.Parser.Error
+-- Description : Message and Parse Error data type and core functions.
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Message and Parse Error data type and core functions.
 module SAD.Parser.Error (
   ParseError(..),
   newErrorMessage,

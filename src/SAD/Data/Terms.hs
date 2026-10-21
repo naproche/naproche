@@ -2,10 +2,9 @@
 
 -- |
 -- Module      : SAD.Data.Terms
+-- Description : TODO
 -- Copyright   : (c) 2019, Anton Lorenzen
 -- License     : GPL-3
---
--- TODO: Add description.
 module SAD.Data.Terms where
 
 import Data.Text (Text)

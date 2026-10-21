@@ -3,12 +3,11 @@
 
 -- |
 -- Module      : SAD.Data.Formula.Show
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : Show instance for formulas.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 --               (c) 2024, Marcel Schütz
 -- License     : GPL-3
---
--- Show instance for formulas.
 module SAD.Data.Formula.Show (
   symEncode
 ) where

@@ -2,10 +2,9 @@
 
 -- |
 -- Module      : SAD.Data.Formula.HOL
--- Copyright   : (c) 2021,
+-- Description : The Naproche logic within Isabelle/HOL.
+-- Copyright   : (c) 2021, Makarius Wenzel
 -- License     : GPL-3
---
--- The Naproche logic within Isabelle/HOL.
 module SAD.Data.Formula.HOL (
   base_type, prop_type, export_formula,
   cert_terms, cert_term, print_terms, print_term,

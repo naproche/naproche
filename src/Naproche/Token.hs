@@ -3,7 +3,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Authors: Adrian De Lon (2021)
+-- Module      : Naproche.Token
+-- Description : TODO
+-- Copyright   : (c) 2021, Adrian De Lon
+-- License     : GPL-3
 --
 -- This module defines the Naproche lexer and its associated data types.
 -- The lexer takes 'Text' as input and produces chunks (list of lists)

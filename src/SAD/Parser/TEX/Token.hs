@@ -2,10 +2,9 @@
 
 -- |
 -- Module      : SAD.Parser.TEX.Token
+-- Description : Tokenization of input.
 -- Copyright   : (c) 2024 - 2025, Marcel Schütz
 -- License     : GPL-3
---
--- Tokenization of input.
 module SAD.Parser.TEX.Token (
   tokenize
 ) where

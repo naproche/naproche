@@ -2,12 +2,11 @@
 
 -- |
 -- Module      : SAD.ForTheL.TEX.Structure
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : Document parsing (TeX).
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
---               (c) 2025 Marcel Schütz
+--               (c) 2025, Marcel Schütz
 -- License     : GPL-3
---
--- Document parsing (TeX).
 module SAD.ForTheL.TEX.Structure where
 
 import Control.Applicative

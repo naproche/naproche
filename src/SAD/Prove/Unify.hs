@@ -1,9 +1,8 @@
 -- |
 -- Module      : SAD.Prove.Unify
+-- Description : Unification of literals.
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Unification of literals.
 module SAD.Prove.Unify (unify) where
 
 import Control.Monad

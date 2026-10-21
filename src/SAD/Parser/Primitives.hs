@@ -2,10 +2,9 @@
 
 -- |
 -- Module      : SAD.Parser.Primitives
+-- Description : Primitive parsers
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Primitive parsers
 module SAD.Parser.Primitives (
   -- * Primitive Token operations
   tokenPrim,

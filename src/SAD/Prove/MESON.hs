@@ -1,12 +1,11 @@
 -- |
 -- Module      : SAD.Prove.MESON
+-- Description : An implementation of the MESON algorithm.
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
---               (c) 2017 - 2018, Steffen Frerix,
---               (c) 2022, Makarius Wenzel,
+--               (c) 2017 - 2018, Steffen Frerix
+--               (c) 2022, Makarius Wenzel
 --               (c) 2024, Marcel Schütz
 -- License     : GPL-3
---
--- An implementation of the MESON algorithm.
 module SAD.Prove.MESON (
   Cache,
   init_cache,

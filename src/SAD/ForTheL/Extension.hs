@@ -2,11 +2,10 @@
 
 -- |
 -- Module      : SAD.ForTheL.Extension
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+-- Description : Language extensions.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Language extensions.
 module SAD.ForTheL.Extension (
   funVars,
   notionVars,

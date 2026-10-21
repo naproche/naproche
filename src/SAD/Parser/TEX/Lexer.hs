@@ -1,9 +1,8 @@
 -- |
 -- Module      : SAD.Parser.TEX.Lexer
+-- Description : Lexing FTL-TeX documents
 -- Copyright   : (c) 2024, Marcel Schütz
 -- License     : GPL-3
---
--- Lexing FTL-TeX documents
 module SAD.Parser.TEX.Lexer (
   Lexeme,
   lex,

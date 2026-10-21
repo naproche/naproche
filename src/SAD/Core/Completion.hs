@@ -2,10 +2,9 @@
 
 -- |
 -- Module      : SAD.Core.Completion
+-- Description : Executes Knuth-Bendix completion on a term rewriting system
 -- Copyright   : (c) 2019, Annika Hennes
 -- License     : GPL-3
---
--- Executes Knuth-Bendix completion on a term rewriting system
 module SAD.Core.Completion (
   Equation(..),
   toFormula,

@@ -3,13 +3,12 @@
 
 -- |
 -- Module      : SAD.Main
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
---               (c) 2017 - 2018, Steffen Frerix,
+-- Description : Main application entry point: Terminal or PIDE mode.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
+--               (c) 2017 - 2018, Steffen Frerix
 --               (c) 2018, Makarius Wenzel
 --               (c) 2024 - 2025, Marcel Schütz
 -- License     : GPL-3
---
--- Main application entry point: Terminal or PIDE mode.
 module SAD.Main where
 
 import Control.Exception (Exception, catch, handle, throwIO)

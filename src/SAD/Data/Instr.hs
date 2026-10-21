@@ -2,12 +2,11 @@
 
 -- |
 -- Module      : SAD.Data.Instr
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
---               (c) 2017 - 2018, Steffen Frerix,
+-- Description : Instruction datatype and core functions.
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
+--               (c) 2017 - 2018, Steffen Frerix
 --               (c) 2018, 2022, Makarius Wenzel
 -- License     : GPL-3
---
--- Instruction datatype and core functions.
 module SAD.Data.Instr (
   Dialect(..), Instr(..), Drop(..), Command(..),
   getInstr, addInstr, dropInstr,

@@ -2,12 +2,11 @@
 
 -- |
 -- Module      : SAD.ForTheL.FTL.Statement
--- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
---               (c) 2017 - 2018, Steffen Frerix,
---               (c) 2025 Marcel Schütz
+-- Description : Statements (FTL)
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich
+--               (c) 2017 - 2018, Steffen Frerix
+--               (c) 2025, Marcel Schütz
 -- License     : GPL-3
---
--- Statements (FTL)
 module SAD.ForTheL.FTL.Statement (
   statement,
   anotion,

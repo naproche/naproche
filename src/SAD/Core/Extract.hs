@@ -4,11 +4,10 @@
 
 -- |
 -- Module      : SAD.Core.Extract
+-- Description : Extraction of various information from formulas: definitions,
+--               map evaluations, elementhood conditions for classes.
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Extraction of various information from formulas: definitions,
--- map evaluations, elementhood conditions for classes
 module SAD.Core.Extract (
   addDefinition,
   addEvaluation,

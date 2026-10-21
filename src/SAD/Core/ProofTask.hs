@@ -2,10 +2,10 @@
 
 -- |
 -- Module      : SAD.Core.ProofTask
+-- Description : Generation of proof tasks for low-level map and class
+--               definitions and choices.
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
---
--- Generation of proof tasks for low-level map and class definitions and choices.
 module SAD.Core.ProofTask (generateProofTask) where
 
 import Data.Set (Set)
