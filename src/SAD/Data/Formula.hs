@@ -19,5 +19,5 @@ import SAD.Data.Formula.Base
 import SAD.Data.Formula.Kit
 import SAD.Data.Formula.Show
 import SAD.Data.Tag
-import SAD.Data.VarName
 import SAD.Data.Terms
+import SAD.Data.VarName

@@ -9,64 +9,68 @@
 -- Main application entry point: Terminal or PIDE mode.
 
 
-{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TupleSections #-}
 
 module SAD.Main where
 
-import Control.Monad (when)
-import Data.Time (addUTCTime, getCurrentTime, diffUTCTime)
-import Data.Maybe (mapMaybe)
-import Data.List (isSuffixOf)
-import Control.Exception qualified as Exception
 import Control.Exception (Exception, catch, handle, throwIO)
-import System.Console.GetOpt qualified as GetOpt
-import System.Environment qualified as Environment
-import System.IO
-import System.FilePath.Posix
-import System.Directory
-import System.Process (callCommand)
+import Control.Exception qualified as Exception
+import Control.Monad (when)
+
+import Data.List (isSuffixOf)
+import Data.Maybe (mapMaybe)
+import Data.Time (addUTCTime, diffUTCTime, getCurrentTime)
+
+import Isabelle.Byte_Message qualified as Byte_Message
+import Isabelle.Bytes (Bytes)
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.File qualified as File
+import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
+import Isabelle.Library
+import Isabelle.Naproche qualified as Naproche
+import Isabelle.Options qualified as Options
+import Isabelle.Position qualified as Position
+import Isabelle.Process_Result qualified as Process_Result
+import Isabelle.Server qualified as Server
+import Isabelle.UUID qualified as UUID
+import Isabelle.YXML qualified as YXML
+
+import Naproche.Console qualified as Console
+import Naproche.Param qualified as Param
+import Naproche.Program qualified as Program
+import Naproche.System (is_windows)
+
 import Network.Socket (Socket)
 
-import SAD.Prove.MESON qualified as MESON
-import SAD.Export.Prover qualified as Prover
+import SAD.Core.Base (Counter(..), Timer(..), maximalTimer, showTimeDiff,
+                      sumCounter, sumTimer)
+import SAD.Core.Message (Kind(..), errorParser, outputMain)
+import SAD.Core.Verify (verifyRoot)
 import SAD.Data.Instr
 import SAD.Data.Text.Block (ProofText(..), parseErrors)
-import SAD.Core.Base (sumCounter, showTimeDiff, sumTimer, maximalTimer, Timer(..), Counter(..))
-import SAD.Core.Message (outputMain, errorParser, Kind(..))
-import SAD.Core.Verify (verifyRoot)
+import SAD.Export.Prover qualified as Prover
 import SAD.Import.Reader (readProofText)
 import SAD.Parser.Error (ParseError(..))
 import SAD.Parser.FTL.Lexer qualified as FTL
-import SAD.Parser.TEX.Lexer qualified as TEX
-import SAD.Parser.STEX.Lexer qualified as STEX
 import SAD.Parser.FTL.Token qualified as FTL
-import SAD.Parser.TEX.Token qualified as TEX
+import SAD.Parser.STEX.Lexer qualified as STEX
 import SAD.Parser.STEX.Token qualified as STEX
+import SAD.Parser.TEX.Lexer qualified as TEX
+import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.Token (renderTokens)
+import SAD.Prove.MESON qualified as MESON
 
-import Isabelle.Bytes qualified as Bytes
-import Isabelle.Bytes (Bytes)
-import Isabelle.Byte_Message qualified as Byte_Message
-import Isabelle.Naproche qualified as Naproche
-import Isabelle.Server qualified as Server
-import Isabelle.Options qualified as Options
-import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
-import Isabelle.UUID qualified as UUID
-import Isabelle.Position qualified as Position
-import Isabelle.YXML qualified as YXML
-import Isabelle.Process_Result qualified as Process_Result
-import Isabelle.Library
-import Isabelle.File qualified as File
-
-import Naproche.Program qualified as Program
-import Naproche.Console qualified as Console
-import Naproche.Param qualified as Param
-import Naproche.System (is_windows)
+import System.Console.GetOpt qualified as GetOpt
+import System.Directory
+import System.Environment qualified as Environment
+import System.FilePath.Posix
+import System.IO
+import System.Process (callCommand)
 
 
 main :: IO ()
-main  = do
+main = do
   Console.setup
   -- Get the initial arguments. When Naproche is run in a terminal, they are
   -- given by the command line arguments that have been passed to Naproche by
@@ -293,9 +297,9 @@ verifyInputText dialect mesonCache proverCache proofTexts = do
     ++ " - trivial "  ++ show trivialChecks
     ++ " - proved "   ++ show (accumulate SuccessfulChecks)
     ++ " - unfolds "  ++ show (accumulate Unfolds)
-  let proverTime     = sumTimer trackers ProofTimer
-  let simplifyTime   = sumTimer trackers SimplifyTimer
-  let proveFinish    = addUTCTime proverTime proveStart
+  let proverTime = sumTimer trackers ProofTimer
+  let simplifyTime = sumTimer trackers SimplifyTimer
+  let proveFinish = addUTCTime proverTime proveStart
   let simplifyFinish = addUTCTime simplifyTime proveFinish
   (outputMain TRACING Position.none . make_bytes) $
     "parser "           <> showTimeDiff (diffUTCTime proveStart startTime)

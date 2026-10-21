@@ -17,23 +17,24 @@ module SAD.ForTheL.Instruction (
   instrRead
 ) where
 
-import Control.Monad
 import Control.Applicative ((<|>))
+import Control.Monad
+
 import Data.Text (Text)
 import Data.Text qualified as Text
 
-import SAD.Data.Instr
-import SAD.ForTheL.Base
-import SAD.Parser.Combinators
-import SAD.Parser.Primitives
-import SAD.ForTheL.Reports
-import SAD.Parser.Token
-
-import Isabelle.Value qualified as Value
-import Isabelle.Position qualified as Position
 import Isabelle.Library
+import Isabelle.Position qualified as Position
+import Isabelle.Value qualified as Value
 
 import Naproche.Param qualified as Param
+
+import SAD.Data.Instr
+import SAD.ForTheL.Base
+import SAD.ForTheL.Reports
+import SAD.Parser.Combinators
+import SAD.Parser.Primitives
+import SAD.Parser.Token
 
 
 instrPos :: (Position.T -> FTL ()) -> FTL a -> FTL (Position.T, a)

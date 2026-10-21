@@ -12,28 +12,30 @@
 
 module SAD.ForTheL.Structure where
 
-import Data.List
-import Data.Maybe
 import Control.Applicative
 import Control.Monad
+
+import Data.List
+import Data.Maybe
+import Data.Set (Set)
+import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as Text
-import Data.Set qualified as Set
-import Data.Set (Set)
 
-import SAD.ForTheL.Base
-import SAD.ForTheL.Statement
-import SAD.ForTheL.Reports (addBlockReports, markupToken, markupTokenOf, markupTokenSeqOf)
-import qualified SAD.ForTheL.Reports as Reports
-import SAD.Parser.Base
-import SAD.Parser.Combinators
-import SAD.Parser.Token
-import SAD.Parser.Primitives
-import SAD.Parser.Char (isAsciiAlphaNum)
+import SAD.Data.Formula
 import SAD.Data.Text.Block (Block, ProofText(..), Section(..))
 import SAD.Data.Text.Block qualified as Block
-import SAD.Data.Formula
 import SAD.Data.Text.Decl
+import SAD.ForTheL.Base
+import SAD.ForTheL.Reports qualified as Reports
+import SAD.ForTheL.Reports (addBlockReports, markupToken, markupTokenOf,
+                            markupTokenSeqOf)
+import SAD.ForTheL.Statement
+import SAD.Parser.Base
+import SAD.Parser.Char (isAsciiAlphaNum)
+import SAD.Parser.Combinators
+import SAD.Parser.Primitives
+import SAD.Parser.Token
 
 
 -- ** Adding meta data

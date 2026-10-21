@@ -6,12 +6,12 @@
 -- Parser datatype and monad instance.
 
 
-{-# LANGUAGE PolymorphicComponents #-}
+{-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE MultiWayIf #-}
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE PolymorphicComponents #-}
 
 module SAD.Parser.Base (
   Parser(..),
@@ -30,26 +30,27 @@ module SAD.Parser.Base (
   getTokens
 ) where
 
+import Control.Applicative
 import Control.Monad
 import Control.Monad.Fail qualified as Fail
-import Control.Applicative
-import Control.Monad.State.Class (MonadState(put, get))
+import Control.Monad.State.Class (MonadState(get, put))
+
 import Data.List
 import Data.List.Extra (notNull)
 import Data.Text qualified as Text
 
-import SAD.Parser.Token
-import SAD.Parser.Error
-import SAD.Data.Instr (Dialect)
-import SAD.Core.Message (errorParser)
-
-import Isabelle.Position qualified as Position
 import Isabelle.Library (show_bytes)
+import Isabelle.Position qualified as Position
+
+import SAD.Core.Message (errorParser)
+import SAD.Data.Instr (Dialect)
+import SAD.Parser.Error
+import SAD.Parser.Token
 
 
 -- | Parser state
 data State st = State
-  { stUser  :: st
+  { stUser :: st
   , stInput :: [Token]
   , dialect :: Dialect
   , lastPosition :: Position.T
@@ -92,7 +93,7 @@ instance Applicative (Parser st) where
   (<*>) = ap
 
 instance Monad (Parser st) where
-  return  = pure
+  return = pure
 
   p >>= f = Parser \st ok consumedFail emptyFail ->
     let pok = tryParses f ok consumedFail emptyFail
@@ -188,8 +189,8 @@ runP :: Parser st a -> State st -> Reply (ParseResult st a)
 runP p st = runParser p st ok consumedFail emptyFail
   where
     ok _ emptyOk consumedOk = Ok (emptyOk ++ consumedOk)
-    consumedFail err  = Error err
-    emptyFail err     = Error err
+    consumedFail err = Error err
+    emptyFail err = Error err
 
 
 -- Parser state management

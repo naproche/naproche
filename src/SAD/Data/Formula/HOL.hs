@@ -1,6 +1,6 @@
 -- |
 -- Module      : SAD.Data.Formula.HOL
--- Copyright   : (c) 2021, 
+-- Copyright   : (c) 2021,
 -- License     : GPL-3
 --
 -- The Naproche logic within Isabelle/HOL.
@@ -14,30 +14,30 @@ module SAD.Data.Formula.HOL (
   Sequent, make_sequent, encode_sequent, print_sequents, print_sequent, export_sequent
 ) where
 
-import Data.Map.Strict qualified as Map
 import Data.Map.Strict (Map)
-
-import SAD.Data.VarName (VariableName (..))
-import SAD.Data.Text.Decl (Decl (..))
-import SAD.Data.Terms
-import SAD.Data.Formula.Base
-import SAD.Data.Text.Context (Context, formula)
+import Data.Map.Strict qualified as Map
 
 import Isabelle.Bytes (Bytes)
-import Isabelle.Value qualified as Value
-import Isabelle.Name qualified as Isabelle
-import Isabelle.Term qualified as Isabelle
-import Isabelle.Term ((--->))
 import Isabelle.HOL qualified as Isabelle
-import Isabelle.Naproche qualified as Isabelle
 import Isabelle.Library
-import Isabelle.YXML qualified as YXML
-import Isabelle.XML.Encode qualified as Encode
+import Isabelle.Name qualified as Isabelle
+import Isabelle.Naproche qualified as Isabelle
 import Isabelle.Position qualified as Position
-import Isabelle.Term_XML.Encode qualified as Encode
+import Isabelle.Term ((--->))
+import Isabelle.Term qualified as Isabelle
 import Isabelle.Term_XML.Decode qualified as Decode
+import Isabelle.Term_XML.Encode qualified as Encode
+import Isabelle.Value qualified as Value
+import Isabelle.XML.Encode qualified as Encode
+import Isabelle.YXML qualified as YXML
 
 import Naproche.Program qualified as Program
+
+import SAD.Data.Formula.Base
+import SAD.Data.Terms
+import SAD.Data.Text.Context (Context, formula)
+import SAD.Data.Text.Decl (Decl(..))
+import SAD.Data.VarName (VariableName(..))
 
 
 {- export formula -}
@@ -85,7 +85,7 @@ term_name (TermUnaryVerb t) = "do" <> make_bytes t
 term_name (TermMultiVerb t) = "mdo" <> make_bytes t
 term_name (TermTask n) = "tsk " <> Value.print_int n
 term_name TermEquality = undefined
-term_name TermLess  = undefined
+term_name TermLess = undefined
 term_name TermThesis = undefined
 
 consts :: Map TermName Bytes

@@ -14,32 +14,36 @@ module Naproche.Program (
   serials, serial
 ) where
 
-import Prelude hiding (error)
-import Data.Maybe (fromMaybe, mapMaybe)
+import Control.Concurrent (ThreadId)
+import Control.Concurrent qualified as Concurrent
+import Control.Exception (Exception)
+import Control.Exception qualified as Exception
+import Control.Monad (replicateM, unless, when)
+
+import Data.ByteString.Char8 qualified as Char8
 import Data.IORef (IORef)
 import Data.IORef qualified as IORef
-import System.IO.Unsafe (unsafePerformIO)
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
-import Data.ByteString.Char8 qualified as Char8
-import Control.Concurrent (ThreadId)
-import Control.Monad (when, unless, replicateM)
-import Control.Concurrent qualified as Concurrent
-import Control.Exception qualified as Exception
-import Control.Exception (Exception)
+import Data.Maybe (fromMaybe, mapMaybe)
+
+import Isabelle.Byte_Message qualified as Byte_Message
+import Isabelle.Bytes (Bytes)
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Library
+import Isabelle.Naproche qualified as Naproche
+import Isabelle.Options qualified as Options
+import Isabelle.Position qualified as Position
+import Isabelle.Value qualified as Value
+import Isabelle.XML.Decode qualified as Decode
+import Isabelle.XML.Encode qualified as Encode
+import Isabelle.YXML qualified as YXML
+
 import Network.Socket (Socket)
 
-import Isabelle.Bytes qualified as Bytes
-import Isabelle.Bytes (Bytes)
-import Isabelle.Byte_Message qualified as Byte_Message
-import Isabelle.Value qualified as Value
-import Isabelle.Position qualified as Position
-import Isabelle.Options qualified as Options
-import Isabelle.XML.Encode qualified as Encode
-import Isabelle.XML.Decode qualified as Decode
-import Isabelle.YXML qualified as YXML
-import Isabelle.Naproche qualified as Naproche
-import Isabelle.Library
+import Prelude hiding (error)
+
+import System.IO.Unsafe (unsafePerformIO)
 
 
 {- program context -}

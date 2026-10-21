@@ -14,29 +14,31 @@
 -- for instance, braces are assumed to be balanced.
 
 
-{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE MultiWayIf #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Naproche.Token where
 
 import Control.Monad.State.Strict
-import Data.Void (Void)
+
+import Data.Char
 import Data.Foldable
 import Data.Function (on)
-import Data.Text qualified as Text
-import Data.Text (Text)
-import Text.Megaparsec hiding (State)
-import Text.Megaparsec.Char qualified as Char
-import Text.Megaparsec.Char.Lexer qualified as Lexer
 import Data.String (IsString(..))
-import Data.Char
+import Data.Text (Text)
+import Data.Text qualified as Text
+import Data.Void (Void)
 
 import Isabelle.Bytes (Bytes)
 import Isabelle.Library (make_bytes)
 
 import Naproche.Helpers (guardM)
+
+import Text.Megaparsec hiding (State)
+import Text.Megaparsec.Char qualified as Char
+import Text.Megaparsec.Char.Lexer qualified as Lexer
 
 
 runLexer :: String -> Text -> Either (ParseErrorBundle Text Void) [[Located Tok]]
@@ -296,7 +298,7 @@ command = lexeme $ try do
     cmd <- takeWhile1P (Just "TeX command") isAlpha
     if
         | cmd == "begin" || cmd == "end" -> empty
-        | otherwise -> pure (Command (make_bytes cmd))
+        | otherwise                      -> pure (Command (make_bytes cmd))
 
 
 topLevelEnvs :: [Text]
@@ -336,12 +338,12 @@ end env = lexeme do
 
 beginTopLevel, endTopLevel :: Lexer (Located Tok)
 beginTopLevel = asum $ begin <$> topLevelEnvs
-endTopLevel   = asum $ end   <$> topLevelEnvs
+endTopLevel = asum $ end   <$> topLevelEnvs
 
 
 beginLowLevel, endLowLevel :: Lexer (Located Tok)
 beginLowLevel = asum $ begin <$> lowLevelEnvs
-endLowLevel   = asum $ end   <$> lowLevelEnvs
+endLowLevel = asum $ end   <$> lowLevelEnvs
 
 
 -- | Turns a Lexer into one that tracks the source position of the token

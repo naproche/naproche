@@ -20,25 +20,26 @@ module SAD.ForTheL.FTL.Structure (
 
 import Control.Applicative
 import Control.Monad.State.Class (modify)
+
 import Data.Text (Text)
 
-import SAD.ForTheL.Structure
-import SAD.ForTheL.Base
-import SAD.ForTheL.Statement
-import SAD.ForTheL.FTL.Extension qualified as FTL
-import SAD.ForTheL.FTL.Statement qualified as FTL
-import SAD.ForTheL.Reports (markupToken, markupTokenOf)
-import SAD.ForTheL.Instruction
-import qualified SAD.ForTheL.Reports as Reports
-import SAD.Parser.Base
-import SAD.Parser.Combinators
-import SAD.Parser.Token
-import SAD.Parser.Primitives
+import SAD.Data.Formula
 import SAD.Data.Instr
+import SAD.Data.Tag qualified as Tag
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import SAD.Data.Text.Block qualified as Block
-import SAD.Data.Formula
-import SAD.Data.Tag qualified as Tag
+import SAD.ForTheL.Base
+import SAD.ForTheL.FTL.Extension qualified as FTL
+import SAD.ForTheL.FTL.Statement qualified as FTL
+import SAD.ForTheL.Instruction
+import SAD.ForTheL.Reports qualified as Reports
+import SAD.ForTheL.Reports (markupToken, markupTokenOf)
+import SAD.ForTheL.Statement
+import SAD.ForTheL.Structure
+import SAD.Parser.Base
+import SAD.Parser.Combinators
+import SAD.Parser.Primitives
+import SAD.Parser.Token
 
 
 -- * Parsing a ForTheL text

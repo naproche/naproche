@@ -7,9 +7,9 @@
 -- Verifier state monad and common functions.
 
 
-{-# LANGUAGE PolymorphicComponents #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE PolymorphicComponents #-}
 
 module SAD.Core.Base (
   CRM,
@@ -40,35 +40,36 @@ module SAD.Core.Base (
 ) where
 
 import Control.Applicative (Alternative(..))
-import Control.Monad (MonadPlus(..), liftM, ap, guard, when, unless)
+import Control.Monad (MonadPlus(..), ap, guard, liftM, unless, when)
 import Control.Monad.Reader
 import Control.Monad.State
-import Data.IORef
-import Data.Maybe (isJust, fromJust)
-import Data.Text (Text)
-import Data.Time (NominalDiffTime, getCurrentTime, diffUTCTime)
-import Data.Set qualified as Set
-import Data.Map qualified as Map
 
+import Data.IORef
+import Data.Map qualified as Map
+import Data.Maybe (fromJust, isJust)
+import Data.Set qualified as Set
+import Data.Text (Text)
+import Data.Time (NominalDiffTime, diffUTCTime, getCurrentTime)
+
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Library (BYTES, make_bytes)
+import Isabelle.Position qualified as Position
+
+import Naproche.Param qualified as Param
+
+import SAD.Core.Message qualified as Message
 import SAD.Data.Definition
 import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Rules (Rule)
+import SAD.Data.Structures.DisTree (DisTree)
+import SAD.Data.Structures.DisTree qualified as DisTree
 import SAD.Data.Text.Block (Block, makeBlock)
 import SAD.Data.Text.Block qualified as Block (Section(..))
 import SAD.Data.Text.Context (Context(Context), MRule(..))
-import SAD.Prove.MESON qualified as MESON
-import SAD.Export.Prover qualified as Prover
-import SAD.Core.Message qualified as Message
-import SAD.Data.Structures.DisTree (DisTree)
-import SAD.Data.Structures.DisTree qualified as DisTree
 import SAD.Data.Text.Context qualified as Context (name)
-
-import Isabelle.Bytes qualified as Bytes
-import Isabelle.Position qualified as Position
-import Isabelle.Library (BYTES, make_bytes)
-
-import Naproche.Param qualified as Param
+import SAD.Export.Prover qualified as Prover
+import SAD.Prove.MESON qualified as MESON
 
 
 -- | All of these counters are for gathering statistics to print out later
@@ -126,19 +127,19 @@ instance MonadPlus CRM where
 
 data VState = VState
   { thesisMotivated :: Bool
-  , rewriteRules    :: [Rule]
-  , evaluations     :: DisTree Evaluation -- (low level) evaluation rules
-  , currentThesis   :: Context
-  , currentBranch   :: [Block] -- branch of the current block
-  , currentContext  :: [Context]
-  , mesonRules      :: (DisTree MRule, DisTree MRule)
-  , definitions     :: Definitions
-  , guards          :: Guards -- tracks which atomic formulas appear as guard
-  , skolemCounter   :: Int
-  , instructions    :: [Instr]
-  , trackers        :: IORef [Tracker]
-  , mesonCache      :: MESON.Cache
-  , proverCache     :: Prover.Cache
+  , rewriteRules :: [Rule]
+  , evaluations :: DisTree Evaluation -- (low level) evaluation rules
+  , currentThesis :: Context
+  , currentBranch :: [Block] -- branch of the current block
+  , currentContext :: [Context]
+  , mesonRules :: (DisTree MRule, DisTree MRule)
+  , definitions :: Definitions
+  , guards :: Guards -- tracks which atomic formulas appear as guard
+  , skolemCounter :: Int
+  , instructions :: [Instr]
+  , trackers :: IORef [Tracker]
+  , mesonCache :: MESON.Cache
+  , proverCache :: Prover.Cache
   }
 
 initVState :: MESON.Cache -> Prover.Cache -> IO VState

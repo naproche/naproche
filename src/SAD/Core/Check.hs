@@ -12,23 +12,24 @@
 
 module SAD.Core.Check (fillDef) where
 
-import Data.Maybe (fromMaybe)
-import Data.Either (lefts,rights, isRight)
 import Control.Monad (MonadPlus(..), guard)
 import Control.Monad.Reader
+
+import Data.Either (isRight, lefts, rights)
+import Data.Maybe (fromMaybe)
 import Data.Text qualified as Text
 
+import Isabelle.Position qualified as Position
+
 import SAD.Core.Base
+import SAD.Core.Message qualified as Message
 import SAD.Core.Reason as Reason
 import SAD.Data.Definition hiding (Guards)
 import SAD.Data.Formula
 import SAD.Data.Instr
-import SAD.Data.Text.Context (Context)
-import SAD.Core.Message qualified as Message
 import SAD.Data.Text.Block qualified as Block (link, position)
+import SAD.Data.Text.Context (Context)
 import SAD.Data.Text.Context qualified as Context
-
-import Isabelle.Position qualified as Position
 
 
 {- check definitions and fortify terms with evidences in a formula -}
@@ -94,9 +95,9 @@ findDef :: Formula -> VerifyMonad (Guards, FortifiedTerm)
 findDef term@Trm{trmArgs = tArgs} = do
   def <- getDef term
   sb  <- match (defTerm def) term
-  let guards   = map (infoSub sb) $ defGuards def -- definition's guards
+  let guards = map (infoSub sb) $ defGuards def -- definition's guards
       evidence = map sb $ defEvidence def -- definitional evidence
-      newTerm  = term { trmInfo = evidence } -- fortified term
+      newTerm = term { trmInfo = evidence } -- fortified term
   return (guards, newTerm)
 
 {-
@@ -175,7 +176,7 @@ typings (context:restContext) term =
            else mzero
     dive (And f g) = albetDive g `mplus` albetDive f
     dive (Tag _ f) = albetDive f
-    dive _         = mzero
+    dive _ = mzero
 
     joinEvidences ls rs =
       filter (\l -> all (not . infoTwins term l) rs) ls ++ rs
@@ -188,7 +189,7 @@ typings (context:restContext) term =
 setInfo :: Formula -> VerifyMonad Formula
 setInfo t = do
   context <- asks currentContext
-  let lowlevelContext  = takeWhile Context.isLowLevel context
+  let lowlevelContext = takeWhile Context.isLowLevel context
       lowlevelEvidence = fromMaybe [] $ typings lowlevelContext t
   case t of
     t@Trm {} -> pure $ t {trmInfo = trmInfo t ++ lowlevelEvidence}

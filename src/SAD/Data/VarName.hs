@@ -7,8 +7,8 @@
 
 
 {-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Data.VarName (
   VariableName(..),
@@ -24,17 +24,18 @@ module SAD.Data.VarName (
   PosVar(..)
 ) where
 
+import Data.Function (on)
 import Data.Set (Set)
 import Data.Set qualified as Set
-import GHC.Magic (oneShot)
 import Data.Text (Text)
 import Data.Text qualified as Text
-import Data.Function (on)
+
+import GHC.Magic (oneShot)
+
+import Isabelle.Position qualified as Position
 
 import SAD.Core.Message (show_position)
 import SAD.Export.Presentation
-
-import Isabelle.Position qualified as Position
 
 
 -- These names may not reflect what the constructors are used for..

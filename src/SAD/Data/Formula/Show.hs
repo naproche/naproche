@@ -15,17 +15,17 @@ module SAD.Data.Formula.Show (
   symEncode
 ) where
 
+import Data.List qualified as List
 import Data.Text (Text)
 import Data.Text qualified as Text
-import Data.List qualified as List
+
+import Isabelle.Position qualified as Position
 
 import SAD.Data.Formula.Base
 import SAD.Data.Formula.Kit
-import SAD.Data.VarName
 import SAD.Data.Terms
+import SAD.Data.VarName
 import SAD.Export.Presentation
-
-import Isabelle.Position qualified as Position
 
 
 instance Show Formula where
@@ -163,10 +163,10 @@ decode s (t:ts) p d = dec s
     dec ('d':'t':cs) =
       showParen (ambig t) (showsFormula p d t) . decode cs ts p d
     dec ('z':c:cs@('d':'t':_)) = showChar c . showChar ' ' . dec cs
-    dec ('z':c:cs)   = showChar c . dec cs
-    dec cs@(':':_)   = showString cs
-    dec []           = showString ""
-    dec _            = showString s
+    dec ('z':c:cs) = showChar c . dec cs
+    dec cs@(':':_) = showString cs
+    dec [] = showString ""
+    dec _ = showString s
 
     ambig Trm {trmName = TermSymbolic tName} | "dt" `Text.isPrefixOf` tName = not $ appPattern (Text.drop 3 tName)
     ambig Trm {trmName = TermSymbolic tName} =
@@ -182,18 +182,18 @@ symEncode :: Text -> Text
 symEncode = Text.concat . map chc . Text.chunksOf 1
   where
     chc :: Text -> Text
-    chc "`" = "bq" ; chc "~"  = "tl" ; chc "!" = "ex"
-    chc "@" = "at" ; chc "$"  = "dl" ; chc "%" = "pc"
-    chc "^" = "cf" ; chc "&"  = "et" ; chc "*" = "as"
-    chc "(" = "lp" ; chc ")"  = "rp" ; chc "-" = "mn"
-    chc "+" = "pl" ; chc "="  = "eq" ; chc "[" = "lb"
-    chc "]" = "rb" ; chc "{"  = "lc" ; chc "}" = "rc"
+    chc "`" = "bq" ; chc "~" = "tl" ; chc "!" = "ex"
+    chc "@" = "at" ; chc "$" = "dl" ; chc "%" = "pc"
+    chc "^" = "cf" ; chc "&" = "et" ; chc "*" = "as"
+    chc "(" = "lp" ; chc ")" = "rp" ; chc "-" = "mn"
+    chc "+" = "pl" ; chc "=" = "eq" ; chc "[" = "lb"
+    chc "]" = "rb" ; chc "{" = "lc" ; chc "}" = "rc"
     chc ":" = "cl" ; chc "\'" = "qt" ; chc "\"" = "dq"
-    chc "<" = "ls" ; chc ">"  = "gt" ; chc "/" = "sl"
+    chc "<" = "ls" ; chc ">" = "gt" ; chc "/" = "sl"
     chc "?" = "qu" ; chc "\\" = "bs" ; chc "|" = "br"
-    chc ";" = "sc" ; chc ","  = "cm" ; chc "." = "dt"
-    chc "_" = "us" ; chc "#"  = "hs"
-    chc c   = Text.cons 'z' c
+    chc ";" = "sc" ; chc "," = "cm" ; chc "." = "dt"
+    chc "_" = "us" ; chc "#" = "hs"
+    chc c = Text.cons 'z' c
 
 symDecode :: String -> String
 symDecode s = sname [] s
@@ -230,7 +230,7 @@ symDecode s = sname [] s
     sname ac ('d':'t':cs) = sname ('.':ac) cs
     sname ac ('u':'s':cs) = sname ('_':ac) cs
     sname ac ('h':'s':cs) = sname ('#':ac) cs
-    sname ac ('z':c:cs)   = sname (c:ac) cs
-    sname ac cs@(':':_)   = reverse ac ++ cs
-    sname ac []           = reverse ac
-    sname _ _             = s
+    sname ac ('z':c:cs) = sname (c:ac) cs
+    sname ac cs@(':':_) = reverse ac ++ cs
+    sname ac [] = reverse ac
+    sname _ _ = s

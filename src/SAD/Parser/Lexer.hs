@@ -10,20 +10,21 @@
 
 module SAD.Parser.Lexer where
 
-import FTLex.Base
-import FTLex.Position qualified as Pos
-import FTLex.Message qualified as Msg
+import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as Text
-import Data.Set qualified as Set
+
+import FTLex.Base
+import FTLex.Message qualified as Msg
+import FTLex.Position (noPos)
+import FTLex.Position qualified as Pos
+
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Library qualified as Library
+import Isabelle.Position qualified as Position
+import Isabelle.Symbol qualified as Symbol
 
 import SAD.Core.Message qualified as Message
-
-import Isabelle.Position qualified as Position
-import Isabelle.Bytes qualified as Bytes
-import Isabelle.Symbol qualified as Symbol
-import Isabelle.Library qualified as Library
-import FTLex.Position (noPos)
 
 
 -- * PIDE Setup

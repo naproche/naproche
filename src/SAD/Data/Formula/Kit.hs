@@ -12,16 +12,17 @@
 module SAD.Data.Formula.Kit where
 
 import Control.Monad
-import Data.Maybe
+
 import Data.Map qualified as Map
+import Data.Maybe
+
+import Isabelle.Position qualified as Position
 
 import SAD.Data.Formula.Base
 import SAD.Data.Tag
-import SAD.Data.Text.Decl
 import SAD.Data.Terms
+import SAD.Data.Text.Decl
 import SAD.Data.VarName
-
-import Isabelle.Position qualified as Position
 
 
 -- * Alpha-beta normalization
@@ -29,19 +30,19 @@ import Isabelle.Position qualified as Position
 -- | gets rid of top level negation, implication and equivalence if possible.
 -- @albet (Not (Ind ..)) == Not (Ind ..)@
 albet :: Formula -> Formula
-albet (Iff f g)       = zIff f g
-albet (Imp f g)       = Or (Not f) g
+albet (Iff f g) = zIff f g
+albet (Imp f g) = Or (Not f) g
 albet (Not (All v f)) = Exi v $ Not f
 albet (Not (Exi v f)) = All v $ Not f
 albet (Not (Iff f g)) = albet $ Not $ zIff f g
 albet (Not (Imp f g)) = And f (Not g)
 albet (Not (And f g)) = Or (Not f) (Not g)
-albet (Not (Or f g))  = And (Not f) (Not g)
-albet (Not (Not f))   = albet f
-albet (Not Top)       = Bot
-albet (Not Bot)       = Top
-albet (Tag t f)       = Tag t $ albet f
-albet f               = f
+albet (Not (Or f g)) = And (Not f) (Not g)
+albet (Not (Not f)) = albet f
+albet (Not Top) = Bot
+albet (Not Bot) = Top
+albet (Tag t f) = Tag t $ albet f
+albet f = f
 
 -- | Split a formula @Not (a \/ b) /\ c /\ ..@ into its conjuncts @[a,b,c,..]@
 splitConjuncts :: Formula -> [Formula]
@@ -79,9 +80,9 @@ bool (And Bot _) = Bot
 bool (And _ Bot) = Bot
 bool (Tag _ Top) = Top
 bool (Tag _ Bot) = Bot
-bool (Not Top)   = Bot
-bool (Not Bot)   = Top
-bool f           = f
+bool (Not Top) = Bot
+bool (Not Bot) = Top
+bool f = f
 
 -- | perform boolean simplification through the whole formula
 boolSimp :: Formula -> Formula
@@ -101,13 +102,13 @@ boolSimp f = bool $ mapF boolSimp f
 --
 -- Arguments: the variable to look for (e.g. "x"), whether we are in an "existence" or an "all" case and the formula.
 mbBind :: VariableName -> Bool -> Formula -> Maybe Formula
-mbBind v  = dive id
+mbBind v = dive id
   where
     dive :: (Formula -> Formula) -> Bool -> Formula -> Maybe Formula
     dive c s (All u f) = dive (c . bool . All u) s f
     dive c s (Exi u f) = dive (c . bool . Exi u) s f
     dive c s (Tag a f) = dive (c . bool . Tag a) s f
-    dive c s (Not f)   = dive (c . bool . Not) (not s) f
+    dive c s (Not f) = dive (c . bool . Not) (not s) f
     dive c False (Imp f g) =
       dive (c . bool . (`Imp` g)) True f `mplus`
       dive (c . bool . (f `Imp`)) False g
@@ -170,7 +171,7 @@ zIff, zOr :: Formula -> Formula -> Formula
 zIff f g = And (Imp f g) (Imp g f)
 
 zOr (Not f) g = Imp f g
-zOr f g       = Or  f g
+zOr f g = Or  f g
 
 mkVar :: VariableName -> Formula
 mkVar v = pVar $ PosVar v Position.none
@@ -414,9 +415,9 @@ infoTwins t = dive
 
     pairs (tr:ts) (sr:ss) = case (tr,sr) of
       (ThisT, ThisT) -> pairs ts ss
-      (ThisT, f)     -> twins t f && pairs ts ss
-      (f, ThisT)     -> twins t f && pairs ts ss
-      (f, g)         -> twins f g && pairs ts ss
+      (ThisT, f) -> twins t f && pairs ts ss
+      (f, ThisT) -> twins t f && pairs ts ss
+      (f, g) -> twins f g && pairs ts ss
     pairs [] [] = True
     pairs _ _ = False
 
@@ -434,7 +435,7 @@ match t@Trm{} s@Trm{} | trmId t == trmId s = pairs (trmArgs t) (trmArgs s)
       sc <- match (sb p) q
       return $ sc . sb
     pairs [] [] = return id
-    pairs _ _   = mzero
+    pairs _ _ = mzero
 match _ _ = mzero
 
 
@@ -443,8 +444,8 @@ match _ _ = mzero
 {- strip away a Tag on top level or after negation -}
 strip :: Formula -> Formula
 strip (Tag _ f) = strip f
-strip (Not f)   = Not $ strip f
-strip f         = f
+strip (Not f) = Not $ strip f
+strip f = f
 
 {- extracts all duplicateNames (with multiplicity) from a list -}
 duplicateNames :: Ord a => [a] -> [a]

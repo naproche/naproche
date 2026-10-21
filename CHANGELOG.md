@@ -38,6 +38,9 @@ Each change is tagged with one of the following keywords:
 * **Removed:** The unused verbose variant of the E prover (`eproververb`) was
   discontinued.
 
+* **Added:** A configuration for `stylish-haskell` (`.stylish-haskell.yaml`)
+  that is encouraged to be used to format the Haskell source files of Naproche.
+
 
 ## Isabelle2026/Naproche
 

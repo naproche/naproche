@@ -18,24 +18,25 @@ module SAD.Prove.MESON (
   addRules
 ) where
 
-import Control.Monad
 import Control.Exception (evaluate)
+import Control.Monad
+
 import Data.List
 import Data.List.Extra (notNull)
 import Data.Maybe
 import Data.Text qualified as Text
 
+import Isabelle.Cache qualified as Cache
+import Isabelle.Library (fold_rev)
+import Isabelle.Time qualified as Time
+
 import SAD.Data.Formula
-import SAD.Prove.Unify
-import SAD.Prove.Normalize
-import SAD.Data.Text.Context (Context, MRule(MR, conclusion))
-import SAD.Data.Text.Context qualified as Context
 import SAD.Data.Structures.DisTree (DisTree)
 import SAD.Data.Structures.DisTree qualified as DisTree
-
-import Isabelle.Cache qualified as Cache
-import Isabelle.Time qualified as Time
-import Isabelle.Library (fold_rev)
+import SAD.Data.Text.Context (Context, MRule(MR, conclusion))
+import SAD.Data.Text.Context qualified as Context
+import SAD.Prove.Normalize
+import SAD.Prove.Unify
 
 
 -- generate MESON rules
@@ -147,9 +148,9 @@ umatch Trm {trmArgs = ps, trId = n} Trm {trmArgs = qs, trId = m}
       sb <- pairs ps qs
       sc <- umatch (sb p) q
       return $ sc . sb
-    pairs [] []         = return id
-    pairs _ _           = mzero
-umatch _ _         = mzero
+    pairs [] [] = return id
+    pairs _ _ = mzero
+umatch _ _ = mzero
 
 
 

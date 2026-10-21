@@ -1,6 +1,6 @@
 module Main where
 
-import qualified SAD.Main
+import SAD.Main qualified
 
 main :: IO ()
 main = SAD.Main.main

@@ -24,10 +24,10 @@ module SAD.Prove.Normalize (
 import Data.List
 import Data.Text qualified as Text
 
+import Isabelle.Position qualified as Position
+
 import SAD.Data.Formula
 import SAD.Data.Text.Decl
-
-import Isabelle.Position qualified as Position
 
 
 -- simplification : push down negation, replace implication and equivalence
@@ -50,17 +50,17 @@ simplify f = mapF simplify . nbool . pushdown $ f
 
 
 pushdown :: Formula -> Formula
-pushdown (Iff f g)       = And (Or (Not f) g) (Or f (Not g))
-pushdown (Imp f g)       = Or (Not f) g
+pushdown (Iff f g) = And (Or (Not f) g) (Or f (Not g))
+pushdown (Imp f g) = Or (Not f) g
 pushdown (Not (All x f)) = Exi x $ Not f
 pushdown (Not (Exi x f)) = All x $ Not f
 pushdown (Not (Iff f g)) = And (Or f g) (Or (Not f) (Not g))
 pushdown (Not (Imp f g)) = And f (Not g)
 pushdown (Not (And f g)) = Or (Not f) (Not g)
 pushdown (Not (Or  f g)) = And (Not f) (Not g)
-pushdown (Not (Not f))   = pushdown f
-pushdown (Not Bot)       = Top
-pushdown (Not Top)       = Bot
+pushdown (Not (Not f)) = pushdown f
+pushdown (Not Bot) = Top
+pushdown (Not Top) = Bot
 pushdown (Tag _ f) = pushdown f
 pushdown (Not (Tag _ f)) = pushdown (Not f)
 pushdown (All _ (Imp (Tag HeadTerm Trm {trmName = TermEquality, trmArgs = [_,t]} ) f)) =
@@ -76,22 +76,22 @@ prenex = \case
   All x f -> All x (prenex f)
   Exi x f -> Exi x (prenex f)
   f `And` g -> pullQuantifiers (prenex f `And` prenex g)
-  f `Or` g  -> pullQuantifiers (prenex f `Or`  prenex g)
+  f `Or` g -> pullQuantifiers (prenex f `Or`  prenex g)
   f -> f
   where
     pullQuantifiers :: Formula -> Formula
     pullQuantifiers = \case
       All x f `And` All y g -> All x (pullQuantifiers (f     `And` g))
       Exi x f `Or`  Exi y g -> Exi x (pullQuantifiers (f     `Or` g))
-      All x f `And` g       -> All x (pullQuantifiers (f     `And` inc g))
+      All x f `And` g -> All x (pullQuantifiers (f     `And` inc g))
       f       `And` All y g -> All y (pullQuantifiers (inc f `And` g))
-      All x f `Or` g        -> All x (pullQuantifiers (f     `Or` inc g))
-      f       `Or` All y g  -> All y (pullQuantifiers (inc f `Or` g))
-      Exi x f `And` g       -> Exi x (pullQuantifiers (f     `And` inc g))
+      All x f `Or` g -> All x (pullQuantifiers (f     `Or` inc g))
+      f       `Or` All y g -> All y (pullQuantifiers (inc f `Or` g))
+      Exi x f `And` g -> Exi x (pullQuantifiers (f     `And` inc g))
       f       `And` Exi y g -> Exi y (pullQuantifiers (inc f `And` g))
-      Exi x f `Or` g        -> Exi x (pullQuantifiers (f     `Or` inc g))
-      f       `Or` Exi y g  -> Exi y (pullQuantifiers (inc f `Or` g))
-      f                     -> f
+      Exi x f `Or` g -> Exi x (pullQuantifiers (f     `Or` inc g))
+      f       `Or` Exi y g -> Exi y (pullQuantifiers (inc f `Or` g))
+      f -> f
 
 -- Index manangement
 
@@ -177,7 +177,7 @@ simpCNF f = subsumptionCheck $ filter (not . isTrivial) $ pureCNF f
 
 pureCNF :: Formula -> [[Formula]]
 pureCNF (And f g) = unionBy listEq (pureCNF f) (pureCNF g)
-pureCNF (Or f g)  = distrib (pureCNF f) (pureCNF g)
+pureCNF (Or f g) = distrib (pureCNF f) (pureCNF g)
 pureCNF f = [[f]]
 
 
@@ -225,10 +225,10 @@ assm_nf = map (imptolist . boolSimp . specCh VarAssume 0) . splitConjuncts . imp
 
 impl :: Formula -> Formula
 impl (All x (Imp f g)) = All x $ pullimp $ Imp f $ impl g
-impl (All x f)         = All x $ impl f
+impl (All x f) = All x $ impl f
 impl (Imp f (And g h)) = impl $ And (Imp f g) (Imp f h)
-impl (Imp f g)         = pullimp $ Imp f $ impl g
-impl (And f g)         = And (impl f) (impl g)
+impl (Imp f g) = pullimp $ Imp f $ impl g
+impl (And f g) = And (impl f) (impl g)
 impl f = f
 
 pullimp :: Formula -> Formula

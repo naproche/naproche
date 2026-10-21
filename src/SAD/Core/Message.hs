@@ -20,21 +20,23 @@ module SAD.Core.Message (
   errorExport, errorParser, errorLexer, errorTokenizer, errorReader
 ) where
 
-import Prelude hiding (error)
 import Control.Monad (when)
+
 import Data.Maybe (catMaybes, mapMaybe)
 
-import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Library
+import Isabelle.Markup qualified as Markup
+import Isabelle.Naproche qualified as Naproche
 import Isabelle.Position qualified as Position
 import Isabelle.Value qualified as Value
-import Isabelle.Markup qualified as Markup
 import Isabelle.XML qualified as XML
 import Isabelle.YXML qualified as YXML
-import Isabelle.Naproche qualified as Naproche
-import Isabelle.Library
 
 import Naproche.Program qualified as Program
+
+import Prelude hiding (error)
 
 
 -- PIDE markup reports

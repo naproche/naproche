@@ -11,17 +11,18 @@
 
 module SAD.Core.Thesis (inferNewThesis) where
 
-import Data.Text qualified as Text
 import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.State
+
 import Data.List
 import Data.List.Extra (notNull)
-import Data.Maybe
 import Data.Map qualified as Map
+import Data.Maybe
 import Data.Set (Set)
 import Data.Set qualified as Set
+import Data.Text qualified as Text
 
 import SAD.Core.Base
 import SAD.Core.Reason
@@ -88,13 +89,13 @@ equivalentTo = normalizedCheck 0
     check n (Exi _ a) (Exi _ b) = let freshVariable = VarDefault $ Text.pack $ show n in
       normalizedCheck (n + 1) (inst freshVariable a) (inst freshVariable b)
     check n (And a b) (And c d) = normalizedCheck n a c && normalizedCheck n b d
-    check n (Or a b) (Or c d)   = normalizedCheck n a c && normalizedCheck n b d
-    check n (Not a) (Not b)     = normalizedCheck n a b
-    check n (Tag _ a) b         = normalizedCheck n a b
-    check n a (Tag _ b)         = normalizedCheck n a b
-    check _ Top Top             = True
-    check _ Bot Bot             = True
-    check _ a b                 = twins a b
+    check n (Or a b) (Or c d) = normalizedCheck n a c && normalizedCheck n b d
+    check n (Not a) (Not b) = normalizedCheck n a b
+    check n (Tag _ a) b = normalizedCheck n a b
+    check n a (Tag _ b) = normalizedCheck n a b
+    check _ Top Top = True
+    check _ Bot Bot = True
+    check _ a b = twins a b
 
 
 {- checks whether an instantitation of f (modulo local properties collected)
@@ -167,8 +168,8 @@ externalConjuncts = normalizedDive
     dive h@(And f g) = h : (normalizedDive f ++ normalizedDive g)
     dive h@(Exi _ f) = h : filter isClosed (normalizedDive f)
     dive h@(All _ f) = h : filter isClosed (normalizedDive f)
-    dive (Tag _ f)   = normalizedDive f
-    dive f           = [f]
+    dive (Tag _ f) = normalizedDive f
+    dive f = [f]
 
 
 {- find a useful variation of the thesis (with respect to a given assumption)-}
@@ -199,7 +200,7 @@ reduceThesis definitions affirmation thesis =
            else reducedExpandedThesis
       else reducedThesis
   where
-    expandSymbols t@Trm{}= fromMaybe t $ defForm definitions t
+    expandSymbols t@Trm{}=fromMaybe t $ defForm definitions t
     expandSymbols f = mapF expandSymbols f
 
 
@@ -217,23 +218,23 @@ generateVariations definitions = pass [] (Just True) (0 :: Int)
     pass localContext sign n = dive
       where
         dive h@(All _ f) = case sign of
-          Just True   -> liberateVariableIn f `mplus` roundThrough h
-          _           -> return h
+          Just True -> liberateVariableIn f `mplus` roundThrough h
+          _ -> return h
         dive h@(Exi _ f) = case sign of
-          Just False  -> liberateVariableIn f `mplus` roundThrough h
-          _           -> return h
-        dive h@Trm{}     = return h `mplus` lookBehindDefinition h
+          Just False -> liberateVariableIn f `mplus` roundThrough h
+          _ -> return h
+        dive h@Trm{} = return h `mplus` lookBehindDefinition h
         dive h@(And f g) = case sign of
-          Just True   -> And f <$> pass (f:localContext) sign n g
-          _           -> roundThrough h
+          Just True -> And f <$> pass (f:localContext) sign n g
+          _ -> roundThrough h
         dive h@(Or  f g) = case sign of
-          Just False  -> Or f  <$> pass (Not f:localContext) sign n g
-          _           -> roundThrough h
+          Just False -> Or f  <$> pass (Not f:localContext) sign n g
+          _ -> roundThrough h
         dive h@(Imp f g) = case sign of
-          Just False  -> Imp f <$> pass (f:localContext) sign n g
-          _           -> roundThrough h
+          Just False -> Imp f <$> pass (f:localContext) sign n g
+          _ -> roundThrough h
         dive (Tag GenericMark f) = return f
-        dive h           = roundThrough h
+        dive h = roundThrough h
 
         liberateVariableIn f = generateInstantiations f >>= dive
         roundThrough = roundFM VarZ pass localContext sign n
@@ -278,8 +279,8 @@ instance Applicative VariationMonad where
   (<*>) = ap
 
 instance Monad VariationMonad where
-  return  = pure
-  m >>= k  = VariationMonad $ \ s -> concatMap apply (runVM m s)
+  return = pure
+  m >>= k = VariationMonad $ \ s -> concatMap apply (runVM m s)
     where apply (s, r) = runVM (k r) s
 
 instance Alternative VariationMonad where
@@ -287,7 +288,7 @@ instance Alternative VariationMonad where
   (<|>) = mplus
 
 instance MonadPlus VariationMonad where
-  mzero     = VariationMonad $ const []
+  mzero = VariationMonad $ const []
   mplus m k = VariationMonad $ \ s -> runVM m s ++ runVM k s
 
 -- special reduction of function thesis

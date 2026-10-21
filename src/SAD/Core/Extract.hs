@@ -17,23 +17,24 @@ module SAD.Core.Extract (
   extractRewriteRule
 ) where
 
-import Data.Map qualified as Map
-import Data.List
-import Data.Maybe
 import Control.Monad (MonadPlus(..), guard)
 import Control.Monad.Reader
+
+import Data.List
+import Data.Map qualified as Map
+import Data.Maybe
 import Data.Text qualified as Text
 
-import SAD.Data.Formula
 import SAD.Data.Definition
-import SAD.Data.Text.Context (Context)
-import SAD.Data.Text.Context qualified as Context (formula, name)
+import SAD.Data.Formula
 import SAD.Data.Rules (Rule(Rule))
 import SAD.Data.Rules qualified as Rule
-import SAD.Prove.Normalize
 import SAD.Data.Structures.DisTree (DisTree)
 import SAD.Data.Structures.DisTree qualified as DisTree
+import SAD.Data.Text.Context (Context)
+import SAD.Data.Text.Context qualified as Context (formula, name)
 import SAD.Data.Text.Decl
+import SAD.Prove.Normalize
 
 
 -- Definition extraction
@@ -94,7 +95,7 @@ closeEvidence dfs def@DefEntry {defEvidence = evidence} = def { defEvidence = ne
     newEvidence = nubBy twins $ evidence ++ concatMap definitionalEvidence evidence
     definitionalEvidence t@Trm {trId = n} =
       let def = fromJust $ Map.lookup n dfs
-          sb  = fromJust $ match (defTerm def) $ fromTo makeU t
+          sb = fromJust $ match (defTerm def) $ fromTo makeU t
       in  map (fromTo fromU . sb) $ defEvidence def
     definitionalEvidence _ = []
 
@@ -215,7 +216,7 @@ simplifyElementCondition evals = dive
 mkPos :: Formula -> Formula
 mkPos = dive
   where
-    dive (Exi x f)   = All x $ dive f
+    dive (Exi x f) = All x $ dive f
     dive (Tag Evaluation f) = f
     dive (And f g) = Imp f $ dive g
 

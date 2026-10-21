@@ -31,18 +31,19 @@ module SAD.Parser.Token (
   noTokens
 ) where
 
-import Data.Text (Text)
-import Data.Text qualified as Text
+import Data.Bifunctor (bimap)
+import Data.List
 import Data.List.NonEmpty qualified as NonEmpty
 import Data.Set (Set)
 import Data.Set qualified as Set
-import Data.List
-import Data.Bifunctor (bimap)
-import Text.Megaparsec hiding (State, Pos, Token)
+import Data.Text (Text)
+import Data.Text qualified as Text
+
+import Isabelle.Position qualified as Position
 
 import SAD.Core.Message qualified as Message
 
-import Isabelle.Position qualified as Position
+import Text.Megaparsec hiding (Pos, State, Token)
 
 
 -- * Tokens

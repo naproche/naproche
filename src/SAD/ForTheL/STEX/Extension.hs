@@ -19,25 +19,26 @@ module SAD.ForTheL.STEX.Extension (
   pretypeVariable
 ) where
 
-import Control.Monad
-import Data.Set qualified as Set
 import Control.Applicative
+import Control.Monad
 import Control.Monad.State.Class
 
-import SAD.Data.Formula
-import SAD.Data.Text.Block (ProofText (..))
-import SAD.ForTheL.Base
-import SAD.ForTheL.Extension
-import SAD.ForTheL.Statement
-import SAD.ForTheL.Reports qualified as Reports
-import SAD.Parser.Base
-import SAD.ForTheL.Pattern
-import SAD.ForTheL.STEX.Pattern qualified as STEX
-import SAD.ForTheL.STEX.Statement qualified as STEX
-import SAD.Parser.Primitives
-import SAD.Parser.Combinators
+import Data.Set qualified as Set
 
 import Isabelle.Position qualified as Position
+
+import SAD.Data.Formula
+import SAD.Data.Text.Block (ProofText(..))
+import SAD.ForTheL.Base
+import SAD.ForTheL.Extension
+import SAD.ForTheL.Pattern
+import SAD.ForTheL.Reports qualified as Reports
+import SAD.ForTheL.Statement
+import SAD.ForTheL.STEX.Pattern qualified as STEX
+import SAD.ForTheL.STEX.Statement qualified as STEX
+import SAD.Parser.Base
+import SAD.Parser.Combinators
+import SAD.Parser.Primitives
 
 
 defExtend :: FTL Formula
@@ -69,7 +70,7 @@ defNotion = do
       return ((n,h),u)
 
     isOrEq = texCommand "DefEq" <|> isEq
-    isEq   = token' "is" >> optLL1 () (token' "equal" >> token' "to")
+    isEq = token' "is" >> optLL1 () (token' "equal" >> token' "to")
     trm Trm {trmName = TermEquality, trmArgs = [_,t]} = t; trm t = t
 
 sigPredicat :: FTL Formula
@@ -77,8 +78,8 @@ sigPredicat = do
   (f,g) <- wellFormedCheck prdVars sig
   return $ Imp (Tag HeadTerm f) g
   where
-    sig    = do f <- newPredicat; imp; g <- STEX.statement </> noInfo; return (f,g)
-    imp    = token' "is" <|> Reports.markupToken Reports.sigImp "implies" <|> texCommand "Implies"
+    sig = do f <- newPredicat; imp; g <- STEX.statement </> noInfo; return (f,g)
+    imp = token' "is" <|> Reports.markupToken Reports.sigImp "implies" <|> texCommand "Implies"
     noInfo = (tokenSeq' ["an", "atom"] </> tokenSeq' ["a", "relation"]) >> return Top
 
 sigNotion :: FTL Formula

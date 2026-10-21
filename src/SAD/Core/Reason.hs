@@ -24,39 +24,41 @@ module SAD.Core.Reason (
   trivialityCheck
 ) where
 
+import Control.Monad (MonadPlus(..), guard, liftM2, liftM3, msum, unless, when)
 import Control.Monad.Reader
+import Control.Monad.Writer qualified as W
+
+import Data.Functor ((<&>))
+import Data.Map qualified as Map
 import Data.Maybe (fromJust, fromMaybe, maybeToList)
 import Data.Monoid (Sum, getSum)
-import Data.Functor ((<&>))
-import System.Timeout (timeout)
-import Control.Monad (MonadPlus(..), guard, when, unless, msum, liftM2, liftM3)
-import Control.Monad.Writer qualified as W
-import Data.Map qualified as Map
 import Data.Set qualified as Set
 import Data.Text qualified as Text
 
-import SAD.Core.Base
-import SAD.Data.Definition
-import SAD.Data.Formula
-import SAD.Data.Instr
-import SAD.Data.Text.Context (Context(Context))
-import SAD.Data.Text.Decl (newDecl)
-import SAD.Export.Prover qualified as Prover
-import SAD.Prove.MESON qualified as MESON
-import SAD.Core.Message qualified as Message
-import SAD.Data.Definition qualified as Definition
-import SAD.Data.Structures.DisTree (DisTree)
-import SAD.Data.Structures.DisTree qualified as DisTree
-import SAD.Data.Text.Block qualified as Block
-import SAD.Data.Text.Context qualified as Context
-import SAD.Data.Formula.HOL qualified as HOL
-
-import Isabelle.Position qualified as Position
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
+import Isabelle.Position qualified as Position
 
 import Naproche.Program qualified as Program
 import Naproche.Prover qualified as Prover
+
+import SAD.Core.Base
+import SAD.Core.Message qualified as Message
+import SAD.Data.Definition
+import SAD.Data.Definition qualified as Definition
+import SAD.Data.Formula
+import SAD.Data.Formula.HOL qualified as HOL
+import SAD.Data.Instr
+import SAD.Data.Structures.DisTree (DisTree)
+import SAD.Data.Structures.DisTree qualified as DisTree
+import SAD.Data.Text.Block qualified as Block
+import SAD.Data.Text.Context (Context(Context))
+import SAD.Data.Text.Context qualified as Context
+import SAD.Data.Text.Decl (newDecl)
+import SAD.Export.Prover qualified as Prover
+import SAD.Prove.MESON qualified as MESON
+
+import System.Timeout (timeout)
 
 
 -- Reasoner
@@ -123,8 +125,8 @@ normalizedSplit = split . albet
   where
     split (All u f) = map (All u) (normalizedSplit f)
     split (And f g) = normalizedSplit f ++ normalizedSplit (Imp f g)
-    split (Or f g)  = map (zOr f) (normalizedSplit g)
-    split fr        = return fr
+    split (Or f g) = map (zOr f) (normalizedSplit g)
+    split fr = return fr
 
 
 -- Call prover
@@ -259,9 +261,9 @@ lookFor literal t =
 -- unfolding of local properties
 
 data UnfoldState = UF {
-  defs             :: Definitions,
-  evals            :: DisTree Evaluation,
-  unfoldSetting    :: Bool, -- user parameters that control what is unfolded
+  defs :: Definitions,
+  evals :: DisTree Evaluation,
+  unfoldSetting :: Bool, -- user parameters that control what is unfolded
   unfoldSetSetting :: Bool }
 
 

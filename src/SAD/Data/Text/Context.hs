@@ -20,20 +20,21 @@ module SAD.Data.Text.Context (
   isTopLevel
 ) where
 
+import Data.Set (Set)
+import Data.Text (Text)
+
 import Prelude hiding (head, tail)
 import Prelude qualified (head, tail)
-import Data.Text (Text)
-import Data.Set (Set)
 
+import SAD.Data.Formula (Formula, VariableName)
 import SAD.Data.Text.Block (Section(..))
 import SAD.Data.Text.Block qualified as Block
-import SAD.Data.Formula (Formula, VariableName)
 
 
 data Context = Context {
-  formula        :: Formula,  -- formula of the context
-  branch         :: [Block.Block],  -- branch of the context
-  mesonRules     :: [MRule]}  -- MESON rules extracted from the formula
+  formula :: Formula,  -- formula of the context
+  branch :: [Block.Block],  -- branch of the context
+  mesonRules :: [MRule]}  -- MESON rules extracted from the formula
   deriving (Eq, Ord, Show)
 
 data MRule = MR
@@ -46,25 +47,25 @@ data MRule = MR
 -- Context utilities
 
 head :: Context -> Block.Block
-head  = Prelude.head . branch
+head = Prelude.head . branch
 
 tail :: Context -> [Block.Block]
-tail  = Prelude.tail . branch
+tail = Prelude.tail . branch
 
 isTopLevel :: Context -> Bool
-isTopLevel  = null . tail
+isTopLevel = null . tail
 
 isLowLevel :: Context -> Bool
-isLowLevel  = not  . isTopLevel
+isLowLevel = not  . isTopLevel
 
 declaredNames :: Context -> Set VariableName
 declaredNames = Block.declaredNames . head
 
 name :: Context -> Text
-name  = Block.name . head
+name = Block.name . head
 
 link :: Context -> [Text]
-link  = Block.link . head
+link = Block.link . head
 
 isAssumption :: Context -> Bool
 isAssumption = (==) Assumption . Block.kind . head

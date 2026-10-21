@@ -20,11 +20,11 @@ data DefType = Signature | Definition
   deriving (Eq, Show)
 
 data DefEntry = DefEntry
-  { defGuards    :: [Formula]    -- ^ guards of the definitions
-  , defFormula   :: Formula      -- ^ defining formula
-  , defKind      :: DefType      -- ^ proper definition or only sig extension
-  , defTerm      :: Formula      -- ^ defined term
-  , defEvidence  :: [Formula]    -- ^ evidence from the defining formula
+  { defGuards :: [Formula]    -- ^ guards of the definitions
+  , defFormula :: Formula      -- ^ defining formula
+  , defKind :: DefType      -- ^ proper definition or only sig extension
+  , defTerm :: Formula      -- ^ defined term
+  , defEvidence :: [Formula]    -- ^ evidence from the defining formula
   , defTypeLikes :: [[Formula]]  -- ^ type-likes of the definition
   } deriving Show
 
@@ -41,8 +41,8 @@ isGuard :: Formula -> Guards -> Bool
 isGuard f g = case DisTree.find f g of [] -> False; (x:_) -> x
 
 data Evaluation = EV {
-  evaluationTerm       :: Formula,  -- the term to be reduced
-  evaluationPositives  :: Formula,  -- reduction for positive positions
-  evaluationNegatives  :: Formula,  -- reduction for negative positions
+  evaluationTerm :: Formula,  -- the term to be reduced
+  evaluationPositives :: Formula,  -- reduction for positive positions
+  evaluationNegatives :: Formula,  -- reduction for negative positions
   evaluationConditions :: [Formula] -- conditions
   } deriving Show

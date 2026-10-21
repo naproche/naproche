@@ -24,20 +24,21 @@ module SAD.ForTheL.Pattern (
 ) where
 
 
-import Control.Monad.State.Class (put, gets)
-import Data.Set qualified as Set
-import Data.List
-import Data.Char (toUpper)
 import Control.Monad
+import Control.Monad.State.Class (gets, put)
+
+import Data.Char (toUpper)
+import Data.List
+import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as Text
 
-import SAD.ForTheL.Base
-import SAD.Parser.Combinators
-import SAD.Parser.Token
-import SAD.Parser.Primitives
-import SAD.Parser.Char (isAsciiLetter, isAsciiAlphaNum)
 import SAD.Data.Formula
+import SAD.ForTheL.Base
+import SAD.Parser.Char (isAsciiAlphaNum, isAsciiLetter)
+import SAD.Parser.Combinators
+import SAD.Parser.Primitives
+import SAD.Parser.Token
 
 
 -- add expressions to the state of ForTheL
@@ -55,8 +56,8 @@ addExpr t@Trm{trmName = TermUnaryAdjective _, trmArgs = vs} f p st
   where
     n = idCount st
     (pt, nf) = extractWordPattern st (giveId p n t) f
-    fm  = substs nf $ map varName vs
-    ns  = st { adjectiveExpr = (pt, fm) : adjectiveExpr st, idCount = incId p n}
+    fm = substs nf $ map varName vs
+    ns = st { adjectiveExpr = (pt, fm) : adjectiveExpr st, idCount = incId p n}
 
 addExpr t@Trm{trmName = TermUnaryVerb _, trmArgs = vs} f p st
   = put ns >> return nf

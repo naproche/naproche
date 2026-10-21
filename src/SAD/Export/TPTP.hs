@@ -17,16 +17,16 @@ module SAD.Export.TPTP (
 import Data.Text (Text)
 import Data.Text qualified as Text
 
-import SAD.Data.Text.Context (Context(..))
-import SAD.Data.Text.Block qualified as Block
-import SAD.Data.Formula (Formula(..), TermName(..))
-import SAD.Data.VarName (VariableName(..))
-
 import Isabelle.Bytes (Bytes)
+import Isabelle.Library (cat_lines, commas, make_bytes, show_bytes, show_text)
 import Isabelle.Position qualified as Position
-import Isabelle.Library (cat_lines, make_bytes, show_bytes,show_text, commas)
 
 import Naproche.TPTP (atomic_word)
+
+import SAD.Data.Formula (Formula(..), TermName(..))
+import SAD.Data.Text.Block qualified as Block
+import SAD.Data.Text.Context (Context(..))
+import SAD.Data.VarName (VariableName(..))
 
 -- | The role of an assertion, i.e. whether it is a hypothesis or a conjecture.
 data Role =
@@ -73,7 +73,7 @@ exportTermName = atomic_word . make_bytes . exportTermName'
     exportTermName' (TermMultiVerb t) = "mdo" <> t
     exportTermName' (TermTask n) = "tsk " <> show_text n
     exportTermName' TermEquality = "="
-    exportTermName' TermLess  = "iLess"
+    exportTermName' TermLess = "iLess"
     exportTermName' TermThesis = "#TH#"
 
 -- | Export a variable name to TPTP.
@@ -97,7 +97,7 @@ exportVariableName = atomic_word . make_bytes . exportVariableName'
 exportFormula :: Formula -> Bytes
 exportFormula = exportFormula' 0
   where
-    exportFormula' d (All _ f) =  "( ! " <> binder d f <> ")"
+    exportFormula' d (All _ f) = "( ! " <> binder d f <> ")"
     exportFormula' d (Exi _ f) = "( ? " <> binder d f <> ")"
     exportFormula' d (Iff f g) = sinfix d " <=> " f g
     exportFormula' d (Imp f g) = sinfix d " => " f g
@@ -115,6 +115,6 @@ exportFormula = exportFormula' 0
     exportFormula' d i@Ind {} = "W" <> show_bytes (d - 1 - indIndex i)
     exportFormula' d ThisT = error "unexpected \"ThisT\""
 
-    sinfix d o f g  = "(" <> exportFormula' d f <> o <> exportFormula' d g <> ")"
+    sinfix d o f g = "(" <> exportFormula' d f <> o <> exportFormula' d g <> ")"
 
-    binder d f  = "[" <> exportFormula' (d + 1) (Ind 0 Position.none) <> "] : " <> exportFormula' (d + 1) f
+    binder d f = "[" <> exportFormula' (d + 1) (Ind 0 Position.none) <> "] : " <> exportFormula' (d + 1) f

@@ -14,30 +14,31 @@ module SAD.Core.Rewrite (
   lpoGe
 ) where
 
+import Control.Monad (MonadPlus(..), guard, unless, when)
+import Control.Monad.Reader
+import Control.Monad.State
+
+import Data.Either
 import Data.List
 import Data.List.Extra (notNull)
 import Data.Set qualified as Set
-import Control.Monad (MonadPlus(..), guard, when, unless)
-import Control.Monad.State
-import Data.Either
-import Control.Monad.Reader
 import Data.Text (Text)
 import Data.Text qualified as Text
 
+import Isabelle.Library ()
+import Isabelle.Position qualified as Position
+
 import SAD.Core.Base
+import SAD.Core.Message qualified as Message
 import SAD.Core.Reason
 import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Rules (Rule)
-import SAD.Data.Text.Context (Context)
-import SAD.Export.Presentation
-import SAD.Core.Message qualified as Message
 import SAD.Data.Rules qualified as Rule
 import SAD.Data.Text.Block qualified as Block (body, link, position)
+import SAD.Data.Text.Context (Context)
 import SAD.Data.Text.Context qualified as Context
-
-import Isabelle.Library ()
-import Isabelle.Position qualified as Position
+import SAD.Export.Presentation
 
 
 -- Lexicographic path ordering
@@ -127,7 +128,7 @@ during their rewriting -}
 generateConditions ::
   Position.T -> Bool -> [Rule] -> Weighting -> Formula -> Formula -> VerifyMonad [SimpInfo]
 generateConditions pos verbositySetting rules w l r =
-  let leftNormalForms  = findNormalform rules w l
+  let leftNormalForms = findNormalform rules w l
       rightNormalForms = findNormalform rules w r
       paths = simpPaths leftNormalForms rightNormalForms
   in  if   null paths

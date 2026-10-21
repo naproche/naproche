@@ -11,23 +11,24 @@
 
 module SAD.Data.Formula.Base where
 
+import Control.Monad.Identity
+
+import Data.Map qualified as Map
 import Data.Maybe
 import Data.Monoid qualified as Monoid
-import Control.Monad.Identity
 import Data.Text (Text)
 import Data.Text qualified as Text
-import Data.Map qualified as Map
+
+import Isabelle.Position qualified as Position
 
 import SAD.Data.Tag (Tag)
 import SAD.Data.Terms
 import SAD.Data.Text.Decl (Decl)
 import SAD.Data.VarName
 
-import Isabelle.Position qualified as Position
-
 
 -- | A first-order formula, term or de Brujin index
-data Formula = 
+data Formula =
     All Decl Formula
     -- ^ Universally quantified formula.
   | Exi Decl Formula
@@ -173,7 +174,7 @@ foldFM _ _ = pure Monoid.mempty
 -- | check for closedness in the sense that the formula contains no non-bound
 -- de Bruijn index.
 isClosed :: Formula -> Bool
-isClosed  = dive 0
+isClosed = dive 0
   where
     dive n (All _ g) = dive (n + 1) g
     dive n (Exi _ g) = dive (n + 1) g

@@ -10,27 +10,29 @@ module Naproche.System (
   is_windows, bash_process
 ) where
 
-import Data.Maybe (fromJust)
-import System.IO qualified as IO
-import System.IO.Temp qualified as Temp
-import System.Process qualified as Process
-import System.Exit qualified as Exit
-import Control.Exception qualified as Exception
 import Control.Exception (catch)
+import Control.Exception qualified as Exception
 import Control.Monad (when)
+
 import Data.ByteString qualified as ByteString
-import System.Info qualified as Info
+import Data.Maybe (fromJust)
 
 import Isabelle.Bash qualified as Bash
 import Isabelle.Bytes qualified as Bytes
-import Isabelle.Timing qualified as Timing
-import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
 import Isabelle.Isabelle_System qualified as Isabelle_System
-import Isabelle.Process_Result qualified as Process_Result
-import Isabelle.UTF8 qualified as UTF8
+import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
 import Isabelle.Library
+import Isabelle.Process_Result qualified as Process_Result
+import Isabelle.Timing qualified as Timing
+import Isabelle.UTF8 qualified as UTF8
 
 import Naproche.Program qualified as Program
+
+import System.Exit qualified as Exit
+import System.Info qualified as Info
+import System.IO qualified as IO
+import System.IO.Temp qualified as Temp
+import System.Process qualified as Process
 
 
 is_windows :: Bool

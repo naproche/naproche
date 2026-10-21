@@ -100,7 +100,7 @@ dropInstr :: Drop -> [Instr] -> [Instr]
 dropInstr (DropBool p) (SetBool p' _ : rs) | p == p' = rs
 dropInstr (DropInt p) (SetInt p' _ : rs) | p == p' = rs
 dropInstr (DropBytes p) (SetBytes p' _ : rs) | p == p' = rs
-dropInstr i (r : rs)  = r : dropInstr i rs
+dropInstr i (r : rs) = r : dropInstr i rs
 dropInstr _ _ = []
 
 

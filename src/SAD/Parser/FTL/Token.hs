@@ -12,17 +12,20 @@ module SAD.Parser.FTL.Token (
   tokenize
 ) where
 
+import Control.Monad.Trans.State.Strict (State, evalState)
+
 import Data.Text qualified as Text
+
 import FTLex.Ftl
-import Control.Monad.Trans.State.Strict (evalState, State)
-import Text.Megaparsec hiding (State, Token, token)
 
-import SAD.Parser.Token
-import SAD.Parser.FTL.Lexer qualified as FTL
-import SAD.Core.Message qualified as Message
-
-import Isabelle.Position qualified as Position
 import Isabelle.Markup qualified as Markup
+import Isabelle.Position qualified as Position
+
+import SAD.Core.Message qualified as Message
+import SAD.Parser.FTL.Lexer qualified as FTL
+import SAD.Parser.Token
+
+import Text.Megaparsec hiding (State, Token, token)
 
 
 -- * Tokenizing an FTL document

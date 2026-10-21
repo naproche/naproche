@@ -40,16 +40,18 @@ module SAD.Parser.Primitives (
 ) where
 
 import Control.Applicative
-import Control.Monad (void, guard)
+import Control.Monad (guard, void)
+
 import Data.Text (Text)
 import Data.Text qualified as Text
 
+import Isabelle.Position qualified as Position
+
 import SAD.Parser.Base
+import SAD.Parser.Char (isAsciiDigit, isAsciiLetter, isAsciiPeriod,
+                        isAsciiSymbol)
 import SAD.Parser.Error
 import SAD.Parser.Token
-import SAD.Parser.Char (isAsciiPeriod, isAsciiDigit, isAsciiLetter, isAsciiSymbol)
-
-import Isabelle.Position qualified as Position
 
 
 -- | Parse the current token or return an @EmptyFail@
@@ -57,11 +59,11 @@ import Isabelle.Position qualified as Position
 tokenPrim :: (Token -> Maybe a) -> Parser st a
 tokenPrim test = Parser $ \(State st input dialect _) ok _ eerr ->
   case input of
-    []   -> eerr $ unexpectError "" Position.none
+    [] -> eerr $ unexpectError "" Position.none
     t:ts -> case guard (not $ isEOF t) >> test t of
-      Just x  ->
+      Just x ->
         let newstate = State st ts dialect (tokenPos t)
-            newerr   = newErrorUnknown $ tokenPos t
+            newerr = newErrorUnknown $ tokenPos t
         in  ok newerr [] [PR x newstate]
       Nothing -> eerr $ unexpectError (showToken t) (tokenPos t)
 
@@ -71,7 +73,7 @@ tokenPrim test = Parser $ \(State st input dialect _) ok _ eerr ->
 tokenGuard :: (Token -> Bool) -> Parser st a -> Parser st a
 tokenGuard test p = Parser $ \st@(State _ input  _ _) ok cerr eerr ->
   case input of
-    []   -> eerr $ unexpectError "" Position.none
+    [] -> eerr $ unexpectError "" Position.none
     t:ts -> if test t
       then runParser p st ok cerr eerr
       else eerr $ unexpectError (showToken t) (tokenPos t)
@@ -85,7 +87,7 @@ eof = Parser $ \(State st input dialect _) ok _ eerr ->
       if isEOF t
       then
         let newstate = State st ts dialect (tokenPos t)
-            newerr   = newErrorUnknown $ tokenPos t
+            newerr = newErrorUnknown $ tokenPos t
         in  ok newerr [] [PR () newstate]
       else eerr $ unexpectError (showToken t) (tokenPos t)
 

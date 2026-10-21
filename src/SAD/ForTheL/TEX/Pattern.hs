@@ -16,13 +16,14 @@ module SAD.ForTheL.TEX.Pattern (
 
 import Control.Applicative
 import Control.Monad
+
 import Data.Text qualified as Text
 
-import SAD.Parser.Combinators
-import SAD.Parser.Primitives
+import SAD.Data.Formula
 import SAD.ForTheL.Base
 import SAD.ForTheL.Pattern
-import SAD.Data.Formula
+import SAD.Parser.Combinators
+import SAD.Parser.Primitives
 
 
 -- New patterns

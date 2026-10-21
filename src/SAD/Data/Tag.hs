@@ -20,6 +20,6 @@ data Tag =
 
 -- | whether a Tag marks a part in a map proof task
 fnTag :: Tag -> Bool
-fnTag DomainTask    = True; fnTag ChoiceTask     = True
+fnTag DomainTask = True; fnTag ChoiceTask = True
 fnTag ExistenceTask = True; fnTag UniquenessTask = True
-fnTag _   = False
+fnTag _ = False

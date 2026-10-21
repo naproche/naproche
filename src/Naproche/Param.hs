@@ -13,12 +13,12 @@ module Naproche.Param (
   Env, empty, parse, get, put
 ) where
 
-import Data.Map.Strict qualified as Map
 import Data.Map.Strict (Map)
+import Data.Map.Strict qualified as Map
 
 import Isabelle.Bytes (Bytes)
-import Isabelle.Value qualified as Value
 import Isabelle.Library
+import Isabelle.Value qualified as Value
 
 
 {- flags -}

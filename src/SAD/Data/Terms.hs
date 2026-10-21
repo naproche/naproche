@@ -66,7 +66,7 @@ instance Presentation TermName where
   present (TermMultiVerb t) = "mdo" <> t
   present (TermTask n) = "tsk " <> Text.pack (show n)
   present TermEquality = "="
-  present TermLess  = "iLess"
+  present TermLess = "iLess"
   present TermThesis = "#TH#"
 
 data TermId

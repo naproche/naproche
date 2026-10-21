@@ -7,8 +7,8 @@
 -- PIDE markup reports for ForTheL text elements.
 
 
-{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TupleSections #-}
 
 module SAD.ForTheL.Reports (
   addMarkup,
@@ -41,27 +41,29 @@ module SAD.ForTheL.Reports (
   reference
 ) where
 
-import Prelude hiding (or)
 import Control.Applicative
 import Control.Monad.State.Class (modify)
+
 import Data.List hiding (or)
 import Data.List.Extra (nubOrd)
 import Data.Set (Set)
-
-import SAD.ForTheL.Base
-import SAD.Data.Text.Block (Block)
-import SAD.Data.Text.Block qualified as Block
-import SAD.Data.Text.Decl
 import Data.Text (Text)
-import SAD.Data.Formula
-import SAD.Parser.Base
-import SAD.Parser.Primitives
 
 import Isabelle.Library (make_bytes)
 import Isabelle.Markup qualified as Markup
 import Isabelle.Position qualified as Position
 
 import Naproche.Program qualified as Program
+
+import Prelude hiding (or)
+
+import SAD.Data.Formula
+import SAD.Data.Text.Block (Block)
+import SAD.Data.Text.Block qualified as Block
+import SAD.Data.Text.Decl
+import SAD.ForTheL.Base
+import SAD.Parser.Base
+import SAD.Parser.Primitives
 
 
 addReports :: [Position.Report] -> FTL ()

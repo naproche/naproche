@@ -11,15 +11,17 @@ module SAD.Parser.FTL.Lexer (
   renderLexemes
 ) where
 
-import Prelude hiding (lex)
-import Data.Text (Text)
 import Data.List (intercalate)
+import Data.Text (Text)
+
 import FTLex.Ftl qualified as FTL
 
-import SAD.Parser.Lexer
-
-import Isabelle.Position qualified as Position
 import Isabelle.Bytes qualified as Bytes
+import Isabelle.Position qualified as Position
+
+import Prelude hiding (lex)
+
+import SAD.Parser.Lexer
 
 
 type Lexeme = FTL.Lexeme Position.T

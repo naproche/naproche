@@ -27,9 +27,9 @@ import Data.Ord (comparing)
 import Data.Text (Text)
 import Data.Text qualified as Text
 
-import SAD.Core.Message (show_position)
-
 import Isabelle.Position qualified as Position
+
+import SAD.Core.Message (show_position)
 
 
 data Message
@@ -61,7 +61,7 @@ compareImportance msg1 msg2 =
     LT -> LT
     EQ -> case msg1 of
       ExpectMsg{} -> comparing unexpect msg1 msg2
-      _           -> EQ
+      _ -> EQ
   where
     importance :: Message -> Int
     importance Unknown = 0
@@ -150,9 +150,9 @@ showErrorMessage msg = case msg of
     showMany pre msgs = pre ++ " " ++ commasOr msgs
 
     commasOr :: [String] -> String
-    commasOr []  = ""
+    commasOr [] = ""
     commasOr [m] = m
-    commasOr ms  = intercalate ", " (init ms) ++ " or " ++ last ms
+    commasOr ms = intercalate ", " (init ms) ++ " or " ++ last ms
 
     clean :: [String] -> [String]
     clean = nubOrd . filter notNull

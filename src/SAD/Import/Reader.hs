@@ -11,36 +11,37 @@ module SAD.Import.Reader (
   readProofText
 ) where
 
-import Control.Monad
-import System.IO.Error
-import System.FilePath.Posix
 import Control.Exception
+import Control.Monad
 
-import SAD.Data.Text.Block
+import Isabelle.Bytes (Bytes)
+import Isabelle.File qualified as File
+import Isabelle.Library (getenv, make_bytes, make_string)
+import Isabelle.Position as Position
+
+import Naproche.Program qualified as Program
+
+import SAD.Core.Message qualified as Message
 import SAD.Data.Instr
+import SAD.Data.Text.Block
 import SAD.ForTheL.Base
 import SAD.ForTheL.FTL.Base qualified as FTL
 import SAD.ForTheL.FTL.Structure qualified as FTL
-import SAD.ForTheL.TEX.Base qualified as TEX
-import SAD.ForTheL.TEX.Structure qualified as TEX
 import SAD.ForTheL.STEX.Base qualified as STEX
 import SAD.ForTheL.STEX.Structure qualified as STEX
+import SAD.ForTheL.TEX.Base qualified as TEX
+import SAD.ForTheL.TEX.Structure qualified as TEX
 import SAD.Parser.Base
 import SAD.Parser.FTL.Lexer qualified as FTL
-import SAD.Parser.TEX.Lexer qualified as TEX
-import SAD.Parser.STEX.Lexer qualified as STEX
 import SAD.Parser.FTL.Token qualified as FTL
-import SAD.Parser.TEX.Token qualified as TEX
+import SAD.Parser.STEX.Lexer qualified as STEX
 import SAD.Parser.STEX.Token qualified as STEX
+import SAD.Parser.TEX.Lexer qualified as TEX
+import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.Token (Token, noTokens)
-import SAD.Core.Message qualified as Message
 
-import Isabelle.File qualified as File
-import Isabelle.Library (make_bytes, make_string, getenv)
-import Isabelle.Position as Position
-import Isabelle.Bytes (Bytes)
-
-import Naproche.Program qualified as Program
+import System.FilePath.Posix
+import System.IO.Error
 
 
 -- * Reader loop
@@ -167,7 +168,7 @@ parse dialect pos bytes state = do
     Ftl -> FTL.lex pos bytes >>= FTL.tokenize
     Tex -> TEX.lex pos bytes >>= TEX.tokenize
     Stex -> STEX.lex pos bytes >>= STEX.tokenize
-  let 
+  let
       addInits = case dialect of
         Ftl -> FTL.addInits
         Tex -> TEX.addInits

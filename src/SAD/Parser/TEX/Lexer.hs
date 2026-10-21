@@ -11,15 +11,17 @@ module SAD.Parser.TEX.Lexer (
   renderLexemes
 ) where
 
-import Prelude hiding (lex)
-import Data.Text (Text)
 import Data.List (intercalate)
+import Data.Text (Text)
+
 import FTLex.Tex qualified as TEX
 
-import SAD.Parser.Lexer
-
-import Isabelle.Position qualified as Position
 import Isabelle.Bytes qualified as Bytes
+import Isabelle.Position qualified as Position
+
+import Prelude hiding (lex)
+
+import SAD.Parser.Lexer
 
 
 type Lexeme = TEX.Lexeme Position.T
@@ -91,7 +93,7 @@ renderPosition pos =
 -- | Render the category code of a character lexeme.
 renderCatCode :: TEX.CatCode -> String
 renderCatCode catCode = "  Category Code: " ++ render catCode
-  where 
+  where
     render TEX.EscapeCharCat = "0 (escape character)"
     render TEX.BeginGroupCat = "1 (begin grouping)"
     render TEX.EndGroupCat = "2 (end grouping)"

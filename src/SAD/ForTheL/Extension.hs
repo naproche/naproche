@@ -20,8 +20,8 @@ import Data.Text (Text)
 import Data.Text qualified as Text
 
 import SAD.Data.Formula
-import SAD.ForTheL.Base
 import SAD.Data.Text.Decl
+import SAD.ForTheL.Base
 
 
 -- well-formedness check
@@ -49,7 +49,7 @@ notionVars (f, d) | not isFunction = prdVars (f, d)
 prdVars (f, d) | not flat  = Just $ Text.pack $ "compound expression: " ++ show f
                | otherwise = freeOrOverlapping (fvToVarSet $ free f) d
   where
-    flat      = isTrm f && allDistinctVars (trmArgs f)
+    flat = isTrm f && allDistinctVars (trmArgs f)
 
 
 allDistinctVars :: [Formula] -> Bool
@@ -63,5 +63,5 @@ allDistinctVars = disVs []
 ignoreNames :: Formula -> Formula
 ignoreNames (All dcl f) = All dcl {declName = VarEmpty} $ ignoreNames f
 ignoreNames (Exi dcl f) = Exi dcl {declName = VarEmpty} $ ignoreNames f
-ignoreNames f@Trm{}   = f
-ignoreNames f         = mapF ignoreNames f
+ignoreNames f@Trm{} = f
+ignoreNames f = mapF ignoreNames f

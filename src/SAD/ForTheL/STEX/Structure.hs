@@ -14,38 +14,40 @@ module SAD.ForTheL.STEX.Structure (
   forthelText
 ) where
 
-import Data.List
 import Control.Applicative
 import Control.Monad
+
+import Data.Either.Extra (fromEither)
+import Data.Foldable (foldr')
+import Data.Functor ((<&>))
+import Data.List
+import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as Text
-import Data.Functor ((<&>))
-import Data.Foldable (foldr')
-import Data.Maybe (fromMaybe)
-import Data.Either.Extra (fromEither)
-import System.FilePath.Posix hiding ((</>))
 
-import SAD.ForTheL.TEX.Structure qualified as TEX
-import SAD.ForTheL.Structure
-import SAD.ForTheL.FTL.Structure qualified as FTL -- for backward compatibility
+import Isabelle.Position qualified as Position
+
+import SAD.Data.Formula
+import SAD.Data.Instr
+import SAD.Data.Tag qualified as Tag
+import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
+import SAD.Data.Text.Block qualified as Block
 import SAD.ForTheL.Base
+import SAD.ForTheL.FTL.Structure qualified as FTL
+import SAD.ForTheL.Instruction
+import SAD.ForTheL.Reports qualified as Reports
+import SAD.ForTheL.Reports (getMarkupToken, getMarkupTokenOf, markupToken)
 import SAD.ForTheL.Statement
 import SAD.ForTheL.STEX.Extension qualified as STEX
 import SAD.ForTheL.STEX.Statement qualified as STEX
-import SAD.ForTheL.Reports (getMarkupToken, getMarkupTokenOf, markupToken)
-import SAD.ForTheL.Instruction
-import qualified SAD.ForTheL.Reports as Reports
+import SAD.ForTheL.Structure
+import SAD.ForTheL.TEX.Structure qualified as TEX
 import SAD.Parser.Base
 import SAD.Parser.Combinators
-import SAD.Parser.Token
 import SAD.Parser.Primitives
-import SAD.Data.Instr
-import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
-import SAD.Data.Text.Block qualified as Block
-import SAD.Data.Formula
-import SAD.Data.Tag qualified as Tag
+import SAD.Parser.Token
 
-import Isabelle.Position qualified as Position
+import System.FilePath.Posix hiding ((</>))
 
 
 -- * Parsing a ForTheL text

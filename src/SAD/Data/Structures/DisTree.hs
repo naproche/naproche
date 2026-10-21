@@ -18,10 +18,11 @@ module SAD.Data.Structures.DisTree (
   showTree
 ) where
 
-import Prelude hiding (lookup, head)
 import Data.List qualified as List
 import Data.Maybe
 import Data.Text (Text)
+
+import Prelude hiding (head, lookup)
 
 import SAD.Data.Formula (Formula(..))
 import SAD.Data.Terms (TermId)
@@ -86,7 +87,7 @@ insert key@Trm{} value (DT nodes) = DT $ dive nodes [key]
   where
     dive nodes keylist@(k:ks) = case break (structMatch k . struct) nodes of
       -- if nothing matches -> create a whole new branch with value at the end
-      (_ , [])  -> buildTree keylist value ++ nodes
+      (_ , []) -> buildTree keylist value ++ nodes
       (unmatchedNodes, matchedNode : rest) -> unmatchedNodes ++ (
         matchedNode {children = dive (children matchedNode) (args k ++ ks)} :
         rest)
@@ -105,7 +106,7 @@ buildTree [Bot] _ = []
 buildTree keys value = [dtree keys]
   where
     dtree (k:ks) = Node (toStruct k) [dtree $ args k ++ ks]
-    dtree []     = Leaf [value]
+    dtree [] = Leaf [value]
 
     toStruct Var {varName = VarHole _} = Variable
     toStruct Var {varName = VarConstant nm} = GeneralizedConstant nm
@@ -124,7 +125,7 @@ lookup key (DT nodes) = mbConcat $ dive nodes [key]
          in map stored leafs ++ dive newNodes ks
     dive nodes keylist@(k:ks) =
       case dropWhile (not . retrieveMatch k . struct) nodes of
-        []  -> [] -- nothing matches -> key is not in the tree
+        [] -> [] -- nothing matches -> key is not in the tree
         matchedNode:rest ->
           dive (children matchedNode) (mbArgs (struct matchedNode) k ++ ks)
           ++ dive rest keylist

@@ -9,15 +9,16 @@
 
 module SAD.Data.Rules where
 
-import SAD.Data.Formula (Formula)
 import Data.Text (Text)
+
+import SAD.Data.Formula (Formula)
 
 
 data Rule = Rule {
-  left      :: Formula,   -- left side
-  right     :: Formula,   -- right side
+  left :: Formula,   -- left side
+  right :: Formula,   -- right side
   condition :: [Formula], -- conditions
-  label     :: Text }   -- label
+  label :: Text }   -- label
 
 instance Show Rule where
   show rl =

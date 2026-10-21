@@ -17,29 +17,30 @@ module SAD.Export.Prover (
   export
 ) where
 
+import Control.Exception (SomeException, throw, try)
 import Control.Monad (when)
-import Control.Exception (SomeException, try, throw)
+
 import Data.Maybe (fromJust, isNothing)
 
-import SAD.Data.Instr
-import SAD.Data.Text.Context (Context, branch)
-import SAD.Data.Text.Block qualified as Block
-import SAD.Core.Message qualified as Message
-import SAD.Data.Formula.HOL qualified as HOL
-import SAD.Export.TPTP qualified as TPTP
-
-import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
-import Isabelle.Position qualified as Position
-import Isabelle.Time qualified as Time
 import Isabelle.Bytes (Bytes)
 import Isabelle.Bytes qualified as Bytes
-import Isabelle.Markup qualified as Markup
-import Isabelle.Process_Result qualified as Process_Result
 import Isabelle.Cache qualified as Cache
+import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
 import Isabelle.Library
+import Isabelle.Markup qualified as Markup
+import Isabelle.Position qualified as Position
+import Isabelle.Process_Result qualified as Process_Result
+import Isabelle.Time qualified as Time
 
 import Naproche.Program qualified as Program
 import Naproche.Prover qualified as Prover
+
+import SAD.Core.Message qualified as Message
+import SAD.Data.Formula.HOL qualified as HOL
+import SAD.Data.Instr
+import SAD.Data.Text.Block qualified as Block
+import SAD.Data.Text.Context (Context, branch)
+import SAD.Export.TPTP qualified as TPTP
 
 
 type Cache = Cache.T (Bytes, Int, Int, Bool, Bytes) Process_Result.T

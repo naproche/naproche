@@ -4,9 +4,9 @@
 -- External provers.
 
 
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE MultiWayIf #-}
+{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Naproche.Prover (
   Prover, Status (..), get_name, run, status, run_status,
@@ -14,18 +14,19 @@ module Naproche.Prover (
   list, find, eprover, spass, vampire
 ) where
 
-import Data.List qualified as List
 import Control.Monad (when)
 
-import Isabelle.Bytes qualified as Bytes
-import Isabelle.Bytes (Bytes)
-import Isabelle.Value qualified as Value
+import Data.List qualified as List
+
 import Isabelle.Bash qualified as Bash
-import Isabelle.Process_Result qualified as Process_Result
-import Isabelle.Time qualified as Time
+import Isabelle.Bytes (Bytes)
+import Isabelle.Bytes qualified as Bytes
 import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
-import Isabelle.Time (Time)
 import Isabelle.Library
+import Isabelle.Process_Result qualified as Process_Result
+import Isabelle.Time (Time)
+import Isabelle.Time qualified as Time
+import Isabelle.Value qualified as Value
 
 import Naproche.Program qualified as Program
 import Naproche.System qualified as System

@@ -12,34 +12,35 @@
 
 module SAD.ForTheL.TEX.Structure where
 
-import Data.List
 import Control.Applicative
 import Control.Monad
 import Control.Monad.State.Class (modify)
-import Data.Text (Text)
-import Data.Functor ((<&>))
-import Data.Foldable (foldr')
-import Data.Maybe (fromMaybe)
-import Data.Either.Extra (fromEither)
 
-import SAD.ForTheL.Structure
-import SAD.ForTheL.FTL.Structure qualified as FTL -- for backward compatibility
-import SAD.ForTheL.Base
-import SAD.ForTheL.Statement
-import SAD.ForTheL.TEX.Extension qualified as TEX
-import SAD.ForTheL.TEX.Statement qualified as TEX
-import SAD.ForTheL.Reports (getMarkupToken, getMarkupTokenOf, markupToken)
-import SAD.ForTheL.Instruction
-import qualified SAD.ForTheL.Reports as Reports
-import SAD.Parser.Base
-import SAD.Parser.Combinators
-import SAD.Parser.Token
-import SAD.Parser.Primitives
+import Data.Either.Extra (fromEither)
+import Data.Foldable (foldr')
+import Data.Functor ((<&>))
+import Data.List
+import Data.Maybe (fromMaybe)
+import Data.Text (Text)
+
+import SAD.Data.Formula
 import SAD.Data.Instr
+import SAD.Data.Tag qualified as Tag
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import SAD.Data.Text.Block qualified as Block
-import SAD.Data.Formula
-import SAD.Data.Tag qualified as Tag
+import SAD.ForTheL.Base
+import SAD.ForTheL.FTL.Structure qualified as FTL
+import SAD.ForTheL.Instruction
+import SAD.ForTheL.Reports qualified as Reports
+import SAD.ForTheL.Reports (getMarkupToken, getMarkupTokenOf, markupToken)
+import SAD.ForTheL.Statement
+import SAD.ForTheL.Structure
+import SAD.ForTheL.TEX.Extension qualified as TEX
+import SAD.ForTheL.TEX.Statement qualified as TEX
+import SAD.Parser.Base
+import SAD.Parser.Combinators
+import SAD.Parser.Primitives
+import SAD.Parser.Token
 
 
 -- * Parsing a ForTheL text

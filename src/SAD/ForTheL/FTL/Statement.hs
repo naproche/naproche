@@ -19,20 +19,22 @@ module SAD.ForTheL.FTL.Statement (
 ) where
 
 
-import Data.Set (Set)
-import Data.Function ((&))
-import Control.Applicative ((<**>), Alternative(..))
+import Control.Applicative (Alternative(..), (<**>))
 import Control.Monad (guard)
+
+import Data.Function ((&))
+import Data.Set (Set)
 import Data.Set qualified as Set
 
 import SAD.Data.Formula
 import SAD.Data.Text.Decl
 import SAD.ForTheL.Base
-import SAD.ForTheL.Statement
 import SAD.ForTheL.Reports (markupToken, markupTokenOf, markupTokenSeqOf)
-import SAD.Parser.Combinators
-import SAD.Parser.Primitives (token, token', symbol, tokenOf', tokenSeq', tokenSeqOf')
 import SAD.ForTheL.Reports qualified as Reports
+import SAD.ForTheL.Statement
+import SAD.Parser.Combinators
+import SAD.Parser.Primitives (symbol, token, token', tokenOf', tokenSeq',
+                              tokenSeqOf')
 
 
 statement :: FTL Formula
@@ -301,19 +303,19 @@ definiteTerm = label "a definite term" $  symbolicTerm -|- definiteNoun
 
 
 symbolicFormula :: FTL Formula
-symbolicFormula  = label "a symbolic formula" $ biimplication
+symbolicFormula = label "a symbolic formula" $ biimplication
   where
     biimplication = implication >>= binary Iff (symbolicIff >> implication)
-    implication   = disjunction >>= binary Imp (symbolicImp >> implication)
-    disjunction   = conjunction >>= binary Or  (symbolicOr >> disjunction)
-    conjunction   = nonbinary   >>= binary And (symbolicAnd >> conjunction)
-    universal     = liftA2 (quantified dAll Imp) (symbolicAll >> (declared =<< symNotion)) nonbinary
-    existential   = liftA2 (quantified dExi And) (symbolicExists >> (declared =<< symNotion)) nonbinary
-    nonbinary     = truth -|- falsity -|- universal -|- existential -|- negation -|- separated -|- atomic
-    truth         = symbolicTruth >> pure Top
-    falsity       = symbolicFalsity >> pure Bot
-    negation      = Not <$> (symbolicNot >> nonbinary)
-    separated     = token' ":" >> symbolicFormula
+    implication = disjunction >>= binary Imp (symbolicImp >> implication)
+    disjunction = conjunction >>= binary Or  (symbolicOr >> disjunction)
+    conjunction = nonbinary   >>= binary And (symbolicAnd >> conjunction)
+    universal = liftA2 (quantified dAll Imp) (symbolicAll >> (declared =<< symNotion)) nonbinary
+    existential = liftA2 (quantified dExi And) (symbolicExists >> (declared =<< symNotion)) nonbinary
+    nonbinary = truth -|- falsity -|- universal -|- existential -|- negation -|- separated -|- atomic
+    truth = symbolicTruth >> pure Top
+    falsity = symbolicFalsity >> pure Bot
+    negation = Not <$> (symbolicNot >> nonbinary)
+    separated = token' ":" >> symbolicFormula
 
     quantified quant op (_, f, v) = flip (foldr quant) v . op f
 
@@ -456,7 +458,7 @@ symbClassNotation = cndClass </> finiteSet
       t <- sTerm
       token' "in"
       sep t
-    noSep  = do
+    noSep = do
       t <- sTerm
       return (Tag Replacement, const Top, t, mkClass)
     sep t = do

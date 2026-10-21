@@ -97,7 +97,7 @@ digNotion (q, f, v) = dig f (map pVar $ Set.toList v) >>= \ g -> return (q, g, v
 single :: (a, b, Set c) -> FTL (a, b, c)
 single (q, f, vs) = case Set.elems vs of
   [v] -> return (q, f, v)
-  _   -> fail "inadmissible multinamed notion"
+  _ -> fail "inadmissible multinamed notion"
 
 dig :: Formula -> [Formula] -> FTL Formula
 dig f [_] | occursS f = fail "too few subjects for an m-predicate"

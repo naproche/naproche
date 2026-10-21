@@ -7,8 +7,8 @@
 -- TODO: Add description.
 
 
-{-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Data.Text.Block (
@@ -29,21 +29,21 @@ module SAD.Data.Text.Block (
   canDeclare
 ) where
 
+import Data.Maybe (fromMaybe)
 import Data.Set (Set)
 import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as Text
-import Data.Maybe (fromMaybe)
+
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Library (make_text)
+import Isabelle.Position qualified as Position
 
 import SAD.Data.Formula hiding (CaseHypothesis)
 import SAD.Data.Instr
-import SAD.Parser.Token
 import SAD.Data.Text.Decl
 import SAD.Parser.Error (ParseError)
-
-import Isabelle.Bytes qualified as Bytes
-import Isabelle.Position qualified as Position
-import Isabelle.Library (make_text)
+import SAD.Parser.Token
 
 
 data ProofText =
@@ -57,13 +57,13 @@ data ProofText =
   deriving (Eq, Ord)
 
 data Block = Block {
-  formula           :: Formula,
-  body              :: [ProofText],
-  kind              :: Section,
+  formula :: Formula,
+  body :: [ProofText],
+  kind :: Section,
   declaredVariables :: Set Decl,
-  name              :: Text,
-  link              :: [Text],
-  tokens            :: [Token] }
+  name :: Text,
+  link :: [Text],
+  tokens :: [Token] }
   deriving (Eq, Ord)
 
 makeBlock :: Formula -> [ProofText] -> Section -> Text -> [Text] -> [Token] -> Block
@@ -124,11 +124,11 @@ needsProof :: Block -> Bool
 needsProof block = sign $ kind block
   where
     sign Definition = False
-    sign Signature  = False
-    sign Axiom      = False
+    sign Signature = False
+    sign Axiom = False
     sign Assumption = False
-    sign Posit      = False
-    sign _          = True
+    sign Posit = False
+    sign _ = True
 
 
 {- which statements can declare variables -}

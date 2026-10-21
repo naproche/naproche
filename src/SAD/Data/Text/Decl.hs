@@ -13,9 +13,9 @@ module SAD.Data.Text.Decl (
   positionedDecl
 ) where
 
-import SAD.Data.VarName
-
 import Isabelle.Position qualified as Position
+
+import SAD.Data.VarName
 
 
 -- | >0, with 0 as undefined

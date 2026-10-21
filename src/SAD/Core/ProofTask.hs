@@ -15,8 +15,8 @@ import Data.Text qualified as Text
 
 import SAD.Data.Formula
 import SAD.Data.Text.Block (Section(..))
-import SAD.Prove.Normalize
 import SAD.Data.Text.Decl
+import SAD.Prove.Normalize
 
 
 -- * Proof tasks
@@ -91,7 +91,7 @@ choiceTask = Tag ChoiceTask . dive
     dive f = f
 
 existenceTask :: Formula -> Formula
-existenceTask  = Tag ExistenceTask . dive 0
+existenceTask = Tag ExistenceTask . dive 0
   where
     dive :: Int -> Formula -> Formula
     dive n (All x f) = let nn = VarTask $ VarDefault $ Text.pack $ show n in

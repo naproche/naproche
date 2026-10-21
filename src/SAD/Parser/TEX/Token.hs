@@ -12,23 +12,26 @@ module SAD.Parser.TEX.Token (
   tokenize
 ) where
 
+import Control.Monad (unless, when)
+import Control.Monad.State.Class (gets, modify)
+import Control.Monad.Trans.State.Strict (State, evalState)
+
+import Data.Functor ((<&>))
+import Data.List.Extra (concatUnzip)
+import Data.Maybe qualified as Maybe
 import Data.Text (Text)
 import Data.Text qualified as Text
+
 import FTLex.Tex hiding (initState)
-import Data.Functor ((<&>))
-import Data.Maybe qualified as Maybe
-import Data.List.Extra (concatUnzip)
-import Control.Monad.Trans.State.Strict (evalState, State)
-import Control.Monad.State.Class (gets, modify)
-import Control.Monad (when, unless)
-import Text.Megaparsec hiding (State, Token, token)
 
-import SAD.Parser.Token
-import SAD.Parser.TEX.Lexer qualified as TEX
-import SAD.Core.Message qualified as Message
-
-import Isabelle.Position qualified as Position
 import Isabelle.Markup qualified as Markup
+import Isabelle.Position qualified as Position
+
+import SAD.Core.Message qualified as Message
+import SAD.Parser.TEX.Lexer qualified as TEX
+import SAD.Parser.Token
+
+import Text.Megaparsec hiding (State, Token, token)
 
 
 -- * Tokenizing a TEX document
@@ -71,7 +74,7 @@ data Error =
   | Unexpected Position.T Text Text
   deriving (Eq, Ord)
 
--- | Turn an error into a located error 
+-- | Turn an error into a located error
 makeErrMsg :: Error -> (Text, Position.T)
 makeErrMsg (NestedForthel pos) =
   let msg = "Illegal nesting of \"forthel\" groups."
@@ -412,14 +415,14 @@ catchInvalidGroupEnd = do
 -- environment). If we are currently inside a ForTheL group, the tokens given by
 -- the @\\begin{...}@ command, the result of @p@ and the @\\end{...}@ command
 -- are returned; otherwise only the result of @p@ is returned.
--- 
+--
 -- In any of the following situations an error is thrown:
 --
 -- * A @forthel@ environment is opened when the @insideForthel@ flag is already
 --   set.
 -- * The environment names in the @\\begin{...}@ and @\\end{...}@ commands do
 --   not match.
--- 
+--
 -- Moreover, when entering and leaving a @forthel@ environment, the
 -- @insideForthel@ flag is set and unset, respectively.
 --
@@ -478,7 +481,7 @@ environment p = do
       -- Throw an error if the end of the input is reached:
       (_, warning_1) <- ifEofAddWarning $ Warning ("LaTeX: Missing \"\\end{" <> envNameText <> "}\".") beginEnvPos
       if null warning_1
-        then do 
+        then do
           -- Parse an @\\end{...}@ command:
           endMacro <- controlWord' "end"
           beginGroup' <- catchUnexpected "a begin-group lexeme" $ singleToken isBeginGroupCharLexeme
@@ -875,7 +878,7 @@ anyControlSymbolOf css = do
 -- | The same as @anyControlSymbolOf@, but returns an additional empty list of
 -- warnings.
 anyControlSymbolOf' :: [Char] -> Tokenizer ([Token], [Warning])
-anyControlSymbolOf' css  = do
+anyControlSymbolOf' css = do
   tokens <- anyControlSymbolOf css
   return (tokens, [])
 
@@ -892,7 +895,7 @@ anyControlSymbolExcept css = do
 -- | The same as @anyControlSymbolExcept@, but returns an additional empty list of
 -- warnings.
 anyControlSymbolExcept' :: [Char] -> Tokenizer ([Token], [Warning])
-anyControlSymbolExcept' css  = do
+anyControlSymbolExcept' css = do
   tokens <- anyControlSymbolExcept css
   return (tokens, [])
 

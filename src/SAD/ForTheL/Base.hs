@@ -15,24 +15,25 @@ module SAD.ForTheL.Base where
 import Control.Applicative
 import Control.Monad
 import Control.Monad.State.Class (gets, modify)
+
 import Data.Char (isAlpha, isAlphaNum)
-import Data.Text (Text)
-import Data.Text qualified as Text
 import Data.Set (Set)
 import Data.Set qualified as Set
-
-import SAD.Data.Formula
-import SAD.Parser.Base
-import SAD.Parser.Combinators
-import SAD.Parser.Primitives
-import SAD.Parser.Token (showToken)
-import SAD.Parser.Char (isAsciiLetter)
-import SAD.Data.Text.Decl
-import SAD.Export.Presentation
+import Data.Text (Text)
+import Data.Text qualified as Text
 
 import Isabelle.Position qualified as Position
 
 import Naproche.Program as Program
+
+import SAD.Data.Formula
+import SAD.Data.Text.Decl
+import SAD.Export.Presentation
+import SAD.Parser.Base
+import SAD.Parser.Char (isAsciiLetter)
+import SAD.Parser.Combinators
+import SAD.Parser.Primitives
+import SAD.Parser.Token (showToken)
 
 
 -- | Parser for ForTheL texts
@@ -225,7 +226,7 @@ primMultiPredicate p (pt, fm) = do
 -- * Notions and functions
 
 primNotion :: FTL UTerm -> FTL MNotion
-primNotion p  = getExpr notionExpr notion
+primNotion p = getExpr notionExpr notion
   where
     notion (pt, fm) = do
       (q, vs, ts) <- notionPattern p pt
@@ -248,7 +249,7 @@ primCommonNotion p s = getExpr notionExpr notion
       return (q, foldr1 And $ map fn as, vs)
 
 primFun :: FTL UTerm -> FTL UTerm
-primFun  = fun <=< primNotion
+primFun = fun <=< primNotion
   where
     fun (q, Trm {trmName = TermEquality, trmArgs = [_, t]}, _)
       | not (occursH t) = return (q, t)
@@ -289,7 +290,7 @@ primIsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \t s -> fm $ t:l++[s]
 
 
 primSnt :: FTL Formula -> FTL MNotion
-primSnt p  = noError $ varList >>= getExpr symbNotionExpr . snt
+primSnt p = noError $ varList >>= getExpr symbNotionExpr . snt
   where
     snt vs (pt, fm) = symbolPattern p pt >>= \l -> return (id, fm $ mkVar (VarHole ""):l, vs)
 

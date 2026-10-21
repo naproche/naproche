@@ -6,26 +6,29 @@
 -- Parser combinators.
 
 
-{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TupleSections #-}
 
 module SAD.Parser.Combinators where
 
 import Control.Applicative
 import Control.Monad
-import Data.Ord (comparing)
+
 import Data.Maybe (isNothing, mapMaybe)
-import Debug.Trace
+import Data.Ord (comparing)
 import Data.Text (Text)
 import Data.Text qualified as Text
-import System.FilePath.Posix hiding ((</>))
 
-import SAD.Parser.Base
-import SAD.Parser.Token
-import SAD.Parser.Error
-import SAD.Parser.Primitives
+import Debug.Trace
 
 import Isabelle.Position qualified as Position
+
+import SAD.Parser.Base
+import SAD.Parser.Error
+import SAD.Parser.Primitives
+import SAD.Parser.Token
+
+import System.FilePath.Posix hiding ((</>))
 
 
 -- * Choices
@@ -49,18 +52,18 @@ infixr 2 -|-
 p1 -|- p2 = Parser $ \st ok cerr eerr ->
   let ok1 err eok cok =
         let ok2 err' eok' cok' = ok (err <+> err') (eok ++ eok') (cok ++ cok')
-            cerr2 err'         = ok (err <+> err') eok cok
-            eerr2 err'         = ok (err <+> err') eok cok
+            cerr2 err' = ok (err <+> err') eok cok
+            eerr2 err' = ok (err <+> err') eok cok
         in  runParser p2 st ok2 cerr2 eerr2
       cerr1 err =
-        let ok2 err'      = ok   (err <+>  err')
-            cerr2 err'    = cerr (err <> err')
-            eerr2 err'    = eerr (err <> err')
+        let ok2 err' = ok   (err <+>  err')
+            cerr2 err' = cerr (err <> err')
+            eerr2 err' = eerr (err <> err')
         in  runParser p2 st ok2 cerr2 eerr2
       eerr1 err =
-        let ok2 err'      = ok   (err <+>  err')
-            eerr2 err'    = eerr (err <> err')
-            cerr2 err'    = eerr (err <> err')
+        let ok2 err' = ok   (err <+>  err')
+            eerr2 err' = eerr (err <> err')
+            cerr2 err' = eerr (err <> err')
         in  runParser p2 st ok2 cerr2 eerr2
   in  runParser p1 st ok1 cerr1 eerr1
 
@@ -232,7 +235,7 @@ narrow :: Show a => Parser st a -> Parser st a
 narrow p = Parser $ \st ok cerr eerr ->
   let pok err eok cok = case eok ++ cok of
         [_] -> ok err eok cok
-        ls  ->  eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show (map prResult ls))]) (stPosition st)
+        ls -> eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show (map prResult ls))]) (stPosition st)
   in  runParser p st pok cerr eerr
 
 -- | If @p@ is ambiguous, @narrow p@ fails and reports a well-formedness error.
@@ -240,7 +243,7 @@ narrow2 :: Show b => Parser st (a, b) -> Parser st (a, b)
 narrow2 p = Parser $ \st ok cerr eerr ->
   let pok err eok cok = case eok ++ cok of
         [_] -> ok err eok cok
-        ls  ->  eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show (map (snd . prResult) ls))]) (stPosition st)
+        ls -> eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show (map (snd . prResult) ls))]) (stPosition st)
   in  runParser p st pok cerr eerr
 
 -- | Only take the longest possible parses (by @SourcePos@), discard all others.
@@ -253,8 +256,8 @@ takeLongest p = Parser $ \st ok cerr eerr ->
   where
     longest :: [ParseResult st a] -> [ParseResult st a]
     longest = lng []
-    lng ls []          = reverse ls
-    lng [] (c:cs)      = lng [c] cs
+    lng ls [] = reverse ls
+    lng [] (c:cs) = lng [c] cs
     lng (l:ls) (c:cs) =
       case comparing (stPosition . prState) l c of
         GT -> lng (l:ls) cs
@@ -281,8 +284,8 @@ failing p = Parser $ \st ok cerr eerr ->
 infix 0 <?>
 (<?>) :: Parser st a -> Text -> Parser st a
 p <?> msg = Parser $ \st ok cerr eerr ->
-  let pok err   = ok   $ setError (stPosition st) err
-      pcerr     = cerr
+  let pok err = ok   $ setError (stPosition st) err
+      pcerr = cerr
       peerr err = eerr $ setError (stPosition st) err
   in  runParser p st pok pcerr peerr
   where
@@ -326,7 +329,7 @@ wellFormedCheck check p = Parser $ \st ok cerr eerr ->
         eerr $ newErrorMessage (newWellFormednessMessage $ nwf $ eok ++ cok) pos
   in  runParser p st pok cerr eerr
   where
-    wf  = filter (isNothing . check . prResult)
+    wf = filter (isNothing . check . prResult)
     nwf = mapMaybe (check . prResult)
 
 -- | Parse and keep only results well-formed according to the supplied check;
