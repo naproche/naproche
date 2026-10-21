@@ -1,13 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Parser.Error
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
 --
 -- Message and Parse Error data type and core functions.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Parser.Error (
   ParseError(..),
   newErrorMessage,

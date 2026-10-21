@@ -5,7 +5,6 @@
 -- License     : GPL-3
 --
 -- TODO: Add description.
-
 module SAD.Data.Formula (
   module SAD.Data.Formula.Base,
   module SAD.Data.Formula.Kit,

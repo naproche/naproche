@@ -1,3 +1,6 @@
+{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.ForTheL.Structure
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -5,11 +8,6 @@
 -- License     : GPL-3
 --
 -- Document parsing.
-
-
-{-# LANGUAGE NamedFieldPuns #-}
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.ForTheL.Structure where
 
 import Control.Applicative
@@ -27,9 +25,9 @@ import SAD.Data.Text.Block (Block, ProofText(..), Section(..))
 import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Text.Decl
 import SAD.ForTheL.Base
-import SAD.ForTheL.Reports qualified as Reports
 import SAD.ForTheL.Reports (addBlockReports, markupToken, markupTokenOf,
                             markupTokenSeqOf)
+import SAD.ForTheL.Reports qualified as Reports
 import SAD.ForTheL.Statement
 import SAD.Parser.Base
 import SAD.Parser.Char (isAsciiAlphaNum)

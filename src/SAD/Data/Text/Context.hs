@@ -5,8 +5,6 @@
 -- License     : GPL-3
 --
 -- TODO: Add description.
-
-
 module SAD.Data.Text.Context (
   Context(..),
   MRule(..),

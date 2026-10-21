@@ -1,13 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Data.Terms
 -- Copyright   : (c) 2019, Anton Lorenzen
 -- License     : GPL-3
 --
 -- TODO: Add description.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Data.Terms where
 
 import Data.Text (Text)

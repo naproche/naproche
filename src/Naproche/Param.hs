@@ -1,11 +1,9 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Authors: Makarius Wenzel (2022)
 --
 -- Typed parameters, stored via plain bytes.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module Naproche.Param (
   print_flag, parse_flag,
   T, name, unnamed, description, description_default,

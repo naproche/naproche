@@ -1,13 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Parser.FTL.Token
 -- Copyright   : (c) 2024, Marcel Schütz
 -- License     : GPL-3
 --
 -- Tokenization of input.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Parser.FTL.Token (
   tokenize
 ) where

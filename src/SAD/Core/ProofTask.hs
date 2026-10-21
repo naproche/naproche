@@ -1,13 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Core.ProofTask
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
 --
 -- Generation of proof tasks for low-level map and class definitions and choices.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Core.ProofTask (generateProofTask) where
 
 import Data.Set (Set)

@@ -1,13 +1,11 @@
--- |
--- Authors: Makarius Wenzel (2021)
---
--- External provers.
-
-
 {-# LANGUAGE MultiWayIf #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedStrings #-}
 
+-- |
+-- Authors: Makarius Wenzel (2021)
+--
+-- External provers.
 module Naproche.Prover (
   Prover, Status (..), get_name, run, status, run_status,
   timeout, memory_limit, by_contradiction,

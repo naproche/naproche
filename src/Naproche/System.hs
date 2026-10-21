@@ -1,11 +1,9 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Authors: Makarius Wenzel (2021)
 --
 -- System process support for Naproche: with and without Isabelle/PIDE.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module Naproche.System (
   is_windows, bash_process
 ) where

@@ -2,8 +2,6 @@
 -- Authors: Adrian De Lon (2021)
 --
 -- TODO: Add description.
-
-
 module Naproche.Helpers where
 
 import Control.Monad

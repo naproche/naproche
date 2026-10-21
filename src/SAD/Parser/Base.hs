@@ -1,11 +1,3 @@
--- |
--- Module      : SAD.Parser.Base
--- Copyright   : (c) 2017 - 2018, Steffen Frerix
--- License     : GPL-3
---
--- Parser datatype and monad instance.
-
-
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE FlexibleInstances #-}
@@ -13,6 +5,12 @@
 {-# LANGUAGE MultiWayIf #-}
 {-# LANGUAGE PolymorphicComponents #-}
 
+-- |
+-- Module      : SAD.Parser.Base
+-- Copyright   : (c) 2017 - 2018, Steffen Frerix
+-- License     : GPL-3
+--
+-- Parser datatype and monad instance.
 module SAD.Parser.Base (
   Parser(..),
   Continuation,

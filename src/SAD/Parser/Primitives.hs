@@ -1,13 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Parser.Primitives
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
 --
 -- Primitive parsers
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Parser.Primitives (
   -- * Primitive Token operations
   tokenPrim,

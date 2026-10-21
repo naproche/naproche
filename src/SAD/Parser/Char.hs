@@ -4,8 +4,6 @@
 -- License     : GPL-3
 --
 -- Character Categories.
-
-
 module SAD.Parser.Char where
 
 import Data.Char qualified as Char

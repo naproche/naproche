@@ -1,3 +1,6 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Data.Formula.Show
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -6,11 +9,6 @@
 -- License     : GPL-3
 --
 -- Show instance for formulas.
-
-
-{-# OPTIONS_GHC -fno-warn-orphans #-}
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Data.Formula.Show (
   symEncode
 ) where

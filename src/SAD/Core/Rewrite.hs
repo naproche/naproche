@@ -1,14 +1,12 @@
+{-# LANGUAGE FlexibleContexts #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 -- |
 -- Module      : SAD.Core.Rewrite
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
 --
 -- Term rewriting: extraction of rules and proof of equlities.
-
-
-{-# LANGUAGE FlexibleContexts #-}
-{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-
 module SAD.Core.Rewrite (
   equalityReasoning,
   lpoGe

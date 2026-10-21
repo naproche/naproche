@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Parser.Token
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -6,10 +8,6 @@
 -- License     : GPL-3
 --
 -- Generic tokenization setup
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Parser.Token (
   Token(..),
   renderTokens,

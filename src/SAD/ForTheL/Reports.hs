@@ -1,3 +1,6 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TupleSections #-}
+
 -- |
 -- Module      : SAD.ForTheL.Reports
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix,
@@ -5,11 +8,6 @@
 -- License     : GPL-3
 --
 -- PIDE markup reports for ForTheL text elements.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TupleSections #-}
-
 module SAD.ForTheL.Reports (
   addMarkup,
   markupToken,

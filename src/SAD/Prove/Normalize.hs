@@ -1,13 +1,11 @@
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 -- |
 -- Module      : SAD.Prove.Normalize
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
 --
 -- Normalization of formulas.
-
-
-{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-
 module SAD.Prove.Normalize (
   simplify,
   dec,

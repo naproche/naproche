@@ -1,3 +1,7 @@
+{-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE MultiWayIf #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Authors: Adrian De Lon (2021)
 --
@@ -12,12 +16,6 @@
 --
 -- Throughout we make the assumption that the input is wellformed LaTeX markup:
 -- for instance, braces are assumed to be balanced.
-
-
-{-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE MultiWayIf #-}
-{-# LANGUAGE OverloadedStrings #-}
-
 module Naproche.Token where
 
 import Control.Monad.State.Strict

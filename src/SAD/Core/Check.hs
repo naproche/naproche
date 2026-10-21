@@ -1,3 +1,6 @@
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Core.Check
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -5,11 +8,6 @@
 -- License     : GPL-3
 --
 -- Well-definedness check and evidence collection.
-
-
-{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Core.Check (fillDef) where
 
 import Control.Monad (MonadPlus(..), guard)

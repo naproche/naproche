@@ -1,13 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.ForTheL.TEX.Base
 -- Copyright   : (c) 2025 Marcel Schütz
 -- License     : GPL-3
 --
 -- ForTheL state (TeX).
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.ForTheL.TEX.Base (
   addInits
 ) where

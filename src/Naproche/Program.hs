@@ -2,8 +2,6 @@
 -- Authors: Makarius Wenzel (2021)
 --
 -- Naproche program context: Console or PIDE.
-
-
 module Naproche.Program (
   Context, console, is_pide, check_pide,
   write_message, read_message, exchange_message, exchange_message0,

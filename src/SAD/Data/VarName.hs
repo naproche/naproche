@@ -1,14 +1,12 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Data.VarName
 -- Copyright   : (c) 2019, Anton Lorenzen
 -- License     : GPL-3
 --
 -- TODO: Add description.
-
-
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Data.VarName (
   VariableName(..),
   FV,

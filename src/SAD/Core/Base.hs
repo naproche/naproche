@@ -1,3 +1,7 @@
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE PolymorphicComponents #-}
+
 -- |
 -- Module      : SAD.Core.Base
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -5,12 +9,6 @@
 -- License     : GPL-3
 --
 -- Verifier state monad and common functions.
-
-
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE PolymorphicComponents #-}
-
 module SAD.Core.Base (
   CRM,
   readTrackers,

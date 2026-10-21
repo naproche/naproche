@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.ForTheL.TEX.Extension
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -5,10 +7,6 @@
 -- License     : GPL-3
 --
 -- Language extensions (TeX).
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.ForTheL.TEX.Extension (
   defExtend,
   sigExtend,

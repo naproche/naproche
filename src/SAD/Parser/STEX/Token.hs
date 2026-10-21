@@ -4,7 +4,6 @@
 -- License     : GPL-3
 --
 -- Tokenizing FTL-sTeX documents
-
 module SAD.Parser.STEX.Token (
   module SAD.Parser.TEX.Token
 ) where

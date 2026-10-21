@@ -1,13 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.ForTheL.FTL.Base
 -- Copyright   : (c) 2025 Marcel Schütz
 -- License     : GPL-3
 --
 -- ForTheL state (FTL).
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.ForTheL.FTL.Base (
   addInits
 ) where

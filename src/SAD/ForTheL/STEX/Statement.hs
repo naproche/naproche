@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.ForTheL.STEX.Statement
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -6,10 +8,6 @@
 -- License     : GPL-3
 --
 -- Statements (sTeX).
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.ForTheL.STEX.Statement (
   statement,
   anotion,

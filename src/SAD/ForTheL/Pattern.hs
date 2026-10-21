@@ -1,3 +1,6 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 -- |
 -- Module      : SAD.ForTheL.Pattern
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -5,11 +8,6 @@
 -- License     : GPL-3
 --
 -- Pattern parsing and pattern state management.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-
 module SAD.ForTheL.Pattern (
   patHead,
   patTail,

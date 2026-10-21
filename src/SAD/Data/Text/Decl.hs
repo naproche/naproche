@@ -4,8 +4,6 @@
 -- License     : GPL-3
 --
 -- Variable declarations.
-
-
 module SAD.Data.Text.Decl (
   Decl(..),
   Serial,

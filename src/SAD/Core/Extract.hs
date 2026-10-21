@@ -1,3 +1,7 @@
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE NamedFieldPuns #-}
+
 -- |
 -- Module      : SAD.Core.Extract
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
@@ -5,12 +9,6 @@
 --
 -- Extraction of various information from formulas: definitions,
 -- map evaluations, elementhood conditions for classes
-
-
-{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE NamedFieldPuns #-}
-
 module SAD.Core.Extract (
   addDefinition,
   addEvaluation,

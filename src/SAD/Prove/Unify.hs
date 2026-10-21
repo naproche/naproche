@@ -4,8 +4,6 @@
 -- License     : GPL-3
 --
 -- Unification of literals.
-
-
 module SAD.Prove.Unify (unify) where
 
 import Control.Monad

@@ -1,14 +1,12 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TupleSections #-}
+
 -- |
 -- Module      : SAD.Parser.Combinators
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
 --
 -- Parser combinators.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TupleSections #-}
-
 module SAD.Parser.Combinators where
 
 import Control.Applicative

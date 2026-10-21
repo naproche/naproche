@@ -6,8 +6,6 @@
 -- License     : GPL-3
 --
 -- Main verification loop.
-
-
 module SAD.Core.Verify (verifyRoot) where
 
 import Control.Monad (unless, when)

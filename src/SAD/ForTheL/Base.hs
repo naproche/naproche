@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.ForTheL.Base
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -6,10 +8,6 @@
 --
 -- FoTheL state and state management, parsing of primitives, operations on
 -- variables and macro expressions.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.ForTheL.Base where
 
 import Control.Applicative

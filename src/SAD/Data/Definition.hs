@@ -5,8 +5,6 @@
 -- License     : GPL-3
 --
 -- TODO: Add description.
-
-
 module SAD.Data.Definition where
 
 import Data.Map (Map)

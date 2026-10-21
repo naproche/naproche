@@ -4,7 +4,6 @@
 -- License     : GPL-3
 --
 -- Lexing FTL-sTeX documents
-
 module SAD.Parser.STEX.Lexer (
   module SAD.Parser.TEX.Lexer
 ) where

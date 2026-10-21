@@ -4,7 +4,6 @@
 -- License     : GPL-3
 --
 -- Lexing FTL documents
-
 module SAD.Parser.FTL.Lexer (
   Lexeme,
   lex,

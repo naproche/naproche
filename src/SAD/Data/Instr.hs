@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Data.Instr
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -6,10 +8,6 @@
 -- License     : GPL-3
 --
 -- Instruction datatype and core functions.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Data.Instr (
   Dialect(..), Instr(..), Drop(..), Command(..),
   getInstr, addInstr, dropInstr,

@@ -1,3 +1,6 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TupleSections #-}
+
 -- |
 -- Module      : SAD.Main
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -7,11 +10,6 @@
 -- License     : GPL-3
 --
 -- Main application entry point: Terminal or PIDE mode.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TupleSections #-}
-
 module SAD.Main where
 
 import Control.Exception (Exception, catch, handle, throwIO)

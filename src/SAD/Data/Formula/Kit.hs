@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Data.Formula.Kit
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -5,10 +7,6 @@
 -- License     : GPL-3
 --
 -- Various functions on formulas.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Data.Formula.Kit where
 
 import Control.Monad

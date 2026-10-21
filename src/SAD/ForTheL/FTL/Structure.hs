@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.ForTheL.FTL.Structure
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -5,10 +7,6 @@
 -- License     : GPL-3
 --
 -- Document parsing (FTL).
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.ForTheL.FTL.Structure (
   forthelText,
 
@@ -32,8 +30,8 @@ import SAD.ForTheL.Base
 import SAD.ForTheL.FTL.Extension qualified as FTL
 import SAD.ForTheL.FTL.Statement qualified as FTL
 import SAD.ForTheL.Instruction
-import SAD.ForTheL.Reports qualified as Reports
 import SAD.ForTheL.Reports (markupToken, markupTokenOf)
+import SAD.ForTheL.Reports qualified as Reports
 import SAD.ForTheL.Statement
 import SAD.ForTheL.Structure
 import SAD.Parser.Base

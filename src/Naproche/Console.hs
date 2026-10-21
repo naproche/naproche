@@ -2,8 +2,6 @@
 -- Authors: Makarius Wenzel (2021)
 --
 -- Access to physical console.
-
-
 module Naproche.Console (
   setup,
   stdout,

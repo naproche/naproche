@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.ForTheL.TEX.Structure
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -6,10 +8,6 @@
 -- License     : GPL-3
 --
 -- Document parsing (TeX).
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.ForTheL.TEX.Structure where
 
 import Control.Applicative
@@ -31,8 +29,8 @@ import SAD.Data.Text.Block qualified as Block
 import SAD.ForTheL.Base
 import SAD.ForTheL.FTL.Structure qualified as FTL
 import SAD.ForTheL.Instruction
-import SAD.ForTheL.Reports qualified as Reports
 import SAD.ForTheL.Reports (getMarkupToken, getMarkupTokenOf, markupToken)
+import SAD.ForTheL.Reports qualified as Reports
 import SAD.ForTheL.Statement
 import SAD.ForTheL.Structure
 import SAD.ForTheL.TEX.Extension qualified as TEX

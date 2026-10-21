@@ -40,6 +40,11 @@ Each change is tagged with one of the following keywords:
 
 * **Added:** A configuration for `stylish-haskell` (`.stylish-haskell.yaml`)
   that is encouraged to be used to format the Haskell source files of Naproche.
+  Moreover, the following formatting rules have been applied to the source files
+  (and are encouraged to be applied in the future):
+
+    - File-header pragmas are located at the very beginning of a file
+    - No blank lines between the module description and the `module` keyword
 
 
 ## Isabelle2026/Naproche

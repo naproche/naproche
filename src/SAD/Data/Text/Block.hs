@@ -1,3 +1,7 @@
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Data.Text.Block
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -5,12 +9,6 @@
 -- License     : GPL-3
 --
 -- TODO: Add description.
-
-
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE NamedFieldPuns #-}
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Data.Text.Block (
   ProofText(..),
   Block(..),

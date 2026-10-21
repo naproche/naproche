@@ -1,13 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.ForTheL.TEX.Pattern
 -- Copyright   : (c) 2025 Marcel Schütz
 -- License     : GPL-3
 --
 -- Pattern parsing (TeX).
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.ForTheL.TEX.Pattern (
   newPrdPattern,
   unnamedNotion,

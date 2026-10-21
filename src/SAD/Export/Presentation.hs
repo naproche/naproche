@@ -4,8 +4,6 @@
 -- License     : GPL-3
 --
 -- Presenting objects as human-readable text.
-
-
 module SAD.Export.Presentation (
   Presentation(..)
 ) where

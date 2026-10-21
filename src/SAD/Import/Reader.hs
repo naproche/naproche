@@ -6,7 +6,6 @@
 -- License     : GPL-3
 --
 -- Main text reading functions.
-
 module SAD.Import.Reader (
   readProofText
 ) where

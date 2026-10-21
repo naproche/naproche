@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 -- |
 -- Module      : SAD.Core.Thesis
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -5,10 +7,6 @@
 -- License     : GPL-3
 --
 -- Maintain the current thesis.
-
-
-{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-
 module SAD.Core.Thesis (inferNewThesis) where
 
 import Control.Applicative

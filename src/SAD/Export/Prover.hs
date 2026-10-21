@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Export.Prover
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -6,10 +8,6 @@
 -- License     : GPL-3
 --
 -- Prover interface: export a proof task to an external prover.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Export.Prover (
   Cache,
   init_cache,

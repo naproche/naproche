@@ -1,13 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.ForTheL.FTL.Pattern
 -- Copyright   : (c) 2025 Marcel Schütz
 -- License     : GPL-3
 --
 -- Pattern parsing (FTL).
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.ForTheL.FTL.Pattern (
   newPrdPattern,
   unnamedNotion,

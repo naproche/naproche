@@ -7,8 +7,6 @@
 -- License     : GPL-3
 --
 -- An implementation of the MESON algorithm.
-
-
 module SAD.Prove.MESON (
   Cache,
   init_cache,

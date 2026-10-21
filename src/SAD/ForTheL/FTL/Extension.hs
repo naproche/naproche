@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.ForTheL.FTL.Extension
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -5,10 +7,6 @@
 -- License     : GPL-3
 --
 -- Language extensions (FTL).
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.ForTheL.FTL.Extension (
   defExtend,
   sigExtend,

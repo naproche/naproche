@@ -1,3 +1,6 @@
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+{-# LANGUAGE FlexibleContexts #-}
+
 -- |
 -- Module      : SAD.Core.Reason
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -10,11 +13,6 @@
 -- prover. Non-trivial proof tasks are exported to an external prover. If the
 -- direct proof by an external prover fails, the reasoner expands some
 -- definitions and tries again.
-
-
-{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-{-# LANGUAGE FlexibleContexts #-}
-
 module SAD.Core.Reason (
   withContext,
   proveThesis',

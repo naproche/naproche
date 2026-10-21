@@ -1,3 +1,5 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 -- |
 -- Module      : SAD.Data.Formula.Base
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -5,10 +7,6 @@
 -- License     : GPL-3
 --
 -- Core functions on formulas.
-
-
-{-# LANGUAGE NamedFieldPuns #-}
-
 module SAD.Data.Formula.Base where
 
 import Control.Monad.Identity

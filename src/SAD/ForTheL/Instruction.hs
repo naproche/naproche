@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.ForTheL.Instruction
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -6,10 +8,6 @@
 -- License     : GPL-3
 --
 -- Syntax of ForThel Instructions.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.ForTheL.Instruction (
   instr,
   instrDrop,

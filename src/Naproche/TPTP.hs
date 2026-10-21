@@ -4,8 +4,6 @@
 -- Support for TPTP syntax.
 --
 -- See also http://www.tptp.org/TPTP/SyntaxBNF.html
-
-
 module Naproche.TPTP (
   is_lower_word,
   is_upper_word,

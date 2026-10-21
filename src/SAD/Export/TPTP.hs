@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Export.TPTP
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
@@ -6,10 +8,6 @@
 -- License     : GPL-3
 --
 -- Print proof task in TPTP (fof) syntax.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Export.TPTP (
   exportProofTask
 ) where

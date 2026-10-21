@@ -1,13 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Core.Completion
 -- Copyright   : (c) 2019, Annika Hennes
 -- License     : GPL-3
 --
 -- Executes Knuth-Bendix completion on a term rewriting system
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Core.Completion (
   Equation(..),
   toFormula,

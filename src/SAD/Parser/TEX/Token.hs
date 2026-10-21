@@ -1,13 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Parser.TEX.Token
 -- Copyright   : (c) 2024 - 2025, Marcel Schütz
 -- License     : GPL-3
 --
 -- Tokenization of input.
-
-
-{-# LANGUAGE OverloadedStrings #-}
-
 module SAD.Parser.TEX.Token (
   tokenize
 ) where
