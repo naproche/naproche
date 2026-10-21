@@ -6,8 +6,6 @@
 -- See also http://www.tptp.org/TPTP/SyntaxBNF.html
 
 
-{-# LANGUAGE OverloadedStrings #-}
-
 module Naproche.TPTP (
   is_lower_word,
   is_upper_word,

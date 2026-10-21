@@ -6,7 +6,6 @@
 -- Normalization of formulas.
 
 
-{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 module SAD.Prove.Normalize (
