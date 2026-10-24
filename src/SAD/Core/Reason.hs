@@ -154,7 +154,7 @@ launchProver pos iteration = do
     Timer _ time : _ -> do
       addToTimer SuccessTimer time
       incrementCounter SuccessfulGoals
-    _ -> error "No matching case in launchProver"
+    _ -> error "No matching case"
 
 
 -- Triviality check

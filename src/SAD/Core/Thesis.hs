@@ -179,7 +179,7 @@ findUsefulVariation definitions (assumption:restContext) thesis =
     useful variation = isTop $ getObj $
       reductionInViewOf (Not variation) $ Context.formula assumption
 findUsefulVariation _ _ _ =
-  error "SAD.Core.Thesis.findUsefulVariation: empty context"
+  error "Empty context"
 
 --- improved reduction
 

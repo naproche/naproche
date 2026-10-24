@@ -15,7 +15,8 @@ import Data.Text (Text)
 import Data.Text qualified as Text
 
 import Isabelle.Bytes (Bytes)
-import Isabelle.Library (cat_lines, commas, make_bytes, show_bytes, show_text)
+import Isabelle.Library (cat_lines, commas, make_bytes, make_string, quote,
+                         show_bytes, show_text)
 import Isabelle.Position qualified as Position
 
 import Naproche.TPTP (atomic_word)
@@ -110,7 +111,7 @@ exportFormula = exportFormula' 0
       | otherwise = exportTermName s <> "(" <> commas (map (exportFormula' d) $ trmArgs t) <> ")"
     exportFormula' d v@Var {varName = s} = exportVariableName s
     exportFormula' d i@Ind {} = "W" <> show_bytes (d - 1 - indIndex i)
-    exportFormula' d ThisT = error "unexpected \"ThisT\""
+    exportFormula' d ThisT = error $ "unexpected " <> quote "ThisT"
 
     sinfix d o f g = "(" <> exportFormula' d f <> o <> exportFormula' d g <> ")"
 

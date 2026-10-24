@@ -817,7 +817,7 @@ catchUnexpected exp p = try p <|> do
         ControlWord{sourceText = s} -> "control word \"" <> s <> "\""
         ControlSymbol{sourceText = s} -> "control symbol \"" <> s <> "\""
         Parameter{sourceText = s} -> "parameter lexeme \"" <> s <> "\""
-        _ -> error "Unexpected lexeme."
+        _ -> error "Unexpected lexeme"
   customFailure $ Unexpected pos unexp exp
 
 -- | Parse a single lexeme that satisfies a given property.

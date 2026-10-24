@@ -134,7 +134,7 @@ tryParses f ok consumedFail emptyFail err = go err [] [] [] []
         | notNull (accEmptyOk ++ accConsumedOk) -> ok accErr (reverse accEmptyOk) (reverse accConsumedOk)
         | notNull accEmptyFails -> emptyFail $ foldl' (<>) err $ accEmptyFails ++ accConsumedFails
         | notNull accConsumedFails -> consumedFail $ foldl' (<>) err accConsumedFails
-        | otherwise -> error "tryParses: parser has empty result"
+        | otherwise -> error "Parser has empty result"
 
       -- If we have further input first work on the 'emptyOk' results
       ((PR a st):rs, ys) ->
@@ -178,7 +178,7 @@ runP p st = runParser p st ok consumedFail emptyFail
   where
     ok _ emptyOk consumedOk = case emptyOk ++ consumedOk of
       [result] -> Right result
-      _ -> error "Invalid parsing result."
+      _ -> error "Invalid parsing result"
     consumedFail = Left
     emptyFail = Left
 

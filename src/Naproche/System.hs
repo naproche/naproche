@@ -47,7 +47,7 @@ bash_process context params = do
     Just options -> Isabelle_System.bash_process options params
     Nothing ->
       do
-        when is_windows $ error "Windows OS: cannot run bash process from console"
+        when is_windows $ error "Windows OS: Cannot run bash process from console"
         Temp.withSystemTempFile "script" (\tmp_name tmp_handle -> do
           let env =
                 Bash.get_putenv params

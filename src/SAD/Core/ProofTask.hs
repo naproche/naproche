@@ -36,7 +36,7 @@ mapDcl _ = False
 classDcl :: Formula -> Bool
 classDcl (Trm{trId = id} `And` _) = id == SetId || id == ClassId
 classDcl (f `And` _) = classDcl f
-classDcl f = error $ "SAD.Core.ProofTask.classDcl: misformed definition: " ++ show f
+classDcl f = error $ "Misformed definition: " ++ show f
 
 
 -- ** Proof tasks for classes
@@ -49,7 +49,7 @@ classTask (_ `And` (All x (_ `Iff` (Tag Replacement f)))) = Top
 -- {t(x_1,...,x_n) in X | ...}
 classTask (_ `And` (All _ (_ `Iff` f))) = Top
 -- Anything else
-classTask f = error $ "SAD.Core.ProofTask.classTask: misformed definition: " ++ show f
+classTask f = error $ "Misformed definition: " ++ show f
 
 
 -- ** Proof tasks for maps
@@ -60,7 +60,7 @@ mapTask :: Formula -> Formula
 mapTask h@((_ `And` g) `And` f) =
   let c = domainCondition g
   in  domainTask g `blAnd` c (choiceTask f `blAnd` existenceTask f `blAnd` uniquenessTask f)
-mapTask _ = error "SAD.Core.ProofTask.mapTask: misformed definition"
+mapTask _ = error "Misformed definition"
 
 -- Takes a statement of one of the following forms:
 --
@@ -72,7 +72,7 @@ mapTask _ = error "SAD.Core.ProofTask.mapTask: misformed definition"
 domainTask :: Formula -> Formula
 domainTask (Tag Domain (All _ (_ `Iff` f))) = Tag DomainTask $ separation f
 domainTask (Tag Domain Trm{trmName = TermEquality, trmArgs = [_,t]}) = Tag DomainTask $ mkClass t
-domainTask _ = error "SAD.Core.ProofTask.domainTask: misformed definition"
+domainTask _ = error "Misformed definition"
 
 choiceTask :: Formula -> Formula
 choiceTask = Tag ChoiceTask . dive
@@ -118,7 +118,7 @@ uniquenessTask = Tag UniquenessTask . dive
 separation :: Formula -> Formula
 separation (f `And` g) = separation f
 separation t | isElem t = dec $ mkClass $ last $ trmArgs t
-separation f = error $ "SAD.Core.ProofTask.separation: misformed argument: " ++ show f
+separation f = error $ "Misformed argument: " ++ show f
 
 -- output a description of a map in the form
 -- @(condition_1 /\ evaluation_1) \/ ... \/ (condition_n /\ evaluation_n)@
@@ -164,4 +164,4 @@ domainCondition (Tag _ Trm {trmName = TermEquality, trmArgs = [dm,g]}) = dive
       | tId == ElementId && twins d dm = mkElem x g
     dive f = mapF dive f
 domainCondition _ =
-  error "SAD.Core.ProofTask.domainCondition: misformed argument"
+  error "Misformed argument"

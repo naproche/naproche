@@ -62,7 +62,7 @@ updateTrip (Just (s,t)) (eqs,def,eq:ocrits)
           eqs' = eq':eqs
       in (eqs',def,ocrits ++ concatMap (criticalPairs  eq') eqs')
 updateTrip _ (eqs,def,eq:ocrits) = (eqs,eq:def,ocrits)
-updateTrip _ _ = error "updateTrip: no critical pairs"
+updateTrip _ _ = error "No critical pairs"
 
 
 {-basic completion of a term rewriting system-}
@@ -77,7 +77,7 @@ complete ord (eqs,def,_)
   | null def = eqs
   | otherwise =
       let e = maybeToList (find (isJust . normalizeAndOrient ord eqs) def)
-      in if null e then error "complete: non-orientable equation" --prevent infinite loop
+      in if null e then error "Non-orientable equation" --prevent infinite loop
                     else complete ord (eqs, nub def \\ e,e)
 
 
@@ -168,7 +168,7 @@ tsubst sfn tm =
            _-> tm
     Trm {trmName = f, trmArgs = args, trId = n}
       -> mkTrm n f (map (tsubst sfn) args)
-    _ -> error "tsubst: input is not a term"
+    _ -> error "Input is not a term"
 
 
 {-tries to find a rewrite rule in eqs that can be applied at the first position of some term t-}
@@ -243,7 +243,7 @@ criticalPairs fma fmb = map fromFormula $
     else crit1 fm1 fm2 `union` crit1 fm2 fm1
   where
     fromFormula (Trm TermEquality [l,r] _ EqualityId) = Equation l r
-    fromFormula _ = error "fromFormula: cannot happen"
+    fromFormula _ = error "Cannot happen"
 
 
 {-computes all critical pairs of a term rewriting system-}

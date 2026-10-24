@@ -157,7 +157,7 @@ reader depth dialect naprocheFormalizationsPath doneFiles (pState : oldState : r
 
 reader _ _ _ _ (state : _) [] = return ([], reports $ stUser state)
 
-reader _ _ _ _ _ _ = error "Invalid arguments."
+reader _ _ _ _ _ _ = error "Invalid arguments"
 
 -- | Consequtively lex, tokenize and parse a byte string.
 parse :: Dialect -> Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)

@@ -70,12 +70,12 @@ data Formula =
 
 trmId :: Formula -> TermId
 trmId Trm {trId = a} = a
-trmId f = error "Formula.Base.trmId: undefined"
+trmId f = error "Undefined"
 
 trInfo :: Formula -> [Formula]
 trInfo Trm {trmInfo = xs} = xs
 trInfo Var {varInfo = xs} = xs
-trInfo _ = error "Formula.Base.trInfo: undefined"
+trInfo _ = error "Undefined"
 
 isHole :: Formula -> Bool
 isHole Var{varName} = isVarHole varName

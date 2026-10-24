@@ -426,7 +426,7 @@ proofOption = proofMethodKey </> proofMethodBy
           symbol "="
           method <- optBraced proofMethod
           return (key, ProofMethod method)
-        _ -> error "Unknown key."
+        _ -> error "Unknown key"
     proofMethodBy = do
       token' "by"
       method <- proofMethod

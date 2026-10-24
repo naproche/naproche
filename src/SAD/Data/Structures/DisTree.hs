@@ -55,7 +55,7 @@ jump (Node struct children) = children >>= jmp (arity struct)
   where
     jmp 0 node = [node]
     jmp ar (Node struct children) = children >>= jmp (ar + arity struct - 1)
-    jmp _ (Leaf _) = error "Inconsistency in DisTree"
+    jmp _ (Leaf _) = error "Inconsistency in discrimination tree"
 
     arity Variable = 0
     arity (GeneralizedConstant _) = 0
@@ -108,7 +108,7 @@ buildTree keys value = [dtree keys]
     toStruct Var {varName = VarHole _} = Variable
     toStruct Var {varName = VarConstant nm} = GeneralizedConstant nm
     toStruct Trm {trId = m, trmArgs = ts} = Function m (length ts)
-    toStruct _ = error "DisTree: Formula has no representation."
+    toStruct _ = error "Formula has no representation"
 
 {- lookup values in a tree. The key for the lookup is the structure of
 the given formula. Multiple leafs may match the key. lookup returns all of

@@ -199,7 +199,7 @@ rewrite pos Trm {trmName = TermEquality, trmArgs = [l,r]} rules = do
   verbositySetting <- asks (getInstruction printsimpParam)
   conditions <- generateConditions pos verbositySetting rules (>) l r;
   mapM_ (dischargeConditions pos verbositySetting . fst) conditions
-rewrite _ _ _ = error "SAD.Core.Rewrite.rewrite: non-equation argument"
+rewrite _ _ _ = error "Non-equation argument"
 
 
 {- dischargeConditions accumulated during rewriting -}
