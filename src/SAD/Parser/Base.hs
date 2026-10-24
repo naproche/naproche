@@ -19,7 +19,6 @@ module SAD.Parser.Base (
   State (..),
   stPosition,
   ParseResult (..),
-  Reply (..),
   runP,
   getInput,
   getPos,
@@ -105,9 +104,8 @@ instance Fail.MonadFail (Parser st) where
 launchParser :: Parser st a -> State st -> IO (a, State st)
 launchParser parser state =
   case runP parser state of
-    Error err -> errorParser (errorPos err) (show_bytes err)
-    Ok [PR a st] -> return (a, st)
-    Ok _ -> error "Invalid parsing result."
+    Left err -> errorParser (errorPos err) (show_bytes err)
+    Right (PR a st) -> return (a, st)
 
 -- This function is simple, but unfriendly to read because of all the
 -- accumulators involved. A clearer definition would be welcome.
@@ -174,21 +172,15 @@ instance MonadPlus (Parser st) where
 
 -- Escaping the parser
 
--- | Reply type
-data Reply a
-  = Ok [a]
-  | Error ParseError
-  deriving (Eq, Show)
-
-
 -- | Running the parser
-runP :: Parser st a -> State st -> Reply (ParseResult st a)
+runP :: Parser st a -> State st -> Either ParseError (ParseResult st a)
 runP p st = runParser p st ok consumedFail emptyFail
   where
-    ok _ emptyOk consumedOk = Ok (emptyOk ++ consumedOk)
-    consumedFail = Error
-    emptyFail = Error
-
+    ok _ emptyOk consumedOk = case emptyOk ++ consumedOk of
+      [result] -> Right result
+      _ -> error "Invalid parsing result."
+    consumedFail = Left
+    emptyFail = Left
 
 -- Parser state management
 
