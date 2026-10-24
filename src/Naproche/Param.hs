@@ -29,8 +29,6 @@ print_flag False = "off"
 parse_flag :: Bytes -> Maybe Bool
 parse_flag "on" = Just True
 parse_flag "off" = Just False
-parse_flag "yes" = Just True
-parse_flag "no" = Just False
 parse_flag _ = Nothing
 
 

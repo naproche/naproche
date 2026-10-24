@@ -46,6 +46,9 @@ Each change is tagged with one of the following keywords:
     - File-header pragmas are located at the very beginning of a file
     - No blank lines between the module description and the `module` keyword
 
+* **Removed:** `yes` and `no` as alternatives to `on` and `off` in flag
+  instructions were discontinued.
+
 
 ## Isabelle2026/Naproche
 

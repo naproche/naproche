@@ -149,7 +149,7 @@ usageHeader :: String
 usageHeader =
   "Usage: Naproche <options> <file>\n\n" ++
   "  At most one file argument may be given; \"\" refers to stdin.\n\n" ++
-  "  FLAG may be {on|off} or {yes|no}.\n\n" ++
+  "  FLAG may be {on|off}.\n\n" ++
   "  Options are:\n"
 
 
