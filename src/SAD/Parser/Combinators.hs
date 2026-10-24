@@ -16,8 +16,6 @@ import Data.Ord (comparing)
 import Data.Text (Text)
 import Data.Text qualified as Text
 
-import Debug.Trace
-
 import Isabelle.Position qualified as Position
 
 import SAD.Parser.Base
@@ -346,26 +344,6 @@ lexicalCheck check p = Parser $ \st ok cerr eerr ->
       let pos = errorPos err
       in  Text.unwords . map showToken . takeWhile ((>=) pos . tokenPos) . filter (not . isEOF) . stInput
         -- TODO: Don't use the default Ord SourcePos instance.
-
-
--- * Debugging
-
--- | In case of failure print the error, in case of success print the result
--- of the function shw.
--- This function is implemented using the impure function @Debug.Trace.trace@
--- and should only be used for debugging purposes.
-errorTrace ::
-  Text -> (ParseResult st a -> Text) -> Parser st a -> Parser st a
-errorTrace lbl shw p = Parser $ \st ok cerr eerr ->
-    let nok err eok cok = trace (  "error trace (success) : " ++ Text.unpack lbl ++ "\n"
-          ++ tabText ("results (e):\n" ++ tabText (unlines (map (Text.unpack . shw) eok)) )
-          ++ tabText ("results (c):\n" ++ tabText (unlines (map (Text.unpack . shw) cok)))
-          ++ tabText ("error:\n" ++ tabText (show err))) $ ok err eok cok
-        ncerr err = trace ("error trace (consumed): " ++ Text.unpack lbl ++ "\n" ++  tabText (show err)) $ cerr err
-        neerr err = trace ("error trace (empty)   : " ++ Text.unpack lbl ++ "\n" ++  tabText (show err)) $ eerr err
-    in  runParser p st nok ncerr neerr
-    where
-      tabText = unlines . map ("   " ++) . lines
 
 
 -- | Return @()@ if the next token isn't @EOF@.

@@ -20,10 +20,7 @@ flags:
 
 when:
   condition: flag(debug)
-  dependencies:
-  - haskell-stack-trace-plugin
   ghc-options:
-  - -fplugin=StackTrace.Plugin
   - -Weverything
   - -Wno-unsafe
   - -Wno-implicit-prelude
