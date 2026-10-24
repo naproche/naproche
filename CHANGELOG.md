@@ -49,6 +49,9 @@ Each change is tagged with one of the following keywords:
 * **Removed:** `yes` and `no` as alternatives to `on` and `off` in flag
   instructions were discontinued.
 
+* **Removed:** The `quit` instruction (which had the same behaviour as the
+  `exit` instruction) was discontinued.
+
 
 ## Isabelle2026/Naproche
 

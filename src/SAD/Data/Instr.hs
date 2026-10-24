@@ -185,8 +185,7 @@ keywordsCommand =
   (PrintThesis, "thesis"),
   (PrintContext, "context"),
   (PrintContextFiltered, "filter"),
-  (Exit, "exit"),
-  (Exit, "quit")]
+  (Exit, "exit")]
 
 keywordsSynonym :: [([Text] -> Instr, Text)]
 keywordsSynonym =

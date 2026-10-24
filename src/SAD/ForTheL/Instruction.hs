@@ -47,7 +47,7 @@ instr =
   instrPos addDropReport $ readInstr >>=
     (\case
       GetRelativeFilePath _ -> fail "'read' not allowed here"
-      Command Exit -> fail "'exit' and 'quit' not allowed here"
+      Command Exit -> fail "'exit' not allowed here"
       i -> return i)
 
 
