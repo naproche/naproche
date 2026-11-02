@@ -52,6 +52,9 @@ Each change is tagged with one of the following keywords:
 * **Removed:** The `quit` instruction (which had the same behaviour as the
   `exit` instruction) was discontinued.
 
+* **Removed:** The "100 Theorems" and "Solow Growth Model" formalizations which 
+  lead to inconsistent testing results were moved to the FLib.
+
 
 ## Isabelle2026/Naproche
 

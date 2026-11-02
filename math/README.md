@@ -97,10 +97,6 @@ math .................................... Naproche formalizations
     │   ├── checkerboard ................ the mutilated checkerboard
     │   │
     │   └── dwarfs ...................... a "hat puzzle"
-    |
-    ├── solow ........................... the macroeconomic Solow growth model and its mathematical foundation
-    │
-    ├── 100_theorems .................... some of Wiedijk's "100 Theorems"
     │
     ├── cantor .......................... Cantor's diagonal argument
     │
