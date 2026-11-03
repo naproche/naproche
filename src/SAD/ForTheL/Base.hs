@@ -24,6 +24,7 @@ import Isabelle.Position qualified as Position
 import Naproche.Program as Program
 
 import SAD.Data.Formula
+import SAD.Data.Pattern
 import SAD.Data.Text.Decl
 import SAD.Export.Presentation
 import SAD.Parser.Base
@@ -290,11 +291,6 @@ primSnt :: FTL Formula -> FTL MNotion
 primSnt p = noError $ varList >>= getExpr symbNotionExpr . snt
   where
     snt vs (pt, fm) = symbolPattern p pt >>= \l -> return (id, fm $ mkVar (VarHole ""):l, vs)
-
-
-
-
-data Pattern = Word [Text] | Symbol Text | Vr | Nm deriving (Eq, Show)
 
 
 -- | Adding error reporting to pattern parsing.

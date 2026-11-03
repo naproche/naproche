@@ -15,13 +15,13 @@ import Data.Text (Text)
 import Data.Text qualified as Text
 
 import Isabelle.Bytes (Bytes)
-import Isabelle.Library (cat_lines, commas, make_bytes, make_string, quote,
-                         show_bytes, show_text)
+import Isabelle.Library (cat_lines, commas, make_bytes, quote, show_bytes, show_text)
 import Isabelle.Position qualified as Position
 
 import Naproche.TPTP (atomic_word)
 
 import SAD.Data.Formula (Formula(..), TermName(..))
+import SAD.Data.Pattern
 import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Text.Context (Context(..))
 import SAD.Data.VarName (VariableName(..))
@@ -61,15 +61,14 @@ exportAssertion name role formula =
 exportTermName :: TermName -> Bytes
 exportTermName = atomic_word . make_bytes . exportTermName'
   where
-    exportTermName' (TermName t) = t
-    exportTermName' (TermSymbolic t) = "s" <> t
-    exportTermName' (TermNotion t) = "a" <> t
-    exportTermName' (TermThe t) = "the" <> t
-    exportTermName' (TermUnaryAdjective t) = "is" <> t
-    exportTermName' (TermMultiAdjective t) = "mis" <> t
-    exportTermName' (TermUnaryVerb t) = "do" <> t
-    exportTermName' (TermMultiVerb t) = "mdo" <> t
-    exportTermName' (TermTask n) = "tsk " <> show_text n
+    exportTermName' (TermSymbolic t) = "s" <> showSymbolPatterns t
+    exportTermName' (TermNotion t) = "a" <> showWordPatterns t
+    exportTermName' (TermThe t) = "the" <> showWordPatterns t
+    exportTermName' (TermUnaryAdjective t) = "is" <> showWordPatterns t
+    exportTermName' (TermMultiAdjective t) = "mis" <> showWordPatterns t
+    exportTermName' (TermUnaryVerb t) = "do" <> showWordPatterns t
+    exportTermName' (TermMultiVerb t) = "mdo" <> showWordPatterns t
+    exportTermName' (TermTask n) = "tsk " <> Text.pack (show n)
     exportTermName' TermEquality = "="
     exportTermName' TermLess = "iLess"
     exportTermName' TermThesis = "#TH#"

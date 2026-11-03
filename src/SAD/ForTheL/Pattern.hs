@@ -8,8 +8,10 @@
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
 module SAD.ForTheL.Pattern (
-  patHead,
-  patTail,
+  wordPatHead,
+  wordPatTail,
+  symbPatHead,
+  symbPatTail,
   patName,
   patNoName,
   unknownAlpha,
@@ -24,13 +26,13 @@ module SAD.ForTheL.Pattern (
 import Control.Monad
 import Control.Monad.State.Class (gets, put)
 
-import Data.Char (toUpper)
 import Data.List
 import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as Text
 
 import SAD.Data.Formula
+import SAD.Data.Pattern
 import SAD.ForTheL.Base
 import SAD.Parser.Char (isAsciiAlphaNum, isAsciiLetter)
 import SAD.Parser.Combinators
@@ -152,63 +154,65 @@ addExpr t@Trm{trmName = s, trmArgs = vs} f p st =
 -- pattern extraction
 
 extractWordPattern :: FState -> Formula -> Formula -> ([Pattern], Formula)
-extractWordPattern st t@Trm {trmName = s, trmArgs = vs} f = (pt, nf)
+extractWordPattern st t@Trm {trmName = tn, trmArgs = vs} f =
+  case tn of
+    TermNotion s -> (pt s, nf)
+    TermThe s -> (pt s, nf)
+    TermUnaryAdjective s -> (pt s, nf)
+    TermMultiAdjective s -> (pt s, nf)
+    TermUnaryVerb s -> (pt s, nf)
+    TermMultiVerb s -> (pt s, nf)
   where
-    pt = map getPattern ws
-    nt = t {trmName = pr $ getName pt}
-    nf = replace nt t {trId = NewId} f
-    (pr, ws) = Text.words <$> termSplit s
-    dict = strSyms st
-
-    getPattern "." = Nm
-    getPattern "__VAR__" = Vr
-    getPattern w = Word $ foldl' union [w] $ filter (elem w) dict
-
-    getName (Word (t:_):ls) = case Text.uncons t of
-      Just (c, cs) -> Text.cons (toUpper c) cs <> getName ls
-      Nothing -> getName ls
-    getName (_:ls) = getName ls
-    getName [] = ""
-
+    pt = map (addSynonyms st)
+    nf = replace t t {trId = NewId} f
 
 extractSymbPattern :: Formula -> Formula -> ([Pattern], Formula)
-extractSymbPattern t@Trm {trmName = TermName s, trmArgs = vs} f = (pt, nf)
+extractSymbPattern t@Trm {trmName = TermSymbolic s, trmArgs = vs} f = (s, nf)
   where
-    pt = map getPattern (Text.words s)
-    nt = t {trmName = TermSymbolic $ getName pt}
-    nf = replace nt t {trId = NewId} f
+    nf = replace t t {trId = NewId} f
 
-    getPattern "__VAR__" = Vr
-    getPattern w = Symbol w
+getSynonyms :: FState -> Text -> [Text]
+getSynonyms st word =
+  let dictionary = strSyms st
+  in foldl' union [word] $ filter (elem word) dictionary
 
-    getName (Symbol s:ls) = symEncode s <> getName ls
-    getName (Vr:ls) = symEncode "." <> getName ls
-    getName [] = ""
-
-
--- pattern parsing
+addSynonyms :: FState -> Pattern -> Pattern
+addSynonyms st (Word words) = Word $ concatMap (getSynonyms st) words
+addSynonyms _ p = p
 
 
-patHead :: FTL Text -> FTL a -> FTL (Text, [a])
-patHead lxm tvr = do
-  l <- Text.unwords <$> chain lxm
-  (ls, vs) <- opt ("", []) $ patTail lxm tvr
-  return (l <> " " <> ls, vs)
+-- * Pattern Parsing
 
+wordPatHead :: FTL a -> FTL ([Pattern], [a])
+wordPatHead tvr = do
+  l <- map (Word . singleton) <$> chain unknownAlpha
+  (ls, vs) <- opt ([], []) $ wordPatTail tvr
+  return (l ++ ls, vs)
 
-patTail :: FTL Text -> FTL a -> FTL (Text, [a])
-patTail lxm tvr = do
+wordPatTail :: FTL a -> FTL ([Pattern], [a])
+wordPatTail tvr = do
   v <- tvr
-  (ls, vs) <- opt ("", []) $ patHead lxm tvr
-  return ("__VAR__ " <> ls, v:vs)
+  (ls, vs) <- opt ([], []) $ wordPatHead tvr
+  return (Vr : ls, v:vs)
 
+symbPatHead :: FTL a -> FTL ([Pattern], [a])
+symbPatHead tvr = do
+  l <- map Symbol <$> chain slexem
+  (ls, vs) <- opt ([], []) $ symbPatTail tvr
+  return (l ++ ls, vs)
 
-patName :: FTL Text -> FTL PosVar -> FTL (Text, [PosVar])
-patName lxm tvr = do
-  l <- Text.unwords <$> chain lxm
+symbPatTail :: FTL a -> FTL ([Pattern], [a])
+symbPatTail tvr = do
+  v <- tvr
+  (ls, vs) <- opt ([], []) $ symbPatHead tvr
+  return (Vr : ls, v:vs)
+
+patName :: FTL PosVar -> FTL ([Pattern], [PosVar])
+patName tvr = do
+  l <- map (Word . singleton) <$> chain unknownAlpha
   n <- nam
-  (ls, vs) <- opt ("", []) $ patHead lxm tvr
-  return (l <> " . " <> ls, n:vs)
+  (ls, vs) <- opt ([], []) $ wordPatHead tvr
+  return (l ++ [Vr] ++ ls, n:vs)
   where
     nam :: FTL PosVar
     nam = do
@@ -218,20 +222,19 @@ patName lxm tvr = do
         Just a -> pure a
 
 
-patNoName :: FTL Text -> FTL PosVar -> FTL (Text, [PosVar])
-patNoName lxm tvr = do
-  l <- Text.unwords <$> chain lxm
+patNoName :: FTL PosVar -> FTL ([Pattern], [PosVar])
+patNoName tvr = do
+  l <- map (Word. singleton) <$> chain unknownAlpha
   n <- hidden
-  (ls, vs) <- opt ("", []) $ patShort lxm tvr
-  return (l <> " . " <> ls, n:vs)
+  (ls, vs) <- opt ([], []) $ patShort tvr
+  return (l ++ [Nm] ++ ls, n : vs)
   where
     --patShort is a kind of buffer that ensures that a variable does not directly
     --follow the name of the notion
-    patShort lxm tvr = do
-      l <- lxm
-      (ls, vs) <- patTail lxm tvr
-      return (l <> " " <> ls, vs)
-
+    patShort tvr = do
+      l <- Word . singleton <$> unknownAlpha
+      (ls, vs) <- wordPatTail tvr
+      return (l : ls, vs)
 
 
 -- In-pattern lexemes and variables

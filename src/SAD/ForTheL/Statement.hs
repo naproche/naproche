@@ -27,6 +27,7 @@ import Data.Set (Set)
 import Data.Set qualified as Set
 
 import SAD.Data.Formula
+import SAD.Data.Pattern
 import SAD.Data.Text.Decl
 import SAD.ForTheL.Base
 import SAD.Parser.Combinators

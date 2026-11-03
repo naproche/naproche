@@ -7,61 +7,49 @@
 -- License     : GPL-3
 module SAD.Data.Terms where
 
-import Data.Text (Text)
-import Data.Text qualified as Text
+import Isabelle.Library (show_text)
 
+import SAD.Data.Pattern
 import SAD.Export.Presentation
 
 
+-- * Term Names
+
 data TermName
-  = TermName Text
-  | TermSymbolic Text
-  | TermNotion Text
-  | TermThe Text
-  | TermUnaryAdjective Text
-  | TermMultiAdjective Text
-  | TermUnaryVerb Text
-  | TermMultiVerb Text
+  = TermSymbolic [Pattern]
+  | TermNotion [Pattern]
+  | TermThe [Pattern]
+  | TermUnaryAdjective [Pattern]
+  | TermMultiAdjective [Pattern]
+  | TermUnaryVerb [Pattern]
+  | TermMultiVerb [Pattern]
   | TermTask Int
   | TermEquality
   | TermLess
   | TermThesis
   deriving (Eq, Ord, Show)
 
-termFunction :: TermName
-termFunction = TermNotion "Function"
-
-termMap, termSet, termClass, termElement, termObject :: TermName
-termMap = TermNotion "Map"
-termSet = TermNotion "Set"
-termClass = TermNotion "Class"
-termObject = TermNotion "Object"
-termElement = TermNotion "ElementOf"
-
-termApplication, termDomain, termPair :: TermName
-termApplication = TermName "dtlpdtrp" -- ".(.)"
-termDomain = TermName "zDzozmlpdtrp"  -- "Dom(.)"
-termPair = TermName "lpdtcmdtrp"      -- "(.,.)"
-
-termSplit :: TermName -> (Text -> TermName, Text)
-termSplit (TermNotion t) = (TermNotion, t)
-termSplit (TermThe t) = (TermThe, t)
-termSplit (TermUnaryAdjective t) = (TermUnaryAdjective, t)
-termSplit (TermMultiAdjective t) = (TermMultiAdjective, t)
-termSplit (TermUnaryVerb t) = (TermUnaryVerb, t)
-termSplit (TermMultiVerb t) = (TermMultiVerb, t)
-termSplit _ = undefined
+termFunction, termMap, termSet, termClass, termElement, termObject,
+  termApplication, termDomain, termPair :: TermName
+termFunction = TermNotion [Word ["function"], Nm]
+termMap = TermNotion [Word ["map"], Nm]
+termSet = TermNotion [Word ["set"], Nm]
+termClass = TermNotion [Word ["class"], Nm]
+termObject = TermNotion [Word ["object"], Nm]
+termElement = TermNotion [Word ["element"], Nm, Word ["of"], Vr]
+termApplication = TermThe [Word ["value"], Word["of"], Vr, Word ["under"], Vr]
+termDomain = TermThe [Word ["domain"], Word["of"], Vr]
+termPair = TermThe [Word ["ordered"], Word["pair"], Word["of"], Vr, Word ["and"], Vr]
 
 instance Presentation TermName where
-  present (TermName t) = t
-  present (TermSymbolic t) = "s" <> t
-  present (TermNotion t) = "a" <> t
-  present (TermThe t) = "the" <> t
-  present (TermUnaryAdjective t) = "is" <> t
-  present (TermMultiAdjective t) = "mis" <> t
-  present (TermUnaryVerb t) = "do" <> t
-  present (TermMultiVerb t) = "mdo" <> t
-  present (TermTask n) = "tsk " <> Text.pack (show n)
+  present (TermSymbolic patterns) = showSymbolPatterns patterns
+  present (TermNotion patterns) = "a" <> showWordPatterns patterns
+  present (TermThe patterns) = "the" <> showWordPatterns patterns
+  present (TermUnaryAdjective patterns) = "is" <> showWordPatterns patterns
+  present (TermMultiAdjective patterns) = "mis" <> showWordPatterns patterns
+  present (TermUnaryVerb patterns) = "do" <> showWordPatterns patterns
+  present (TermMultiVerb patterns) = "mdo" <> showWordPatterns patterns
+  present (TermTask n) = "tsk_" <> show_text n
   present TermEquality = "="
   present TermLess = "iLess"
   present TermThesis = "#TH#"

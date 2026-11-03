@@ -12,6 +12,7 @@ module SAD.ForTheL.FTL.Base (
 import Data.List (unionBy)
 
 import SAD.Data.Formula
+import SAD.Data.Pattern
 import SAD.ForTheL.Base
 
 

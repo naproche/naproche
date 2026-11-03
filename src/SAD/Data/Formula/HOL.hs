@@ -11,10 +11,12 @@ module SAD.Data.Formula.HOL (
   Sequent, make_sequent, encode_sequent, print_sequents, print_sequent, export_sequent
 ) where
 
+import Data.List (uncons)
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
 
 import Isabelle.Bytes (Bytes)
+import Isabelle.Bytes qualified as Bytes
 import Isabelle.HOL qualified as Isabelle
 import Isabelle.Library
 import Isabelle.Name qualified as Isabelle
@@ -31,6 +33,8 @@ import Isabelle.YXML qualified as YXML
 import Naproche.Program qualified as Program
 
 import SAD.Data.Formula.Base
+import SAD.Data.Formula.Show
+import SAD.Data.Pattern
 import SAD.Data.Terms
 import SAD.Data.Text.Context (Context, formula)
 import SAD.Data.Text.Decl (Decl(..))
@@ -71,15 +75,20 @@ bound_name (VarGlobal s) = "w"
 bound_name VarEmpty = Isabelle.uu
 bound_name (VarDefault s) = make_bytes s
 
+show_pattern :: Pattern -> Bytes
+show_pattern (Word words) = maybe "" (make_bytes . fst) (uncons words)
+show_pattern (Symbol symbol) = make_bytes (symEncode symbol)
+show_pattern Nm = ""
+show_pattern Vr = ""
+
 term_name :: TermName -> Isabelle.Name
-term_name (TermName t) = make_bytes t
-term_name (TermSymbolic t) = "s" <> make_bytes t
-term_name (TermNotion t) = "a" <> make_bytes t
-term_name (TermThe t) = "the" <> make_bytes t
-term_name (TermUnaryAdjective t) = "is" <> make_bytes t
-term_name (TermMultiAdjective t) = "mis" <> make_bytes t
-term_name (TermUnaryVerb t) = "do" <> make_bytes t
-term_name (TermMultiVerb t) = "mdo" <> make_bytes t
+term_name (TermSymbolic t) = "s" <> Bytes.concat (map show_pattern t)
+term_name (TermNotion t) = "a" <> Bytes.concat (map show_pattern t)
+term_name (TermThe t) = "the" <> Bytes.concat (map show_pattern t)
+term_name (TermUnaryAdjective t) = "is" <> Bytes.concat (map show_pattern t)
+term_name (TermMultiAdjective t) = "mis" <> Bytes.concat (map show_pattern t)
+term_name (TermUnaryVerb t) = "do" <> Bytes.concat (map show_pattern t)
+term_name (TermMultiVerb t) = "mdo" <> Bytes.concat (map show_pattern t)
 term_name (TermTask n) = "tsk " <> Value.print_int n
 term_name TermEquality = undefined
 term_name TermLess = undefined
