@@ -87,7 +87,7 @@ exportVariableName = atomic_word . make_bytes . exportVariableName'
     exportVariableName' (VarSkolem n) = "o" <> show_text n
     exportVariableName' (VarTask s) = "c" <> exportVariableName' s
     exportVariableName' (VarZ s) = "z" <> s
-    exportVariableName' (VarW s) = "w" <> s
+    exportVariableName' (VarGlobal s) = "w" <> s
     exportVariableName' VarEmpty = ""
     exportVariableName' (VarDefault s) = s
 

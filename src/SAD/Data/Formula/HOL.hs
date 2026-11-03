@@ -53,7 +53,7 @@ free_name (VarAssume n) = "i" <> Value.print_int n
 free_name (VarSkolem n) = "o" <> Value.print_int n
 free_name (VarTask s) = "c" <> free_name s
 free_name (VarZ s) = "z" <> make_bytes s
-free_name (VarW s) = "w" <> make_bytes s
+free_name (VarGlobal s) = "w" <> make_bytes s
 free_name VarEmpty = Isabelle.uu_
 free_name (VarDefault s) = make_bytes s
 
@@ -67,7 +67,7 @@ bound_name (VarAssume _) = "i"
 bound_name (VarSkolem _) = "o"
 bound_name (VarTask s) = "c" <> bound_name s
 bound_name (VarZ s) = "z"
-bound_name (VarW s) = "w"
+bound_name (VarGlobal s) = "w"
 bound_name VarEmpty = Isabelle.uu
 bound_name (VarDefault s) = make_bytes s
 

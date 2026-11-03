@@ -45,7 +45,7 @@ data VariableName
   | VarSkolem Int        -- ^ previously starting with o
   | VarTask VariableName -- ^ previously starting with c
   | VarZ Text            -- ^ previously starting with z
-  | VarW Text            -- ^ previously starting with w
+  | VarGlobal Text       -- ^ previously starting with w
   | VarEmpty             -- ^ previously ""
   | VarDefault Text      -- ^ everything else
   deriving (Eq, Ord)
@@ -67,7 +67,7 @@ instance Presentation VariableName where
   present (VarSkolem n) = "o" <> Text.pack (show n)
   present (VarTask s) = "c" <> present s
   present (VarZ s) = "z" <> s
-  present (VarW s) = "w" <> s
+  present (VarGlobal s) = "w" <> s
   present VarEmpty = ""
   present (VarDefault s) = s
 
