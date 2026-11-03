@@ -451,7 +451,7 @@ steps:
 # Set this to null to disable all line wrapping.
 #
 # Default: 80.
-columns: 80
+columns: null
 
 # By default, line endings are converted according to the OS. You can override
 # preferred format here.
