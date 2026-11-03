@@ -8,9 +8,7 @@
 --               (c) 2017 - 2018, Steffen Frerix
 --               (c) 2024, Marcel Schütz
 -- License     : GPL-3
-module SAD.Data.Formula.Show (
-  symEncode
-) where
+module SAD.Data.Formula.Show () where
 
 import Data.Text (Text)
 import Data.Text qualified as Text
@@ -139,20 +137,3 @@ parens string = "(" <> string <> ")"
 -- the string unmodified.
 parensIf :: Bool -> Text -> Text
 parensIf pred string = if pred then parens string else string
-
-symEncode :: Text -> Text
-symEncode = Text.concat . map chc . Text.chunksOf 1
-  where
-    chc :: Text -> Text
-    chc "`" = "bq" ; chc "~" = "tl" ; chc "!" = "ex"
-    chc "@" = "at" ; chc "$" = "dl" ; chc "%" = "pc"
-    chc "^" = "cf" ; chc "&" = "et" ; chc "*" = "as"
-    chc "(" = "lp" ; chc ")" = "rp" ; chc "-" = "mn"
-    chc "+" = "pl" ; chc "=" = "eq" ; chc "[" = "lb"
-    chc "]" = "rb" ; chc "{" = "lc" ; chc "}" = "rc"
-    chc ":" = "cl" ; chc "\'" = "qt" ; chc "\"" = "dq"
-    chc "<" = "ls" ; chc ">" = "gt" ; chc "/" = "sl"
-    chc "?" = "qu" ; chc "\\" = "bs" ; chc "|" = "br"
-    chc ";" = "sc" ; chc "," = "cm" ; chc "." = "dt"
-    chc "_" = "us" ; chc "#" = "hs"
-    chc c = Text.cons 'z' c

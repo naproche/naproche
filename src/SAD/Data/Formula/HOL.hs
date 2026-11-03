@@ -14,6 +14,8 @@ module SAD.Data.Formula.HOL (
 import Data.List (uncons)
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
+import Data.Text (Text)
+import Data.Text qualified as Text
 
 import Isabelle.Bytes (Bytes)
 import Isabelle.Bytes qualified as Bytes
@@ -33,7 +35,6 @@ import Isabelle.YXML qualified as YXML
 import Naproche.Program qualified as Program
 
 import SAD.Data.Formula.Base
-import SAD.Data.Formula.Show
 import SAD.Data.Pattern
 import SAD.Data.Terms
 import SAD.Data.Text.Context (Context, formula)
@@ -77,9 +78,26 @@ bound_name (VarDefault s) = make_bytes s
 
 show_pattern :: Pattern -> Bytes
 show_pattern (Word words) = maybe "" (make_bytes . fst) (uncons words)
-show_pattern (Symbol symbol) = make_bytes (symEncode symbol)
+show_pattern (Symbol symbol) = encode symbol
 show_pattern Nm = ""
 show_pattern Vr = ""
+
+encode :: Text -> Bytes
+encode = make_bytes . Text.concatMap chc
+  where
+    chc :: Char -> Text
+    chc '`' = "bq" ; chc '~' = "tl" ; chc '!' = "ex"
+    chc '@' = "at" ; chc '$' = "dl" ; chc '%' = "pc"
+    chc '^' = "cf" ; chc '&' = "et" ; chc '*' = "as"
+    chc '(' = "lp" ; chc ')' = "rp" ; chc '-' = "mn"
+    chc '+' = "pl" ; chc '=' = "eq" ; chc '[' = "lb"
+    chc ']' = "rb" ; chc '{' = "lc" ; chc '}' = "rc"
+    chc ':' = "cl" ; chc '\'' = "qt" ; chc '\"' = "dq"
+    chc '<' = "ls" ; chc '>' = "gt" ; chc '/' = "sl"
+    chc '?' = "qu" ; chc '\\' = "bs" ; chc '|' = "br"
+    chc ';' = "sc" ; chc ',' = "cm" ; chc '.' = "dt"
+    chc '_' = "us" ; chc '#' = "hs"
+    chc c = make_text ['z', c]
 
 term_name :: TermName -> Isabelle.Name
 term_name (TermSymbolic t) = "s" <> Bytes.concat (map show_pattern t)

@@ -1,3 +1,6 @@
+{-# OPTIONS_GHC -Wno-dodgy-exports #-}
+{-# OPTIONS_GHC -Wno-unused-imports #-}
+
 -- |
 -- Module      : SAD.Data.Formula
 -- Description : TODO
