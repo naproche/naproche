@@ -183,25 +183,25 @@ addSynonyms _ p = p
 
 -- * Pattern Parsing
 
-wordPatHead :: FTL a -> FTL (Pattern, [a])
+wordPatHead :: FTL PosVar -> FTL (Pattern, [PosVar])
 wordPatHead tvr = do
   l <- map (Word . singleton) <$> chain unknownAlpha
   (ls, vs) <- opt ([], []) $ wordPatTail tvr
   return (l ++ ls, vs)
 
-wordPatTail :: FTL a -> FTL (Pattern, [a])
+wordPatTail :: FTL PosVar -> FTL (Pattern, [PosVar])
 wordPatTail tvr = do
   v <- tvr
   (ls, vs) <- opt ([], []) $ wordPatHead tvr
   return (Vr : ls, v:vs)
 
-symbPatHead :: FTL a -> FTL (Pattern, [a])
+symbPatHead :: FTL PosVar -> FTL (Pattern, [PosVar])
 symbPatHead tvr = do
   l <- map Symbol <$> chain slexem
   (ls, vs) <- opt ([], []) $ symbPatTail tvr
   return (l ++ ls, vs)
 
-symbPatTail :: FTL a -> FTL (Pattern, [a])
+symbPatTail :: FTL PosVar -> FTL (Pattern, [PosVar])
 symbPatTail tvr = do
   v <- tvr
   (ls, vs) <- opt ([], []) $ symbPatHead tvr
