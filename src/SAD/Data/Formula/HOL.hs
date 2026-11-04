@@ -76,7 +76,7 @@ bound_name (VarGlobal s) = "w"
 bound_name VarEmpty = Isabelle.uu
 bound_name (VarDefault s) = make_bytes s
 
-show_pattern :: Pattern -> Bytes
+show_pattern :: PatternComp -> Bytes
 show_pattern (Word words) = maybe "" (make_bytes . fst) (uncons words)
 show_pattern (Symbol symbol) = encode symbol
 show_pattern Nm = ""

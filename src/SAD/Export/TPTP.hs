@@ -61,13 +61,13 @@ exportAssertion name role formula =
 exportTermName :: TermName -> Bytes
 exportTermName = atomic_word . make_bytes . exportTermName'
   where
-    exportTermName' (TermSymbolic t) = "s" <> showSymbolPatterns t
-    exportTermName' (TermNotion t) = "a" <> showWordPatterns t
-    exportTermName' (TermThe t) = "the" <> showWordPatterns t
-    exportTermName' (TermUnaryAdjective t) = "is" <> showWordPatterns t
-    exportTermName' (TermMultiAdjective t) = "mis" <> showWordPatterns t
-    exportTermName' (TermUnaryVerb t) = "do" <> showWordPatterns t
-    exportTermName' (TermMultiVerb t) = "mdo" <> showWordPatterns t
+    exportTermName' (TermSymbolic t) = "s" <> showSymbolPattern t
+    exportTermName' (TermNotion t) = "a" <> showWordPattern t
+    exportTermName' (TermThe t) = "the" <> showWordPattern t
+    exportTermName' (TermUnaryAdjective t) = "is" <> showWordPattern t
+    exportTermName' (TermMultiAdjective t) = "mis" <> showWordPattern t
+    exportTermName' (TermUnaryVerb t) = "do" <> showWordPattern t
+    exportTermName' (TermMultiVerb t) = "mdo" <> showWordPattern t
     exportTermName' (TermTask n) = "tsk " <> Text.pack (show n)
     exportTermName' TermEquality = "="
     exportTermName' TermLess = "iLess"

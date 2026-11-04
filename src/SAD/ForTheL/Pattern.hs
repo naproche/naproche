@@ -153,7 +153,7 @@ addExpr t@Trm{trmName = s, trmArgs = vs} f p st =
 
 -- pattern extraction
 
-extractWordPattern :: FState -> Formula -> Formula -> ([Pattern], Formula)
+extractWordPattern :: FState -> Formula -> Formula -> (Pattern, Formula)
 extractWordPattern st t@Trm {trmName = tn, trmArgs = vs} f =
   case tn of
     TermNotion s -> (pt s, nf)
@@ -166,7 +166,7 @@ extractWordPattern st t@Trm {trmName = tn, trmArgs = vs} f =
     pt = map (addSynonyms st)
     nf = replace t t {trId = NewId} f
 
-extractSymbPattern :: Formula -> Formula -> ([Pattern], Formula)
+extractSymbPattern :: Formula -> Formula -> (Pattern, Formula)
 extractSymbPattern t@Trm {trmName = TermSymbolic s, trmArgs = vs} f = (s, nf)
   where
     nf = replace t t {trId = NewId} f
@@ -176,38 +176,38 @@ getSynonyms st word =
   let dictionary = strSyms st
   in foldl' union [word] $ filter (elem word) dictionary
 
-addSynonyms :: FState -> Pattern -> Pattern
+addSynonyms :: FState -> PatternComp -> PatternComp
 addSynonyms st (Word words) = Word $ concatMap (getSynonyms st) words
 addSynonyms _ p = p
 
 
 -- * Pattern Parsing
 
-wordPatHead :: FTL a -> FTL ([Pattern], [a])
+wordPatHead :: FTL a -> FTL (Pattern, [a])
 wordPatHead tvr = do
   l <- map (Word . singleton) <$> chain unknownAlpha
   (ls, vs) <- opt ([], []) $ wordPatTail tvr
   return (l ++ ls, vs)
 
-wordPatTail :: FTL a -> FTL ([Pattern], [a])
+wordPatTail :: FTL a -> FTL (Pattern, [a])
 wordPatTail tvr = do
   v <- tvr
   (ls, vs) <- opt ([], []) $ wordPatHead tvr
   return (Vr : ls, v:vs)
 
-symbPatHead :: FTL a -> FTL ([Pattern], [a])
+symbPatHead :: FTL a -> FTL (Pattern, [a])
 symbPatHead tvr = do
   l <- map Symbol <$> chain slexem
   (ls, vs) <- opt ([], []) $ symbPatTail tvr
   return (l ++ ls, vs)
 
-symbPatTail :: FTL a -> FTL ([Pattern], [a])
+symbPatTail :: FTL a -> FTL (Pattern, [a])
 symbPatTail tvr = do
   v <- tvr
   (ls, vs) <- opt ([], []) $ symbPatHead tvr
   return (Vr : ls, v:vs)
 
-patName :: FTL PosVar -> FTL ([Pattern], [PosVar])
+patName :: FTL PosVar -> FTL (Pattern, [PosVar])
 patName tvr = do
   l <- map (Word . singleton) <$> chain unknownAlpha
   n <- nam
@@ -222,7 +222,7 @@ patName tvr = do
         Just a -> pure a
 
 
-patNoName :: FTL PosVar -> FTL ([Pattern], [PosVar])
+patNoName :: FTL PosVar -> FTL (Pattern, [PosVar])
 patNoName tvr = do
   l <- map (Word. singleton) <$> chain unknownAlpha
   n <- hidden

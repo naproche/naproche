@@ -16,13 +16,13 @@ import SAD.Export.Presentation
 -- * Term Names
 
 data TermName
-  = TermSymbolic [Pattern]
-  | TermNotion [Pattern]
-  | TermThe [Pattern]
-  | TermUnaryAdjective [Pattern]
-  | TermMultiAdjective [Pattern]
-  | TermUnaryVerb [Pattern]
-  | TermMultiVerb [Pattern]
+  = TermSymbolic Pattern
+  | TermNotion Pattern
+  | TermThe Pattern
+  | TermUnaryAdjective Pattern
+  | TermMultiAdjective Pattern
+  | TermUnaryVerb Pattern
+  | TermMultiVerb Pattern
   | TermTask Int
   | TermEquality
   | TermLess
@@ -42,13 +42,13 @@ termDomain = TermThe [Word ["domain"], Word["of"], Vr]
 termPair = TermThe [Word ["ordered"], Word["pair"], Word["of"], Vr, Word ["and"], Vr]
 
 instance Presentation TermName where
-  present (TermSymbolic patterns) = showSymbolPatterns patterns
-  present (TermNotion patterns) = "a" <> showWordPatterns patterns
-  present (TermThe patterns) = "the" <> showWordPatterns patterns
-  present (TermUnaryAdjective patterns) = "is" <> showWordPatterns patterns
-  present (TermMultiAdjective patterns) = "mis" <> showWordPatterns patterns
-  present (TermUnaryVerb patterns) = "do" <> showWordPatterns patterns
-  present (TermMultiVerb patterns) = "mdo" <> showWordPatterns patterns
+  present (TermSymbolic patterns) = showSymbolPattern patterns
+  present (TermNotion patterns) = "a" <> showWordPattern patterns
+  present (TermThe patterns) = "the" <> showWordPattern patterns
+  present (TermUnaryAdjective patterns) = "is" <> showWordPattern patterns
+  present (TermMultiAdjective patterns) = "mis" <> showWordPattern patterns
+  present (TermUnaryVerb patterns) = "do" <> showWordPattern patterns
+  present (TermMultiVerb patterns) = "mdo" <> showWordPattern patterns
   present (TermTask n) = "tsk_" <> show_text n
   present TermEquality = "="
   present TermLess = "iLess"

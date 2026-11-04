@@ -50,7 +50,7 @@ type MTerm   = (Formula -> Formula, [Formula])
 -- | Multi-notions.
 type MNotion = (Formula -> Formula, Formula, Set PosVar)
 
-type Prim    = ([Pattern], [Formula] -> Formula)
+type Prim    = (Pattern, [Formula] -> Formula)
 
 -- | ForTheL state
 data FState = FState {
@@ -196,7 +196,7 @@ primUnAdj = getExpr (filter (unary . fst) . adjectiveExpr) . primPrd
     unary pt = Vr `notElem` pt
 
 primPrd :: FTL (b1 -> b1, Formula)
-           -> ([Pattern], [Formula] -> b2) -> FTL (b1 -> b1, b2)
+           -> (Pattern, [Formula] -> b2) -> FTL (b1 -> b1, b2)
 primPrd p (pt, fm) = do
   (q, ts) <- wdPattern p pt
   return (q, fm $ mkVar (VarHole ""):ts)
@@ -215,7 +215,7 @@ primMultiUnAdj = getExpr (filter (unary . fst) . adjectiveExpr) . primMultiPredi
     unary [] = True
 
 primMultiPredicate :: FTL (b1 -> b1, Formula)
-               -> ([Pattern], [Formula] -> b2) -> FTL (b1 -> b1, b2)
+               -> (Pattern, [Formula] -> b2) -> FTL (b1 -> b1, b2)
 primMultiPredicate p (pt, fm) = do
   (q, ts) <- multiPattern p pt
   return (q, fm $ mkVar (VarHole "") : mkVar VarSlot : ts)
@@ -276,14 +276,14 @@ primIfn :: FTL Formula
            -> FTL (Formula -> Formula -> Formula)
 primIfn = getExpr ifnExpr . primIsm
 
-primCsm :: FTL a -> ([Pattern], [a] -> b) -> FTL b
+primCsm :: FTL a -> (Pattern, [a] -> b) -> FTL b
 primCsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ fm l
-primRsm :: FTL a -> ([Pattern], [a] -> t) -> FTL (a -> t)
+primRsm :: FTL a -> (Pattern, [a] -> t) -> FTL (a -> t)
 primRsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \t -> fm $ t:l
-primLsm :: FTL a -> ([Pattern], [a] -> t) -> FTL (a -> t)
+primLsm :: FTL a -> (Pattern, [a] -> t) -> FTL (a -> t)
 primLsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \s -> fm $ l++[s]
 primIsm :: FTL a
-           -> ([Pattern], [a] -> t) -> FTL (a -> a -> t)
+           -> (Pattern, [a] -> t) -> FTL (a -> a -> t)
 primIsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \t s -> fm $ t:l++[s]
 
 
@@ -302,7 +302,7 @@ patternSymbolTokenOf l = label ("the symbol " <> Text.pack (show l)) $ token l
 
 -- | Most basic pattern parser: simply follow the pattern and parse terms with p
 -- at variable places
-wdPattern :: FTL (b -> b, a) -> [Pattern] -> FTL (b-> b, [a])
+wdPattern :: FTL (b -> b, a) -> Pattern -> FTL (b-> b, [a])
 wdPattern p (Word l : ls) = patternTokenOf' l >> wdPattern p ls
 wdPattern p (Vr : ls) = do
   (r, t) <- p
@@ -312,7 +312,7 @@ wdPattern _ [] = return (id, [])
 wdPattern _ _ = mzero
 
 -- | Parse a symbolic pattern.
-symbolPattern :: FTL a -> [Pattern] -> FTL [a]
+symbolPattern :: FTL a -> Pattern -> FTL [a]
 symbolPattern p (Vr : ls) = liftM2 (:) p $ symbolPattern p ls
 symbolPattern p (Symbol s : ls) = patternSymbolTokenOf s >> symbolPattern p ls
 symbolPattern _ [] = return []
@@ -322,7 +322,7 @@ symbolPattern _ _ = mzero
 -- right before the first variable. Then check that all "and" tokens have been
 -- consumed. Example pattern: [Word ["commute","commutes"], Word ["with"], Vr]. Then
 -- we can parse "a commutes with c and d" as well as "a and b commute".
-multiPattern :: FTL (b -> b, a) -> [Pattern] -> FTL (b -> b, [a])
+multiPattern :: FTL (b -> b, a) -> Pattern -> FTL (b -> b, [a])
 multiPattern p (Word l :_: Vr : ls) = patternTokenOf' l >> naPattern p ls
 multiPattern p (Word l : ls) = patternTokenOf' l >> multiPattern p ls
 multiPattern _ _ = mzero
@@ -331,7 +331,7 @@ multiPattern _ _ = mzero
 -- parses a notion: follow the pattern to the name place, record names,
 -- then keep following the pattern
 notionPattern :: FTL (b -> b, a)
-          -> [Pattern] -> FTL (b -> b, Set PosVar, [a])
+          -> Pattern -> FTL (b -> b, Set PosVar, [a])
 notionPattern p (Word l : ls) = patternTokenOf' l >> notionPattern p ls
 notionPattern p (Nm : ls) = do
   vs <- nameList
@@ -342,7 +342,7 @@ notionPattern _ _ = mzero
 -- parse an "of"-notion: follow the pattern to the notion name, then check that
 -- "of" follows the name followed by a variable that is not followed by "and"
 ofPattern :: FTL (b -> b, a)
-          -> [Pattern] -> FTL (b -> b, Set PosVar, [a])
+          -> Pattern -> FTL (b -> b, Set PosVar, [a])
 ofPattern p (Word l : ls) = patternTokenOf' l >> ofPattern p ls
 ofPattern p (Nm : Word l : Vr : ls) = do
   guard $ elem "of" l; vs <- nameList
@@ -355,7 +355,7 @@ ofPattern _ _ = mzero
 -- here. Example: A common *divisor of m and n*.
 commonPattern :: FTL (b -> b, a1)
           -> FTL (b -> c, [a2])
-          -> [Pattern]
+          -> Pattern
           -> FTL (b -> c, Set PosVar, [a2], [a1])
 commonPattern p s (Word l:ls) = patternTokenOf' l >> commonPattern p s ls
 commonPattern p s (Nm : Word l : Vr : ls) = do
@@ -369,7 +369,7 @@ commonPattern _ _ _ = mzero
 -- an auxiliary pattern parser that checks that we are not dealing with an "and"
 -- token' and then continues to follow the pattern
 naPattern :: FTL (b -> b, a)
-          -> [Pattern] -> FTL (b -> b, [a])
+          -> Pattern -> FTL (b -> b, [a])
 naPattern p (Word l : ls) = guard ("and" `notElem` l) >> patternTokenOf' l >> wdPattern p ls
 naPattern p ls = wdPattern p ls
 

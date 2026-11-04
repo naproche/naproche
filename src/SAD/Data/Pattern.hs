@@ -7,37 +7,40 @@
 --               (c) 2026, Marcel Schütz
 -- License     : GPL-3
 module SAD.Data.Pattern (
-  Pattern(..),
-  showSymbolPatterns,
-  showWordPatterns
+  Pattern,
+  PatternComp(..),
+  showSymbolPattern,
+  showWordPattern
 ) where
 
 import Data.Text (Text)
 import Data.Text qualified as Text
 
-data Pattern
+type Pattern = [PatternComp]
+
+data PatternComp
   = Word [Text]
   | Symbol Text
   | Vr
   | Nm
   deriving (Eq, Ord, Show)
 
-showSymbolPatterns :: [Pattern] -> Text
-showSymbolPatterns = foldr ((<>) . showSymbolPattern) ""
-
 showSymbolPattern :: Pattern -> Text
-showSymbolPattern (Word []) = error "Empty synonym list"
-showSymbolPattern (Word (word : _)) = word
-showSymbolPattern (Symbol symbol) = symbol
-showSymbolPattern Nm = "."
-showSymbolPattern Vr = "."
+showSymbolPattern = foldr ((<>) . showSymbolPatternComp) ""
 
-showWordPatterns :: [Pattern] -> Text
-showWordPatterns = foldr ((<>) . showWordPattern) ""
+showSymbolPatternComp :: PatternComp -> Text
+showSymbolPatternComp (Word []) = error "Empty synonym list"
+showSymbolPatternComp (Word (word : _)) = word
+showSymbolPatternComp (Symbol symbol) = symbol
+showSymbolPatternComp Nm = "."
+showSymbolPatternComp Vr = "."
 
 showWordPattern :: Pattern -> Text
-showWordPattern (Word []) = error "Empty synonym list"
-showWordPattern (Word (word : _)) = Text.toTitle word
-showWordPattern (Symbol symbol) = symbol
-showWordPattern Nm = ""
-showWordPattern Vr = ""
+showWordPattern = foldr ((<>) . showWordPatternComp) ""
+
+showWordPatternComp :: PatternComp -> Text
+showWordPatternComp (Word []) = error "Empty synonym list"
+showWordPatternComp (Word (word : _)) = Text.toTitle word
+showWordPatternComp (Symbol symbol) = symbol
+showWordPatternComp Nm = ""
+showWordPatternComp Vr = ""

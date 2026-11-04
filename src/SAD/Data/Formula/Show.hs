@@ -85,7 +85,7 @@ showFormula d Ind{indIndex = i}
 showTerm :: Int -> TermName -> [Formula] -> Text
 showTerm d (TermSymbolic patterns) formulas = dive patterns formulas
   where
-    dive :: [Pattern] -> [Formula] -> Text
+    dive :: Pattern -> [Formula] -> Text
     dive [] _ = ""
     dive (Word [] : _) _ = error "Empty synonym list"
     dive [Word (w : _)] _ = w
