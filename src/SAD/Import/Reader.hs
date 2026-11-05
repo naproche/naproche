@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Import.Reader
 -- Description : Main text reading functions.
@@ -48,7 +50,7 @@ import System.IO.Error
 readProofText :: Dialect -> [ProofText] -> IO [ProofText]
 readProofText dialect text0 = do
   context <- Program.thread_context
-  naprocheFormalizationsPath <- make_string <$> getenv (make_bytes "NAPROCHE_FORMALIZATIONS")
+  naprocheFormalizationsPath <- make_string <$> getenv "NAPROCHE_FORMALIZATIONS"
   (text, reports) <- reader 0 dialect naprocheFormalizationsPath [] [initState context noTokens] text0
   when (Program.is_pide context) $ Message.reports reports
   return text
@@ -83,21 +85,21 @@ reader depth dialect naprocheFormalizationsPath doneFiles stateList [ProofTextIn
   -- Catch "." as directory name in file path:
   | "." `elem` splitDirectories relativeFilePath =
       Message.errorReader pos $
-        "\".\" is not allowed as a directory name in a file path: " ++
-        relativeFilePath
+        "\".\" is not allowed as a directory name in a file path: " <>
+        make_bytes relativeFilePath
   -- Catch ".." as directory name in file path:
   | ".." `elem` splitDirectories relativeFilePath =
       Message.errorReader pos $
-        "\"..\" is not allowed as a directory name in a file path: " ++
-        relativeFilePath
+        "\"..\" is not allowed as a directory name in a file path: " <>
+        make_bytes relativeFilePath
   -- Catch invalid file name extension:
   | (takeExtensions relativeFilePath `notElem` [".ftl", ".ftl.tex", ".ftl.en.tex"])
       || (takeExtensions relativeFilePath == ".ftl" && dialect /= Ftl)
       || (takeExtensions relativeFilePath == ".ftl.tex" && dialect /= Tex)
       || (takeExtensions relativeFilePath == ".ftl.en.tex" && dialect /= Stex)
      = Message.errorReader pos $
-        "Invalid file name extension \"" ++ takeExtensions relativeFilePath ++
-        "\": " ++ relativeFilePath
+        "Invalid file name extension \"" <> make_bytes (takeExtensions relativeFilePath) <>
+        "\": " <> make_bytes relativeFilePath
   | otherwise =
       let absoluteFilePath = naprocheFormalizationsPath </> relativeFilePath
           instr = GetAbsoluteFilePath absoluteFilePath

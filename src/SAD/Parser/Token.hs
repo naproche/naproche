@@ -36,6 +36,7 @@ import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as Text
 
+import Isabelle.Library (make_bytes)
 import Isabelle.Position qualified as Position
 
 import SAD.Core.Message qualified as Message
@@ -82,7 +83,7 @@ reportWarnings = foldr ((>>) . reportWarning) (return ())
 
 -- | Report a single warning.
 reportWarning :: Warning -> IO ()
-reportWarning (Warning text pos) = Message.outputTokenizer Message.WARNING pos text
+reportWarning (Warning text pos) = Message.outputTokenizer Message.WARNING pos (make_bytes text)
 
 -- | Concatenate a list of tokens/warnings-pairs.
 concatTokWarn :: [([Token], [Warning])] -> ([Token], [Warning])
@@ -96,7 +97,7 @@ concatTokWarn ((xs,ys) : rest) = bimap (xs ++) (ys ++) (concatTokWarn rest)
 handleError :: (error -> (Text, Position.T)) -> ParseErrorBundle [a] error -> IO b
 handleError errorHandler errors = do
   let (errorMsg, errorPos) = showError errors errorHandler
-  Message.errorTokenizer errorPos errorMsg
+  Message.errorTokenizer errorPos (make_bytes errorMsg)
 
 -- | Return an error message and the position of the first error that occured
 -- during tokenizing.

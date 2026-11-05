@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Core.Verify
 -- Description : Main verification loop.
@@ -13,9 +15,9 @@ import Control.Monad.Reader
 import Data.IORef (readIORef)
 import Data.List.Extra (notNull)
 import Data.Maybe (isJust)
-import Data.Text qualified as Text
 
-import Isabelle.Library (make_bytes, trim_line)
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Library (implode_space, make_bytes, show_bytes, trim_line)
 import Isabelle.Position qualified as Position
 
 import SAD.Core.Base
@@ -68,25 +70,24 @@ verify (ProofTextInstr pos (Command cmd) : rest) = command cmd >> verify rest
     command :: Command -> VerifyMonad ()
     command PrintRules = do
       rules <- asks rewriteRules
-      message $ "current ruleset: " <> "\n" <> unlines (map show (reverse rules))
+      message $ "current ruleset: " <> "\n" <> implode_space (map show_bytes (reverse rules))
     command PrintThesis = do
       motivated <- asks thesisMotivated
       thesis <- asks currentThesis
       let motivation = if motivated then "(motivated): " else "(not motivated): "
-      message $ "current thesis " <> motivation <> show (Context.formula thesis)
+      message $ "current thesis " <> motivation <> show_bytes (Context.formula thesis)
     command PrintContext = do
       context <- asks currentContext
       message $ "current context:\n" <>
-        concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse context)
+        Bytes.concat (map (\form -> "  " <> show_bytes (Context.formula form) <> "\n") (reverse context))
     command PrintContextFiltered = do
       context <- asks currentContext
       let topLevelContext = filter Context.isTopLevel context
       message $ "current filtered top-level context:\n" <>
-        concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse topLevelContext)
+        Bytes.concat (map (\form -> "  " <> show_bytes (Context.formula form) <> "\n") (reverse topLevelContext))
     command ResetPretyping = pure ()
     command _ = do
       message "unsupported instruction"
-    message :: String -> VerifyMonad ()
     message = reasonLog Message.WRITELN (Position.no_range_position pos)
 verify (ProofTextInstr _ instr : rest) = local (addInstruction instr) (verify rest)
 verify (ProofTextDrop _ instr : rest) = local (dropInstruction instr) (verify rest)
@@ -96,7 +97,7 @@ verifyThesis :: VerifyMonad ()
 verifyThesis = do
   thesis <- asks currentThesis
   let block = Context.head thesis
-  let text = Text.unpack $ Block.text block
+  let text = make_bytes $ Block.text block
   let pos = Block.position block
   whenInstruction printgoalParam $ reasonLog Message.TRACING pos $ "goal: " <> text
   if hasDEC (Context.formula thesis) --computational reasoning
@@ -138,7 +139,7 @@ verifyBlock block rest = do
 
   whenInstruction translationParam $
     unless (Block.isTopLevel block) $
-      translateLog Message.WRITELN (Block.position block) $ Text.pack $ show f
+      translateLog Message.WRITELN (Block.position block) $ show_bytes f
 
   fortifiedFormula <-
     if Block.isTopLevel block
@@ -160,7 +161,7 @@ verifyBlock block rest = do
     toBeProved && notNull proofBody &&
     not (hasDEC $ Context.formula freshThesis)) $
       thesisLog Message.WRITELN (Block.position block) (length branch - 1) $
-      "thesis: " <> show (Context.formula freshThesis)
+      "thesis: " <> show_bytes (Context.formula freshThesis)
 
   fortifiedProof <-
     local (\st -> st {
@@ -198,7 +199,7 @@ verifyBlock block rest = do
     hasChanged && motivated && newMotivation &&
     not (hasDEC $ Block.formula $ head branch) ) $
       thesisLog Message.WRITELN (Block.position block) (length branch - 2) $
-      "new thesis: " <> show (Context.formula newThesis)
+      "new thesis: " <> show_bytes (Context.formula newThesis)
 
   when (not newMotivation && motivated) $
     thesisLog Message.WARNING (Block.position block) (length branch - 2) "unmotivated assumption"
@@ -257,7 +258,7 @@ verifyProof restProofText = do
         noInductionOrCase (Context.formula newThesis) && not (null restProofText)) $
           thesisLog Message.WRITELN
           (Block.position $ head $ Context.branch $ head context) (length branch - 2) $
-          "new thesis " <> show (Context.formula newThesis)
+          "new thesis " <> show_bytes (Context.formula newThesis)
       local (\st -> st {
         rewriteRules = newRules,
         currentThesis = newThesis,

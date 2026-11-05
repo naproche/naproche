@@ -48,8 +48,9 @@ import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Time (NominalDiffTime, diffUTCTime, getCurrentTime)
 
+import Isabelle.Bytes (Bytes)
 import Isabelle.Bytes qualified as Bytes
-import Isabelle.Library (BYTES, make_bytes)
+import Isabelle.Library (implode_space, make_bytes, show_bytes)
 import Isabelle.Position qualified as Position
 
 import Naproche.Param qualified as Param
@@ -253,17 +254,17 @@ whenInstruction p action = asks (getInstruction p) >>= \b -> when b action
 
 -- common messages
 
-reasonLog :: BYTES a => Message.Kind -> Position.T -> a -> VerifyMonad ()
+reasonLog :: Message.Kind -> Position.T -> Bytes -> VerifyMonad ()
 reasonLog kind pos = justIO . Message.outputReasoner kind pos
 
-thesisLog :: BYTES a => Message.Kind -> Position.T -> Int -> a -> VerifyMonad ()
+thesisLog :: Message.Kind -> Position.T -> Int -> Bytes -> VerifyMonad ()
 thesisLog kind pos indent msg =
   justIO (Message.outputThesis kind pos (Bytes.spaces (3 * indent) <> make_bytes msg))
 
-simpLog :: BYTES a => Message.Kind -> Position.T -> a -> VerifyMonad ()
+simpLog :: Message.Kind -> Position.T -> Bytes -> VerifyMonad ()
 simpLog kind pos = justIO . Message.outputSimplifier kind pos
 
-translateLog :: BYTES a => Message.Kind -> Position.T -> a -> VerifyMonad ()
+translateLog :: Message.Kind -> Position.T -> Bytes -> VerifyMonad ()
 translateLog kind pos = justIO . Message.outputTranslate kind pos
 
 
@@ -275,7 +276,7 @@ retrieveContext pos names = do
 
   unless (Set.null unfoundSections) $
     reasonLog Message.WARNING pos $
-      "Could not find sections " <> unwords (map show $ Set.elems unfoundSections)
+      "Could not find sections " <> implode_space (map show_bytes $ Set.elems unfoundSections)
   return context
   where
     retrieve [] = return []

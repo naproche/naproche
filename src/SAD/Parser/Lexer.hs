@@ -45,7 +45,7 @@ instance Pos.Pos Position.T where
 
 instance Msg.Msg Position.T IO where
   errorLexer :: Position.T -> Text -> IO a
-  errorLexer = Message.errorLexer
+  errorLexer pos msg = Message.errorLexer pos (Library.make_bytes msg)
 
 
 -- * Misc
@@ -508,4 +508,4 @@ pideDecode bytes = do
     decode "\\<^action>" = pure '\x00261b'
     decode [c] = pure c
     decode str = Message.errorLexer noPos $
-      "The input text contains an invalid character sequence \"" <> str <> "\"."
+      "The input text contains an invalid character sequence \"" <> Library.make_bytes str <> "\"."

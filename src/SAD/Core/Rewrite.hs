@@ -23,7 +23,7 @@ import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as Text
 
-import Isabelle.Library (show_text)
+import Isabelle.Library (commas, implode_space, make_bytes, show_bytes, show_text)
 import Isabelle.Position qualified as Position
 
 import SAD.Core.Base
@@ -180,23 +180,23 @@ generateConditions pos verbositySetting rules w l r =
 
     -- logging and user communication
     log leftNormalForm rightNormalForm = when verbositySetting $ do
-      simpLog Message.WRITELN pos ("no matching normal forms found" :: String)
+      simpLog Message.WRITELN pos "no matching normal forms found"
       showPath leftNormalForm; showPath rightNormalForm
     showPath ((t,_):rest) = when verbositySetting $ do
-      simpLog Message.WRITELN pos (show t)
+      simpLog Message.WRITELN pos (show_bytes t)
       mapM_ (simpLog Message.WRITELN pos . format) rest
     -- formatting of paths
-    format (t, simpInfo) = " --> " <> show t <> conditions simpInfo
+    format (t, simpInfo) = " --> " <> show_bytes t <> conditions simpInfo
     conditions (conditions, name) =
-      (if Text.null name then "" else " by " <> Text.unpack name <> ",") <>
+      (if Text.null name then "" else " by " <> make_bytes name <> ",") <>
       (if null conditions then "" else " conditions: " <>
-        unwords (intersperse "," $ map show conditions))
+        commas (map show_bytes conditions))
 
 
 {- applies computational reasoning to an equality chain -}
 equalityReasoning :: Position.T -> Context -> VerifyMonad ()
 equalityReasoning pos thesis
-  | body = whenInstruction printreasonParam $ reasonLog Message.WRITELN pos ("equality chain concluded" :: String)
+  | body = whenInstruction printreasonParam $ reasonLog Message.WRITELN pos "equality chain concluded"
   | notNull link = getLinkedRules pos link >>= rewrite pos equation
   | otherwise = rules >>= rewrite pos equation -- if no link is given -> all rules
   where
@@ -215,7 +215,7 @@ getLinkedRules pos link = do
   where
     warn st =
       simpLog Message.WARNING pos $
-        "Could not find rules " <> unwords (map show $ Set.elems st)
+        "Could not find rules " <> implode_space (map show_bytes $ Set.elems st)
 
     retrieve _ [] = return []
     retrieve s (c:cnt) = let nm = Rule.label c in
@@ -266,7 +266,7 @@ dischargeConditions pos verbositySetting conditions =
     format conditions =
       if   null conditions
       then " - "
-      else unwords . intersperse "," . map show $ reverse conditions
+      else commas . map show_bytes $ reverse conditions
     log msg =
       when verbositySetting $ asks currentThesis >>=
         flip (simpLog Message.WRITELN . Block.position . Context.head) msg

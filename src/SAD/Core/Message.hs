@@ -135,13 +135,13 @@ make_message context kind origin pos text =
         (if Bytes.null p then "" else p <> "\n") <> text
     in ("", msg)
 
-output :: BYTES a => Bytes -> Kind -> Position.T -> a -> IO ()
+output :: Bytes -> Kind -> Position.T -> Bytes -> IO ()
 output origin kind pos text = do
   context <- Program.thread_context
   let (command, msg) = make_message context kind origin pos (make_bytes text)
   Program.exchange_message0 context [command, msg]
 
-error :: BYTES a => Bytes -> Position.T -> a -> IO b
+error :: Bytes -> Position.T -> Bytes -> IO b
 error origin pos text = do
   context <- Program.thread_context
   Program.error $ snd $ make_message context ERROR origin pos (make_bytes text)
@@ -150,7 +150,7 @@ error origin pos text = do
 -- common messages
 
 outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
-  outputSimplifier, outputThesis, outputTokenizer :: BYTES a => Kind -> Position.T -> a -> IO ()
+  outputSimplifier, outputThesis, outputTokenizer :: Kind -> Position.T -> Bytes -> IO ()
 outputMain = output origin_main
 outputExport = output origin_export
 outputForTheL = output origin_forthel
@@ -160,10 +160,10 @@ outputSimplifier = output origin_simplifier
 outputThesis = output origin_thesis
 outputTokenizer = output origin_tokenizer
 
-outputTranslate :: BYTES a => Kind -> Position.T -> a -> IO ()
+outputTranslate :: Kind -> Position.T -> Bytes -> IO ()
 outputTranslate = output origin_translate
 
-errorExport, errorParser, errorLexer, errorTokenizer, errorReader :: BYTES a => Position.T -> a -> IO b
+errorExport, errorParser, errorLexer, errorTokenizer, errorReader :: Position.T -> Bytes -> IO b
 errorExport = error origin_export
 errorParser = error origin_parser
 errorLexer = error origin_lexer

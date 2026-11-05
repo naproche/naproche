@@ -21,6 +21,7 @@ import Data.Text qualified as Text
 
 import FTLex.Tex hiding (initState)
 
+import Isabelle.Library (make_bytes)
 import Isabelle.Markup qualified as Markup
 import Isabelle.Position qualified as Position
 
@@ -61,7 +62,7 @@ filterTokens tokens warnings = do
   return tokens
   where
   reportWarnings = foldr ((>>) . reportWarning) (return ())
-  reportWarning (Warning text pos) = Message.outputTokenizer Message.WARNING pos text
+  reportWarning (Warning text pos) = Message.outputTokenizer Message.WARNING pos (make_bytes text)
 
 
 -- * Tokenizing Errors and Warnings

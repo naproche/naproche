@@ -1,5 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 -- |
 -- Module      : SAD.Core.Reason
@@ -34,6 +35,7 @@ import Data.Text qualified as Text
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
+import Isabelle.Library (implode_space, show_bytes)
 import Isabelle.Position qualified as Position
 
 import Naproche.Program qualified as Program
@@ -111,7 +113,7 @@ proveGoals pos depthlimit = prove 0
 
         updateTrivialStatistics =
           unless (isTop goal) $ whenInstruction printreasonParam $ do
-            reasonLog Message.WRITELN pos ("trivial: " <> show goal)
+            reasonLog Message.WRITELN pos ("trivial: " <> show_bytes goal)
             incrementCounter TrivialGoals
 
 splitGoal :: Context -> [Formula]
@@ -137,8 +139,8 @@ launchProver pos iteration = do
 
   whenInstruction printfulltaskParam $ do
     reasonLog Message.WRITELN pos $ "prover task:\n" <>
-      concatMap (\c -> "  " <> show (Context.formula c) <> "\n") (reverse context) <>
-      "  |- " <> show (Context.formula goal) <> "\n"
+      Bytes.concat (map (\c -> "  " <> show_bytes (Context.formula c) <> "\n") (reverse context)) <>
+      "  |- " <> show_bytes (Context.formula goal) <> "\n"
 
   status <- timeWith ProofTimer (justIO $ Prover.export cache pos iteration instrList context goal)
   trackers <- readTrackers
@@ -299,8 +301,8 @@ unfold pos = do
 
     unfoldLog (goal:lowLevelContext) =
       whenInstruction printunfoldParam $ reasonLog Message.WRITELN pos $ "unfold to:\n"
-        <> unlines (reverse $ map ((<>) "  " . show . Context.formula) lowLevelContext)
-        <> "  |- " <> show (neg $ Context.formula goal)
+        <> implode_space (reverse $ map ((<>) "  " . show_bytes . Context.formula) lowLevelContext)
+        <> "  |- " <> show_bytes (neg $ Context.formula goal)
 
     neg (Not f) = f
     neg f = f

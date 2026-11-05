@@ -14,8 +14,8 @@ import Control.Monad.Reader
 
 import Data.Either (isRight, lefts, rights)
 import Data.Maybe (fromMaybe)
-import Data.Text qualified as Text
 
+import Isabelle.Library (implode_space, make_bytes, show_bytes)
 import Isabelle.Position qualified as Position
 
 import SAD.Core.Base
@@ -80,7 +80,7 @@ setDef pos isNewWord context term@Trm{trmName = t, trId = tId} =
   where
     out =
       reasonLog Message.ERROR (Block.position (Context.head context)) $
-        "unrecognized: " <> Text.pack (showsPrec 2 term "")
+        "unrecognized: " <> make_bytes (showsPrec 2 term "")
 
 
 -- Find relevant definitions and test them
@@ -134,9 +134,9 @@ testDef pos context term (guards, fortifiedTerm) = do
 
 
     header select guards =
-      "check: " <> showsPrec 2 term " vs " <> format (select guards)
+      "check: " <> make_bytes (showsPrec 2 term " vs ") <> format (select guards)
     thead [] = ""; thead guards = "(trivial: " <> format guards <> ")"
-    format guards = if null guards then " - " else unwords . map show $ guards
+    format guards = if null guards then " - " else implode_space . map show_bytes $ guards
     defLog =
       whenInstruction printcheckParam .
         reasonLog Message.WRITELN (Block.position (head $ Context.branch context))
