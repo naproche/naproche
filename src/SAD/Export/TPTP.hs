@@ -15,6 +15,7 @@ import Data.Text (Text)
 import Data.Text qualified as Text
 
 import Isabelle.Bytes (Bytes)
+import Isabelle.Bytes qualified as Bytes
 import Isabelle.Library (cat_lines, commas, make_bytes, quote, show_bytes, show_text)
 import Isabelle.Position qualified as Position
 
@@ -57,18 +58,27 @@ exportAssertion name role formula =
   <> exportFormula formula
   <> ")."
 
+exportPattern :: Pattern -> Bytes
+exportPattern = Bytes.concat . map exportPatternComp
+
+exportPatternComp :: PatternComp -> Bytes
+exportPatternComp (Word words) = make_bytes (head words)
+exportPatternComp (Symbol symbol) = make_bytes symbol
+exportPatternComp Nm = ""
+exportPatternComp Vr = ""
+
 -- | Export a term name to TPTP.
 exportTermName :: TermName -> Bytes
-exportTermName = atomic_word . make_bytes . exportTermName'
+exportTermName = atomic_word . exportTermName'
   where
-    exportTermName' (TermSymbolic t) = "s" <> showSymbolPattern t
-    exportTermName' (TermNotion t) = "a" <> showWordPattern t
-    exportTermName' (TermThe t) = "the" <> showWordPattern t
-    exportTermName' (TermUnaryAdjective t) = "is" <> showWordPattern t
-    exportTermName' (TermMultiAdjective t) = "mis" <> showWordPattern t
-    exportTermName' (TermUnaryVerb t) = "do" <> showWordPattern t
-    exportTermName' (TermMultiVerb t) = "mdo" <> showWordPattern t
-    exportTermName' (TermTask n) = "tsk " <> Text.pack (show n)
+    exportTermName' (TermSymbolic t) = "s" <> exportPattern t
+    exportTermName' (TermNotion t) = "a" <> exportPattern t
+    exportTermName' (TermThe t) = "the" <> exportPattern t
+    exportTermName' (TermUnaryAdjective t) = "is" <> exportPattern t
+    exportTermName' (TermMultiAdjective t) = "mis" <> exportPattern t
+    exportTermName' (TermUnaryVerb t) = "do" <> exportPattern t
+    exportTermName' (TermMultiVerb t) = "mdo" <> exportPattern t
+    exportTermName' (TermTask n) = "tsk " <> show_bytes n
     exportTermName' TermEquality = "="
     exportTermName' TermLess = "iLess"
     exportTermName' TermThesis = "#TH#"

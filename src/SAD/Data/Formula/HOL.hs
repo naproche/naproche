@@ -11,7 +11,6 @@ module SAD.Data.Formula.HOL (
   Sequent, make_sequent, encode_sequent, print_sequents, print_sequent, export_sequent
 ) where
 
-import Data.List (uncons)
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
 import Data.Text (Text)
@@ -76,11 +75,14 @@ bound_name (VarGlobal s) = "w"
 bound_name VarEmpty = Isabelle.uu
 bound_name (VarDefault s) = make_bytes s
 
-show_pattern :: PatternComp -> Bytes
-show_pattern (Word words) = maybe "" (make_bytes . fst) (uncons words)
-show_pattern (Symbol symbol) = encode symbol
-show_pattern Nm = ""
-show_pattern Vr = ""
+show_pattern :: Pattern -> Bytes
+show_pattern = Bytes.concat . map show_pattern_comp
+
+show_pattern_comp :: PatternComp -> Bytes
+show_pattern_comp (Word words) = make_bytes (head words)
+show_pattern_comp (Symbol symbol) = encode symbol
+show_pattern_comp Nm = ""
+show_pattern_comp Vr = ""
 
 encode :: Text -> Bytes
 encode = make_bytes . Text.concatMap chc
@@ -100,13 +102,13 @@ encode = make_bytes . Text.concatMap chc
     chc c = make_text ['z', c]
 
 term_name :: TermName -> Isabelle.Name
-term_name (TermSymbolic t) = "s" <> Bytes.concat (map show_pattern t)
-term_name (TermNotion t) = "a" <> Bytes.concat (map show_pattern t)
-term_name (TermThe t) = "the" <> Bytes.concat (map show_pattern t)
-term_name (TermUnaryAdjective t) = "is" <> Bytes.concat (map show_pattern t)
-term_name (TermMultiAdjective t) = "mis" <> Bytes.concat (map show_pattern t)
-term_name (TermUnaryVerb t) = "do" <> Bytes.concat (map show_pattern t)
-term_name (TermMultiVerb t) = "mdo" <> Bytes.concat (map show_pattern t)
+term_name (TermSymbolic t) = "s" <> show_pattern t
+term_name (TermNotion t) = "a" <> show_pattern t
+term_name (TermThe t) = "the" <> show_pattern t
+term_name (TermUnaryAdjective t) = "is" <> show_pattern t
+term_name (TermMultiAdjective t) = "mis" <> show_pattern t
+term_name (TermUnaryVerb t) = "do" <> show_pattern t
+term_name (TermMultiVerb t) = "mdo" <> show_pattern t
 term_name (TermTask n) = "tsk " <> Value.print_int n
 term_name TermEquality = undefined
 term_name TermLess = undefined

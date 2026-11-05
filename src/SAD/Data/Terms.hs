@@ -7,10 +7,7 @@
 -- License     : GPL-3
 module SAD.Data.Terms where
 
-import Isabelle.Library (show_text)
-
 import SAD.Data.Pattern
-import SAD.Export.Presentation
 
 
 -- * Term Names
@@ -40,19 +37,6 @@ termElement = TermNotion [Word ["element"], Nm, Word ["of"], Vr]
 termApplication = TermThe [Word ["value"], Word["of"], Vr, Word ["under"], Vr]
 termDomain = TermThe [Word ["domain"], Word["of"], Vr]
 termPair = TermThe [Word ["ordered"], Word["pair"], Word["of"], Vr, Word ["and"], Vr]
-
-instance Presentation TermName where
-  present (TermSymbolic patterns) = showSymbolPattern patterns
-  present (TermNotion patterns) = "a" <> showWordPattern patterns
-  present (TermThe patterns) = "the" <> showWordPattern patterns
-  present (TermUnaryAdjective patterns) = "is" <> showWordPattern patterns
-  present (TermMultiAdjective patterns) = "mis" <> showWordPattern patterns
-  present (TermUnaryVerb patterns) = "do" <> showWordPattern patterns
-  present (TermMultiVerb patterns) = "mdo" <> showWordPattern patterns
-  present (TermTask n) = "tsk_" <> show_text n
-  present TermEquality = "="
-  present TermLess = "iLess"
-  present TermThesis = "#TH#"
 
 data TermId
   = EqualityId

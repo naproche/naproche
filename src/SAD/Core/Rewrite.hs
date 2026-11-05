@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 -- |
@@ -22,7 +23,7 @@ import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as Text
 
-import Isabelle.Library ()
+import Isabelle.Library (show_text)
 import Isabelle.Position qualified as Position
 
 import SAD.Core.Base
@@ -30,15 +31,52 @@ import SAD.Core.Message qualified as Message
 import SAD.Core.Reason
 import SAD.Data.Formula
 import SAD.Data.Instr
+import SAD.Data.Pattern
 import SAD.Data.Rules (Rule)
 import SAD.Data.Rules qualified as Rule
 import SAD.Data.Text.Block qualified as Block (body, link, position)
 import SAD.Data.Text.Context (Context)
 import SAD.Data.Text.Context qualified as Context
-import SAD.Export.Presentation
 
 
 -- Lexicographic path ordering
+
+encodeVarName :: VariableName -> Text
+encodeVarName (VarConstant s) = "x" <> s
+encodeVarName (VarHole s) = "?" <> s
+encodeVarName VarSlot = "!"
+encodeVarName (VarU s) = "u" <> s
+encodeVarName (VarHidden n) = "h" <> show_text n
+encodeVarName (VarAssume n) = "i" <> show_text n
+encodeVarName (VarSkolem n) = "o" <> show_text n
+encodeVarName (VarTask s) = "c" <> encodeVarName s
+encodeVarName (VarZ s) = "z" <> s
+encodeVarName (VarGlobal s) = "w" <> s
+encodeVarName VarEmpty = ""
+encodeVarName (VarDefault s) = s
+
+encodeTermName :: TermName -> Text
+encodeTermName (TermSymbolic patterns) = encodePattern patterns
+encodeTermName (TermNotion patterns) = "a" <> encodePattern patterns
+encodeTermName (TermThe patterns) = "the" <> encodePattern patterns
+encodeTermName (TermUnaryAdjective patterns) = "is" <> encodePattern patterns
+encodeTermName (TermMultiAdjective patterns) = "mis" <> encodePattern patterns
+encodeTermName (TermUnaryVerb patterns) = "do" <> encodePattern patterns
+encodeTermName (TermMultiVerb patterns) = "mdo" <> encodePattern patterns
+encodeTermName (TermTask n) = "tsk_" <> show_text n
+encodeTermName TermEquality = "="
+encodeTermName TermLess = "iLess"
+encodeTermName TermThesis = "#TH#"
+
+encodePattern :: Pattern -> Text
+encodePattern = Text.concat . map encodePatternComp
+
+encodePatternComp :: PatternComp -> Text
+encodePatternComp (Word words) = head words
+encodePatternComp (Symbol symbol) = symbol
+encodePatternComp Nm = "."
+encodePatternComp Vr = "."
+
 
 {- a weighting to parametrize the LPO -}
 type Weighting = Text -> Text -> Bool
@@ -54,14 +92,13 @@ lpoGt w tr@Trm {trmName = t, trmArgs = ts} sr@Trm {trmName = s, trmArgs = ss} =
    any (\ti -> lpoGe w ti sr) ts
     || (all (lpoGt w tr) ss
     && ((t == s && lexord (lpoGt w) ts ss)
-    || w (present t) (present s)))
+    || w (encodeTermName t) (encodeTermName s)))
 lpoGt w Trm { trmName = t, trmArgs = ts} v@Var {varName = x} =
-  w (present t) (present x) || any (\ti -> lpoGe w ti v) ts
+  w (encodeTermName t) (encodeVarName x) || any (\ti -> lpoGe w ti v) ts
 lpoGt w v@Var {varName = x} Trm {trmName = t, trmArgs = ts} =
-  w (present x) (present t) && all (lpoGt w v) ts
-lpoGt w Var{varName = x} Var {varName = y} = w (present x) (present y)
+  w (encodeVarName x) (encodeTermName t) && all (lpoGt w v) ts
+lpoGt w Var{varName = x} Var {varName = y} = w (encodeVarName x) (encodeVarName y)
 lpoGt _ _ _ = False
-
 
 lexord :: (Formula -> Formula -> Bool) -> [Formula] -> [Formula] -> Bool
 lexord ord (x:xs) (y:ys)
@@ -143,7 +180,7 @@ generateConditions pos verbositySetting rules w l r =
 
     -- logging and user communication
     log leftNormalForm rightNormalForm = when verbositySetting $ do
-      simpLog Message.WRITELN pos "no matching normal forms found"
+      simpLog Message.WRITELN pos ("no matching normal forms found" :: String)
       showPath leftNormalForm; showPath rightNormalForm
     showPath ((t,_):rest) = when verbositySetting $ do
       simpLog Message.WRITELN pos (show t)
@@ -159,7 +196,7 @@ generateConditions pos verbositySetting rules w l r =
 {- applies computational reasoning to an equality chain -}
 equalityReasoning :: Position.T -> Context -> VerifyMonad ()
 equalityReasoning pos thesis
-  | body = whenInstruction printreasonParam $ reasonLog Message.WRITELN pos "equality chain concluded"
+  | body = whenInstruction printreasonParam $ reasonLog Message.WRITELN pos ("equality chain concluded" :: String)
   | notNull link = getLinkedRules pos link >>= rewrite pos equation
   | otherwise = rules >>= rewrite pos equation -- if no link is given -> all rules
   where
