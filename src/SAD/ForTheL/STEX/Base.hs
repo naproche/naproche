@@ -36,21 +36,21 @@ addInits state@FState{symbNotionExpr = sn, cfnExpr = cfn, iprExpr = ipr} = state
   }
   where
     -- "\Elem x"
-    elementOfSymbNotion = ([Symbol "\\Elem", Vr], \(x:m:_) -> mkElem x m)
+    elementOfSymbNotion = ([SymbSymbol "\\Elem", SymbVar], \(x:m:_) -> mkElem x m)
     -- "\Eq x"
-    equalSymbNotion = ([Symbol "\\Eq", Vr], mkTrm EqualityId TermEquality)
+    equalSymbNotion = ([SymbSymbol "\\Eq", SymbVar], mkTrm EqualityId TermEquality)
     -- "\Dom(f)"
-    domFunction = ([Symbol "\\Dom", Symbol "(", Vr, Symbol ")"], mkDom . head)
+    domFunction = ([SymbSymbol "\\Dom", SymbSymbol "(", SymbVar, SymbSymbol ")"], mkDom . head)
     -- "x \Eq y"
-    equalityPredicate = ([Symbol "\\Eq"], mkTrm EqualityId TermEquality)
+    equalityPredicate = ([SymbSymbol "\\Eq"], mkTrm EqualityId TermEquality)
     -- "x \NotEq y"
-    inequalityPredicate = ([Symbol "\\NotEq"], Not . mkTrm EqualityId TermEquality)
+    inequalityPredicate = ([SymbSymbol "\\NotEq"], Not . mkTrm EqualityId TermEquality)
     -- "x \ILess y"
-    inductionPredicate = ([Symbol "\\ILess"], mkTrm LessId TermLess)
+    inductionPredicate = ([SymbSymbol "\\ILess"], mkTrm LessId TermLess)
     -- "x \Elem y"
-    inPredicate = ([Symbol "\\Elem"], \(x:m:_) -> mkElem x m)
+    inPredicate = ([SymbSymbol "\\Elem"], \(x:m:_) -> mkElem x m)
     -- "x \NotElem y"
-    notinPredicate = ([Symbol "\\NotElem"], \(x:m:_) -> Not $ mkElem x m)
+    notinPredicate = ([SymbSymbol "\\NotElem"], \(x:m:_) -> Not $ mkElem x m)
 
     -- Compare the pattern of two primitive expressions
     comparePatterns p p' = fst p == fst p'

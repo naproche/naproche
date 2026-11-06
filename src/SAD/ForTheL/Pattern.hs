@@ -8,12 +8,11 @@
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
 module SAD.ForTheL.Pattern (
-  wordPatHead,
-  wordPatTail,
-  symbPatHead,
-  symbPatTail,
-  patName,
-  patNoName,
+  predicatePattern,
+  namedNotionPattern,
+  unnamedNotionPattern,
+  symbolPatternHead,
+  symbolPatternTail,
   unknownAlpha,
   slexem,
   unknownAlphaNum,
@@ -54,7 +53,7 @@ addExpr t@Trm{trmName = TermUnaryAdjective _, trmArgs = vs} f p st
   = put ns >> return nf
   where
     n = idCount st
-    (pt, nf) = extractWordPattern st (giveId p n t) f
+    (pt, nf) = extractPredPattern st (giveId p n t) f
     fm = substs nf $ map varName vs
     ns = st { adjectiveExpr = (pt, fm) : adjectiveExpr st, idCount = incId p n}
 
@@ -62,7 +61,7 @@ addExpr t@Trm{trmName = TermUnaryVerb _, trmArgs = vs} f p st
   = put ns >> return nf
   where
     n = idCount st
-    (pt, nf) = extractWordPattern st (giveId p n t) f
+    (pt, nf) = extractPredPattern st (giveId p n t) f
     fm = substs nf $ map varName vs
     ns = st {verbExpr = (pt, fm) : verbExpr st, idCount = incId p n}
 
@@ -70,8 +69,8 @@ addExpr t@Trm{trmName = TermMultiAdjective _, trmArgs = vs} f p st
   = put ns >> return nf
   where
     n = idCount st
-    (hp:tp, nf) = extractWordPattern st (giveId p n t) f
-    pt = hp : Word [] : Vr : tp
+    (hp:tp, nf) = extractPredPattern st (giveId p n t) f
+    pt = hp : PredWord [] : PredVar : tp
     fm = substs nf $ map varName vs
     ns = st {adjectiveExpr = (pt, fm) : adjectiveExpr st, idCount = incId p n}
 
@@ -79,8 +78,8 @@ addExpr t@Trm{trmName = TermMultiVerb _, trmArgs = vs} f p st
   = put ns >> return nf
   where
     n = idCount st
-    (hp:tp, nf) = extractWordPattern st (giveId p n t) f
-    pt = hp : Word [] : Vr : tp
+    (hp:tp, nf) = extractPredPattern st (giveId p n t) f
+    pt = hp : PredWord [] : PredVar : tp
     fm = substs nf $ map varName vs
     ns = st {verbExpr = (pt, fm) : verbExpr st, idCount = incId p n}
 
@@ -88,7 +87,7 @@ addExpr t@Trm{trmName = TermNotion _, trmArgs = vs} f p st
   = put ns >> return nf
   where
     n = idCount st
-    (pt, nf) = extractWordPattern st (giveId p n t) f
+    (pt, nf) = extractNotionPattern st (giveId p n t) f
     fm = substs nf $ map varName vs
     ns = st {notionExpr = (pt, fm) : notionExpr st, idCount = incId p n}
 
@@ -97,7 +96,7 @@ addExpr Trm{trmName= TermEquality, trmArgs = [v, t@Trm {trmName = TermNotion rs}
   where
     n = idCount st
     vs = trmArgs t
-    (pt, nf) = extractWordPattern st (giveId p n t {trmName = TermThe rs}) f
+    (pt, nf) = extractNotionPattern st (giveId p n t {trmName = TermThe rs}) f
     fm = substs nf $ map varName (v:vs)
     ns = st {notionExpr = (pt, fm) : notionExpr st, idCount = incId p n}
 
@@ -113,7 +112,7 @@ addExpr Trm{trmName = TermEquality, trmArgs = [_, t]} eq@Trm {trmName = TermEqua
     csm = lsm && rsm
     lsm = notVr (head pt)
     rsm = notVr (last pt)
-    notVr Vr = False
+    notVr SymbVar = False
     notVr _ = True
     -- add to the right category
     ns | csm = st {cfnExpr = (pt, fm) : cfnExpr st}
@@ -133,7 +132,7 @@ addExpr t@Trm{trmName = s, trmArgs = vs} f p st =
     csm = lsm && rsm
     lsm = notVr (head pt)
     rsm = notVr (last pt)
-    notVr Vr = False
+    notVr SymbVar = False
     notVr _ = True
     -- add the pattern to the right category
     ns | csm = st {cprExpr = (pt, fm) : cprExpr st}
@@ -153,20 +152,27 @@ addExpr t@Trm{trmName = s, trmArgs = vs} f p st =
 
 -- pattern extraction
 
-extractWordPattern :: FState -> Formula -> Formula -> (Pattern, Formula)
-extractWordPattern st t@Trm {trmName = tn, trmArgs = vs} f =
+extractPredPattern :: FState -> Formula -> Formula -> (PredicatePattern, Formula)
+extractPredPattern st t@Trm {trmName = tn, trmArgs = vs} f =
   case tn of
-    TermNotion s -> (pt s, nf)
-    TermThe s -> (pt s, nf)
     TermUnaryAdjective s -> (pt s, nf)
     TermMultiAdjective s -> (pt s, nf)
     TermUnaryVerb s -> (pt s, nf)
     TermMultiVerb s -> (pt s, nf)
   where
-    pt = map (addSynonyms st)
+    pt = map (addPredSynonyms st)
     nf = replace t t {trId = NewId} f
 
-extractSymbPattern :: Formula -> Formula -> (Pattern, Formula)
+extractNotionPattern :: FState -> Formula -> Formula -> (NotionPattern, Formula)
+extractNotionPattern st t@Trm {trmName = tn, trmArgs = vs} f =
+  case tn of
+    TermNotion s -> (pt s, nf)
+    TermThe s -> (pt s, nf)
+  where
+    pt = map (addNotionSynonyms st)
+    nf = replace t t {trId = NewId} f
+
+extractSymbPattern :: Formula -> Formula -> (SymbolPattern, Formula)
 extractSymbPattern t@Trm {trmName = TermSymbolic s, trmArgs = vs} f = (s, nf)
   where
     nf = replace t t {trId = NewId} f
@@ -176,43 +182,51 @@ getSynonyms st word =
   let dictionary = strSyms st
   in foldl' union [word] $ filter (elem word) dictionary
 
-addSynonyms :: FState -> PatternComp -> PatternComp
-addSynonyms st (Word words) = Word $ concatMap (getSynonyms st) words
-addSynonyms _ p = p
+addPredSynonyms :: FState -> PredicatePatternComp -> PredicatePatternComp
+addPredSynonyms st (PredWord words) = PredWord $ concatMap (getSynonyms st) words
+addPredSynonyms _ p = p
 
+addNotionSynonyms :: FState -> NotionPatternComp -> NotionPatternComp
+addNotionSynonyms st (NotionWord words) = NotionWord $ concatMap (getSynonyms st) words
+addNotionSynonyms _ p = p
 
 -- * Pattern Parsing
 
-wordPatHead :: FTL PosVar -> FTL (Pattern, [PosVar])
-wordPatHead tvr = do
-  l <- map (Word . singleton) <$> chain unknownAlpha
-  (ls, vs) <- opt ([], []) $ wordPatTail tvr
+-- ** Predicate Patterns
+
+predicatePattern :: FTL PosVar -> FTL (PredicatePattern, [PosVar])
+predicatePattern tvr = do
+  l <- map (PredWord . singleton) <$> chain unknownAlpha
+  (ls, vs) <- opt ([], []) $ predPatTail tvr
   return (l ++ ls, vs)
 
-wordPatTail :: FTL PosVar -> FTL (Pattern, [PosVar])
-wordPatTail tvr = do
+predPatTail :: FTL PosVar -> FTL (PredicatePattern, [PosVar])
+predPatTail tvr = do
   v <- tvr
-  (ls, vs) <- opt ([], []) $ wordPatHead tvr
-  return (Vr : ls, v:vs)
+  (ls, vs) <- opt ([], []) $ predicatePattern tvr
+  return (PredVar : ls, v:vs)
 
-symbPatHead :: FTL PosVar -> FTL (Pattern, [PosVar])
-symbPatHead tvr = do
-  l <- map Symbol <$> chain slexem
-  (ls, vs) <- opt ([], []) $ symbPatTail tvr
+
+-- ** Notion Patterns
+
+notionPatHead :: FTL PosVar -> FTL (NotionPattern, [PosVar])
+notionPatHead tvr = do
+  l <- map (NotionWord . singleton) <$> chain unknownAlpha
+  (ls, vs) <- opt ([], []) $ notionPatTail tvr
   return (l ++ ls, vs)
 
-symbPatTail :: FTL PosVar -> FTL (Pattern, [PosVar])
-symbPatTail tvr = do
+notionPatTail :: FTL PosVar -> FTL (NotionPattern, [PosVar])
+notionPatTail tvr = do
   v <- tvr
-  (ls, vs) <- opt ([], []) $ symbPatHead tvr
-  return (Vr : ls, v:vs)
+  (ls, vs) <- opt ([], []) $ notionPatHead tvr
+  return (NotionVar : ls, v:vs)
 
-patName :: FTL PosVar -> FTL (Pattern, [PosVar])
-patName tvr = do
-  l <- map (Word . singleton) <$> chain unknownAlpha
+namedNotionPattern :: FTL PosVar -> FTL (NotionPattern, [PosVar])
+namedNotionPattern tvr = do
+  l <- map (NotionWord . singleton) <$> chain unknownAlpha
   n <- nam
-  (ls, vs) <- opt ([], []) $ wordPatHead tvr
-  return (l ++ [Vr] ++ ls, n:vs)
+  (ls, vs) <- opt ([], []) $ notionPatHead tvr
+  return (l ++ [NotionVar] ++ ls, n:vs)
   where
     nam :: FTL PosVar
     nam = do
@@ -222,19 +236,34 @@ patName tvr = do
         Just a -> pure a
 
 
-patNoName :: FTL PosVar -> FTL (Pattern, [PosVar])
-patNoName tvr = do
-  l <- map (Word. singleton) <$> chain unknownAlpha
+unnamedNotionPattern :: FTL PosVar -> FTL (NotionPattern, [PosVar])
+unnamedNotionPattern tvr = do
+  l <- map (NotionWord. singleton) <$> chain unknownAlpha
   n <- hidden
   (ls, vs) <- opt ([], []) $ patShort tvr
-  return (l ++ [Nm] ++ ls, n : vs)
+  return (l ++ [NotionName] ++ ls, n : vs)
   where
     --patShort is a kind of buffer that ensures that a variable does not directly
     --follow the name of the notion
     patShort tvr = do
-      l <- Word . singleton <$> unknownAlpha
-      (ls, vs) <- wordPatTail tvr
+      l <- NotionWord . singleton <$> unknownAlpha
+      (ls, vs) <- notionPatTail tvr
       return (l : ls, vs)
+
+
+-- ** Symbol Patterns
+
+symbolPatternHead :: FTL PosVar -> FTL (SymbolPattern, [PosVar])
+symbolPatternHead tvr = do
+  l <- map SymbSymbol <$> chain slexem
+  (ls, vs) <- opt ([], []) $ symbolPatternTail tvr
+  return (l ++ ls, vs)
+
+symbolPatternTail :: FTL PosVar -> FTL (SymbolPattern, [PosVar])
+symbolPatternTail tvr = do
+  v <- tvr
+  (ls, vs) <- opt ([], []) $ symbolPatternHead tvr
+  return (SymbVar : ls, v:vs)
 
 
 -- In-pattern lexemes and variables

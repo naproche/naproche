@@ -13,13 +13,13 @@ import SAD.Data.Pattern
 -- * Term Names
 
 data TermName
-  = TermSymbolic Pattern
-  | TermNotion Pattern
-  | TermThe Pattern
-  | TermUnaryAdjective Pattern
-  | TermMultiAdjective Pattern
-  | TermUnaryVerb Pattern
-  | TermMultiVerb Pattern
+  = TermSymbolic SymbolPattern
+  | TermNotion NotionPattern
+  | TermThe NotionPattern
+  | TermUnaryAdjective PredicatePattern
+  | TermMultiAdjective PredicatePattern
+  | TermUnaryVerb PredicatePattern
+  | TermMultiVerb PredicatePattern
   | TermTask Int
   | TermEquality
   | TermLess
@@ -28,15 +28,15 @@ data TermName
 
 termFunction, termMap, termSet, termClass, termElement, termObject,
   termApplication, termDomain, termPair :: TermName
-termFunction = TermNotion [Word ["function"], Nm]
-termMap = TermNotion [Word ["map"], Nm]
-termSet = TermNotion [Word ["set"], Nm]
-termClass = TermNotion [Word ["class"], Nm]
-termObject = TermNotion [Word ["object"], Nm]
-termElement = TermNotion [Word ["element"], Nm, Word ["of"], Vr]
-termApplication = TermThe [Word ["value"], Word["of"], Vr, Word ["under"], Vr]
-termDomain = TermThe [Word ["domain"], Word["of"], Vr]
-termPair = TermThe [Word ["ordered"], Word["pair"], Word["of"], Vr, Word ["and"], Vr]
+termFunction = TermNotion [NotionWord ["function"], NotionName]
+termMap = TermNotion [NotionWord ["map"], NotionName]
+termSet = TermNotion [NotionWord ["set"], NotionName]
+termClass = TermNotion [NotionWord ["class"], NotionName]
+termObject = TermNotion [NotionWord ["object"], NotionName]
+termElement = TermNotion [NotionWord ["element"], NotionName, NotionWord ["of"], NotionVar]
+termApplication = TermThe [NotionWord ["value"], NotionWord["of"], NotionVar, NotionWord ["under"], NotionVar]
+termDomain = TermThe [NotionWord ["domain"], NotionWord["of"], NotionVar]
+termPair = TermThe [NotionWord ["ordered"], NotionWord["pair"], NotionWord["of"], NotionVar, NotionWord ["and"], NotionVar]
 
 data TermId
   = EqualityId

@@ -50,24 +50,26 @@ type MTerm   = (Formula -> Formula, [Formula])
 -- | Multi-notions.
 type MNotion = (Formula -> Formula, Formula, Set PosVar)
 
-type Prim    = (Pattern, [Formula] -> Formula)
+type PrimPredicate = (PredicatePattern, [Formula] -> Formula)
+type PrimNotion = (NotionPattern, [Formula] -> Formula)
+type PrimSymbol = (SymbolPattern, [Formula] -> Formula)
 
 -- | ForTheL state
 data FState = FState {
-  adjectiveExpr :: [Prim],      -- ^ adjective expressions
-  verbExpr :: [Prim],           -- ^ verb expressions
-  notionExpr :: [Prim],         -- ^ notion expressions
-  symbNotionExpr :: [Prim],     -- ^ symbolic notion expressions
+  adjectiveExpr :: [PrimPredicate],      -- ^ adjective expressions
+  verbExpr :: [PrimPredicate],           -- ^ verb expressions
+  notionExpr :: [PrimNotion],         -- ^ notion expressions
+  symbNotionExpr :: [PrimSymbol],     -- ^ symbolic notion expressions
 
-  cfnExpr :: [Prim],            -- ^ circumfix funxtion expressions
-  rfnExpr :: [Prim],            -- ^ right funxtion expressions
-  lfnExpr :: [Prim],            -- ^ left funxtion expressions
-  ifnExpr :: [Prim],            -- ^ infix function expressions
+  cfnExpr :: [PrimSymbol],            -- ^ circumfix funxtion expressions
+  rfnExpr :: [PrimSymbol],            -- ^ right funxtion expressions
+  lfnExpr :: [PrimSymbol],            -- ^ left funxtion expressions
+  ifnExpr :: [PrimSymbol],            -- ^ infix function expressions
 
-  cprExpr :: [Prim],            -- ^ circumfix predicate expressions
-  rprExpr :: [Prim],            -- ^ right predicate expressions
-  lprExpr :: [Prim],            -- ^ left predicate expressions
-  iprExpr :: [Prim],            -- ^ infix predicate expressions
+  cprExpr :: [PrimSymbol],            -- ^ circumfix predicate expressions
+  rprExpr :: [PrimSymbol],            -- ^ right predicate expressions
+  lprExpr :: [PrimSymbol],            -- ^ left predicate expressions
+  iprExpr :: [PrimSymbol],            -- ^ infix predicate expressions
 
   tvrExpr :: [TVar],            -- ^ pretyped variables
   strSyms :: [[Text]],          -- ^ synonyms
@@ -126,29 +128,29 @@ initFState = FState
     rightFunctions = [applicationFunction]
 
     -- "equal to x"
-    equalAdj = ([Word ["equal"], Word ["to"], Vr], mkTrm EqualityId TermEquality)
+    equalAdj = ([PredWord ["equal"], PredWord ["to"], PredVar], mkTrm EqualityId TermEquality)
     -- "nonequal to x"
-    nonequalAdj = ([Word ["nonequal"], Word ["to"], Vr], Not . mkTrm EqualityId TermEquality)
+    nonequalAdj = ([PredWord ["nonequal"], PredWord ["to"], PredVar], Not . mkTrm EqualityId TermEquality)
     -- "inductively less than x"
-    inductivelyLessAdj = ([Word ["inductively"], Word ["less"], Word ["than"], Vr], mkTrm LessId TermLess)
+    inductivelyLessAdj = ([PredWord ["inductively"], PredWord ["less"], PredWord ["than"], PredVar], mkTrm LessId TermLess)
     -- "a map f"
-    mapNotion = ([Word ["map", "maps"], Nm], mkMap . head)
+    mapNotion = ([NotionWord ["map", "maps"], NotionName], mkMap . head)
     -- "a function f"
-    functionNotion = ([Word ["function", "functions"], Nm], mkFunction . head)
+    functionNotion = ([NotionWord ["function", "functions"], NotionName], mkFunction . head)
     -- "a set X"
-    setNotion = ([Word ["set", "sets"], Nm], mkSet . head)
+    setNotion = ([NotionWord ["set", "sets"], NotionName], mkSet . head)
     -- "a class X", "a collection X"
-    classNotion = ([Word ["class", "classes", "collection", "collections"], Nm], mkClass . head)
+    classNotion = ([NotionWord ["class", "classes", "collection", "collections"], NotionName], mkClass . head)
     -- "an object X", "an element X"
-    objectNotion = ([Word ["object", "objects", "element", "elements"], Nm], mkObject . head)
+    objectNotion = ([NotionWord ["object", "objects", "element", "elements"], NotionName], mkObject . head)
     -- "a mathematical object"
-    mathObjectNotion = ([Word ["mathematical"], Word ["object", "objects"], Nm], mkObject . head)
+    mathObjectNotion = ([NotionWord ["mathematical"], NotionWord ["object", "objects"], NotionName], mkObject . head)
     -- "an element x of X"
-    elementOfNotion = ([Word ["element", "elements"], Nm, Word ["of"], Vr], \(x:m:_) -> mkElem x m)
+    elementOfNotion = ([NotionWord ["element", "elements"], NotionName, NotionWord ["of"], NotionVar], \(x:m:_) -> mkElem x m)
     -- "(x,y)"
-    pairFunction = ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> mkPair x y)
+    pairFunction = ([SymbSymbol "(", SymbVar, SymbSymbol ",", SymbVar, SymbSymbol ")"], \(x:y:_) -> mkPair x y)
     -- "f(x)"
-    applicationFunction = ([Symbol "(", Vr, Symbol ")"], \(f:x:_) -> mkApp f x)
+    applicationFunction = ([SymbSymbol "(", SymbVar, SymbSymbol ")"], \(f:x:_) -> mkApp f x)
 
 
 getExpr :: (FState -> [a]) -> (a -> FTL b) -> FTL b
@@ -193,12 +195,12 @@ primVer = getExpr verbExpr . primPrd
 primAdj = getExpr adjectiveExpr . primPrd
 primUnAdj = getExpr (filter (unary . fst) . adjectiveExpr) . primPrd
   where
-    unary pt = Vr `notElem` pt
+    unary pt = PredVar `notElem` pt
 
 primPrd :: FTL (b1 -> b1, Formula)
-           -> (Pattern, [Formula] -> b2) -> FTL (b1 -> b1, b2)
+           -> (PredicatePattern, [Formula] -> b2) -> FTL (b1 -> b1, b2)
 primPrd p (pt, fm) = do
-  (q, ts) <- wdPattern p pt
+  (q, ts) <- predWdPattern p pt
   return (q, fm $ mkVar (VarHole ""):ts)
 
 
@@ -210,12 +212,12 @@ primMultiVer = getExpr verbExpr . primMultiPredicate
 primMultiAdj = getExpr adjectiveExpr . primMultiPredicate
 primMultiUnAdj = getExpr (filter (unary . fst) . adjectiveExpr) . primMultiPredicate
   where
-    unary (Vr : pt) = Vr `notElem` pt
+    unary (PredVar : pt) = PredVar `notElem` pt
     unary (_  : pt) = unary pt
     unary [] = True
 
 primMultiPredicate :: FTL (b1 -> b1, Formula)
-               -> (Pattern, [Formula] -> b2) -> FTL (b1 -> b1, b2)
+               -> (PredicatePattern, [Formula] -> b2) -> FTL (b1 -> b1, b2)
 primMultiPredicate p (pt, fm) = do
   (q, ts) <- multiPattern p pt
   return (q, fm $ mkVar (VarHole "") : mkVar VarSlot : ts)
@@ -276,14 +278,14 @@ primIfn :: FTL Formula
            -> FTL (Formula -> Formula -> Formula)
 primIfn = getExpr ifnExpr . primIsm
 
-primCsm :: FTL a -> (Pattern, [a] -> b) -> FTL b
+primCsm :: FTL a -> (SymbolPattern, [a] -> b) -> FTL b
 primCsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ fm l
-primRsm :: FTL a -> (Pattern, [a] -> t) -> FTL (a -> t)
+primRsm :: FTL a -> (SymbolPattern, [a] -> t) -> FTL (a -> t)
 primRsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \t -> fm $ t:l
-primLsm :: FTL a -> (Pattern, [a] -> t) -> FTL (a -> t)
+primLsm :: FTL a -> (SymbolPattern, [a] -> t) -> FTL (a -> t)
 primLsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \s -> fm $ l++[s]
 primIsm :: FTL a
-           -> (Pattern, [a] -> t) -> FTL (a -> a -> t)
+           -> (SymbolPattern, [a] -> t) -> FTL (a -> a -> t)
 primIsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \t s -> fm $ t:l++[s]
 
 
@@ -302,51 +304,60 @@ patternSymbolTokenOf l = label ("the symbol " <> Text.pack (show l)) $ token l
 
 -- | Most basic pattern parser: simply follow the pattern and parse terms with p
 -- at variable places
-wdPattern :: FTL (b -> b, a) -> Pattern -> FTL (b-> b, [a])
-wdPattern p (Word l : ls) = patternTokenOf' l >> wdPattern p ls
-wdPattern p (Vr : ls) = do
+predWdPattern :: FTL (b -> b, a) -> PredicatePattern -> FTL (b -> b, [a])
+predWdPattern p (PredWord l : ls) = patternTokenOf' l >> predWdPattern p ls
+predWdPattern p (PredVar : ls) = do
   (r, t) <- p
-  (q, ts) <- wdPattern p ls
+  (q, ts) <- predWdPattern p ls
   return (r . q, t:ts)
-wdPattern _ [] = return (id, [])
-wdPattern _ _ = mzero
+predWdPattern _ [] = return (id, [])
+
+-- | Most basic pattern parser: simply follow the pattern and parse terms with p
+-- at variable places
+notionWdPattern :: FTL (b -> b, a) -> NotionPattern -> FTL (b -> b, [a])
+notionWdPattern p (NotionWord l : ls) = patternTokenOf' l >> notionWdPattern p ls
+notionWdPattern p (NotionVar : ls) = do
+  (r, t) <- p
+  (q, ts) <- notionWdPattern p ls
+  return (r . q, t:ts)
+notionWdPattern _ [] = return (id, [])
+notionWdPattern _ _ = mzero
 
 -- | Parse a symbolic pattern.
-symbolPattern :: FTL a -> Pattern -> FTL [a]
-symbolPattern p (Vr : ls) = liftM2 (:) p $ symbolPattern p ls
-symbolPattern p (Symbol s : ls) = patternSymbolTokenOf s >> symbolPattern p ls
+symbolPattern :: FTL a -> SymbolPattern -> FTL [a]
+symbolPattern p (SymbVar : ls) = liftM2 (:) p $ symbolPattern p ls
+symbolPattern p (SymbSymbol s : ls) = patternSymbolTokenOf s >> symbolPattern p ls
 symbolPattern _ [] = return []
-symbolPattern _ _ = mzero
 
 -- | Parse a multi-subject pattern: follow the pattern, but ignore the token'
 -- right before the first variable. Then check that all "and" tokens have been
 -- consumed. Example pattern: [Word ["commute","commutes"], Word ["with"], Vr]. Then
 -- we can parse "a commutes with c and d" as well as "a and b commute".
-multiPattern :: FTL (b -> b, a) -> Pattern -> FTL (b -> b, [a])
-multiPattern p (Word l :_: Vr : ls) = patternTokenOf' l >> naPattern p ls
-multiPattern p (Word l : ls) = patternTokenOf' l >> multiPattern p ls
+multiPattern :: FTL (b -> b, a) -> PredicatePattern -> FTL (b -> b, [a])
+multiPattern p (PredWord l : _ : PredVar : ls) = patternTokenOf' l >> predNaPattern p ls
+multiPattern p (PredWord l : ls) = patternTokenOf' l >> multiPattern p ls
 multiPattern _ _ = mzero
 
 
 -- parses a notion: follow the pattern to the name place, record names,
 -- then keep following the pattern
 notionPattern :: FTL (b -> b, a)
-          -> Pattern -> FTL (b -> b, Set PosVar, [a])
-notionPattern p (Word l : ls) = patternTokenOf' l >> notionPattern p ls
-notionPattern p (Nm : ls) = do
+          -> NotionPattern -> FTL (b -> b, Set PosVar, [a])
+notionPattern p (NotionWord l : ls) = patternTokenOf' l >> notionPattern p ls
+notionPattern p (NotionName : ls) = do
   vs <- nameList
-  (q, ts) <- wdPattern p ls
+  (q, ts) <- notionWdPattern p ls
   return (q, vs, ts)
 notionPattern _ _ = mzero
 
 -- parse an "of"-notion: follow the pattern to the notion name, then check that
 -- "of" follows the name followed by a variable that is not followed by "and"
 ofPattern :: FTL (b -> b, a)
-          -> Pattern -> FTL (b -> b, Set PosVar, [a])
-ofPattern p (Word l : ls) = patternTokenOf' l >> ofPattern p ls
-ofPattern p (Nm : Word l : Vr : ls) = do
+          -> NotionPattern -> FTL (b -> b, Set PosVar, [a])
+ofPattern p (NotionWord l : ls) = patternTokenOf' l >> ofPattern p ls
+ofPattern p (NotionName : NotionWord l : NotionVar : ls) = do
   guard $ elem "of" l; vs <- nameList
-  (q, ts) <- naPattern p ls
+  (q, ts) <- notionNaPattern p ls
   return (q, vs, ts)
 ofPattern _ _ = mzero
 
@@ -355,24 +366,28 @@ ofPattern _ _ = mzero
 -- here. Example: A common *divisor of m and n*.
 commonPattern :: FTL (b -> b, a1)
           -> FTL (b -> c, [a2])
-          -> Pattern
+          -> NotionPattern
           -> FTL (b -> c, Set PosVar, [a2], [a1])
-commonPattern p s (Word l:ls) = patternTokenOf' l >> commonPattern p s ls
-commonPattern p s (Nm : Word l : Vr : ls) = do
+commonPattern p s (NotionWord l:ls) = patternTokenOf' l >> commonPattern p s ls
+commonPattern p s (NotionName : NotionWord l : NotionVar : ls) = do
   guard $ elem "of" l; vs <- nameList; patternTokenOf' l
   (r, as) <- s
   when (null $ tail as) $ fail "several objects expected for `common'"
-  (q, ts) <- naPattern p ls
+  (q, ts) <- notionNaPattern p ls
   return (r . q, vs, as, ts)
 commonPattern _ _ _ = mzero
 
 -- an auxiliary pattern parser that checks that we are not dealing with an "and"
 -- token' and then continues to follow the pattern
-naPattern :: FTL (b -> b, a)
-          -> Pattern -> FTL (b -> b, [a])
-naPattern p (Word l : ls) = guard ("and" `notElem` l) >> patternTokenOf' l >> wdPattern p ls
-naPattern p ls = wdPattern p ls
+predNaPattern :: FTL (b -> b, a)
+          -> PredicatePattern -> FTL (b -> b, [a])
+predNaPattern p (PredWord l : ls) = guard ("and" `notElem` l) >> patternTokenOf' l >> predWdPattern p ls
+predNaPattern p ls = predWdPattern p ls
 
+notionNaPattern :: FTL (b -> b, a)
+          -> NotionPattern -> FTL (b -> b, [a])
+notionNaPattern p (NotionWord l : ls) = guard ("and" `notElem` l) >> patternTokenOf' l >> notionWdPattern p ls
+notionNaPattern p ls = notionWdPattern p ls
 
 
 -- * Variables

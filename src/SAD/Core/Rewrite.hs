@@ -17,7 +17,6 @@ import Control.Monad.Reader
 import Control.Monad.State
 
 import Data.Either
-import Data.List
 import Data.List.Extra (notNull)
 import Data.Set qualified as Set
 import Data.Text (Text)
@@ -56,26 +55,39 @@ encodeVarName VarEmpty = ""
 encodeVarName (VarDefault s) = s
 
 encodeTermName :: TermName -> Text
-encodeTermName (TermSymbolic patterns) = encodePattern patterns
-encodeTermName (TermNotion patterns) = "a" <> encodePattern patterns
-encodeTermName (TermThe patterns) = "the" <> encodePattern patterns
-encodeTermName (TermUnaryAdjective patterns) = "is" <> encodePattern patterns
-encodeTermName (TermMultiAdjective patterns) = "mis" <> encodePattern patterns
-encodeTermName (TermUnaryVerb patterns) = "do" <> encodePattern patterns
-encodeTermName (TermMultiVerb patterns) = "mdo" <> encodePattern patterns
+encodeTermName (TermSymbolic patterns) = encodeSymbolPattern patterns
+encodeTermName (TermNotion patterns) = "a" <> encodeNotionPattern patterns
+encodeTermName (TermThe patterns) = "the" <> encodeNotionPattern patterns
+encodeTermName (TermUnaryAdjective patterns) = "is" <> encodePredicatePattern patterns
+encodeTermName (TermMultiAdjective patterns) = "mis" <> encodePredicatePattern patterns
+encodeTermName (TermUnaryVerb patterns) = "do" <> encodePredicatePattern patterns
+encodeTermName (TermMultiVerb patterns) = "mdo" <> encodePredicatePattern patterns
 encodeTermName (TermTask n) = "tsk_" <> show_text n
 encodeTermName TermEquality = "="
 encodeTermName TermLess = "iLess"
 encodeTermName TermThesis = "#TH#"
 
-encodePattern :: Pattern -> Text
-encodePattern = Text.concat . map encodePatternComp
+encodePredicatePattern :: PredicatePattern -> Text
+encodePredicatePattern = Text.concat . map encodePredicatePatternComp
 
-encodePatternComp :: PatternComp -> Text
-encodePatternComp (Word words) = head words
-encodePatternComp (Symbol symbol) = symbol
-encodePatternComp Nm = "."
-encodePatternComp Vr = "."
+encodePredicatePatternComp :: PredicatePatternComp -> Text
+encodePredicatePatternComp (PredWord words) = head words
+encodePredicatePatternComp PredVar = "."
+
+encodeNotionPattern :: NotionPattern -> Text
+encodeNotionPattern = Text.concat . map encodeNotionPatternComp
+
+encodeNotionPatternComp :: NotionPatternComp -> Text
+encodeNotionPatternComp (NotionWord words) = head words
+encodeNotionPatternComp NotionName = "."
+encodeNotionPatternComp NotionVar = "."
+
+encodeSymbolPattern :: SymbolPattern -> Text
+encodeSymbolPattern = Text.concat . map encodeSymbolPatternComp
+
+encodeSymbolPatternComp :: SymbolPatternComp -> Text
+encodeSymbolPatternComp (SymbSymbol symbol) = symbol
+encodeSymbolPatternComp SymbVar = "."
 
 
 {- a weighting to parametrize the LPO -}

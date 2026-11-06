@@ -69,7 +69,7 @@ oneArgument = sVar
 -- | Parse two variables, separated by a comma
 twoArguments :: FTL Formula
 twoArguments = do
-  [l,r] <- symbolPattern sVar [Vr, Symbol ",", Vr]
+  [l,r] <- symbolPattern sVar [SymbVar, SymbSymbol ",", SymbVar]
   return $ mkPair l r
 
 

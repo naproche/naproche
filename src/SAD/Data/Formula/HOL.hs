@@ -75,14 +75,27 @@ bound_name (VarGlobal s) = "w"
 bound_name VarEmpty = Isabelle.uu
 bound_name (VarDefault s) = make_bytes s
 
-show_pattern :: Pattern -> Bytes
-show_pattern = Bytes.concat . map show_pattern_comp
+show_predicate_pattern :: PredicatePattern -> Bytes
+show_predicate_pattern = Bytes.concat . map show_predicate_pattern_comp
 
-show_pattern_comp :: PatternComp -> Bytes
-show_pattern_comp (Word words) = make_bytes (head words)
-show_pattern_comp (Symbol symbol) = encode symbol
-show_pattern_comp Nm = ""
-show_pattern_comp Vr = ""
+show_predicate_pattern_comp :: PredicatePatternComp -> Bytes
+show_predicate_pattern_comp (PredWord words) = make_bytes (head words)
+show_predicate_pattern_comp PredVar = ""
+
+show_notion_pattern :: NotionPattern -> Bytes
+show_notion_pattern = Bytes.concat . map show_notion_pattern_comp
+
+show_notion_pattern_comp :: NotionPatternComp -> Bytes
+show_notion_pattern_comp (NotionWord words) = make_bytes (head words)
+show_notion_pattern_comp NotionName = ""
+show_notion_pattern_comp NotionVar = ""
+
+show_symbol_pattern :: SymbolPattern -> Bytes
+show_symbol_pattern = Bytes.concat . map show_symbol_pattern_comp
+
+show_symbol_pattern_comp :: SymbolPatternComp -> Bytes
+show_symbol_pattern_comp (SymbSymbol symbol) = encode symbol
+show_symbol_pattern_comp SymbVar = ""
 
 encode :: Text -> Bytes
 encode = make_bytes . Text.concatMap chc
@@ -102,13 +115,13 @@ encode = make_bytes . Text.concatMap chc
     chc c = make_text ['z', c]
 
 term_name :: TermName -> Isabelle.Name
-term_name (TermSymbolic t) = "s" <> show_pattern t
-term_name (TermNotion t) = "a" <> show_pattern t
-term_name (TermThe t) = "the" <> show_pattern t
-term_name (TermUnaryAdjective t) = "is" <> show_pattern t
-term_name (TermMultiAdjective t) = "mis" <> show_pattern t
-term_name (TermUnaryVerb t) = "do" <> show_pattern t
-term_name (TermMultiVerb t) = "mdo" <> show_pattern t
+term_name (TermSymbolic t) = "s" <> show_symbol_pattern t
+term_name (TermNotion t) = "a" <> show_notion_pattern t
+term_name (TermThe t) = "the" <> show_notion_pattern t
+term_name (TermUnaryAdjective t) = "is" <> show_predicate_pattern t
+term_name (TermMultiAdjective t) = "mis" <> show_predicate_pattern t
+term_name (TermUnaryVerb t) = "do" <> show_predicate_pattern t
+term_name (TermMultiVerb t) = "mdo" <> show_predicate_pattern t
 term_name (TermTask n) = "tsk " <> Value.print_int n
 term_name TermEquality = undefined
 term_name TermLess = undefined

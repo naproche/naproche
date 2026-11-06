@@ -33,15 +33,15 @@ addInits state@FState{symbNotionExpr = sn, cfnExpr = cfn, iprExpr = ipr} = state
   }
   where
     -- "x = y"
-    equalityPredicate = ([Symbol "="], mkTrm EqualityId TermEquality)
+    equalityPredicate = ([SymbSymbol "="], mkTrm EqualityId TermEquality)
     -- "= x"
-    equalSymbNotion = ([Symbol "=", Vr], mkTrm EqualityId TermEquality)
+    equalSymbNotion = ([SymbSymbol "=", SymbVar], mkTrm EqualityId TermEquality)
     -- "x != y"
-    inequalityPredicate = ([Symbol "!", Symbol "="], Not . mkTrm EqualityId TermEquality)
+    inequalityPredicate = ([SymbSymbol "!", SymbSymbol "="], Not . mkTrm EqualityId TermEquality)
     -- "x -<- y"
-    inductionPredicate = ([Symbol "-", Symbol "<", Symbol "-"], mkTrm LessId TermLess)
+    inductionPredicate = ([SymbSymbol "-", SymbSymbol "<", SymbSymbol "-"], mkTrm LessId TermLess)
     -- "Dom f"
-    domFunction = ([Symbol "Dom", Vr], mkDom . head)
+    domFunction = ([SymbSymbol "Dom", SymbVar], mkDom . head)
 
     -- Compare the pattern of two primitive expressions
     comparePatterns p p' = fst p == fst p'

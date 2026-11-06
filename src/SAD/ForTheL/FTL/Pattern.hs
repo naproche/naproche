@@ -6,9 +6,9 @@
 -- Copyright   : (c) 2025, Marcel Schütz
 -- License     : GPL-3
 module SAD.ForTheL.FTL.Pattern (
-  newPrdPattern,
-  unnamedNotion,
-  newNotionPattern
+  newPredicate,
+  newNamedNotion,
+  newUnnamedNotion
 ) where
 
 import Control.Applicative
@@ -24,8 +24,8 @@ import SAD.Parser.Primitives
 -- New patterns
 
 
-newPrdPattern :: FTL PosVar -> FTL Formula
-newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
+newPredicate :: FTL PosVar -> FTL Formula
+newPredicate tvr = multi </> unary </> newSymbol tvr
   where
     unary = do
       v <- tvr
@@ -38,54 +38,54 @@ newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
 
     unaryAdj = do
       token' "is"
-      (t, vs) <- wordPatHead tvr
+      (t, vs) <- predicatePattern tvr
       return (TermUnaryAdjective t, vs)
     multiAdj = do
       token' "are"
-      (t, vs) <- wordPatHead tvr
+      (t, vs) <- predicatePattern tvr
       return (TermMultiAdjective t, vs)
     unaryVerb = do
-      (t, vs) <- wordPatHead tvr
+      (t, vs) <- predicatePattern tvr
       return (TermUnaryVerb t, vs)
     multiVerb = do
-      (t, vs) <- wordPatHead tvr
+      (t, vs) <- predicatePattern tvr
       return (TermMultiVerb t, vs)
 
-newNotionPattern :: FTL PosVar -> FTL (Formula, PosVar)
-newNotionPattern tvr = (notion <|> function) </> unnamedNotion tvr
+newNamedNotion :: FTL PosVar -> FTL (Formula, PosVar)
+newNamedNotion tvr = (notion <|> function) </> newUnnamedNotion tvr
   where
     notion = do
       tokenOf' ["a", "an"]
-      (t, v:vs) <- patName tvr
+      (t, v:vs) <- namedNotionPattern tvr
       return (mkTrm NewId (TermNotion t) $ map pVar (v:vs), v)
     function = do
       token' "the"
-      (t, v:vs) <- patName tvr
+      (t, v:vs) <- namedNotionPattern tvr
       return (mkEquality (pVar v) $ mkTrm NewId (TermNotion t) $ map pVar vs, v)
 
-unnamedNotion :: FTL PosVar -> FTL (Formula, PosVar)
-unnamedNotion tvr = (notion <|> function) </> (newSymbPattern tvr >>= equ)
+newUnnamedNotion :: FTL PosVar -> FTL (Formula, PosVar)
+newUnnamedNotion tvr = (notion <|> function) </> (newSymbol tvr >>= equ)
   where
     notion = do
       tokenOf' ["a", "an"]
-      (t, v:vs) <- patNoName tvr
+      (t, v:vs) <- unnamedNotionPattern tvr
       return (mkTrm NewId (TermNotion t) $ map pVar (v:vs), v)
     function = do
       token' "the"
-      (t, v:vs) <- patNoName tvr
+      (t, v:vs) <- unnamedNotionPattern tvr
       return (mkEquality (pVar v) $ mkTrm NewId (TermNotion t) $ map pVar vs, v)
     equ t = do
       v <- hidden
       return (mkEquality (pVar v) t, v)
 
 
-newSymbPattern :: FTL PosVar -> FTL Formula
-newSymbPattern tvr = left -|- right
+newSymbol :: FTL PosVar -> FTL Formula
+newSymbol tvr = left -|- right
   where
     left = do
-      (t, vs) <- symbPatHead tvr
+      (t, vs) <- symbolPatternHead tvr
       return $ mkTrm NewId (TermSymbolic t) $ map pVar vs
     right = do
-      (t, vs) <- symbPatTail tvr
+      (t, vs) <- symbolPatternTail tvr
       guard $ not $ null $ tail t
       return $ mkTrm NewId (TermSymbolic t) $ map pVar vs

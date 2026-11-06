@@ -58,26 +58,39 @@ exportAssertion name role formula =
   <> exportFormula formula
   <> ")."
 
-exportPattern :: Pattern -> Bytes
-exportPattern = Bytes.concat . map exportPatternComp
+exportPredicatePattern :: PredicatePattern -> Bytes
+exportPredicatePattern = Bytes.concat . map exportPredicatePatternComp
 
-exportPatternComp :: PatternComp -> Bytes
-exportPatternComp (Word words) = make_bytes (head words)
-exportPatternComp (Symbol symbol) = make_bytes symbol
-exportPatternComp Nm = ""
-exportPatternComp Vr = ""
+exportPredicatePatternComp :: PredicatePatternComp -> Bytes
+exportPredicatePatternComp (PredWord words) = make_bytes (head words)
+exportPredicatePatternComp PredVar = ""
+
+exportNotionPattern :: NotionPattern -> Bytes
+exportNotionPattern = Bytes.concat . map exportNotionPatternComp
+
+exportNotionPatternComp :: NotionPatternComp -> Bytes
+exportNotionPatternComp (NotionWord words) = make_bytes (head words)
+exportNotionPatternComp NotionName = ""
+exportNotionPatternComp NotionVar = ""
+
+exportSymbolPattern :: SymbolPattern -> Bytes
+exportSymbolPattern = Bytes.concat . map exportSymbolPatternComp
+
+exportSymbolPatternComp :: SymbolPatternComp -> Bytes
+exportSymbolPatternComp (SymbSymbol symbol) = make_bytes symbol
+exportSymbolPatternComp SymbVar = ""
 
 -- | Export a term name to TPTP.
 exportTermName :: TermName -> Bytes
 exportTermName = atomic_word . exportTermName'
   where
-    exportTermName' (TermSymbolic t) = "s" <> exportPattern t
-    exportTermName' (TermNotion t) = "a" <> exportPattern t
-    exportTermName' (TermThe t) = "the" <> exportPattern t
-    exportTermName' (TermUnaryAdjective t) = "is" <> exportPattern t
-    exportTermName' (TermMultiAdjective t) = "mis" <> exportPattern t
-    exportTermName' (TermUnaryVerb t) = "do" <> exportPattern t
-    exportTermName' (TermMultiVerb t) = "mdo" <> exportPattern t
+    exportTermName' (TermSymbolic t) = "s" <> exportSymbolPattern t
+    exportTermName' (TermNotion t) = "a" <> exportNotionPattern t
+    exportTermName' (TermThe t) = "the" <> exportNotionPattern t
+    exportTermName' (TermUnaryAdjective t) = "is" <> exportPredicatePattern t
+    exportTermName' (TermMultiAdjective t) = "mis" <> exportPredicatePattern t
+    exportTermName' (TermUnaryVerb t) = "do" <> exportPredicatePattern t
+    exportTermName' (TermMultiVerb t) = "mdo" <> exportPredicatePattern t
     exportTermName' (TermTask n) = "tsk " <> show_bytes n
     exportTermName' TermEquality = "="
     exportTermName' TermLess = "iLess"

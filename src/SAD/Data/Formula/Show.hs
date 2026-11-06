@@ -86,39 +86,39 @@ showFormula d Ind{indIndex = i}
 showTerm :: Int -> TermName -> [Formula] -> Text
 showTerm d (TermSymbolic patterns) formulas = dive patterns formulas
   where
-    dive :: Pattern -> [Formula] -> Text
+    dive :: SymbolPattern -> [Formula] -> Text
     dive [] _ = ""
-    dive (Word [] : _) _ = error "Empty synonym list"
-    dive [Word (w : _)] _ = w
-    dive (Word (w : _) : ps) fs = w <> " " <> dive ps fs
-    dive [Symbol s] _ = s
-    dive (Symbol s : p@Symbol{} : ps) fs = s <> dive (p : ps) fs
-    dive (Symbol s : p@Word{} : ps) fs = s <> dive (p : ps) fs
-    dive (Symbol s : ps) fs = s <> " " <> dive ps fs
-    dive (Vr : ps) [] = error "Fewer arguments than variables"
-    dive [Vr] (f : _) = showFormula d f
-    dive (Vr : ps) (f : fs) = showFormula d f <> " " <> dive ps fs
-    dive (Nm : ps) _ = error "Unexpected \"Nm\" pattern"
-showTerm d (TermNotion pattern) formulas = "a" <> showWordPattern pattern <> showArguments d formulas
-showTerm d (TermThe pattern) formulas = "the" <> showWordPattern pattern <> showArguments d formulas
-showTerm d (TermUnaryAdjective pattern) formulas = "is" <> showWordPattern pattern <> showArguments d formulas
-showTerm d (TermMultiAdjective pattern) formulas = "mis" <> showWordPattern pattern <> showArguments d formulas
-showTerm d (TermUnaryVerb pattern) formulas = "do" <> showWordPattern pattern <> showArguments d formulas
-showTerm d (TermMultiVerb pattern) formulas = "mdo" <> showWordPattern pattern <> showArguments d formulas
+    dive [SymbSymbol s] _ = s
+    dive (SymbSymbol s : ps) fs = s <> " " <> dive ps fs
+    dive (SymbVar : ps) [] = error "Fewer arguments than variables"
+    dive [SymbVar] (f : _) = showFormula d f
+    dive (SymbVar : ps) (f : fs) = showFormula d f <> " " <> dive ps fs
+showTerm d (TermNotion pattern) formulas = "a" <> showNotionPattern pattern <> showArguments d formulas
+showTerm d (TermThe pattern) formulas = "the" <> showNotionPattern pattern <> showArguments d formulas
+showTerm d (TermUnaryAdjective pattern) formulas = "is" <> showPredicatePattern pattern <> showArguments d formulas
+showTerm d (TermMultiAdjective pattern) formulas = "mis" <> showPredicatePattern pattern <> showArguments d formulas
+showTerm d (TermUnaryVerb pattern) formulas = "do" <> showPredicatePattern pattern <> showArguments d formulas
+showTerm d (TermMultiVerb pattern) formulas = "mdo" <> showPredicatePattern pattern <> showArguments d formulas
 showTerm _ (TermTask n) _ = "tsk_" <> show_text n
 showTerm d TermEquality [l, r] = showFormula d l <> " = " <> showFormula d r
 showTerm _ TermEquality _ = error "Invalid number of arguments"
 showTerm d TermLess formulas = "iLess" <> showArguments d formulas
 showTerm _ TermThesis _ = "#TH#"
 
-showWordPattern :: Pattern -> Text
-showWordPattern = foldr ((<>) . showWordPatternComp) ""
+showPredicatePattern :: PredicatePattern -> Text
+showPredicatePattern = foldr ((<>) . showPredicatePatternComp) ""
 
-showWordPatternComp :: PatternComp -> Text
-showWordPatternComp (Word words) = Text.toTitle (head words)
-showWordPatternComp (Symbol symbol) = symbol
-showWordPatternComp Nm = ""
-showWordPatternComp Vr = ""
+showPredicatePatternComp :: PredicatePatternComp -> Text
+showPredicatePatternComp (PredWord words) = Text.toTitle (head words)
+showPredicatePatternComp PredVar = ""
+
+showNotionPattern :: NotionPattern -> Text
+showNotionPattern = foldr ((<>) . showNotionPatternComp) ""
+
+showNotionPatternComp :: NotionPatternComp -> Text
+showNotionPatternComp (NotionWord words) = Text.toTitle (head words)
+showNotionPatternComp NotionName = ""
+showNotionPatternComp NotionVar = ""
 
 -- | Show a formula that occurs on the left-hand side of a logical connective.
 showFormulaL :: Int -> Formula -> Text

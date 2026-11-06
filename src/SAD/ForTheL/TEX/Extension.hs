@@ -114,11 +114,11 @@ sigStructure = do
     trm Trm {trmName = TermEquality, trmArgs = [_,t]} = t; trm t = t
 
 newPredicat :: FTL Formula
-newPredicat = do n <- TEX.newPrdPattern knownVariable; get >>= addExpr n n True
+newPredicat = do n <- TEX.newPredicate knownVariable; get >>= addExpr n n True
 
 newNotion :: FTL (Formula, PosVar)
 newNotion = do
-  (n, u) <- TEX.newNotionPattern knownVariable;
+  (n, u) <- TEX.newNamedNotion knownVariable;
   f <- get >>= addExpr n n True
   return (f, u)
 
@@ -135,13 +135,13 @@ introduceMacro = do
   where
     prd, notion :: FTL (Position.T, (Formula, Formula))
     prd = wellFormedCheck (prdVars . snd) $ do
-      f <- TEX.newPrdPattern singleLetterVariable
+      f <- TEX.newPredicate singleLetterVariable
       Reports.markupTokenSeqOf Reports.macroLet standForPhrases
       g <- TEX.statement
       (_, pos2) <- dot
       return (pos2, (f, g))
     notion = wellFormedCheck (funVars . snd) $ do
-      (n, u) <- TEX.unnamedNotion singleLetterVariable
+      (n, u) <- TEX.newUnnamedNotion singleLetterVariable
       Reports.markupTokenSeqOf Reports.macroLet standForPhrases
       (q, f) <- TEX.anotion
       (_, pos2) <- dot
