@@ -226,7 +226,7 @@ namedNotionPattern tvr = do
   l <- map (NotionWord . singleton) <$> chain unknownAlpha
   n <- nam
   (ls, vs) <- opt ([], []) $ notionPatHead tvr
-  return (l ++ [NotionVar] ++ ls, n:vs)
+  return (l ++ [NotionName] ++ ls, n:vs)
   where
     nam :: FTL PosVar
     nam = do

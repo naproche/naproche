@@ -55,6 +55,17 @@ Each change is tagged with one of the following keywords:
 * **Removed:** The "100 Theorems" and "Solow Growth Model" formalizations which 
   lead to inconsistent testing results were moved to the FLib.
 
+* **Repaired:** Named notion patterns causing parsing errors. E.g.
+  ```
+  Definition. Let X be a set.
+  A member x of X is an element of X.
+  ```
+  lead to an `unknown parse error` when used afterwards, e.g. in:
+  ```
+  Axiom. Let X be a set.
+  X is not a member of X.
+  ```
+
 
 ## Isabelle2026/Naproche
 
