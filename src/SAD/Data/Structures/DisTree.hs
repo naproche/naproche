@@ -12,7 +12,6 @@ module SAD.Data.Structures.DisTree (
   insertBy,
   lookup,
   find,
-  showTree
 ) where
 
 import Data.List qualified as List
@@ -44,9 +43,9 @@ empty = DT []
 arity or a generalized constant (i.e. non-matchable free variable) -}
 data Struct =
   Variable |
-  Function {symbolId :: TermId, symbolArity :: Int} |
+  Function TermId Int |
   GeneralizedConstant Text
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord)
 
 {- move to the next argument by jumping the arity of the current argument -}
 jump :: DTree [a] -> [DTree [a]]
@@ -141,20 +140,3 @@ lookup key (DT nodes) = mbConcat $ dive nodes [key]
 find :: Formula -> DisTree a -> [a]
 find f = fromMaybe [] . lookup f
 
-{- only for debugging: transform a tree into a readable format -}
-showTree :: Show a => DisTree a -> String
-showTree (DT []) = ""
-showTree (DT [Leaf value]) = "Leaf " ++ show value -- this shouldn't occur
-showTree (DT xs) = "\n" ++ unlines (recursor xs)
-  where
-    recursor [] = []
-    recursor [Leaf value] = ["L " ++ show value]
-    recursor (node:rest) = helper node ++ recursor rest
-
-    helper (Node struct children) =
-      let ([head],stringChildren) = splitAt 1 $ recursor children
-          sn = show struct
-          l = length sn
-      in  (sn ++ space (4-l) ++ head) : map (space 4 ++) stringChildren
-
-    space n = replicate n ' '

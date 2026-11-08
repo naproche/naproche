@@ -33,7 +33,6 @@ data Message
   = ExpectMsg {unexpect :: Text, expect :: [Text], message :: [Text]}
   | WellFormednessMessage {message :: [Text]}
   | Unknown
-  deriving (Eq, Ord, Show)
 
 isUnknownMsg, isExpectMsg, isWellFormednessMessage :: Message -> Bool
 isUnknownMsg Unknown = True
@@ -83,7 +82,6 @@ instance Semigroup Message where
 
 
 data ParseError = ParseError {errorPos :: Position.T, peMsg :: Message}
-    deriving (Eq, Ord)
 
 urgency :: ParseError -> ParseError -> Ordering
 urgency (ParseError pos1 msg1) (ParseError pos2 msg2)

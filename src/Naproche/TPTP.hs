@@ -6,8 +6,6 @@
 --
 -- See also http://www.tptp.org/TPTP/SyntaxBNF.html
 module Naproche.TPTP (
-  is_lower_word,
-  is_upper_word,
   atomic_word
 ) where
 
@@ -28,9 +26,8 @@ is_word is_head s =
   not (Bytes.null s) && is_head (Bytes.char (Bytes.head s)) &&
   Bytes.all_char is_alpha_numeric s
 
-is_lower_word, is_upper_word :: Bytes -> Bool
+is_lower_word :: Bytes -> Bool
 is_lower_word = is_word is_lower_alpha
-is_upper_word = is_word is_upper_alpha
 
 
 {- make atomic words -}

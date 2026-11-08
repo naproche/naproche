@@ -11,10 +11,6 @@ module SAD.Prove.Normalize (
   inc,
   skolemize,
   transformToCNF,
-  assm_nf,
-  impl,
-  ontoPrep,
-  isSkolem
 ) where
 
 import Data.List
@@ -208,44 +204,3 @@ subsumptionCheck = subs []
     subsumes _ [] = True
     subsumes ls (r:rs) | any (ltTwins r) ls = subsumes ls rs
                        | otherwise = False
-
-
--- assumption normal form
-
-assm_nf :: Formula -> [[Formula]]
-assm_nf = map (imptolist . boolSimp . specCh VarAssume 0) . splitConjuncts . impl
-  where
-    imptolist (Imp f g) = map ltNeg (splitConjuncts f) ++ imptolist g
-    imptolist f = [f]
-
-
-impl :: Formula -> Formula
-impl (All x (Imp f g)) = All x $ pullimp $ Imp f $ impl g
-impl (All x f) = All x $ impl f
-impl (Imp f (And g h)) = impl $ And (Imp f g) (Imp f h)
-impl (Imp f g) = pullimp $ Imp f $ impl g
-impl (And f g) = And (impl f) (impl g)
-impl f = f
-
-pullimp :: Formula -> Formula
-pullimp (Imp f (All x g)) = All x $ pullimp $ Imp (inc f) g
-pullimp (Imp f (Imp g h)) = pullimp $ Imp (And f g) h
-pullimp f = f
-
-ontoPrep :: Int -> Formula -> ([Formula], Int)
-ontoPrep sk f =
-  let (nf, nsk) = skolemize sk $ simplify f
-      specializedF = specCh VarSkolem 0 . prenex $ nf
-      conjuncts = leftDistribute specializedF
-  in  (conjuncts, nsk)
-  where
-    leftDistribute (Or f g) = map (Or f) $ leftDistribute g
-    leftDistribute (And f g) = leftDistribute f ++ leftDistribute g
-    leftDistribute f = [f]
-
-
--- testing for skolem function
-
-isSkolem :: Formula -> Bool
-isSkolem Trm {trId = SkolemId _} = True
-isSkolem _ = False

@@ -124,10 +124,6 @@ mbExi, mbAll :: VariableName -> Formula -> Formula
 mbExi v f = fromMaybe (mkExi v f) (mbBind v True f)
 mbAll v f = fromMaybe (mkAll v f) (mbBind v False f)
 
-mbpExi, mbpAll :: PosVar -> Formula -> Formula
-mbpExi v f = fromMaybe (pExi v f) (mbBind (posVarName v) True f)
-mbpAll v f = fromMaybe (pAll v f) (mbBind (posVarName v) False f)
-
 mbdExi, mbdAll :: Decl -> Formula -> Formula
 mbdExi v f = fromMaybe (dExi v f) (mbBind (declName v) True f)
 mbdAll v f = fromMaybe (dAll v f) (mbBind (declName v) False f)
@@ -142,23 +138,12 @@ blImp _ Top = Top; blImp _ (Tag _ Top) = Top
 blImp Top f = f; blImp (Tag _ Top) f = f
 blImp f g = Imp f g
 
-pBlAll, pBlExi :: PosVar -> Formula -> Formula
-pBlAll _ Top = Top
-pBlAll v f = All (positionedDecl v) f
-
-pBlExi _ Top = Top
-pBlExi v f = Exi (positionedDecl v) f
-
 
 -- * Creation of formulas
 
 mkAll, mkExi :: VariableName -> Formula -> Formula
 mkAll v = bool . All (newDecl v) . bind v
 mkExi v = bool . Exi (newDecl v) . bind v
-
-pAll, pExi :: PosVar -> Formula -> Formula
-pAll nm@(PosVar v _) = pBlAll nm . bind v
-pExi nm@(PosVar v _) = pBlExi nm . bind v
 
 dAll, dExi :: Decl -> Formula -> Formula
 dAll dcl = bool . All dcl . bind (declName dcl)
@@ -290,26 +275,6 @@ isTag _ = False
 
 -- ** Atomic formulas
 
--- | Check whether a formula is of the form @aObject(...)@
-isObject :: Formula -> Bool
-isObject t = isTrm t && trmId t == ObjectId
-
--- | Check whether a formula is of the form @aClass(...)@
-isClass :: Formula -> Bool
-isClass t = isTrm t && trmId t == ClassId
-
--- | Check whether a formula is of the form @aSet(...)@
-isSet :: Formula -> Bool
-isSet t = isTrm t && trmId t == SetId
-
--- | Check whether a formula is of the form @aMap(...)@
-isMap :: Formula -> Bool
-isMap t = isTrm t && trmId t == MapId
-
--- | Check whether a formula is of the form @aFunction(...)@
-isFunction :: Formula -> Bool
-isFunction t = isTrm t && trmId t == FunctionId
-
 -- | Check whether a formula is of the form @aElementOf(...)@
 isElem :: Formula -> Bool
 isElem t = isTrm t && trmId t == ElementId
@@ -318,28 +283,8 @@ isElem t = isTrm t && trmId t == ElementId
 isApplication :: Formula -> Bool
 isApplication t = isTrm t && trId t == ApplicationId
 
--- | Check whether a formula is of the form @Dom(...)@
-isDom :: Formula -> Bool
-isDom t = isTrm t && trmId t == DomainId
-
--- | Check whether a formula is of the form @(...,...)@
-isPair :: Formula -> Bool
-isPair t = isTrm t && trmId t == PairId
-
--- | Check whether a formula is of the form @iLess(...)@
-isLess :: Formula -> Bool
-isLess t = isTrm t && trmId t == LessId
-
--- | Check whether a formula is of the form @thesis@
-isThesis :: Formula -> Bool
-isThesis t = isTrm t && trmId t == ThesisId
-
 
 -- ** Misc
-
-isInd :: Formula -> Bool
-isInd Ind{} = True
-isInd _ = False
 
 isVar :: Formula -> Bool
 isVar Var{} = True
@@ -356,11 +301,6 @@ hasDEC _ = False
 hasDMK :: Formula -> Bool
 hasDMK (Tag GenericMark _ ) = True
 hasDMK _ = False
-
-isConst :: Formula -> Bool
-isConst t@Trm{} = null $ trmArgs t
-isConst Var{} = True
-isConst _ = False
 
 isNotion :: Formula -> Bool
 isNotion Trm {trmName = TermNotion _} = True

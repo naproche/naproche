@@ -10,7 +10,6 @@ module SAD.Data.VarName (
   VariableName(..),
   FV,
   unitFV,
-  bindVar,
   excludeVars,
   excludeSet,
   IsVar(..),
@@ -120,10 +119,6 @@ unitFV v pos = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
   if Set.member v boundVars
   then acc
   else Set.insert (buildVar v pos) acc
-
-bindVar :: Ord a => VariableName -> FV a -> FV a
-bindVar v fv = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
-  runFV fv (Set.insert v boundVars) acc
 
 excludeVars :: Ord a => FV VariableName -> FV a -> FV a
 excludeVars fv1 fv2 = FV $ oneShot $ \boundVars -> oneShot $ \acc ->

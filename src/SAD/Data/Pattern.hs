@@ -25,16 +25,16 @@ type SymbolPattern = [SymbolPatternComp]
 data PredicatePatternComp
   = PredWord [Text]
   | PredVar
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord)
 
 data NotionPatternComp
   = NotionWord [Text]
   | NotionVar
   | NotionName
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord)
 
 data SymbolPatternComp
   = SymbSymbol Text
   | SymbVar
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord)
 

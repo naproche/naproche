@@ -74,13 +74,12 @@ import SAD.Prove.MESON qualified as MESON
 data Tracker
   = Timer Timer NominalDiffTime
   | Counter Counter Int
-  deriving (Eq, Ord, Show)
 
 data Timer
   = ProofTimer
   | SuccessTimer  -- successful prove time
   | SimplifyTimer
-  deriving (Eq, Ord, Show)
+  deriving (Eq)
 
 data Counter
 -- TODO append 'Counter' to each of these?
@@ -96,7 +95,7 @@ data Counter
   | Unfolds
   | Equations
   | FailedEquations
-  deriving (Eq, Ord, Show)
+  deriving (Eq)
 
 
 -- | CPS IO Maybe monad

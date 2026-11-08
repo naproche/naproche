@@ -9,7 +9,6 @@
 module SAD.ForTheL.FTL.Extension (
   defExtend,
   sigExtend,
-  structSigExtend,
   newPredicat,
   newNotion,
   introduceMacro,
@@ -43,9 +42,6 @@ defExtend = defPredicat -|- defNotion
 
 sigExtend :: FTL Formula
 sigExtend = sigPredicat -|- sigNotion
-
-structSigExtend :: FTL (Formula, Formula)
-structSigExtend = sigStructure
 
 defPredicat :: FTL Formula
 defPredicat = do
@@ -95,22 +91,6 @@ sigNotion = do
 
     noInfo =
       (tokenSeq' ["a", "notion"] </> tokenSeq' ["a", "constant"]) >> return (id,Top)
-    trm Trm {trmName = TermEquality, trmArgs = [_,t]} = t; trm t = t
-
-sigStructure :: FTL (Formula, Formula)
-sigStructure = do
-  ((n,h),u) <- wellFormedCheck (notionVars . fst) sig
-  uDecl <- makeDecl u
-  return (n, dAll uDecl $ Imp (Tag HeadTerm n) h)
-  where
-    sig = do
-      (n, u) <- newNotion
-      token' "is"
-      token' "a"
-      token' "structure"
-      let v = pVar u
-      h <- replace v (trm n) <$> dig Top [v]
-      return ((n,h),u)
     trm Trm {trmName = TermEquality, trmArgs = [_,t]} = t; trm t = t
 
 newPredicat :: FTL Formula

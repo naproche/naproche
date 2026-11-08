@@ -8,7 +8,7 @@
 -- Copyright   : (c) 2021, Makarius Wenzel
 -- License     : GPL-3
 module Naproche.Prover (
-  Prover, Status (..), get_name, run, status, run_status,
+  Prover, Status (..), get_name, run, status,
   timeout, memory_limit, by_contradiction,
   list, find, eprover, spass, vampire
 ) where
@@ -49,7 +49,6 @@ type Prover_Command = Prover -> Bytes -> IO Bash.Params
 type Prover_Status = Prover -> Process_Result.T -> Status
 
 data Status = Success | Failure | Contradictory_Axioms | Unknown | Error Bytes
-  deriving Show
 
 data Messages = Messages {
   _contradiction :: [Bytes],
@@ -60,8 +59,6 @@ data Messages = Messages {
 
 get_name :: Prover -> Bytes
 get_name Prover{_name} = _name
-
-instance Show Prover where show = make_string . get_name
 
 make_prover :: Bytes -> Bytes -> Prover_Command -> Prover_Status -> Messages -> Prover
 make_prover name variable command status messages =
@@ -89,10 +86,6 @@ run context prover input = do
 
 status :: Prover -> Process_Result.T -> Status
 status prover = _status prover prover
-
-run_status :: Program.Context -> Prover -> Bytes -> IO Status
-run_status context prover input =
-  status prover <$> run context prover input
 
 
 {- prover parameters -}

@@ -100,13 +100,6 @@ mapFM fn (Not f) = Not <$> fn f
 mapFM fn t@Trm{} = (\args -> t {trmArgs = args}) <$> traverse fn (trmArgs t)
 mapFM _ f = pure f
 
--- Logical traversing
--- | Same as roundFM but without the monadic action.
-roundF :: (Text -> VariableName)
-  -> ([Formula] -> Maybe Bool -> Int -> Formula -> Formula)
-  -> [Formula] -> Maybe Bool -> Int -> Formula -> Formula
-roundF c fn l p n f = runIdentity $ roundFM c (\w x y z -> Identity $ fn w x y z) l p n f
-
 {- traverse the structure of a formula with a monadic action all while keeping
 track of local premises, polarity and quantification depth. A unique identifying
 char is provided to shape the instantiations.-}
@@ -260,20 +253,3 @@ replace t s = dive
     dive_aux i@Ind{} = i
     dive_aux f = mapF dive f
 
-syntacticEquality :: Formula -> Formula -> Bool
-syntacticEquality = eq
-  where
-    And f1 g1 `eq` And f2 g2 = f1 `eq` f2 && g1 `eq` g2
-    Or  f1 g1 `eq` Or  f2 g2 = f1 `eq` f2 && g1 `eq` g2
-    Imp f1 g1 `eq` Imp f2 g2 = f1 `eq` f2 && g1 `eq` g2
-    Iff f1 g1 `eq` Iff f2 g2 = f1 `eq` f2 && g1 `eq` g2
-    All _ f `eq` All _ g = f `eq` g
-    Exi _ f `eq` Exi _ g = f `eq` g
-    Tag t1 f `eq` Tag t2 g = t1 == t2 && f `eq` g
-    Not f `eq` Not g = f `eq` g
-    Top `eq` Top = True
-    Bot `eq` Bot = True
-    ThisT `eq` ThisT = True
-    t1@Trm{} `eq` t2@Trm{} = twins t1 t2
-    Var {varName = v1} `eq` Var {varName = v2} = v1 == v2
-    _ `eq` _ = False

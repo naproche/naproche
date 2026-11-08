@@ -24,8 +24,7 @@ import SAD.Data.Text.Block (Block, ProofText(..), Section(..))
 import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Text.Decl
 import SAD.ForTheL.Base
-import SAD.ForTheL.Reports (addBlockReports, markupToken, markupTokenOf,
-                            markupTokenSeqOf)
+import SAD.ForTheL.Reports (addBlockReports, markupToken, markupTokenOf, markupTokenSeqOf)
 import SAD.ForTheL.Reports qualified as Reports
 import SAD.ForTheL.Statement
 import SAD.Parser.Base
@@ -266,7 +265,7 @@ data Scheme =
   | Contradiction   -- ^ Proof by contradiction
   | InS             -- ^ Proof by induction
   | InT Formula     -- ^ Term to induce on (in a proof by induction)
-  deriving (Eq, Ord, Show)
+  deriving (Eq)
 
 -- | Low-level theorem header:
 -- @<letUs> ("prove" | "show" | "demonstrate") [<byProofMethod>] "that"@

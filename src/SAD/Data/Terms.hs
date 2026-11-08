@@ -24,7 +24,7 @@ data TermName
   | TermEquality
   | TermLess
   | TermThesis
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord)
 
 termFunction, termMap, termSet, termClass, termElement, termObject,
   termApplication, termDomain, termPair :: TermName
@@ -54,7 +54,7 @@ data TermId
   | NewId -- ^ temporary id given to newly introduced symbols
   | SkolemId Int
   | SpecialId Int
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord)
 
 specialId :: Int -> TermId
 specialId n = case n of

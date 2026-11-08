@@ -16,9 +16,9 @@ module SAD.Data.Instr (
   printunfoldParam, printreasonParam, printproverParam, printfulltaskParam, dumpParam,
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
   translationParam,
-  helpParam, serverParam, onlytranslateParam, onlytokenizeParam,
+  helpParam, serverParam,
   modeParam, dialectParam, proverParam, texExeParam, bibtexExeParam,
-  keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument, keywordsModule,
+  keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument,
   keywordsDropLimit, keywordsDropFlag
 ) where
 
@@ -36,7 +36,7 @@ import Naproche.Prover qualified as Prover
 
 -- | Indicate which of the parsers is currently used. This is must be recorded in the State
 -- for read instruction to work properly.
-data Dialect = Ftl | Tex | Stex deriving (Eq, Ord)
+data Dialect = Ftl | Tex | Stex deriving (Eq)
 
 instance Show Dialect where
   show :: Dialect -> String
@@ -55,13 +55,13 @@ data Instr =
   | GetModule FilePath FilePath String
   | GetText Bytes
   | Verbose Bool
-  deriving (Eq, Ord, Show)
+  deriving (Show)
 
 data Drop =
     DropBool (Param.T Bool)
   | DropInt (Param.T Int)
   | DropBytes (Param.T Bytes)
-  deriving (Eq, Ord, Show)
+  deriving (Show)
 
 
 -- Instructions
@@ -73,7 +73,7 @@ data Command =
   | PrintContext
   | PrintContextFiltered
   | Exit
-  deriving (Eq, Ord, Show)
+  deriving (Show)
 
 -- instruction environment
 
@@ -169,11 +169,9 @@ verboseFlags =
    printsimpParam,
    printthesisParam]
 
-helpParam, serverParam, onlytranslateParam, onlytokenizeParam :: Param.T Bool
+helpParam, serverParam :: Param.T Bool
 helpParam = Param.flag "help" "show command-line help" False
 serverParam = Param.flag "server" "run in server mode" False
-onlytranslateParam = Param.flag "onlytranslate" "translate input text and exit" False
-onlytokenizeParam = Param.flag "onlytokenize" "translate input text and exit" False
 
 
 -- Keywords
@@ -208,8 +206,3 @@ keywordsDropFlag = map (paramKeyword DropBool) textFlags
 keywordsArgument :: [(Text -> Instr, Text)]
 keywordsArgument =
  (GetRelativeFilePath . Lazy.unpack, "read") : map (paramKeyword (\p -> SetBytes p . make_bytes)) textArgs
-
-keywordsModule :: [((FilePath, FilePath, String) -> Instr, Text)]
-keywordsModule =
-  [(\(x,y,z) -> GetModule x y z, "importmodule"),
-   (\(x,y,z) -> GetModule x y z, "usemodule")]

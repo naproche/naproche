@@ -21,19 +21,15 @@ module SAD.Data.Text.Block (
   compose,
   needsProof,
   isTopLevel,
-  file,
   parseErrors,
   canDeclare
 ) where
 
-import Data.Maybe (fromMaybe)
 import Data.Set (Set)
 import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as Text
 
-import Isabelle.Bytes qualified as Bytes
-import Isabelle.Library (make_text)
 import Isabelle.Position qualified as Position
 
 import SAD.Data.Formula hiding (CaseHypothesis)
@@ -51,7 +47,6 @@ data ProofText =
   | ProofTextPretyping Position.T (Set PosVar)
   | ProofTextMacro Position.T
   | ProofTextError ParseError
-  deriving (Eq, Ord)
 
 data Block = Block {
   formula :: Formula,
@@ -61,7 +56,6 @@ data Block = Block {
   name :: Text,
   link :: [Text],
   tokens :: [Token] }
-  deriving (Eq, Ord)
 
 makeBlock :: Formula -> [ProofText] -> Section -> Text -> [Text] -> [Token] -> Block
 makeBlock form body kind = Block form body kind mempty
@@ -80,7 +74,7 @@ data Section =
   Definition | Signature | Axiom | Theorem | CaseHypothesis |
   Assumption | Choice | Affirmation | Posit | LowDefinition |
   ProofByContradiction
-  deriving (Eq, Ord, Show)
+  deriving (Eq)
 
 renderSection :: Section -> String
 renderSection Definition = "Definition"
@@ -134,10 +128,6 @@ canDeclare Assumption = True
 canDeclare Choice = True
 canDeclare LowDefinition = True
 canDeclare _ = False
-
-
-file :: Block -> Text
-file = make_text . fromMaybe Bytes.empty . Position.file_of . position
 
 declaredNames :: Block -> Set VariableName
 declaredNames = Set.map declName . declaredVariables

@@ -50,7 +50,7 @@ data State st = State
   , stInput :: [Token]
   , dialect :: Dialect
   , lastPosition :: Position.T
-  } deriving (Eq, Ord)
+  }
 
 -- | Get the current position of the parser.
 stPosition :: State st -> Position.T
@@ -59,7 +59,7 @@ stPosition State{ lastPosition = pos } = pos
 
 -- | Intermediate parse results
 data ParseResult st a = PR { prResult :: a, prState :: State st }
-  deriving (Eq, Ord, Functor)
+  deriving (Functor)
 
 -- | Continutation passing style ambiguity parser
 -- In practice: @st@ = @FState@, @r@ = @ParseResult FState a@
@@ -132,9 +132,9 @@ tryParses f ok consumedFail emptyFail err = go err [] [] [] []
       -- If we have no further input: exit based on the accumulated results
       ([],[]) -> if
         | notNull (accEmptyOk ++ accConsumedOk) -> ok accErr (reverse accEmptyOk) (reverse accConsumedOk)
-        | notNull accEmptyFails -> emptyFail $ foldl' (<>) err $ accEmptyFails ++ accConsumedFails
-        | notNull accConsumedFails -> consumedFail $ foldl' (<>) err accConsumedFails
-        | otherwise -> error "Parser has empty result"
+        | notNull accEmptyFails                 -> emptyFail $ foldl' (<>) err $ accEmptyFails ++ accConsumedFails
+        | notNull accConsumedFails              -> consumedFail $ foldl' (<>) err accConsumedFails
+        | otherwise                             -> error "Parser has empty result"
 
       -- If we have further input first work on the 'emptyOk' results
       ((PR a st):rs, ys) ->

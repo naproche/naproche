@@ -7,7 +7,6 @@
 -- License     : GPL-3
 module SAD.Data.Formula.HOL (
   base_type, prop_type, export_formula,
-  cert_terms, cert_term, print_terms, print_term,
   Sequent, make_sequent, encode_sequent, print_sequents, print_sequent, export_sequent
 ) where
 
@@ -25,7 +24,6 @@ import Isabelle.Naproche qualified as Isabelle
 import Isabelle.Position qualified as Position
 import Isabelle.Term ((--->))
 import Isabelle.Term qualified as Isabelle
-import Isabelle.Term_XML.Decode qualified as Decode
 import Isabelle.Term_XML.Encode qualified as Encode
 import Isabelle.Value qualified as Value
 import Isabelle.XML.Encode qualified as Encode
@@ -184,21 +182,6 @@ export_formula = Isabelle.mk_trueprop . form
           case Map.lookup name consts of
             Just c -> Isabelle.Const (c, [])
             Nothing -> Isabelle.Free (term_name name, ty)
-
-
-{- Isabelle term operations -}
-
-cert_terms :: Program.Context -> [Isabelle.Term] -> IO [Isabelle.Typ]
-cert_terms = Program.yxml_pide_command Encode.term Decode.typ Isabelle.cert_terms_command
-
-cert_term :: Program.Context -> Isabelle.Term -> IO Isabelle.Typ
-cert_term = singletonM . cert_terms
-
-print_terms :: Program.Context -> [Isabelle.Term] -> IO [Bytes]
-print_terms = Program.yxml_pide_command Encode.term YXML.string_of_body Isabelle.print_terms_command
-
-print_term :: Program.Context -> Isabelle.Term -> IO Bytes
-print_term = singletonM . print_terms
 
 
 {- Isabelle sequents -}

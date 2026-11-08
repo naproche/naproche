@@ -12,7 +12,6 @@ module SAD.Parser.Token (
   renderTokens,
 
   Warning(..),
-  reportWarnings,
   concatTokWarn,
 
   handleError,
@@ -53,7 +52,6 @@ data Token =
     , tokenPos :: Position.T
     }
   | EOF { tokenPos :: Position.T }
-  deriving (Eq, Ord)
 
 -- | Render a list of tokens.
 renderTokens :: [Token] -> String
@@ -76,14 +74,6 @@ renderToken EOF{} = ""
 
 -- | A warning: A message equipped with a position that message refers to.
 data Warning = Warning Text Position.T
-
--- | Report several warnings at once.
-reportWarnings :: [Warning] -> IO ()
-reportWarnings = foldr ((>>) . reportWarning) (return ())
-
--- | Report a single warning.
-reportWarning :: Warning -> IO ()
-reportWarning (Warning text pos) = Message.outputTokenizer Message.WARNING pos (make_bytes text)
 
 -- | Concatenate a list of tokens/warnings-pairs.
 concatTokWarn :: [([Token], [Warning])] -> ([Token], [Warning])

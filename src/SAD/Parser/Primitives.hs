@@ -24,9 +24,7 @@ module SAD.Parser.Primitives (
   tokenPos',
   tokenOf,
   tokenOf',
-  tokenSeq,
   tokenSeq',
-  tokenSeqOf,
   tokenSeqOf',
   getToken,
   getToken',
@@ -45,8 +43,7 @@ import Data.Text qualified as Text
 import Isabelle.Position qualified as Position
 
 import SAD.Parser.Base
-import SAD.Parser.Char (isAsciiDigit, isAsciiLetter, isAsciiPeriod,
-                        isAsciiSymbol)
+import SAD.Parser.Char (isAsciiDigit, isAsciiLetter, isAsciiPeriod, isAsciiSymbol)
 import SAD.Parser.Error
 import SAD.Parser.Token
 
@@ -161,15 +158,6 @@ tokenPos' s = do
 -- Consumes the token.
 tokenOf :: [Text] -> Parser st ()
 tokenOf = void . getTokenOf
-
--- | A sequence of tokens.
-tokenSeq :: [Text] -> Parser st ()
-tokenSeq = mapM_ token
-
--- | @tokenSeqOf tokSeqs@ succeeds iff one of the token sequences in @tokSeq@
--- can be consumed.
-tokenSeqOf :: [[Text]] -> Parser st ()
-tokenSeqOf = foldr ((<|>) . tokenOf) empty
 
 -- | Case-insensitive version of @tokenOf@. All arguments are assumed to be in
 -- folded case.
