@@ -16,8 +16,10 @@ import Data.Ord (comparing)
 import Data.Text (Text)
 import Data.Text qualified as Text
 
+import Isabelle.Library (commas)
 import Isabelle.Position qualified as Position
 
+import SAD.Export.Presentation
 import SAD.Parser.Base
 import SAD.Parser.Error
 import SAD.Parser.Primitives
@@ -218,19 +220,19 @@ repeatUntil step = fmap (uncurry (<>)) . repeatUntil' step
 -- * Control ambiguity
 
 -- | If @p@ is ambiguous, @narrow p@ fails and reports a well-formedness error.
-narrow :: Show a => Parser st a -> Parser st a
+narrow :: Presentation a => Parser st a -> Parser st a
 narrow p = Parser $ \st ok cerr eerr ->
   let pok err eok cok = case eok ++ cok of
         [_] -> ok err eok cok
-        ls -> eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show (map prResult ls))]) (stPosition st)
+        ls -> eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error " <> present (map prResult ls)]) (stPosition st)
   in  runParser p st pok cerr eerr
 
 -- | If @p@ is ambiguous, @narrow p@ fails and reports a well-formedness error.
-narrow2 :: Show b => Parser st (a, b) -> Parser st (a, b)
+narrow2 :: Presentation b => Parser st (a, b) -> Parser st (a, b)
 narrow2 p = Parser $ \st ok cerr eerr ->
   let pok err eok cok = case eok ++ cok of
         [_] -> ok err eok cok
-        ls -> eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show (map (snd . prResult) ls))]) (stPosition st)
+        ls -> eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error " <> present (map (snd . prResult) ls)]) (stPosition st)
   in  runParser p st pok cerr eerr
 
 -- | Only take the longest possible parses (by @SourcePos@), discard all others.

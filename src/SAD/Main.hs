@@ -46,6 +46,7 @@ import SAD.Core.Reader (readProofText)
 import SAD.Core.Verify (verifyRoot)
 import SAD.Data.Instr
 import SAD.Data.Text.Block (ProofText(..), parseErrors)
+import SAD.Export.Presentation
 import SAD.Export.Prover qualified as Prover
 import SAD.Parser.Error (ParseError(..))
 import SAD.Parser.FTL.Lexer qualified as FTL
@@ -248,7 +249,7 @@ translateInputText dialect proofTexts = do
   -- Parse the input text:
   txts <- readProofText dialect proofTexts
   -- Translate the input text and print the result:
-  mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
+  mapM_ (\case ProofTextBlock bl -> putStrLn (make_string $ present bl); _ -> return ()) txts
   -- Get the finish time of the translation process:
   finishTime <- getCurrentTime
   -- Print the time it took to translate the input text:

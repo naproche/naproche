@@ -30,11 +30,13 @@ import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as Text
 
+import Isabelle.Library (show_text)
 import Isabelle.Position qualified as Position
 
 import SAD.Data.Formula hiding (CaseHypothesis)
 import SAD.Data.Instr
 import SAD.Data.Text.Decl
+import SAD.Export.Presentation
 import SAD.Parser.Error (ParseError)
 import SAD.Parser.Token
 
@@ -47,6 +49,13 @@ data ProofText =
   | ProofTextPretyping Position.T (Set PosVar)
   | ProofTextMacro Position.T
   | ProofTextError ParseError
+
+instance Presentation ProofText where
+  present (ProofTextBlock block) = present block
+  present (ProofTextInstr _ instr) = show_text instr
+  present (ProofTextDrop _ instr) = show_text instr
+  present (ProofTextError err) = show_text err
+  present _ = ""
 
 data Block = Block {
   formula :: Formula,
@@ -76,19 +85,18 @@ data Section =
   ProofByContradiction
   deriving (Eq)
 
-renderSection :: Section -> String
-renderSection Definition = "Definition"
-renderSection Signature = "Signature"
-renderSection Axiom = "Axiom"
-renderSection Theorem = "Theorem"
-renderSection CaseHypothesis = "Case hypothesis"
-renderSection Assumption = "Assumption"
-renderSection Choice = "Choice"
-renderSection Affirmation = "Affirmation"
-renderSection Posit = "Posit"
-renderSection LowDefinition = "Low-level definition"
-renderSection ProofByContradiction = "Proof by contradiction"
-
+instance Presentation Section where
+  present Definition = "Definition"
+  present Signature = "Signature"
+  present Axiom = "Axiom"
+  present Theorem = "Theorem"
+  present CaseHypothesis = "Case hypothesis"
+  present Assumption = "Assumption"
+  present Choice = "Choice"
+  present Affirmation = "Affirmation"
+  present Posit = "Posit"
+  present LowDefinition = "Low-level definition"
+  present ProofByContradiction = "Proof by contradiction"
 
 -- Composition
 
@@ -134,49 +142,40 @@ declaredNames = Set.map declName . declaredVariables
 
 -- Show instances
 
-instance Show ProofText where
-  showsPrec p (ProofTextBlock block) = showsPrec p block
-  showsPrec 0 (ProofTextInstr _ instr) = shows instr . showChar '\n'
-  showsPrec 0 (ProofTextDrop _ instr) = shows instr . showChar '\n'
-  showsPrec _ (ProofTextError err) = shows err . showChar '\n'
-  showsPrec _ _ = id
+instance Presentation Block where
+  present = showBlock 0
 
-instance Show Block where
-  showsPrec p block@Block {body = b, name = name, kind = kind}
-    | null b = showForm p block
-    | isTopLevel block = showString (renderSection kind ++ addName ++ ":\n") . showBlockForm (p + 1) block .
-        (if needsProof block
-          then if null b
-            then showIndent p . showString "Trivial:\n"
-            else let proof = last b in
-              case proof of
-                ProofTextBlock proofBlock -> showIndent p . showString "Proof:\n" . showProof (body proofBlock) . showIndent p . showString "Qed.\n"
-                _ -> id
-          else id)
-    | otherwise = showForm p block .
-        showIndent p . showString "Proof:\n" . showProof (body block) .
-        showIndent p . showString "Qed.\n"
-    where
-      showProof = foldr ((.) . showsPrec (p + 1)) id
-      name' = Text.unpack name
-      addName = if null name' then "" else " (" ++ name' ++ ")"
-
-showForm :: Int -> Block -> String -> String
-showForm p block@Block {formula = formula, name = name, kind = kind} =
-  showIndent p . sform (needsProof block) . showString "\n"
+showBlock :: Int -> Block -> Text
+showBlock p block@Block{body = b, name = name, kind = kind}
+  | null b = showForm p block
+  | isTopLevel block = present kind <> addName <> ":\n" <> showBlockForm (p + 1) block <>
+      (if needsProof block
+        then if null b
+          then indent p "Trivial:\n"
+          else let proof = last b in
+            case proof of
+              ProofTextBlock proofBlock -> indent p "Proof:\n" <> showProof (p + 1) (body proofBlock) <> indent p "Qed.\n"
+              _ -> ""
+        else "")
+  | otherwise = showForm p block <>
+      indent p "Proof:\n" <> showProof (p + 1) (body block) <> indent p "Qed.\n"
   where
-    sform False = showString $ "hypothesis" ++ (if Text.null name then "" else "(" ++ Text.unpack name ++ ")") ++ " " ++ show formula
-    sform True = showString $ "conjecture" ++ (if Text.null name then "" else "(" ++ Text.unpack name ++ ")") ++ " " ++ show formula
+    name' = name
+    addName = if Text.null name' then "" else " (" <> name' <> ")"
 
-showBlockForm :: Int -> Block -> String -> String
+showForm :: Int -> Block -> Text
+showForm p block@Block{formula = formula, name = name} =
+  indent p $ present formula <> "\n"
+
+showBlockForm :: Int -> Block -> Text
 showBlockForm p block =
-  showIndent p . sform (needsProof block) . showString "\n"
-  where
-    sform False = showString $ "hypothesis " ++ " " ++ show (formulate block)
-    sform True = showString $ "conjecture " ++ " " ++ show (formulate block)
+  indent p $ present (formulate block) <> "\n"
 
-showIndent :: Int -> ShowS
-showIndent n = showString $ replicate (n * 2) ' '
+showProof :: Int -> [ProofText] -> Text
+showProof p = foldr (\pt bs -> indent p (present pt) <> bs) ""
+
+indent :: Int -> Text -> Text
+indent n txt = Text.replicate 2 "  " <> txt
 
 parseErrors :: ProofText -> [ParseError]
 parseErrors (ProofTextError err) = [err]

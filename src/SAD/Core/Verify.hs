@@ -35,6 +35,7 @@ import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Text.Context (Context(Context))
 import SAD.Data.Text.Context qualified as Context
+import SAD.Export.Presentation
 import SAD.Export.Prover qualified as Prover
 import SAD.Prove.MESON qualified as MESON
 
@@ -133,7 +134,7 @@ verifyBlock block rest = do
   incrementCounter Sections
   whenInstruction printsectionParam $ justIO $
     Message.outputForTheL Message.WRITELN (Block.position block) $
-    make_bytes (trim_line (Block.showForm 0 block ""))
+    make_bytes (trim_line (present block))
   let newBranch = block : branch
   let contextBlock = Context f newBranch []
 
