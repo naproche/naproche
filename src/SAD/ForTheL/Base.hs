@@ -19,6 +19,9 @@ import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as Text
 
+import Isabelle.Bytes (Bytes)
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Library (implode_space, make_bytes, make_string)
 import Isabelle.Position qualified as Position
 
 import Naproche.Program as Program
@@ -297,10 +300,10 @@ primSnt p = noError $ varList >>= getExpr symbNotionExpr . snt
 
 -- | Adding error reporting to pattern parsing.
 patternTokenOf' :: [Text] -> FTL ()
-patternTokenOf' l = label ("a word of " <> Text.pack (show l)) $ tokenOf' l
+patternTokenOf' l = label ("a word of " <> present l) $ tokenOf' l
 
 patternSymbolTokenOf :: Text -> FTL ()
-patternSymbolTokenOf l = label ("the symbol " <> Text.pack (show l)) $ token l
+patternSymbolTokenOf l = label ("the symbol " <> present l) $ token l
 
 -- | Most basic pattern parser: simply follow the pattern and parse terms with p
 -- at variable places
@@ -401,7 +404,7 @@ varList = var `sepBy` token' "," >>= nodups
 nodups :: IsVar a => [a] -> FTL (Set a)
 nodups vs = do
   unless ((null :: [b] -> Bool) $ duplicateNames vs) $
-    fail $ "duplicate names: " ++ show (map (Text.unpack . present) vs)
+    fail (make_string $ "duplicate names: " <> present vs)
   pure $ Set.fromList vs
 
 hidden :: FTL PosVar
@@ -491,16 +494,16 @@ bindings :: Set VariableName -> Formula -> FTL (Set Decl)
 bindings vs f = makeDecls $ fvToVarSet $ excludeSet (decl f) vs
 
 
-freeOrOverlapping :: Set VariableName -> Formula -> Maybe Text
+freeOrOverlapping :: Set VariableName -> Formula -> Maybe Bytes
 freeOrOverlapping vs f
     | mkVar VarSlot `occursIn` f = Just $ "too few subjects for an m-predicate " <> info
-    | not (Text.null sbs) = Just $ "free undeclared variables: "   <> sbs <> info
-    | not (Text.null ovl) = Just $ "overlapped variables: "        <> ovl <> info
+    | not (Bytes.null sbs) = Just $ "free undeclared variables: "   <> sbs <> info
+    | not (Bytes.null ovl) = Just $ "overlapped variables: "        <> ovl <> info
     | otherwise      = Nothing
   where
-    sbs = Text.unwords $ map showVar $ Set.toList $ fvToVarSet $ excludeSet (free f) vs
-    ovl = Text.unwords $ map showVar $ Set.toList $ over vs f
-    info = "\n in translation: " <> Text.pack (show f)
+    sbs = implode_space $ map showVar $ Set.toList $ fvToVarSet $ excludeSet (free f) vs
+    ovl = implode_space $ map showVar $ Set.toList $ over vs f
+    info = "\n in translation: " <> present f
 
     over :: Set VariableName -> Formula -> Set VariableName
     over vs (All v f) = boundVars vs (declName v) f
@@ -581,6 +584,6 @@ upperGreek = [
 -- * Show function
 
 -- | Print a variable (just for now).
-showVar :: VariableName -> Text
-showVar (VarConstant nm) = nm
+showVar :: VariableName -> Bytes
+showVar (VarConstant nm) = make_bytes nm
 showVar nm = present nm

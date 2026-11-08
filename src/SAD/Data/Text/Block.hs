@@ -27,10 +27,10 @@ module SAD.Data.Text.Block (
 
 import Data.Set (Set)
 import Data.Set qualified as Set
-import Data.Text (Text)
-import Data.Text qualified as Text
 
-import Isabelle.Library (show_text)
+import Isabelle.Bytes (Bytes)
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Library (make_bytes, show_bytes)
 import Isabelle.Position qualified as Position
 
 import SAD.Data.Formula hiding (CaseHypothesis)
@@ -52,9 +52,9 @@ data ProofText =
 
 instance Presentation ProofText where
   present (ProofTextBlock block) = present block
-  present (ProofTextInstr _ instr) = show_text instr
-  present (ProofTextDrop _ instr) = show_text instr
-  present (ProofTextError err) = show_text err
+  present (ProofTextInstr _ instr) = show_bytes instr
+  present (ProofTextDrop _ instr) = show_bytes instr
+  present (ProofTextError err) = present err
   present _ = ""
 
 data Block = Block {
@@ -62,11 +62,11 @@ data Block = Block {
   body :: [ProofText],
   kind :: Section,
   declaredVariables :: Set Decl,
-  name :: Text,
-  link :: [Text],
+  name :: Bytes,
+  link :: [Bytes],
   tokens :: [Token] }
 
-makeBlock :: Formula -> [ProofText] -> Section -> Text -> [Text] -> [Token] -> Block
+makeBlock :: Formula -> [ProofText] -> Section -> Bytes -> [Bytes] -> [Token] -> Block
 makeBlock form body kind = Block form body kind mempty
 
 position :: Block -> Position.T
@@ -75,7 +75,7 @@ position = Position.range_position . tokensRange . tokens
 isTopLevel :: Block -> Bool
 isTopLevel = isHole . formula
 
-text :: Block -> Text
+text :: Block -> Bytes
 text Block {tokens} = composeTokens tokens
 
 {- All possible types that a ForTheL block can have. -}
@@ -145,7 +145,7 @@ declaredNames = Set.map declName . declaredVariables
 instance Presentation Block where
   present = showBlock 0
 
-showBlock :: Int -> Block -> Text
+showBlock :: Int -> Block -> Bytes
 showBlock p block@Block{body = b, name = name, kind = kind}
   | null b = showForm p block
   | isTopLevel block = present kind <> addName <> ":\n" <> showBlockForm (p + 1) block <>
@@ -160,22 +160,22 @@ showBlock p block@Block{body = b, name = name, kind = kind}
   | otherwise = showForm p block <>
       indent p "Proof:\n" <> showProof (p + 1) (body block) <> indent p "Qed.\n"
   where
-    name' = name
-    addName = if Text.null name' then "" else " (" <> name' <> ")"
+    name' = make_bytes name
+    addName = if Bytes.null name' then "" else " (" <> name' <> ")"
 
-showForm :: Int -> Block -> Text
+showForm :: Int -> Block -> Bytes
 showForm p block@Block{formula = formula, name = name} =
   indent p $ present formula <> "\n"
 
-showBlockForm :: Int -> Block -> Text
+showBlockForm :: Int -> Block -> Bytes
 showBlockForm p block =
   indent p $ present (formulate block) <> "\n"
 
-showProof :: Int -> [ProofText] -> Text
+showProof :: Int -> [ProofText] -> Bytes
 showProof p = foldr (\pt bs -> indent p (present pt) <> bs) ""
 
-indent :: Int -> Text -> Text
-indent n txt = Text.replicate 2 "  " <> txt
+indent :: Int -> Bytes -> Bytes
+indent n bs = Bytes.pack (replicate (2 * n) 0x20) <> bs
 
 parseErrors :: ProofText -> [ParseError]
 parseErrors (ProofTextError err) = [err]

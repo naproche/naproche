@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Data.Rules
 -- Description : TODO
@@ -6,18 +8,19 @@
 -- License     : GPL-3
 module SAD.Data.Rules where
 
-import Data.Text (Text)
+import Isabelle.Bytes (Bytes)
 
 import SAD.Data.Formula (Formula)
+import SAD.Export.Presentation
 
 
 data Rule = Rule {
   left :: Formula,   -- left side
   right :: Formula,   -- right side
   condition :: [Formula], -- conditions
-  label :: Text }   -- label
+  label :: Bytes }   -- label
 
-instance Show Rule where
-  show rl =
-    show (left rl) ++ " = " ++ show (right rl) ++
-    ", Cond: " ++ show (condition rl) ++ ", Label: " ++ show (label rl)
+instance Presentation Rule where
+  present rl =
+    present (left rl) <> " = " <> present (right rl) <>
+    ", Cond: " <> present (condition rl) <> ", Label: " <> label rl

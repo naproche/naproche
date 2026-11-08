@@ -35,6 +35,8 @@ import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as Text
 
+import Isabelle.Bytes (Bytes)
+import Isabelle.Bytes qualified as Bytes
 import Isabelle.Library (make_bytes)
 import Isabelle.Position qualified as Position
 
@@ -145,14 +147,14 @@ mergeTokens :: [Token] -> Token
 mergeTokens tokens = Token (tokensText tokens) (tokensPos tokens)
 
 -- | Print a token
-showToken :: Token -> Text
-showToken t@Token{} = tokenText t
-showToken EOF{} = Text.pack "end of input"
+showToken :: Token -> Bytes
+showToken t@Token{} = make_bytes (tokenText t)
+showToken EOF{} = "end of input"
 
 -- | Append tokens separated by a single space if they were separated
 -- by whitespace before
-composeTokens :: [Token] -> Text
-composeTokens = Text.concat . dive
+composeTokens :: [Token] -> Bytes
+composeTokens = Bytes.concat . dive
   where
     dive [] = []
     dive [t] = [showToken t]

@@ -17,7 +17,7 @@ import Data.List.Extra (notNull)
 import Data.Maybe (isJust)
 
 import Isabelle.Bytes qualified as Bytes
-import Isabelle.Library (implode_space, make_bytes, show_bytes, trim_line)
+import Isabelle.Library (implode_space, make_bytes, trim_line)
 import Isabelle.Position qualified as Position
 
 import SAD.Core.Base
@@ -71,21 +71,21 @@ verify (ProofTextInstr pos (Command cmd) : rest) = command cmd >> verify rest
     command :: Command -> VerifyMonad ()
     command PrintRules = do
       rules <- asks rewriteRules
-      message $ "current ruleset: " <> "\n" <> implode_space (map show_bytes (reverse rules))
+      message $ "current ruleset: " <> "\n" <> implode_space (map present (reverse rules))
     command PrintThesis = do
       motivated <- asks thesisMotivated
       thesis <- asks currentThesis
       let motivation = if motivated then "(motivated): " else "(not motivated): "
-      message $ "current thesis " <> motivation <> show_bytes (Context.formula thesis)
+      message $ "current thesis " <> motivation <> present (Context.formula thesis)
     command PrintContext = do
       context <- asks currentContext
       message $ "current context:\n" <>
-        Bytes.concat (map (\form -> "  " <> show_bytes (Context.formula form) <> "\n") (reverse context))
+        Bytes.concat (map (\form -> "  " <> present (Context.formula form) <> "\n") (reverse context))
     command PrintContextFiltered = do
       context <- asks currentContext
       let topLevelContext = filter Context.isTopLevel context
       message $ "current filtered top-level context:\n" <>
-        Bytes.concat (map (\form -> "  " <> show_bytes (Context.formula form) <> "\n") (reverse topLevelContext))
+        Bytes.concat (map (\form -> "  " <> present (Context.formula form) <> "\n") (reverse topLevelContext))
     command ResetPretyping = pure ()
     command _ = do
       message "unsupported instruction"
@@ -140,7 +140,7 @@ verifyBlock block rest = do
 
   whenInstruction translationParam $
     unless (Block.isTopLevel block) $
-      translateLog Message.WRITELN (Block.position block) $ show_bytes f
+      translateLog Message.WRITELN (Block.position block) $ present f
 
   fortifiedFormula <-
     if Block.isTopLevel block
@@ -162,7 +162,7 @@ verifyBlock block rest = do
     toBeProved && notNull proofBody &&
     not (hasDEC $ Context.formula freshThesis)) $
       thesisLog Message.WRITELN (Block.position block) (length branch - 1) $
-      "thesis: " <> show_bytes (Context.formula freshThesis)
+      "thesis: " <> present (Context.formula freshThesis)
 
   fortifiedProof <-
     local (\st -> st {
@@ -200,7 +200,7 @@ verifyBlock block rest = do
     hasChanged && motivated && newMotivation &&
     not (hasDEC $ Block.formula $ head branch) ) $
       thesisLog Message.WRITELN (Block.position block) (length branch - 2) $
-      "new thesis: " <> show_bytes (Context.formula newThesis)
+      "new thesis: " <> present (Context.formula newThesis)
 
   when (not newMotivation && motivated) $
     thesisLog Message.WARNING (Block.position block) (length branch - 2) "unmotivated assumption"
@@ -259,7 +259,7 @@ verifyProof restProofText = do
         noInductionOrCase (Context.formula newThesis) && not (null restProofText)) $
           thesisLog Message.WRITELN
           (Block.position $ head $ Context.branch $ head context) (length branch - 2) $
-          "new thesis " <> show_bytes (Context.formula newThesis)
+          "new thesis " <> present (Context.formula newThesis)
       local (\st -> st {
         rewriteRules = newRules,
         currentThesis = newThesis,

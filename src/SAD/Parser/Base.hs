@@ -33,13 +33,13 @@ import Control.Monad.State.Class (MonadState(get, put))
 
 import Data.List
 import Data.List.Extra (notNull)
-import Data.Text qualified as Text
 
-import Isabelle.Library (show_bytes)
+import Isabelle.Library (make_bytes)
 import Isabelle.Position qualified as Position
 
 import SAD.Core.Message (errorParser)
 import SAD.Data.Instr (Dialect)
+import SAD.Export.Presentation
 import SAD.Parser.Error
 import SAD.Parser.Token
 
@@ -98,13 +98,13 @@ instance Monad (Parser st) where
 
 instance Fail.MonadFail (Parser st) where
   fail s = Parser \st _ _ emptyFail ->
-    emptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)
+    emptyFail $ newErrorMessage (newMessage (make_bytes s)) (stPosition st)
 
 -- Launch a parser in the IO monad.
 launchParser :: Parser st a -> State st -> IO (a, State st)
 launchParser parser state =
   case runP parser state of
-    Left err -> errorParser (errorPos err) (show_bytes err)
+    Left err -> errorParser (errorPos err) (present err)
     Right (PR a st) -> return (a, st)
 
 -- This function is simple, but unfriendly to read because of all the

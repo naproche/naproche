@@ -19,10 +19,10 @@ import Control.Monad.State
 import Data.Either
 import Data.List.Extra (notNull)
 import Data.Set qualified as Set
-import Data.Text (Text)
-import Data.Text qualified as Text
 
-import Isabelle.Library (commas, implode_space, make_bytes, show_bytes, show_text)
+import Isabelle.Bytes (Bytes)
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Library (commas, implode_space, make_bytes, show_bytes)
 import Isabelle.Position qualified as Position
 
 import SAD.Core.Base
@@ -36,25 +36,26 @@ import SAD.Data.Rules qualified as Rule
 import SAD.Data.Text.Block qualified as Block (body, link, position)
 import SAD.Data.Text.Context (Context)
 import SAD.Data.Text.Context qualified as Context
+import SAD.Export.Presentation
 
 
 -- Lexicographic path ordering
 
-encodeVarName :: VariableName -> Text
-encodeVarName (VarConstant s) = "x" <> s
-encodeVarName (VarHole s) = "?" <> s
+encodeVarName :: VariableName -> Bytes
+encodeVarName (VarConstant s) = "x" <> make_bytes s
+encodeVarName (VarHole s) = "?" <> make_bytes s
 encodeVarName VarSlot = "!"
-encodeVarName (VarU s) = "u" <> s
-encodeVarName (VarHidden n) = "h" <> show_text n
-encodeVarName (VarAssume n) = "i" <> show_text n
-encodeVarName (VarSkolem n) = "o" <> show_text n
+encodeVarName (VarU s) = "u" <> make_bytes s
+encodeVarName (VarHidden n) = "h" <> show_bytes n
+encodeVarName (VarAssume n) = "i" <> show_bytes n
+encodeVarName (VarSkolem n) = "o" <> show_bytes n
 encodeVarName (VarTask s) = "c" <> encodeVarName s
-encodeVarName (VarZ s) = "z" <> s
-encodeVarName (VarGlobal s) = "w" <> s
+encodeVarName (VarZ s) = "z" <> make_bytes s
+encodeVarName (VarGlobal s) = "w" <> make_bytes s
 encodeVarName VarEmpty = ""
-encodeVarName (VarDefault s) = s
+encodeVarName (VarDefault s) = make_bytes s
 
-encodeTermName :: TermName -> Text
+encodeTermName :: TermName -> Bytes
 encodeTermName (TermSymbolic patterns) = encodeSymbolPattern patterns
 encodeTermName (TermNotion patterns) = "a" <> encodeNotionPattern patterns
 encodeTermName (TermThe patterns) = "the" <> encodeNotionPattern patterns
@@ -62,36 +63,36 @@ encodeTermName (TermUnaryAdjective patterns) = "is" <> encodePredicatePattern pa
 encodeTermName (TermMultiAdjective patterns) = "mis" <> encodePredicatePattern patterns
 encodeTermName (TermUnaryVerb patterns) = "do" <> encodePredicatePattern patterns
 encodeTermName (TermMultiVerb patterns) = "mdo" <> encodePredicatePattern patterns
-encodeTermName (TermTask n) = "tsk_" <> show_text n
+encodeTermName (TermTask n) = "tsk_" <> show_bytes n
 encodeTermName TermEquality = "="
 encodeTermName TermLess = "iLess"
 encodeTermName TermThesis = "#TH#"
 
-encodePredicatePattern :: PredicatePattern -> Text
-encodePredicatePattern = Text.concat . map encodePredicatePatternComp
+encodePredicatePattern :: PredicatePattern -> Bytes
+encodePredicatePattern = Bytes.concat . map encodePredicatePatternComp
 
-encodePredicatePatternComp :: PredicatePatternComp -> Text
-encodePredicatePatternComp (PredWord words) = head words
+encodePredicatePatternComp :: PredicatePatternComp -> Bytes
+encodePredicatePatternComp (PredWord words) = make_bytes (head words)
 encodePredicatePatternComp PredVar = "."
 
-encodeNotionPattern :: NotionPattern -> Text
-encodeNotionPattern = Text.concat . map encodeNotionPatternComp
+encodeNotionPattern :: NotionPattern -> Bytes
+encodeNotionPattern = Bytes.concat . map encodeNotionPatternComp
 
-encodeNotionPatternComp :: NotionPatternComp -> Text
-encodeNotionPatternComp (NotionWord words) = head words
+encodeNotionPatternComp :: NotionPatternComp -> Bytes
+encodeNotionPatternComp (NotionWord words) = make_bytes (head words)
 encodeNotionPatternComp NotionName = "."
 encodeNotionPatternComp NotionVar = "."
 
-encodeSymbolPattern :: SymbolPattern -> Text
-encodeSymbolPattern = Text.concat . map encodeSymbolPatternComp
+encodeSymbolPattern :: SymbolPattern -> Bytes
+encodeSymbolPattern = Bytes.concat . map encodeSymbolPatternComp
 
-encodeSymbolPatternComp :: SymbolPatternComp -> Text
-encodeSymbolPatternComp (SymbSymbol symbol) = symbol
+encodeSymbolPatternComp :: SymbolPatternComp -> Bytes
+encodeSymbolPatternComp (SymbSymbol symbol) = make_bytes symbol
 encodeSymbolPatternComp SymbVar = "."
 
 
 {- a weighting to parametrize the LPO -}
-type Weighting = Text -> Text -> Bool
+type Weighting = Bytes -> Bytes -> Bool
 
 
 {- standard implementation of LPO -}
@@ -122,7 +123,7 @@ lexord _ _ _ = False
 -- simplification
 
 {- type to record conditions and intermediate steps during simplification -}
-type SimpInfo = ([Formula], Text)
+type SimpInfo = ([Formula], Bytes)
 
 
 {- performs one simplification step. We always try to simplify in a
@@ -195,14 +196,14 @@ generateConditions pos verbositySetting rules w l r =
       simpLog Message.WRITELN pos "no matching normal forms found"
       showPath leftNormalForm; showPath rightNormalForm
     showPath ((t,_):rest) = when verbositySetting $ do
-      simpLog Message.WRITELN pos (show_bytes t)
+      simpLog Message.WRITELN pos (present t)
       mapM_ (simpLog Message.WRITELN pos . format) rest
     -- formatting of paths
-    format (t, simpInfo) = " --> " <> show_bytes t <> conditions simpInfo
+    format (t, simpInfo) = " --> " <> present t <> conditions simpInfo
     conditions (conditions, name) =
-      (if Text.null name then "" else " by " <> make_bytes name <> ",") <>
+      (if Bytes.null name then "" else " by " <> name <> ",") <>
       (if null conditions then "" else " conditions: " <>
-        commas (map show_bytes conditions))
+        commas (map present conditions))
 
 
 {- applies computational reasoning to an equality chain -}
@@ -218,7 +219,7 @@ equalityReasoning pos thesis
     body = notNull $ Block.body . head . Context.branch $ thesis
 
 
-getLinkedRules :: Position.T -> [Text] -> VerifyMonad [Rule]
+getLinkedRules :: Position.T -> [Bytes] -> VerifyMonad [Rule]
 getLinkedRules pos link = do
   rules <- rules; let setLink = Set.fromList link
   let (linkedRules, unfoundRules) = runState (retrieve setLink rules) setLink
@@ -278,7 +279,7 @@ dischargeConditions pos verbositySetting conditions =
     format conditions =
       if   null conditions
       then " - "
-      else commas . map show_bytes $ reverse conditions
+      else commas . map present $ reverse conditions
     log msg =
       when verbositySetting $ asks currentThesis >>=
         flip (simpLog Message.WRITELN . Block.position . Context.head) msg

@@ -99,7 +99,7 @@ readTexts = texCommandWithArg "path" (chainLL1 notClosingBrc) <|> chainLL1 notCl
   where
     notClosingBrk = tokenPrim $ notCl "]"
     notClosingBrc = tokenPrim $ notCl "}"
-    notCl str t = let tk = showToken t in guard (tk /= str) >> return tk
+    notCl str t = let tk = tokenText t in guard (tk /= str) >> return tk
 
 
 readWords :: FTL [Text]

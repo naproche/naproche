@@ -11,9 +11,6 @@ module SAD.Export.TPTP (
   exportProofTask
 ) where
 
-import Data.Text (Text)
-import Data.Text qualified as Text
-
 import Isabelle.Bytes (Bytes)
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Library (cat_lines, commas, make_bytes, quote, show_bytes, show_text)
@@ -50,10 +47,10 @@ exportContext role (Context formula (Block.Block { Block.name = name } : _) _) =
 exportContext _ _ = ""
 
 -- | Export an assertion to TPTP.
-exportAssertion :: Text -> Role -> Formula -> Bytes
+exportAssertion :: Bytes -> Role -> Formula -> Bytes
 exportAssertion name role formula =
   "fof(m"
-  <> (if Text.null name then "_" else make_bytes name)
+  <> (if Bytes.null name then "_" else make_bytes name)
   <> ", " <> exportRole role <> ", "
   <> exportFormula formula
   <> ")."

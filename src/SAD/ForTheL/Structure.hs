@@ -19,10 +19,14 @@ import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as Text
 
+import Isabelle.Bytes (Bytes)
+import Isabelle.Library (implode_space, make_bytes)
+
 import SAD.Data.Formula
 import SAD.Data.Text.Block (Block, ProofText(..), Section(..))
 import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Text.Decl
+import SAD.Export.Presentation
 import SAD.ForTheL.Base
 import SAD.ForTheL.Reports (addBlockReports, markupToken, markupTokenOf, markupTokenSeqOf)
 import SAD.ForTheL.Reports qualified as Reports
@@ -40,7 +44,7 @@ import SAD.Parser.Token
 -- We take some metadata and moreover read some metadata from the state and use
 -- it to make a 'ProofText' out of the content and (optional) label of a
 -- top-level section.
-addMetadata :: Section -> [ProofText] -> Maybe Text -> FTL ProofText
+addMetadata :: Section -> [ProofText] -> Maybe Bytes -> FTL ProofText
 addMetadata kind content optLabel = do
   input <- getInput
   tokens <- getTokens input
@@ -59,9 +63,9 @@ addMetadata kind content optLabel = do
 identifier :: FTL Text
 identifier = Text.toCaseFold . Text.concat <$> many (tokenPrim notSymb)
   where
-    notSymb t = case Text.uncons (showToken t) of
+    notSymb t = case Text.uncons (tokenText t) of
       Just (c, "") -> guard (isAsciiAlphaNum c || c == '_') >> return (Text.singleton c)
-      _ -> return (showToken t)
+      _ -> return (tokenText t)
 
 
 -- ** Links
@@ -154,10 +158,10 @@ statementBlock :: Section
                -> FTL [Text]
                -> FTL Block
 statementBlock kind p mbLink = do
-  nm <- optLLx "__" (parenthesised identifier)
+  nm <- make_bytes <$> optLLx "__" (parenthesised identifier)
   inp <- getInput
   fr <- p
-  link <- mbLink
+  link <- map make_bytes <$> mbLink
   toks <- getTokens inp
   return $ Block.makeBlock fr [] kind nm link toks
 
@@ -166,17 +170,17 @@ statementBlock' :: Section
                 -> FTL [Text]
                 -> FTL (a, Block)
 statementBlock' kind p mbLink = do
-  nm <- optLLx "__" (parenthesised identifier)
+  nm <- make_bytes <$> optLLx "__" (parenthesised identifier)
   inp <- getInput
   (x, fr) <- p
-  link <- mbLink
+  link <- map make_bytes <$> mbLink
   toks <- getTokens inp
   return (x, Block.makeBlock fr [] kind nm link toks)
 
 
 pretypeSentence :: Section
                 -> FTL Formula
-                -> (Set VariableName -> Formula -> Maybe Text)
+                -> (Set VariableName -> Formula -> Maybe Bytes)
                 -> FTL [Text]
                 -> FTL Block
 pretypeSentence kind p wfVars mbLink = narrow $ do
@@ -195,7 +199,7 @@ pretypeSentence kind p wfVars mbLink = narrow $ do
 
 pretypeSentence' :: Section
                  -> FTL (a, Formula)
-                 -> (Set VariableName -> Formula -> Maybe Text)
+                 -> (Set VariableName -> Formula -> Maybe Bytes)
                  -> FTL [Text]
                  -> FTL (a, Block)
 pretypeSentence' kind p wfVars mbLink = do
@@ -219,7 +223,7 @@ pretypeSentence' kind p wfVars mbLink = do
 
 sentence :: Section
          -> FTL Formula
-         -> (Set VariableName -> Formula -> Maybe Text)
+         -> (Set VariableName -> Formula -> Maybe Bytes)
          -> FTL [Text]
          -> FTL Block
 sentence kind p wfVars mbLink = do
@@ -233,7 +237,7 @@ sentence kind p wfVars mbLink = do
 
 -- * Variable well-formedness checks
 
-defVars, assumeVars, affirmVars :: Set VariableName -> Formula -> Maybe Text
+defVars, assumeVars, affirmVars :: Set VariableName -> Formula -> Maybe Bytes
 
 defVars dvs f
   | null unusedVars = affirmVars dvs f
@@ -241,9 +245,9 @@ defVars dvs f
   where
     unusedVars = let fvs = fvToVarSet $ free f in dvs `Set.difference` fvs
     errorMsg = "extra variables in the guard: " <> varText
-    varText = Text.concat $ map (Text.cons ' ' . showVar) $ Set.toList unusedVars
+    varText = implode_space $ map showVar (Set.toList unusedVars)
 
-llDefnVars :: Set VariableName -> Formula -> Maybe Text
+llDefnVars :: Set VariableName -> Formula -> Maybe Bytes
 llDefnVars dvs f
   | x `elem` dvs = Just $ "Defined variable is already in use: " <> showVar x
   | otherwise = affirmVars (Set.insert x dvs) f
@@ -315,7 +319,7 @@ indThesis fr pre post = do
     indStatem vs (Imp g f) = (Imp g .) <$> indStatem vs f
     indStatem vs (All v f) = (dAll v .) <$> indStatem (deleteDecl v vs) f
     indStatem vs f | Set.null vs = pure (`Imp` f)
-    indStatem _ _ = failWF $ "invalid induction thesis " <> Text.pack (show fr)
+    indStatem _ _ = failWF $ "invalid induction thesis " <> present fr
 
     insertIndTerm it cn = cn $ Tag InductionHypothesis $ subst it (VarHole "") $ cn $ mkLess it (mkVar (VarHole ""))
 

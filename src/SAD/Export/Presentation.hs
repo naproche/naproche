@@ -13,10 +13,14 @@ import Data.Set (Set)
 import Data.Set qualified as Set
 import Data.Text (Text)
 
-import Isabelle.Library (commas)
+import Isabelle.Bytes (Bytes)
+import Isabelle.Library (commas, make_bytes, quote)
 
 class Presentation a where
-  present :: a -> Text
+  present :: a -> Bytes
+
+instance Presentation Text where
+  present = quote . make_bytes
 
 instance Presentation a => Presentation [a] where
   present as = "[" <> commas (map present as) <> "]"

@@ -283,7 +283,7 @@ unknownAlphaNum :: FTL Text
 unknownAlphaNum = failing knownVariable >> tokenPrim isWord
   where
     isWord t =
-      let tk = showToken t
+      let tk = tokenText t
           ltk = Text.toCaseFold tk
       in guard (Text.all isAsciiAlphaNum tk && ltk `Set.notMember` keylist) >> return tk
     keylist = Set.fromList ["a","an","the","is","are","be"]

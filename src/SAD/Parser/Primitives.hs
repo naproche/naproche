@@ -108,11 +108,11 @@ satisfy :: (Text -> Bool) -> Parser st Text
 satisfy pr = tokenPrim prTest
   where
     prTest :: Token -> Maybe Text
-    prTest tk = let s = showToken tk in if pr s then Just s else Nothing
+    prTest tk = let s = tokenText tk in if pr s then Just s else Nothing
 
 -- | Always succeed and pass on the string of the token
 anyToken :: Parser st Text
-anyToken = tokenPrim (Just . showToken)
+anyToken = tokenPrim (Just . tokenText)
 
 -- | Parses a token that is a word (i.e. consists of only alphabetic characters).
 word :: Parser st Text
@@ -125,7 +125,7 @@ digit = satisfy (\tk -> Text.length tk == 1 && isAsciiDigit (Text.head tk))
 -- | Parse a symbolic token, i.e. a TeX command or a single symbolic character
 symb :: Parser st Text
 symb = tokenPrim $ \tok ->
-  let t = showToken tok
+  let t = tokenText tok
   in case Text.uncons t of
     Just ('\\', rest)
       | Text.all isAsciiLetter rest -> Just t

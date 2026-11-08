@@ -269,7 +269,7 @@ verifyInputText dialect mesonCache proverCache proofTexts = do
   (success, trackers) <- case concatMap parseErrors txts of
     [] -> verifyRoot mesonCache proverCache Position.none txts
     err : _ -> do
-      errorParser (errorPos err) (show_bytes err)
+      errorParser (errorPos err) (present err)
       pure (False, [])
   -- Get the finish time of the verification process:
   finishTime <- getCurrentTime

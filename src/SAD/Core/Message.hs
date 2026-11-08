@@ -8,7 +8,7 @@
 -- License     : GPL-3
 module SAD.Core.Message (
   reports_text, report_text, reports, report,
-  console_position, show_position,
+  console_position,
   origin_main, origin_export, origin_forthel, origin_parser,
   origin_reasoner, origin_simplifier, origin_thesis, origin_translate, origin_reader,
   Kind (..), output, error,
@@ -111,9 +111,6 @@ console_position pos = space_implode " " (catMaybes [file_name, details])
         [] -> Nothing
         ds -> Just ("(" <> commas ds <> ")")
     detail (a, f) = (\i -> a <> " " <> Value.print_int i) <$> f pos
-
-show_position :: Position.T -> String
-show_position = make_string . console_position
 
 make_message :: Program.Context -> Kind -> Bytes -> Position.T -> Bytes -> (Bytes, Bytes)
 make_message context kind origin pos text =

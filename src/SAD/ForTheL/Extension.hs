@@ -13,20 +13,20 @@ module SAD.ForTheL.Extension (
   ignoreNames
 ) where
 
-import Data.Text (Text)
-import Data.Text qualified as Text
+import Isabelle.Bytes (Bytes)
 
 import SAD.Data.Formula
 import SAD.Data.Text.Decl
+import SAD.Export.Presentation
 import SAD.ForTheL.Base
 
 
 -- well-formedness check
 
-funVars, notionVars, prdVars :: (Formula, Formula) -> Maybe Text
+funVars, notionVars, prdVars :: (Formula, Formula) -> Maybe Bytes
 
 funVars (f, d) | not ifq   = prdVars (f, d)
-               | not idq   = Just $ Text.pack $ "illegal function alias: " ++ show d
+               | not idq   = Just $ "illegal function alias: " <> present d
                | otherwise = prdVars (t {trmArgs = v:trmArgs t}, d)
   where
     ifq = isTrm f && trmName f == TermEquality && isTrm t
@@ -43,7 +43,7 @@ notionVars (f, d) | not isFunction = prdVars (f, d)
     Trm {trmArgs = vs} = t
 
 
-prdVars (f, d) | not flat  = Just $ Text.pack $ "compound expression: " ++ show f
+prdVars (f, d) | not flat  = Just $ "compound expression: " <> present f
                | otherwise = freeOrOverlapping (fvToVarSet $ free f) d
   where
     flat = isTrm f && allDistinctVars (trmArgs f)

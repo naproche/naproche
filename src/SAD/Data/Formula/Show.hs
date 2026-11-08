@@ -10,10 +10,10 @@
 -- License     : GPL-3
 module SAD.Data.Formula.Show () where
 
-import Data.Text (Text)
 import Data.Text qualified as Text
 
-import Isabelle.Library (show_text)
+import Isabelle.Bytes (Bytes)
+import Isabelle.Library (commas, make_bytes, show_bytes)
 import Isabelle.Position qualified as Position
 
 import SAD.Data.Formula.Base
@@ -27,11 +27,8 @@ import SAD.Export.Presentation
 instance Presentation Formula where
   present = showFormula 0
 
-instance Show Formula where
-  show = Text.unpack . present
-
 -- | Show a formula (depending of the current nesting depth of quantifiers).
-showFormula :: Int -> Formula -> Text
+showFormula :: Int -> Formula -> Bytes
 -- Quantifier chain:
 showFormula d (All _ f@(All _ _)) = "\\<forall>" <> showBindingVar d <> showFormula (d + 1) f
 showFormula d (All _ f@(Exi _ _)) = "\\<forall>" <> showBindingVar d <> showFormula (d + 1) f
@@ -62,7 +59,7 @@ showFormula d (And f g@(And _ _)) = showFormulaL d f <> " \\<and> " <> showFormu
 -- Conjunction:
 showFormula d (And f g) = showFormulaL d f <> " \\<and> " <> showFormulaR d g
 -- Tagged formula:
-showFormula d (Tag a f) = Text.pack (show a) <> " \\<Colon> " <> showFormulaR d f
+showFormula d (Tag a f) = show_bytes a <> " \\<Colon> " <> showFormulaR d f
 -- Inequality:
 showFormula d (Not Trm{trmName = TermEquality, trmArgs = [l, r]}) = showFormula d l <> " \\<noteq> " <> showFormula d r
 -- Negation:
@@ -76,20 +73,20 @@ showFormula d ThisT = "ThisT"
 -- Terms:
 showFormula d Trm{trmName = name, trmArgs = args} = showTerm d name args
 -- Free variables:
-showFormula d Var{varName = VarConstant s} = s
+showFormula d Var{varName = VarConstant s} = make_bytes s
 showFormula d Var{varName = vName} = present vName
 -- De Brujin index:
 showFormula d Ind{indIndex = i}
-      | i < d = "v" <> Text.pack (show (d - i - 1))
-      | otherwise = "v?" <> Text.pack (show i)
+      | i < d = "v" <> show_bytes (d - i - 1)
+      | otherwise = "v?" <> show_bytes i
 
-showTerm :: Int -> TermName -> [Formula] -> Text
+showTerm :: Int -> TermName -> [Formula] -> Bytes
 showTerm d (TermSymbolic patterns) formulas = dive patterns formulas
   where
-    dive :: SymbolPattern -> [Formula] -> Text
+    dive :: SymbolPattern -> [Formula] -> Bytes
     dive [] _ = ""
-    dive [SymbSymbol s] _ = s
-    dive (SymbSymbol s : ps) fs = s <> " " <> dive ps fs
+    dive [SymbSymbol s] _ = make_bytes s
+    dive (SymbSymbol s : ps) fs = make_bytes s <> " " <> dive ps fs
     dive (SymbVar : ps) [] = error "Fewer arguments than variables"
     dive [SymbVar] (f : _) = showFormula d f
     dive (SymbVar : ps) (f : fs) = showFormula d f <> " " <> dive ps fs
@@ -99,51 +96,51 @@ showTerm d (TermUnaryAdjective pattern) formulas = "is" <> showPredicatePattern 
 showTerm d (TermMultiAdjective pattern) formulas = "mis" <> showPredicatePattern pattern <> showArguments d formulas
 showTerm d (TermUnaryVerb pattern) formulas = "do" <> showPredicatePattern pattern <> showArguments d formulas
 showTerm d (TermMultiVerb pattern) formulas = "mdo" <> showPredicatePattern pattern <> showArguments d formulas
-showTerm _ (TermTask n) _ = "tsk_" <> show_text n
+showTerm _ (TermTask n) _ = "tsk_" <> show_bytes n
 showTerm d TermEquality [l, r] = showFormula d l <> " = " <> showFormula d r
 showTerm _ TermEquality _ = error "Invalid number of arguments"
 showTerm d TermLess formulas = "iLess" <> showArguments d formulas
 showTerm _ TermThesis _ = "#TH#"
 
-showPredicatePattern :: PredicatePattern -> Text
+showPredicatePattern :: PredicatePattern -> Bytes
 showPredicatePattern = foldr ((<>) . showPredicatePatternComp) ""
 
-showPredicatePatternComp :: PredicatePatternComp -> Text
-showPredicatePatternComp (PredWord words) = Text.toTitle (head words)
+showPredicatePatternComp :: PredicatePatternComp -> Bytes
+showPredicatePatternComp (PredWord words) = make_bytes $ Text.toTitle (head words)
 showPredicatePatternComp PredVar = ""
 
-showNotionPattern :: NotionPattern -> Text
+showNotionPattern :: NotionPattern -> Bytes
 showNotionPattern = foldr ((<>) . showNotionPatternComp) ""
 
-showNotionPatternComp :: NotionPatternComp -> Text
-showNotionPatternComp (NotionWord words) = Text.toTitle (head words)
+showNotionPatternComp :: NotionPatternComp -> Bytes
+showNotionPatternComp (NotionWord words) = make_bytes $ Text.toTitle (head words)
 showNotionPatternComp NotionName = ""
 showNotionPatternComp NotionVar = ""
 
 -- | Show a formula that occurs on the left-hand side of a logical connective.
-showFormulaL :: Int -> Formula -> Text
+showFormulaL :: Int -> Formula -> Bytes
 showFormulaL d f = parensIf (isAll f || isExi f || isIff f || isImp f || isOr f || isAnd f || isTag f) (showFormula d f)
 
 -- | Show a formula that occurs on the right-hand side of a logical connective.
-showFormulaR :: Int -> Formula -> Text
+showFormulaR :: Int -> Formula -> Bytes
 showFormulaR d f = parensIf (isIff f || isImp f || isOr f || isAnd f || isTag f) (showFormula d f)
 
 -- | Show the arguments of a formula/term.
-showArguments :: Int -> [Formula] -> Text
+showArguments :: Int -> [Formula] -> Bytes
 showArguments _ [] = ""
 showArguments d terms =
   let showTerm = showFormula d
-  in "(" <> Text.intercalate "," (map showTerm terms) <> ")"
+  in "(" <> commas (map showTerm terms) <> ")"
 
 -- | Show a binding variable.
-showBindingVar :: Int -> Text
+showBindingVar :: Int -> Bytes
 showBindingVar d = showFormula (d + 1) (Ind 0 Position.none)
 
 -- | Wrap a string in parentheses.
-parens :: Text -> Text
+parens :: Bytes -> Bytes
 parens string = "(" <> string <> ")"
 
 -- | Wrap a string in parentheses if a predicate holds true, otherwise return
 -- the string unmodified.
-parensIf :: Bool -> Text -> Text
+parensIf :: Bool -> Bytes -> Bytes
 parensIf pred string = if pred then parens string else string

@@ -23,13 +23,13 @@ import Data.Function (on)
 import Data.Set (Set)
 import Data.Set qualified as Set
 import Data.Text (Text)
-import Data.Text qualified as Text
 
 import GHC.Magic (oneShot)
 
+import Isabelle.Library (make_bytes, show_bytes)
 import Isabelle.Position qualified as Position
 
-import SAD.Core.Message (show_position)
+import SAD.Core.Message (console_position)
 import SAD.Export.Presentation
 
 
@@ -53,30 +53,24 @@ isVarHole :: VariableName -> Bool
 isVarHole (VarHole _) = True
 isVarHole _ = False
 
-instance Show VariableName where
-  show = Text.unpack . present
-
 instance Presentation VariableName where
-  present (VarConstant s) = "x" <> s
-  present (VarHole s) = "?" <> s
+  present (VarConstant s) = "x" <> make_bytes s
+  present (VarHole s) = "?" <> make_bytes s
   present VarSlot = "!"
-  present (VarU s) = "u" <> s
-  present (VarHidden n) = "h" <> Text.pack (show n)
-  present (VarAssume n) = "i" <> Text.pack (show n)
-  present (VarSkolem n) = "o" <> Text.pack (show n)
+  present (VarU s) = "u" <> make_bytes s
+  present (VarHidden n) = "h" <> show_bytes n
+  present (VarAssume n) = "i" <> show_bytes n
+  present (VarSkolem n) = "o" <> show_bytes n
   present (VarTask s) = "c" <> present s
-  present (VarZ s) = "z" <> s
-  present (VarGlobal s) = "w" <> s
+  present (VarZ s) = "z" <> make_bytes s
+  present (VarGlobal s) = "w" <> make_bytes s
   present VarEmpty = ""
-  present (VarDefault s) = s
+  present (VarDefault s) = make_bytes s
 
 data PosVar = PosVar
   { posVarName :: VariableName
   , posVarPosition :: Position.T
   }
-
-instance Show PosVar where
-  show = show . posVarName
 
 instance Eq PosVar where
   (==) = (==) `on` posVarName
@@ -86,7 +80,7 @@ instance Ord PosVar where
 
 instance Presentation PosVar where
   present (PosVar v pos) =
-    "(" <> present v <> ", " <> Text.pack (show_position pos) <> ")"
+    "(" <> present v <> ", " <> console_position pos <> ")"
 
 class (Ord a, Presentation a) => IsVar a where
   buildVar :: VariableName -> Position.T -> a

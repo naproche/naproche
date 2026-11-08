@@ -20,6 +20,8 @@ import Control.Monad.State.Class (modify)
 
 import Data.Text (Text)
 
+import Isabelle.Library (make_bytes)
+
 import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Tag qualified as Tag
@@ -73,7 +75,7 @@ topLevelSection =
 signatureSection :: FTL ProofText
 signatureSection = do
   markupToken Reports.sectionHeader "signature"
-  label <- optLL1 Nothing (Just <$> identifier)
+  label <- optLL1 Nothing (Just . make_bytes <$> identifier)
   dot
   content <- signatureBody
   addMetadata Signature content label
@@ -83,7 +85,7 @@ signatureSection = do
 definitionSection :: FTL ProofText
 definitionSection = do
   markupToken Reports.sectionHeader "definition"
-  label <- optLL1 Nothing (Just <$> identifier)
+  label <- optLL1 Nothing (Just . make_bytes <$> identifier)
   dot
   content <- definitionBody
   addMetadata Definition content label
@@ -93,7 +95,7 @@ definitionSection = do
 axiomSection :: FTL ProofText
 axiomSection = do
   markupToken Reports.sectionHeader "axiom"
-  label <- optLL1 Nothing (Just <$> identifier)
+  label <- optLL1 Nothing (Just . make_bytes <$> identifier)
   dot
   content <- axiomBody
   addMetadata Axiom content label
@@ -104,7 +106,7 @@ axiomSection = do
 theoremSection :: FTL ProofText
 theoremSection = do
   markupTokenOf Reports.sectionHeader ["theorem", "proposition", "lemma", "corollary"]
-  label <- optLL1 Nothing (Just <$> identifier)
+  label <- optLL1 Nothing (Just . make_bytes <$> identifier)
   dot
   content <- theoremBody
   addMetadata Theorem content label
@@ -295,8 +297,8 @@ proofBody :: FTL ()       -- ^ Proof end parser
           -> FTL Block
 proofBody qed link block = do
   bs <- proofText qed
-  ls <- link
-  return block {Block.body = bs, Block.link = ls ++ Block.link block}
+  ls <- map make_bytes <$> link
+  return block {Block.body = bs, Block.link = ls <> Block.link block}
 
 -- | Proof body + proof end
 -- @{ <assumption>
@@ -330,7 +332,7 @@ caseDestinction = do
 
 eqChain :: FTL Block
 eqChain = do
-  dvs <- getDecl; nm <- opt "__" (parenthesised identifier); inp <- getInput
+  dvs <- getDecl; nm <- make_bytes <$> opt "__" (parenthesised identifier); inp <- getInput
   body <- wellFormedCheck (chainVars dvs) $ sTerm >>= nextTerm
   toks <- getTokens inp
   let Tag EqualityChain Trm{trmArgs = [t,_]} = Block.formula $ head body
@@ -348,7 +350,7 @@ nextTerm t = do
   inp <- getInput
   symbol ".="
   s <- sTerm
-  ln <- optLink
+  ln <- map make_bytes <$> optLink
   toks <- getTokens inp
   (:) (Block.makeBlock (Tag EqualityChain $ mkEquality t s)
     [] Affirmation "__" ln toks) <$> eqTail s

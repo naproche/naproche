@@ -18,20 +18,21 @@ module SAD.Parser.Error (
   newWellFormednessMessage
 ) where
 
-import Data.List (intercalate)
-import Data.List.Extra (notNull, nubOrd)
+import Data.List.Extra (nubOrd)
 import Data.Ord (comparing)
-import Data.Text (Text)
-import Data.Text qualified as Text
 
+import Isabelle.Bytes (Bytes)
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Library (commas, implode_space)
 import Isabelle.Position qualified as Position
 
-import SAD.Core.Message (show_position)
+import SAD.Core.Message (console_position)
+import SAD.Export.Presentation
 
 
 data Message
-  = ExpectMsg {unexpect :: Text, expect :: [Text], message :: [Text]}
-  | WellFormednessMessage {message :: [Text]}
+  = ExpectMsg {unexpect :: Bytes, expect :: [Bytes], message :: [Bytes]}
+  | WellFormednessMessage {message :: [Bytes]}
   | Unknown
 
 isUnknownMsg, isExpectMsg, isWellFormednessMessage :: Message -> Bool
@@ -42,12 +43,12 @@ isExpectMsg _ = False
 isWellFormednessMessage WellFormednessMessage{} = True
 isWellFormednessMessage _ = False
 
-newMessage, newUnexpect, newExpect :: Text -> Message
+newMessage, newUnexpect, newExpect :: Bytes -> Message
 newMessage  msg = ExpectMsg {unexpect = "" , expect = []   , message = [msg]}
 newUnexpect tok = ExpectMsg {unexpect = tok, expect = []   , message = []   }
 newExpect   msg = ExpectMsg {unexpect = "" , expect = [msg], message = []   }
 
-newWellFormednessMessage :: [Text] -> Message
+newWellFormednessMessage :: [Bytes] -> Message
 newWellFormednessMessage = WellFormednessMessage
 
 compareImportance :: Message -> Message -> Ordering
@@ -115,39 +116,39 @@ newErrorUnknown pos = ParseError pos Unknown
        | isExpectMsg msg2 -> e2
        | otherwise        -> e1 {peMsg = msg1 <> msg2}
 
-setExpectMessage :: Text -> ParseError -> ParseError
+setExpectMessage :: Bytes -> ParseError -> ParseError
 setExpectMessage expe pe@(ParseError pos msg)
   | isUnknownMsg msg = ParseError pos $ newExpect expe
   | isWellFormednessMessage      msg = pe
   | otherwise        = ParseError pos $ msg {expect = [expe]}
 
-unexpectError :: Text -> Position.T -> ParseError
+unexpectError :: Bytes -> Position.T -> ParseError
 unexpectError uex = newErrorMessage (newUnexpect uex)
 
 errorMessage :: ParseError -> Message
 errorMessage (ParseError _ msg) = msg
 
-instance Show ParseError where
-  show err = show_position (errorPos err) ++ ":\n"
-          ++ showErrorMessage (errorMessage err)
+instance Presentation ParseError where
+  present err = console_position (errorPos err) <> ":\n"
+          <> showErrorMessage (errorMessage err)
 
-showErrorMessage :: Message -> String
+showErrorMessage :: Message -> Bytes
 showErrorMessage msg = case msg of
   Unknown -> "unknown parse error"
-  WellFormednessMessage m -> commasOr $ clean $ map Text.unpack m
-  ExpectMsg unexpected expected msgs -> case clean $ map Text.unpack msgs of
-    [] -> unwords $ clean ["Unexpected \"" ++ Text.unpack unexpected ++ "\".", showMany "Expecting" (clean $ map Text.unpack expected) ++ "."]
+  WellFormednessMessage m -> commasOr $ clean m
+  ExpectMsg unexpected expected msgs -> case clean msgs of
+    [] -> implode_space $ clean ["Unexpected \"" <> unexpected <> "\".", showMany "Expecting" (clean expected) <> "."]
     messages -> commasOr messages
   where
-    showMany :: String -> [String] -> String
+    showMany :: Bytes -> [Bytes] -> Bytes
     showMany "" msgs = commasOr msgs
     showMany _ [] = ""
-    showMany pre msgs = pre ++ " " ++ commasOr msgs
+    showMany pre msgs = pre <> " " <> commasOr msgs
 
-    commasOr :: [String] -> String
+    commasOr :: [Bytes] -> Bytes
     commasOr [] = ""
     commasOr [m] = m
-    commasOr ms = intercalate ", " (init ms) ++ " or " ++ last ms
+    commasOr ms = commas (init ms) <> " or " <> last ms
 
-    clean :: [String] -> [String]
-    clean = nubOrd . filter notNull
+    clean :: [Bytes] -> [Bytes]
+    clean = nubOrd . filter (not . Bytes.null)

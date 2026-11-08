@@ -20,6 +20,8 @@ module SAD.Data.Text.Context (
 import Data.Set (Set)
 import Data.Text (Text)
 
+import Isabelle.Bytes (Bytes)
+
 import Prelude hiding (head, tail)
 import Prelude qualified (head, tail)
 
@@ -57,10 +59,10 @@ isLowLevel = not  . isTopLevel
 declaredNames :: Context -> Set VariableName
 declaredNames = Block.declaredNames . head
 
-name :: Context -> Text
+name :: Context -> Bytes
 name = Block.name . head
 
-link :: Context -> [Text]
+link :: Context -> [Bytes]
 link = Block.link . head
 
 isAssumption :: Context -> Bool

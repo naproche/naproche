@@ -22,6 +22,7 @@ import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as Text
 
+import Isabelle.Library (make_bytes)
 import Isabelle.Position qualified as Position
 
 import SAD.Data.Formula
@@ -96,7 +97,7 @@ endTopLevelSection :: Text -> Bool -> FTL ()
 endTopLevelSection keyword starred = do
   texCommand "end" <?> "\"\\end\""
   symbol "{" <?> "\"{\""
-  getMarkupToken Reports.sectionHeader keyword <?> "\"" <> keyword <> "\""
+  getMarkupToken Reports.sectionHeader keyword <?> "\"" <> make_bytes keyword <> "\""
   when starred (markupToken Reports.sectionHeader "*" <?> "\"*\"")
   symbol "}" <?> "\"}\""
 
@@ -106,7 +107,7 @@ endTopLevelSection keyword starred = do
 signatureSection :: FTL [ProofText]
 signatureSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["signature"]
-  label <- optTlsOptions
+  label <- fmap make_bytes <$> optTlsOptions
   result <- sig label </> structSig label
   macrosAndPretypings <- many (try STEX.introduceMacro <|> STEX.pretypeVariable)
   endTopLevelSection keyword starred
@@ -128,19 +129,19 @@ signatureSection = do
         inlineSig structVarAssumption </> inlineDef structVarAssumption </> inlineAx structVarAssumption
       texCommand "end" <?> "\"\\end\""
       symbol "{" <?> "\"{\""
-      token env <?> env
+      token env <?> make_bytes env
       symbol "}" <?> "\"}\""
       return $ structMetadata : compMetadata
     inlineSig assumptions = do
-      label <- optCompLabel
+      label <- fmap make_bytes <$> optCompLabel
       content <- foldr' (pretypeBefore . pure) signatureBody assumptions
       addMetadata Signature content label
     inlineDef assumptions = do
-      label <- optCompLabel
+      label <- fmap make_bytes <$> optCompLabel
       content <- foldr' (pretypeBefore . pure) definitionBody assumptions
       addMetadata Definition content label
     inlineAx assumptions = do
-      label <- optCompLabel
+      label <- fmap make_bytes <$> optCompLabel
       content <- foldr' (pretypeBefore . pure) axiomBody assumptions
       addMetadata Axiom content label
     optCompLabel = optLL1 Nothing $ do
@@ -153,7 +154,7 @@ signatureSection = do
 definitionSection :: FTL [ProofText]
 definitionSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["definition"]
-  label <- optTlsOptions
+  label <- fmap make_bytes <$> optTlsOptions
   content <- definitionBody
   macrosAndPretypings <- many (try STEX.introduceMacro <|> STEX.pretypeVariable)
   endTopLevelSection keyword starred
@@ -166,7 +167,7 @@ definitionSection = do
 axiomSection :: FTL [ProofText]
 axiomSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["axiom"]
-  label <- optTlsOptions
+  label <- fmap make_bytes <$> optTlsOptions
   content <- axiomBody
   macrosAndPretypings <- many (try STEX.introduceMacro <|> STEX.pretypeVariable)
   endTopLevelSection keyword starred
@@ -177,7 +178,7 @@ axiomSection = do
 theoremSection :: FTL [ProofText]
 theoremSection = do
   (keyword, starred) <- try $ beginTopLevelSection ["theorem", "proposition", "lemma", "corollary"]
-  label <- optTlsOptions
+  label <- fmap make_bytes <$> optTlsOptions
   content <- TEX.addAssumptions . topLevelProof $
              pretypeSentence Affirmation (affirmationHeader >> STEX.statement) affirmVars finishWithOptLink <* endTopLevelSection keyword starred
   proofText <- addMetadata Theorem content label
@@ -504,7 +505,7 @@ proofBody :: FTL ()       -- ^ Proof end parser
           -> FTL Block
 proofBody qed link block = do
   bs <- proofText qed
-  ls <- link
+  ls <- map make_bytes <$> link
   return block {Block.body = bs, Block.link = ls ++ Block.link block}
 
 -- | Proof body + proof end
@@ -539,7 +540,7 @@ caseDestinction = do
 
 eqChain :: FTL Block
 eqChain = do
-  dvs <- getDecl; nm <- opt "__" (parenthesised identifier); inp <- getInput
+  dvs <- getDecl; nm <- make_bytes <$> opt "__" (parenthesised identifier); inp <- getInput
   body <- wellFormedCheck (chainVars dvs) $ sTerm >>= nextTerm
   toks <- getTokens inp
   let Tag EqualityChain Trm{trmArgs = [t,_]} = Block.formula $ head body
@@ -557,7 +558,7 @@ nextTerm t = do
   inp <- getInput
   symbol ".="
   s <- sTerm
-  ln <- optLink
+  ln <- map make_bytes <$> optLink
   toks <- getTokens inp
   (:) (Block.makeBlock (Tag EqualityChain $ mkEquality t s)
     [] Affirmation "__" ln toks) <$> eqTail s

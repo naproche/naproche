@@ -16,7 +16,8 @@ import Data.Ord (comparing)
 import Data.Text (Text)
 import Data.Text qualified as Text
 
-import Isabelle.Library (commas)
+import Isabelle.Bytes (Bytes)
+import Isabelle.Library (implode_space)
 import Isabelle.Position qualified as Position
 
 import SAD.Export.Presentation
@@ -120,9 +121,9 @@ after p end = do
 -- returning the result of @p@ and its range.
 enclosed :: Text -> Text -> Parser st a -> Parser st (Position.Range, a)
 enclosed begin end p = do
-  beginPos <- label ("\"" <> begin <> "\"") $ tokenPos' begin
+  beginPos <- label ("\"" <> present begin <> "\"") $ tokenPos' begin
   result <- p
-  endPos <- label ("\"" <> end <> "\"") $ tokenPos' end
+  endPos <- label ("\"" <> present end <> "\"") $ tokenPos' end
   return ((beginPos, endPos), result)
 
 
@@ -132,10 +133,10 @@ enclosed begin end p = do
 
 -- | @texCommand name@ parses @"\\" <name>@.
 texCommand :: Text -> Parser st ()
-texCommand name = label ("\"\\" <> name <> "\"") $ token ("\\" <> name)
+texCommand name = label ("\"\\" <> present name <> "\"") $ token ("\\" <> name)
 
 texCommandPos :: Text -> Parser st Position.T
-texCommandPos name = label ("\"\\" <> name <> "\"") $ tokenPos' ("\\" <> name)
+texCommandPos name = label ("\"\\" <> present name <> "\"") $ tokenPos' ("\\" <> name)
 
 -- | @texCommandWithArg name arg@ parses @"\\" <name> "{" <arg> "}"@.
 texCommandWithArg :: Text -> Parser st a -> Parser st a
@@ -271,7 +272,7 @@ failing p = Parser $ \st ok cerr eerr ->
 
 -- | Labeling of production rules for better error messages.
 infix 0 <?>
-(<?>) :: Parser st a -> Text -> Parser st a
+(<?>) :: Parser st a -> Bytes -> Parser st a
 p <?> msg = Parser $ \st ok cerr eerr ->
   let pok err = ok   $ setError (stPosition st) err
       pcerr = cerr
@@ -285,14 +286,14 @@ p <?> msg = Parser $ \st ok cerr eerr ->
 
 -- | Labeling of production rules for better error messages.
 -- (@label msg p = p <?> msg@)
-label :: Text -> Parser st a -> Parser st a
+label :: Bytes -> Parser st a -> Parser st a
 label msg p = p <?> msg
 
 
 -- * Control error messages
 
 -- | Fail with a well-formedness error.
-failWF :: Text -> Parser st a
+failWF :: Bytes -> Parser st a
 failWF msg = Parser $ \st _ _ eerr ->
   eerr $ newErrorMessage (newWellFormednessMessage [msg]) (stPosition st)
 
@@ -306,7 +307,7 @@ noError p = Parser $ \st ok cerr eerr ->
 
 -- | Parse and keep only results well-formed according to the supplied check;
 -- fail if there are none. Here @Just str@ signifies an error.
-wellFormedCheck :: (a -> Maybe Text) -> Parser st a -> Parser st a
+wellFormedCheck :: (a -> Maybe Bytes) -> Parser st a -> Parser st a
 wellFormedCheck check p = Parser $ \st ok cerr eerr ->
   let pos = stPosition st
       pok err eok cok =
@@ -336,7 +337,7 @@ lexicalCheck check p = Parser $ \st ok cerr eerr ->
   where
     unit err =
       let pos = errorPos err
-      in  Text.unwords . map showToken . takeWhile ((>=) pos . tokenPos) . filter (not . isEOF) . stInput
+      in  implode_space . map showToken . takeWhile ((>=) pos . tokenPos) . filter (not . isEOF) . stInput
         -- TODO: Don't use the default Ord SourcePos instance.
 
 

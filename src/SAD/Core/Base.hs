@@ -45,7 +45,6 @@ import Data.IORef
 import Data.Map qualified as Map
 import Data.Maybe (fromJust, isJust)
 import Data.Set qualified as Set
-import Data.Text (Text)
 import Data.Time (NominalDiffTime, diffUTCTime, getCurrentTime)
 
 import Isabelle.Bytes (Bytes)
@@ -268,7 +267,7 @@ translateLog kind pos = justIO . Message.outputTranslate kind pos
 
 
 
-retrieveContext :: Position.T -> Set.Set Text -> VerifyMonad [Context]
+retrieveContext :: Position.T -> Set.Set Bytes -> VerifyMonad [Context]
 retrieveContext pos names = do
   globalContext <- asks currentContext
   let (context, unfoundSections) = runState (retrieve globalContext) names
