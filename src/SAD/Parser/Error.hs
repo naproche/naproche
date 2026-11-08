@@ -27,7 +27,7 @@ import Isabelle.Library (commas, implode_space)
 import Isabelle.Position qualified as Position
 
 import SAD.Core.Message (console_position)
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 
 
 data Message
@@ -128,8 +128,8 @@ unexpectError uex = newErrorMessage (newUnexpect uex)
 errorMessage :: ParseError -> Message
 errorMessage (ParseError _ msg) = msg
 
-instance Presentation ParseError where
-  present err = console_position (errorPos err) <> ":\n"
+instance Pretty ParseError where
+  pretty_print err = console_position (errorPos err) <> ":\n"
           <> showErrorMessage (errorMessage err)
 
 showErrorMessage :: Message -> Bytes

@@ -20,7 +20,7 @@ import Isabelle.Bytes (Bytes)
 import Isabelle.Library (implode_space)
 import Isabelle.Position qualified as Position
 
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 import SAD.Parser.Base
 import SAD.Parser.Error
 import SAD.Parser.Primitives
@@ -121,9 +121,9 @@ after p end = do
 -- returning the result of @p@ and its range.
 enclosed :: Text -> Text -> Parser st a -> Parser st (Position.Range, a)
 enclosed begin end p = do
-  beginPos <- label ("\"" <> present begin <> "\"") $ tokenPos' begin
+  beginPos <- label ("\"" <> pretty_print begin <> "\"") $ tokenPos' begin
   result <- p
-  endPos <- label ("\"" <> present end <> "\"") $ tokenPos' end
+  endPos <- label ("\"" <> pretty_print end <> "\"") $ tokenPos' end
   return ((beginPos, endPos), result)
 
 
@@ -133,10 +133,10 @@ enclosed begin end p = do
 
 -- | @texCommand name@ parses @"\\" <name>@.
 texCommand :: Text -> Parser st ()
-texCommand name = label ("\"\\" <> present name <> "\"") $ token ("\\" <> name)
+texCommand name = label ("\"\\" <> pretty_print name <> "\"") $ token ("\\" <> name)
 
 texCommandPos :: Text -> Parser st Position.T
-texCommandPos name = label ("\"\\" <> present name <> "\"") $ tokenPos' ("\\" <> name)
+texCommandPos name = label ("\"\\" <> pretty_print name <> "\"") $ tokenPos' ("\\" <> name)
 
 -- | @texCommandWithArg name arg@ parses @"\\" <name> "{" <arg> "}"@.
 texCommandWithArg :: Text -> Parser st a -> Parser st a
@@ -221,19 +221,19 @@ repeatUntil step = fmap (uncurry (<>)) . repeatUntil' step
 -- * Control ambiguity
 
 -- | If @p@ is ambiguous, @narrow p@ fails and reports a well-formedness error.
-narrow :: Presentation a => Parser st a -> Parser st a
+narrow :: Pretty a => Parser st a -> Parser st a
 narrow p = Parser $ \st ok cerr eerr ->
   let pok err eok cok = case eok ++ cok of
         [_] -> ok err eok cok
-        ls -> eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error " <> present (map prResult ls)]) (stPosition st)
+        ls -> eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error " <> pretty_print (map prResult ls)]) (stPosition st)
   in  runParser p st pok cerr eerr
 
 -- | If @p@ is ambiguous, @narrow p@ fails and reports a well-formedness error.
-narrow2 :: Presentation b => Parser st (a, b) -> Parser st (a, b)
+narrow2 :: Pretty b => Parser st (a, b) -> Parser st (a, b)
 narrow2 p = Parser $ \st ok cerr eerr ->
   let pok err eok cok = case eok ++ cok of
         [_] -> ok err eok cok
-        ls -> eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error " <> present (map (snd . prResult) ls)]) (stPosition st)
+        ls -> eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error " <> pretty_print (map (snd . prResult) ls)]) (stPosition st)
   in  runParser p st pok cerr eerr
 
 -- | Only take the longest possible parses (by @SourcePos@), discard all others.

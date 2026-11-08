@@ -36,7 +36,7 @@ import SAD.Data.Rules qualified as Rule
 import SAD.Data.Text.Block qualified as Block (body, link, position)
 import SAD.Data.Text.Context (Context)
 import SAD.Data.Text.Context qualified as Context
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 
 
 -- Lexicographic path ordering
@@ -196,14 +196,14 @@ generateConditions pos verbositySetting rules w l r =
       simpLog Message.WRITELN pos "no matching normal forms found"
       showPath leftNormalForm; showPath rightNormalForm
     showPath ((t,_):rest) = when verbositySetting $ do
-      simpLog Message.WRITELN pos (present t)
+      simpLog Message.WRITELN pos (pretty_print t)
       mapM_ (simpLog Message.WRITELN pos . format) rest
     -- formatting of paths
-    format (t, simpInfo) = " --> " <> present t <> conditions simpInfo
+    format (t, simpInfo) = " --> " <> pretty_print t <> conditions simpInfo
     conditions (conditions, name) =
       (if Bytes.null name then "" else " by " <> name <> ",") <>
       (if null conditions then "" else " conditions: " <>
-        commas (map present conditions))
+        commas (map pretty_print conditions))
 
 
 {- applies computational reasoning to an equality chain -}
@@ -279,7 +279,7 @@ dischargeConditions pos verbositySetting conditions =
     format conditions =
       if   null conditions
       then " - "
-      else commas . map present $ reverse conditions
+      else commas . map pretty_print $ reverse conditions
     log msg =
       when verbositySetting $ asks currentThesis >>=
         flip (simpLog Message.WRITELN . Block.position . Context.head) msg

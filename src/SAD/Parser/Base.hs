@@ -39,7 +39,7 @@ import Isabelle.Position qualified as Position
 
 import SAD.Core.Message (errorParser)
 import SAD.Data.Instr (Dialect)
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 import SAD.Parser.Error
 import SAD.Parser.Token
 
@@ -104,7 +104,7 @@ instance Fail.MonadFail (Parser st) where
 launchParser :: Parser st a -> State st -> IO (a, State st)
 launchParser parser state =
   case runP parser state of
-    Left err -> errorParser (errorPos err) (present err)
+    Left err -> errorParser (errorPos err) (pretty_print err)
     Right (PR a st) -> return (a, st)
 
 -- This function is simple, but unfriendly to read because of all the

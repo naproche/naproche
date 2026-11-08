@@ -54,7 +54,7 @@ import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Text.Context (Context(Context))
 import SAD.Data.Text.Context qualified as Context
 import SAD.Data.Text.Decl (newDecl)
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 import SAD.Export.Prover qualified as Prover
 import SAD.Prove.MESON qualified as MESON
 
@@ -114,7 +114,7 @@ proveGoals pos depthlimit = prove 0
 
         updateTrivialStatistics =
           unless (isTop goal) $ whenInstruction printreasonParam $ do
-            reasonLog Message.WRITELN pos ("trivial: " <> present goal)
+            reasonLog Message.WRITELN pos ("trivial: " <> pretty_print goal)
             incrementCounter TrivialGoals
 
 splitGoal :: Context -> [Formula]
@@ -140,8 +140,8 @@ launchProver pos iteration = do
 
   whenInstruction printfulltaskParam $ do
     reasonLog Message.WRITELN pos $ "prover task:\n" <>
-      Bytes.concat (map (\c -> "  " <> present (Context.formula c) <> "\n") (reverse context)) <>
-      "  |- " <> present (Context.formula goal) <> "\n"
+      Bytes.concat (map (\c -> "  " <> pretty_print (Context.formula c) <> "\n") (reverse context)) <>
+      "  |- " <> pretty_print (Context.formula goal) <> "\n"
 
   status <- timeWith ProofTimer (justIO $ Prover.export cache pos iteration instrList context goal)
   trackers <- readTrackers
@@ -302,8 +302,8 @@ unfold pos = do
 
     unfoldLog (goal:lowLevelContext) =
       whenInstruction printunfoldParam $ reasonLog Message.WRITELN pos $ "unfold to:\n"
-        <> implode_space (reverse $ map ((<>) "  " . present . Context.formula) lowLevelContext)
-        <> "  |- " <> present (neg $ Context.formula goal)
+        <> implode_space (reverse $ map ((<>) "  " . pretty_print . Context.formula) lowLevelContext)
+        <> "  |- " <> pretty_print (neg $ Context.formula goal)
 
     neg (Not f) = f
     neg f = f

@@ -11,7 +11,7 @@ module SAD.Data.Rules where
 import Isabelle.Bytes (Bytes)
 
 import SAD.Data.Formula (Formula)
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 
 
 data Rule = Rule {
@@ -20,7 +20,7 @@ data Rule = Rule {
   condition :: [Formula], -- conditions
   label :: Bytes }   -- label
 
-instance Presentation Rule where
-  present rl =
-    present (left rl) <> " = " <> present (right rl) <>
-    ", Cond: " <> present (condition rl) <> ", Label: " <> label rl
+instance Pretty Rule where
+  pretty_print rl =
+    pretty_print (left rl) <> " = " <> pretty_print (right rl) <>
+    ", Cond: " <> pretty_print (condition rl) <> ", Label: " <> label rl

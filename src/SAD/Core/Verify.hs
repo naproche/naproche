@@ -35,7 +35,7 @@ import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Text.Context (Context(Context))
 import SAD.Data.Text.Context qualified as Context
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 import SAD.Export.Prover qualified as Prover
 import SAD.Prove.MESON qualified as MESON
 
@@ -71,21 +71,21 @@ verify (ProofTextInstr pos (Command cmd) : rest) = command cmd >> verify rest
     command :: Command -> VerifyMonad ()
     command PrintRules = do
       rules <- asks rewriteRules
-      message $ "current ruleset: " <> "\n" <> implode_space (map present (reverse rules))
+      message $ "current ruleset: " <> "\n" <> implode_space (map pretty_print (reverse rules))
     command PrintThesis = do
       motivated <- asks thesisMotivated
       thesis <- asks currentThesis
       let motivation = if motivated then "(motivated): " else "(not motivated): "
-      message $ "current thesis " <> motivation <> present (Context.formula thesis)
+      message $ "current thesis " <> motivation <> pretty_print (Context.formula thesis)
     command PrintContext = do
       context <- asks currentContext
       message $ "current context:\n" <>
-        Bytes.concat (map (\form -> "  " <> present (Context.formula form) <> "\n") (reverse context))
+        Bytes.concat (map (\form -> "  " <> pretty_print (Context.formula form) <> "\n") (reverse context))
     command PrintContextFiltered = do
       context <- asks currentContext
       let topLevelContext = filter Context.isTopLevel context
       message $ "current filtered top-level context:\n" <>
-        Bytes.concat (map (\form -> "  " <> present (Context.formula form) <> "\n") (reverse topLevelContext))
+        Bytes.concat (map (\form -> "  " <> pretty_print (Context.formula form) <> "\n") (reverse topLevelContext))
     command ResetPretyping = pure ()
     command _ = do
       message "unsupported instruction"
@@ -134,13 +134,13 @@ verifyBlock block rest = do
   incrementCounter Sections
   whenInstruction printsectionParam $ justIO $
     Message.outputForTheL Message.WRITELN (Block.position block) $
-    make_bytes (trim_line (present block))
+    make_bytes (trim_line (pretty_print block))
   let newBranch = block : branch
   let contextBlock = Context f newBranch []
 
   whenInstruction translationParam $
     unless (Block.isTopLevel block) $
-      translateLog Message.WRITELN (Block.position block) $ present f
+      translateLog Message.WRITELN (Block.position block) $ pretty_print f
 
   fortifiedFormula <-
     if Block.isTopLevel block
@@ -162,7 +162,7 @@ verifyBlock block rest = do
     toBeProved && notNull proofBody &&
     not (hasDEC $ Context.formula freshThesis)) $
       thesisLog Message.WRITELN (Block.position block) (length branch - 1) $
-      "thesis: " <> present (Context.formula freshThesis)
+      "thesis: " <> pretty_print (Context.formula freshThesis)
 
   fortifiedProof <-
     local (\st -> st {
@@ -200,7 +200,7 @@ verifyBlock block rest = do
     hasChanged && motivated && newMotivation &&
     not (hasDEC $ Block.formula $ head branch) ) $
       thesisLog Message.WRITELN (Block.position block) (length branch - 2) $
-      "new thesis: " <> present (Context.formula newThesis)
+      "new thesis: " <> pretty_print (Context.formula newThesis)
 
   when (not newMotivation && motivated) $
     thesisLog Message.WARNING (Block.position block) (length branch - 2) "unmotivated assumption"
@@ -259,7 +259,7 @@ verifyProof restProofText = do
         noInductionOrCase (Context.formula newThesis) && not (null restProofText)) $
           thesisLog Message.WRITELN
           (Block.position $ head $ Context.branch $ head context) (length branch - 2) $
-          "new thesis " <> present (Context.formula newThesis)
+          "new thesis " <> pretty_print (Context.formula newThesis)
       local (\st -> st {
         rewriteRules = newRules,
         currentThesis = newThesis,

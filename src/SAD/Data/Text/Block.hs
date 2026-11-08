@@ -36,7 +36,7 @@ import Isabelle.Position qualified as Position
 import SAD.Data.Formula hiding (CaseHypothesis)
 import SAD.Data.Instr
 import SAD.Data.Text.Decl
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 import SAD.Parser.Error (ParseError)
 import SAD.Parser.Token
 
@@ -50,12 +50,12 @@ data ProofText =
   | ProofTextMacro Position.T
   | ProofTextError ParseError
 
-instance Presentation ProofText where
-  present (ProofTextBlock block) = present block
-  present (ProofTextInstr _ instr) = show_bytes instr
-  present (ProofTextDrop _ instr) = show_bytes instr
-  present (ProofTextError err) = present err
-  present _ = ""
+instance Pretty ProofText where
+  pretty_print (ProofTextBlock block) = pretty_print block
+  pretty_print (ProofTextInstr _ instr) = show_bytes instr
+  pretty_print (ProofTextDrop _ instr) = show_bytes instr
+  pretty_print (ProofTextError err) = pretty_print err
+  pretty_print _ = ""
 
 data Block = Block {
   formula :: Formula,
@@ -85,18 +85,18 @@ data Section =
   ProofByContradiction
   deriving (Eq)
 
-instance Presentation Section where
-  present Definition = "Definition"
-  present Signature = "Signature"
-  present Axiom = "Axiom"
-  present Theorem = "Theorem"
-  present CaseHypothesis = "Case hypothesis"
-  present Assumption = "Assumption"
-  present Choice = "Choice"
-  present Affirmation = "Affirmation"
-  present Posit = "Posit"
-  present LowDefinition = "Low-level definition"
-  present ProofByContradiction = "Proof by contradiction"
+instance Pretty Section where
+  pretty_print Definition = "Definition"
+  pretty_print Signature = "Signature"
+  pretty_print Axiom = "Axiom"
+  pretty_print Theorem = "Theorem"
+  pretty_print CaseHypothesis = "Case hypothesis"
+  pretty_print Assumption = "Assumption"
+  pretty_print Choice = "Choice"
+  pretty_print Affirmation = "Affirmation"
+  pretty_print Posit = "Posit"
+  pretty_print LowDefinition = "Low-level definition"
+  pretty_print ProofByContradiction = "Proof by contradiction"
 
 -- Composition
 
@@ -142,13 +142,13 @@ declaredNames = Set.map declName . declaredVariables
 
 -- Show instances
 
-instance Presentation Block where
-  present = showBlock 0
+instance Pretty Block where
+  pretty_print = showBlock 0
 
 showBlock :: Int -> Block -> Bytes
 showBlock p block@Block{body = b, name = name, kind = kind}
   | null b = showForm p block
-  | isTopLevel block = present kind <> addName <> ":\n" <> showBlockForm (p + 1) block <>
+  | isTopLevel block = pretty_print kind <> addName <> ":\n" <> showBlockForm (p + 1) block <>
       (if needsProof block
         then if null b
           then indent p "Trivial:\n"
@@ -165,14 +165,14 @@ showBlock p block@Block{body = b, name = name, kind = kind}
 
 showForm :: Int -> Block -> Bytes
 showForm p block@Block{formula = formula, name = name} =
-  indent p $ present formula <> "\n"
+  indent p $ pretty_print formula <> "\n"
 
 showBlockForm :: Int -> Block -> Bytes
 showBlockForm p block =
-  indent p $ present (formulate block) <> "\n"
+  indent p $ pretty_print (formulate block) <> "\n"
 
 showProof :: Int -> [ProofText] -> Bytes
-showProof p = foldr (\pt bs -> indent p (present pt) <> bs) ""
+showProof p = foldr (\pt bs -> indent p (pretty_print pt) <> bs) ""
 
 indent :: Int -> Bytes -> Bytes
 indent n bs = Bytes.pack (replicate (2 * n) 0x20) <> bs

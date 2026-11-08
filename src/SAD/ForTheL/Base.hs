@@ -29,7 +29,7 @@ import Naproche.Program as Program
 import SAD.Data.Formula
 import SAD.Data.Pattern
 import SAD.Data.Text.Decl
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 import SAD.Parser.Base
 import SAD.Parser.Char (isAsciiLetter)
 import SAD.Parser.Combinators
@@ -300,10 +300,10 @@ primSnt p = noError $ varList >>= getExpr symbNotionExpr . snt
 
 -- | Adding error reporting to pattern parsing.
 patternTokenOf' :: [Text] -> FTL ()
-patternTokenOf' l = label ("a word of " <> present l) $ tokenOf' l
+patternTokenOf' l = label ("a word of " <> pretty_print l) $ tokenOf' l
 
 patternSymbolTokenOf :: Text -> FTL ()
-patternSymbolTokenOf l = label ("the symbol " <> present l) $ token l
+patternSymbolTokenOf l = label ("the symbol " <> pretty_print l) $ token l
 
 -- | Most basic pattern parser: simply follow the pattern and parse terms with p
 -- at variable places
@@ -404,7 +404,7 @@ varList = var `sepBy` token' "," >>= nodups
 nodups :: IsVar a => [a] -> FTL (Set a)
 nodups vs = do
   unless ((null :: [b] -> Bool) $ duplicateNames vs) $
-    fail (make_string $ "duplicate names: " <> present vs)
+    fail (make_string $ "duplicate names: " <> pretty_print vs)
   pure $ Set.fromList vs
 
 hidden :: FTL PosVar
@@ -503,7 +503,7 @@ freeOrOverlapping vs f
   where
     sbs = implode_space $ map showVar $ Set.toList $ fvToVarSet $ excludeSet (free f) vs
     ovl = implode_space $ map showVar $ Set.toList $ over vs f
-    info = "\n in translation: " <> present f
+    info = "\n in translation: " <> pretty_print f
 
     over :: Set VariableName -> Formula -> Set VariableName
     over vs (All v f) = boundVars vs (declName v) f
@@ -586,4 +586,4 @@ upperGreek = [
 -- | Print a variable (just for now).
 showVar :: VariableName -> Bytes
 showVar (VarConstant nm) = make_bytes nm
-showVar nm = present nm
+showVar nm = pretty_print nm

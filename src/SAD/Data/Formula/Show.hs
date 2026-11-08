@@ -21,11 +21,11 @@ import SAD.Data.Formula.Kit
 import SAD.Data.Pattern
 import SAD.Data.Terms
 import SAD.Data.VarName
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 
 
-instance Presentation Formula where
-  present = showFormula 0
+instance Pretty Formula where
+  pretty_print = showFormula 0
 
 -- | Show a formula (depending of the current nesting depth of quantifiers).
 showFormula :: Int -> Formula -> Bytes
@@ -74,7 +74,7 @@ showFormula d ThisT = "ThisT"
 showFormula d Trm{trmName = name, trmArgs = args} = showTerm d name args
 -- Free variables:
 showFormula d Var{varName = VarConstant s} = make_bytes s
-showFormula d Var{varName = vName} = present vName
+showFormula d Var{varName = vName} = pretty_print vName
 -- De Brujin index:
 showFormula d Ind{indIndex = i}
       | i < d = "v" <> show_bytes (d - i - 1)

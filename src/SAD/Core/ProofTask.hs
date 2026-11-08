@@ -16,7 +16,7 @@ import Isabelle.Library (make_string)
 import SAD.Data.Formula
 import SAD.Data.Text.Block (Section(..))
 import SAD.Data.Text.Decl
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 import SAD.Prove.Normalize
 
 
@@ -39,7 +39,7 @@ mapDcl _ = False
 classDcl :: Formula -> Bool
 classDcl (Trm{trId = id} `And` _) = id == SetId || id == ClassId
 classDcl (f `And` _) = classDcl f
-classDcl f = error (make_string $ "Misformed definition: " <> present f)
+classDcl f = error (make_string $ "Misformed definition: " <> pretty_print f)
 
 
 -- ** Proof tasks for classes
@@ -52,7 +52,7 @@ classTask (_ `And` (All x (_ `Iff` (Tag Replacement f)))) = Top
 -- {t(x_1,...,x_n) in X | ...}
 classTask (_ `And` (All _ (_ `Iff` f))) = Top
 -- Anything else
-classTask f = error (make_string $ "Misformed definition: " <> present f)
+classTask f = error (make_string $ "Misformed definition: " <> pretty_print f)
 
 
 -- ** Proof tasks for maps
@@ -121,7 +121,7 @@ uniquenessTask = Tag UniquenessTask . dive
 separation :: Formula -> Formula
 separation (f `And` g) = separation f
 separation t | isElem t = dec $ mkClass $ last $ trmArgs t
-separation f = error (make_string $ "Misformed argument: " <> present f)
+separation f = error (make_string $ "Misformed argument: " <> pretty_print f)
 
 -- output a description of a map in the form
 -- @(condition_1 /\ evaluation_1) \/ ... \/ (condition_n /\ evaluation_n)@

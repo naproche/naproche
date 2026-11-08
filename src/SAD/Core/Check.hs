@@ -27,7 +27,7 @@ import SAD.Data.Instr
 import SAD.Data.Text.Block qualified as Block (link, position)
 import SAD.Data.Text.Context (Context)
 import SAD.Data.Text.Context qualified as Context
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 
 
 {- check definitions and fortify terms with evidences in a formula -}
@@ -81,7 +81,7 @@ setDef pos isNewWord context term@Trm{trmName = t, trId = tId} =
   where
     out =
       reasonLog Message.ERROR (Block.position (Context.head context)) $
-        "unrecognized: " <> present term
+        "unrecognized: " <> pretty_print term
 
 
 -- Find relevant definitions and test them
@@ -135,9 +135,9 @@ testDef pos context term (guards, fortifiedTerm) = do
 
 
     header select guards =
-      "check: " <> present term <> " vs " <> format (select guards)
+      "check: " <> pretty_print term <> " vs " <> format (select guards)
     thead [] = ""; thead guards = "(trivial: " <> format guards <> ")"
-    format guards = if null guards then " - " else implode_space . map present $ guards
+    format guards = if null guards then " - " else implode_space . map pretty_print $ guards
     defLog =
       whenInstruction printcheckParam .
         reasonLog Message.WRITELN (Block.position (head $ Context.branch context))

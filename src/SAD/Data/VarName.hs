@@ -30,7 +30,7 @@ import Isabelle.Library (make_bytes, show_bytes)
 import Isabelle.Position qualified as Position
 
 import SAD.Core.Message (console_position)
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 
 
 -- These names may not reflect what the constructors are used for..
@@ -53,19 +53,19 @@ isVarHole :: VariableName -> Bool
 isVarHole (VarHole _) = True
 isVarHole _ = False
 
-instance Presentation VariableName where
-  present (VarConstant s) = "x" <> make_bytes s
-  present (VarHole s) = "?" <> make_bytes s
-  present VarSlot = "!"
-  present (VarU s) = "u" <> make_bytes s
-  present (VarHidden n) = "h" <> show_bytes n
-  present (VarAssume n) = "i" <> show_bytes n
-  present (VarSkolem n) = "o" <> show_bytes n
-  present (VarTask s) = "c" <> present s
-  present (VarZ s) = "z" <> make_bytes s
-  present (VarGlobal s) = "w" <> make_bytes s
-  present VarEmpty = ""
-  present (VarDefault s) = make_bytes s
+instance Pretty VariableName where
+  pretty_print (VarConstant s) = "x" <> make_bytes s
+  pretty_print (VarHole s) = "?" <> make_bytes s
+  pretty_print VarSlot = "!"
+  pretty_print (VarU s) = "u" <> make_bytes s
+  pretty_print (VarHidden n) = "h" <> show_bytes n
+  pretty_print (VarAssume n) = "i" <> show_bytes n
+  pretty_print (VarSkolem n) = "o" <> show_bytes n
+  pretty_print (VarTask s) = "c" <> pretty_print s
+  pretty_print (VarZ s) = "z" <> make_bytes s
+  pretty_print (VarGlobal s) = "w" <> make_bytes s
+  pretty_print VarEmpty = ""
+  pretty_print (VarDefault s) = make_bytes s
 
 data PosVar = PosVar
   { posVarName :: VariableName
@@ -78,11 +78,11 @@ instance Eq PosVar where
 instance Ord PosVar where
   compare = compare `on` posVarName
 
-instance Presentation PosVar where
-  present (PosVar v pos) =
-    "(" <> present v <> ", " <> console_position pos <> ")"
+instance Pretty PosVar where
+  pretty_print (PosVar v pos) =
+    "(" <> pretty_print v <> ", " <> console_position pos <> ")"
 
-class (Ord a, Presentation a) => IsVar a where
+class (Ord a, Pretty a) => IsVar a where
   buildVar :: VariableName -> Position.T -> a
 
 instance IsVar VariableName where

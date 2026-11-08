@@ -26,7 +26,7 @@ import SAD.Data.Formula
 import SAD.Data.Text.Block (Block, ProofText(..), Section(..))
 import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Text.Decl
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 import SAD.ForTheL.Base
 import SAD.ForTheL.Reports (addBlockReports, markupToken, markupTokenOf, markupTokenSeqOf)
 import SAD.ForTheL.Reports qualified as Reports
@@ -319,7 +319,7 @@ indThesis fr pre post = do
     indStatem vs (Imp g f) = (Imp g .) <$> indStatem vs f
     indStatem vs (All v f) = (dAll v .) <$> indStatem (deleteDecl v vs) f
     indStatem vs f | Set.null vs = pure (`Imp` f)
-    indStatem _ _ = failWF $ "invalid induction thesis " <> present fr
+    indStatem _ _ = failWF $ "invalid induction thesis " <> pretty_print fr
 
     insertIndTerm it cn = cn $ Tag InductionHypothesis $ subst it (VarHole "") $ cn $ mkLess it (mkVar (VarHole ""))
 

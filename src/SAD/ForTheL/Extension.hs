@@ -17,7 +17,7 @@ import Isabelle.Bytes (Bytes)
 
 import SAD.Data.Formula
 import SAD.Data.Text.Decl
-import SAD.Export.Presentation
+import SAD.Export.Pretty
 import SAD.ForTheL.Base
 
 
@@ -26,7 +26,7 @@ import SAD.ForTheL.Base
 funVars, notionVars, prdVars :: (Formula, Formula) -> Maybe Bytes
 
 funVars (f, d) | not ifq   = prdVars (f, d)
-               | not idq   = Just $ "illegal function alias: " <> present d
+               | not idq   = Just $ "illegal function alias: " <> pretty_print d
                | otherwise = prdVars (t {trmArgs = v:trmArgs t}, d)
   where
     ifq = isTrm f && trmName f == TermEquality && isTrm t
@@ -43,7 +43,7 @@ notionVars (f, d) | not isFunction = prdVars (f, d)
     Trm {trmArgs = vs} = t
 
 
-prdVars (f, d) | not flat  = Just $ "compound expression: " <> present f
+prdVars (f, d) | not flat  = Just $ "compound expression: " <> pretty_print f
                | otherwise = freeOrOverlapping (fvToVarSet $ free f) d
   where
     flat = isTrm f && allDistinctVars (trmArgs f)
