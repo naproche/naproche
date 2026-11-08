@@ -8,8 +8,8 @@ module SAD.Data.Definition where
 
 import Data.Map (Map)
 
+import SAD.Data.DisTree (DisTree)
 import SAD.Data.Formula (Formula, TermId)
-import SAD.Data.Structures.DisTree (DisTree)
 
 
 data DefType = Signature | Definition

@@ -57,11 +57,11 @@ import Naproche.Param qualified as Param
 
 import SAD.Core.Message qualified as Message
 import SAD.Data.Definition
+import SAD.Data.DisTree (DisTree)
+import SAD.Data.DisTree qualified as DisTree
 import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Rules (Rule)
-import SAD.Data.Structures.DisTree (DisTree)
-import SAD.Data.Structures.DisTree qualified as DisTree
 import SAD.Data.Text.Block (Block, makeBlock)
 import SAD.Data.Text.Block qualified as Block (Section(..))
 import SAD.Data.Text.Context (Context(Context), MRule(..))

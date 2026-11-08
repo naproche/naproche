@@ -81,10 +81,10 @@ library:
     - Isabelle.Naproche
     - SAD.Main
     - SAD.Core.ProofTask
+    - SAD.Core.Reader
     - SAD.Data.Formula.Kit
     - SAD.ForTheL.Base
     - SAD.ForTheL.Structure
-    - SAD.Import.Reader
     - SAD.Parser.Combinators
     - SAD.Parser.Primitives
     - SAD.Parser.Token

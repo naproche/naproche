@@ -40,14 +40,13 @@ import Naproche.System (is_windows)
 
 import Network.Socket (Socket)
 
-import SAD.Core.Base (Counter(..), Timer(..), maximalTimer, showTimeDiff,
-                      sumCounter, sumTimer)
+import SAD.Core.Base (Counter(..), Timer(..), maximalTimer, showTimeDiff, sumCounter, sumTimer)
 import SAD.Core.Message (Kind(..), errorParser, outputMain)
+import SAD.Core.Reader (readProofText)
 import SAD.Core.Verify (verifyRoot)
 import SAD.Data.Instr
 import SAD.Data.Text.Block (ProofText(..), parseErrors)
 import SAD.Export.Prover qualified as Prover
-import SAD.Import.Reader (readProofText)
 import SAD.Parser.Error (ParseError(..))
 import SAD.Parser.FTL.Lexer qualified as FTL
 import SAD.Parser.FTL.Token qualified as FTL

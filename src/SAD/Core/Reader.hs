@@ -1,13 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module      : SAD.Import.Reader
+-- Module      : SAD.Core.Reader
 -- Description : Main text reading functions.
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 --               (c) 2024, Marcel Schütz
 -- License     : GPL-3
-module SAD.Import.Reader (
+module SAD.Core.Reader (
   readProofText
 ) where
 

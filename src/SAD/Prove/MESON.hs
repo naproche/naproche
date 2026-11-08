@@ -27,9 +27,9 @@ import Isabelle.Cache qualified as Cache
 import Isabelle.Library (fold_rev)
 import Isabelle.Time qualified as Time
 
+import SAD.Data.DisTree (DisTree)
+import SAD.Data.DisTree qualified as DisTree
 import SAD.Data.Formula
-import SAD.Data.Structures.DisTree (DisTree)
-import SAD.Data.Structures.DisTree qualified as DisTree
 import SAD.Data.Text.Context (Context, MRule(MR, conclusion))
 import SAD.Data.Text.Context qualified as Context
 import SAD.Prove.Normalize

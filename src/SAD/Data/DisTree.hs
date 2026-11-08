@@ -1,11 +1,11 @@
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 -- |
--- Module      : SAD.Data.Structures.DisTree
+-- Module      : SAD.Data.DisTree
 -- Description : Discrimination tree data structure.
 -- Copyright   : (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
-module SAD.Data.Structures.DisTree (
+module SAD.Data.DisTree (
   DisTree,
   empty,
   insert,

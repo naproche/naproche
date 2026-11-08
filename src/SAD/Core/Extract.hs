@@ -23,11 +23,11 @@ import Data.Maybe
 import Data.Text qualified as Text
 
 import SAD.Data.Definition
+import SAD.Data.DisTree (DisTree)
+import SAD.Data.DisTree qualified as DisTree
 import SAD.Data.Formula
 import SAD.Data.Rules (Rule(Rule))
 import SAD.Data.Rules qualified as Rule
-import SAD.Data.Structures.DisTree (DisTree)
-import SAD.Data.Structures.DisTree qualified as DisTree
 import SAD.Data.Text.Context (Context)
 import SAD.Data.Text.Context qualified as Context (formula, name)
 import SAD.Data.Text.Decl
