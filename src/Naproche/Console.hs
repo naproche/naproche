@@ -10,6 +10,7 @@ module Naproche.Console (
   exit
 ) where
 
+import Isabelle.Bytes (Bytes)
 import Isabelle.Library
 import Isabelle.UTF8 qualified as UTF8
 
@@ -23,10 +24,10 @@ setup = do
   IO.hSetBuffering IO.stdout IO.LineBuffering
   IO.hSetBuffering IO.stderr IO.LineBuffering
 
-stdout :: STRING a => a -> IO ()
+stdout :: Bytes -> IO ()
 stdout = IO.putStrLn . make_string
 
-stderr :: STRING a => a -> IO ()
+stderr :: Bytes -> IO ()
 stderr = IO.hPutStrLn IO.stderr . make_string
 
 exit :: Int -> IO a

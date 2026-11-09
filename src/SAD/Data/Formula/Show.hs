@@ -13,7 +13,7 @@ module SAD.Data.Formula.Show () where
 import Data.Text qualified as Text
 
 import Isabelle.Bytes (Bytes)
-import Isabelle.Library (commas, make_bytes, show_bytes)
+import Isabelle.Library (commas, make_bytes)
 import Isabelle.Position qualified as Position
 
 import SAD.Data.Formula.Base
@@ -59,7 +59,7 @@ showFormula d (And f g@(And _ _)) = showFormulaL d f <> " \\<and> " <> showFormu
 -- Conjunction:
 showFormula d (And f g) = showFormulaL d f <> " \\<and> " <> showFormulaR d g
 -- Tagged formula:
-showFormula d (Tag a f) = show_bytes a <> " \\<Colon> " <> showFormulaR d f
+showFormula d (Tag a f) = pretty_print a <> " \\<Colon> " <> showFormulaR d f
 -- Inequality:
 showFormula d (Not Trm{trmName = TermEquality, trmArgs = [l, r]}) = showFormula d l <> " \\<noteq> " <> showFormula d r
 -- Negation:
@@ -77,8 +77,8 @@ showFormula d Var{varName = VarConstant s} = make_bytes s
 showFormula d Var{varName = vName} = pretty_print vName
 -- De Brujin index:
 showFormula d Ind{indIndex = i}
-      | i < d = "v" <> show_bytes (d - i - 1)
-      | otherwise = "v?" <> show_bytes i
+      | i < d = "v" <> pretty_print (d - i - 1)
+      | otherwise = "v?" <> pretty_print i
 
 showTerm :: Int -> TermName -> [Formula] -> Bytes
 showTerm d (TermSymbolic patterns) formulas = dive patterns formulas
@@ -96,7 +96,7 @@ showTerm d (TermUnaryAdjective pattern) formulas = "is" <> showPredicatePattern 
 showTerm d (TermMultiAdjective pattern) formulas = "mis" <> showPredicatePattern pattern <> showArguments d formulas
 showTerm d (TermUnaryVerb pattern) formulas = "do" <> showPredicatePattern pattern <> showArguments d formulas
 showTerm d (TermMultiVerb pattern) formulas = "mdo" <> showPredicatePattern pattern <> showArguments d formulas
-showTerm _ (TermTask n) _ = "tsk_" <> show_bytes n
+showTerm _ (TermTask n) _ = "tsk_" <> pretty_print n
 showTerm d TermEquality [l, r] = showFormula d l <> " = " <> showFormula d r
 showTerm _ TermEquality _ = error "Invalid number of arguments"
 showTerm d TermLess formulas = "iLess" <> showArguments d formulas

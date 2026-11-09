@@ -18,12 +18,11 @@ module SAD.Data.Instr (
   translationParam,
   helpParam, serverParam,
   modeParam, dialectParam, proverParam, texExeParam, bibtexExeParam,
-  keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument,
-  keywordsDropLimit, keywordsDropFlag
+  keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsText,
+  keywordsPath, keywordsDropLimit, keywordsDropFlag
 ) where
 
 import Data.Text (Text)
-import Data.Text qualified as Lazy
 
 import Isabelle.Bytes (Bytes)
 import Isabelle.Library
@@ -31,6 +30,7 @@ import Isabelle.Library
 import Naproche.Param qualified as Param
 import Naproche.Prover qualified as Prover
 
+import SAD.Export.Pretty
 
 -- Instruction types
 
@@ -38,11 +38,11 @@ import Naproche.Prover qualified as Prover
 -- for read instruction to work properly.
 data Dialect = Ftl | Tex | Stex deriving (Eq)
 
-instance Show Dialect where
-  show :: Dialect -> String
-  show Ftl = "FTL"
-  show Tex = "TeX"
-  show Stex = "sTeX"
+instance Pretty Dialect where
+  pretty_print :: Dialect -> Bytes
+  pretty_print Ftl = "FTL"
+  pretty_print Tex = "TeX"
+  pretty_print Stex = "sTeX"
 
 data Instr =
     Command Command
@@ -176,33 +176,34 @@ serverParam = Param.flag "server" "run in server mode" False
 
 -- Keywords
 
-keywordsCommand :: [(Command, Text)]
-keywordsCommand =
- [(ResetPretyping, "resetpretyping"),
-  (PrintRules, "rules"),
-  (PrintThesis, "thesis"),
-  (PrintContext, "context"),
-  (PrintContextFiltered, "filter"),
-  (Exit, "exit")]
+keywordsCommand :: [(Command, Bytes)]
+keywordsCommand = [
+    (ResetPretyping, "resetpretyping"),
+    (PrintRules, "rules"),
+    (PrintThesis, "thesis"),
+    (PrintContext, "context"),
+    (PrintContextFiltered, "filter"),
+    (Exit, "exit")
+  ]
 
-keywordsSynonym :: [([Text] -> Instr, Text)]
-keywordsSynonym =
-  [(Synonym, "synonym")]
+keywordsSynonym :: [([Text] -> Instr, Bytes)]
+keywordsSynonym = [(Synonym, "synonym")]
 
+keywordsPath :: [(FilePath -> Instr, Bytes)]
+keywordsPath = [(GetRelativeFilePath, "read")]
 
-paramKeyword :: (Param.T a -> b) -> Param.T a -> (b, Text)
-paramKeyword f p = (f p, Lazy.pack $ make_string $ Param.name p)
+paramKeyword :: (Param.T a -> b) -> Param.T a -> (b, Bytes)
+paramKeyword f p = (f p, Param.name p)
 
-keywordsLimit :: [(Int -> Instr, Text)]
+keywordsLimit :: [(Int -> Instr, Bytes)]
 keywordsLimit = map (paramKeyword SetInt) textLimits
 
-keywordsFlag :: [(Bool -> Instr, Text)]
+keywordsFlag :: [(Bool -> Instr, Bytes)]
 keywordsFlag = map (paramKeyword SetBool) textFlags
 
-keywordsDropLimit, keywordsDropFlag :: [(Drop, Text)]
+keywordsText :: [(Bytes -> Instr, Bytes)]
+keywordsText = map (paramKeyword SetBytes) textArgs
+
+keywordsDropLimit, keywordsDropFlag :: [(Drop, Bytes)]
 keywordsDropLimit = map (paramKeyword DropInt) textLimits
 keywordsDropFlag = map (paramKeyword DropBool) textFlags
-
-keywordsArgument :: [(Text -> Instr, Text)]
-keywordsArgument =
- (GetRelativeFilePath . Lazy.unpack, "read") : map (paramKeyword (\p -> SetBytes p . make_bytes)) textArgs

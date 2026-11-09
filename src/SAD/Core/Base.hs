@@ -49,7 +49,7 @@ import Data.Time (NominalDiffTime, diffUTCTime, getCurrentTime)
 
 import Isabelle.Bytes (Bytes)
 import Isabelle.Bytes qualified as Bytes
-import Isabelle.Library (implode_space, make_bytes, show_bytes)
+import Isabelle.Library (implode_space, make_bytes, quote)
 import Isabelle.Position qualified as Position
 
 import Naproche.Param qualified as Param
@@ -65,6 +65,7 @@ import SAD.Data.Text.Block (Block, makeBlock)
 import SAD.Data.Text.Block qualified as Block (Section(..))
 import SAD.Data.Text.Context (Context(Context), MRule(..))
 import SAD.Data.Text.Context qualified as Context (name)
+import SAD.Export.Pretty
 import SAD.Export.Prover qualified as Prover
 import SAD.Prove.MESON qualified as MESON
 
@@ -230,13 +231,13 @@ sumTimer trackers timer = sum (projectTimer trackers timer)
 maximalTimer :: [Tracker] -> Timer -> NominalDiffTime
 maximalTimer trackers timer = foldr max 0 (projectTimer trackers timer)
 
-showTimeDiff :: NominalDiffTime -> String
+showTimeDiff :: NominalDiffTime -> Bytes
 showTimeDiff t =
   if hours == 0
     then format minutes <> ":" <> format restSeconds <> "." <> format restCentis
     else format hours   <> ":" <> format restMinutes <> ":" <> format restSeconds
   where
-    format n = if n < 10 then '0':show n else show n
+    format n = if n < 10 then "0" <> pretty_print n else pretty_print n
     centiseconds = (truncate $ t * 100) :: Int
     (seconds, restCentis)  = divMod centiseconds 100
     (minutes, restSeconds) = divMod seconds 60
@@ -274,7 +275,7 @@ retrieveContext pos names = do
 
   unless (Set.null unfoundSections) $
     reasonLog Message.WARNING pos $
-      "Could not find sections " <> implode_space (map show_bytes $ Set.elems unfoundSections)
+      "Could not find sections " <> implode_space (map quote $ Set.elems unfoundSections)
   return context
   where
     retrieve [] = return []

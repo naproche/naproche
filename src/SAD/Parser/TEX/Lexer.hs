@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : SAD.Parser.TEX.Lexer
 -- Description : Lexing FTL-TeX documents
@@ -9,88 +11,89 @@ module SAD.Parser.TEX.Lexer (
   renderLexemes
 ) where
 
-import Data.List (intercalate)
 import Data.Text (Text)
 
 import FTLex.Tex qualified as TEX
 
-import Isabelle.Bytes qualified as Bytes
+import Isabelle.Bytes (Bytes)
+import Isabelle.Library (cat_lines)
 import Isabelle.Position qualified as Position
 
 import Prelude hiding (lex)
 
+import SAD.Export.Pretty
 import SAD.Parser.Lexer
 
 
 type Lexeme = TEX.Lexeme Position.T
 
 -- | @lexTex pos text@ lexes a TEX document @text@ with initial position @pos@.
-lex :: Position.T -> Bytes.Bytes -> IO [Lexeme]
+lex :: Position.T -> Bytes -> IO [Lexeme]
 lex pos bytes = do
   text <- pideDecode bytes
   TEX.runLexer pos text (TEX.initState pos codeBlocks)
 
 -- | Render a list of lexemes.
-renderLexemes :: [Lexeme] -> String
-renderLexemes tokens = intercalate "\n" $ map renderLexeme tokens
+renderLexemes :: [Lexeme] -> Bytes
+renderLexemes tokens = cat_lines $ map renderLexeme tokens
 
 -- | Render a lexeme.
-renderLexeme :: Lexeme -> String
+renderLexeme :: Lexeme -> Bytes
 renderLexeme (TEX.Character content catCode sourceText sourcePos) =
-  "Character:\n" ++
-  renderContent content ++ "\n" ++
-  renderCatCode catCode ++ "\n" ++
-  renderSourceText sourceText ++ "\n" ++
+  "Character:\n" <>
+  renderContent content <> "\n" <>
+  renderCatCode catCode <> "\n" <>
+  renderSourceText sourceText <> "\n" <>
   renderPosition sourcePos
 renderLexeme (TEX.ControlWord content sourceText sourcePos) =
-  "Control word:\n" ++
-  renderContent content ++ "\n" ++
-  renderSourceText sourceText ++ "\n" ++
+  "Control word:\n" <>
+  renderContent content <> "\n" <>
+  renderSourceText sourceText <> "\n" <>
   renderPosition sourcePos
 renderLexeme (TEX.ControlSymbol content sourceText sourcePos) =
-  "Control symbol:\n" ++
-  renderContent content ++ "\n" ++
-  renderSourceText sourceText ++ "\n" ++
+  "Control symbol:\n" <>
+  renderContent content <> "\n" <>
+  renderSourceText sourceText <> "\n" <>
   renderPosition sourcePos
 renderLexeme (TEX.ControlSpace sourceText sourcePos) =
-  "Control space:\n" ++
-  renderSourceText sourceText ++ "\n" ++
+  "Control space:\n" <>
+  renderSourceText sourceText <> "\n" <>
   renderPosition sourcePos
 renderLexeme (TEX.Parameter number sourceText sourcePos) =
-  "Parameter:\n" ++
-  renderContent number ++ "\n" ++
-  renderSourceText sourceText ++ "\n" ++
+  "Parameter:\n" <>
+  renderContent number <> "\n" <>
+  renderSourceText sourceText <> "\n" <>
   renderPosition sourcePos
 renderLexeme (TEX.Skipped sourceText sourcePos) =
-  "Skipped:\n" ++
-  renderSourceText sourceText ++ "\n" ++
+  "Skipped:\n" <>
+  renderSourceText sourceText <> "\n" <>
   renderPosition sourcePos
 renderLexeme (TEX.Comment content sourceText sourcePos) =
-  "Comment:\n" ++
-  renderContent content ++ "\n" ++
-  renderSourceText sourceText ++ "\n" ++
+  "Comment:\n" <>
+  renderContent content <> "\n" <>
+  renderSourceText sourceText <> "\n" <>
   renderPosition sourcePos
 
 -- | Render the content of a lexeme.
-renderContent :: Show a => a -> String
-renderContent content = "  Content: " ++ show content
+renderContent :: Pretty a => a -> Bytes
+renderContent content = "  Content: " <> pretty_print content
 
 -- | Render the source text of a lexeme.
-renderSourceText :: Text -> String
-renderSourceText text = "  Source text: " ++ show text
+renderSourceText :: Text -> Bytes
+renderSourceText text = "  Source text: " <> pretty_print text
 
 -- | Render the source position of a lexeme.
-renderPosition :: Position.T -> String
+renderPosition :: Position.T -> Bytes
 renderPosition pos =
-  "  Source position:\n" ++
-  "    Line: " ++ maybe "unknown" show (Position.line_of pos) ++ "\n" ++
-  "    Column: " ++ maybe "unknown" show (Position.column_of pos) ++ "\n" ++
-  "    Offset: " ++ maybe "unknown" show (Position.offset_of pos) ++ "\n" ++
-  "    End-Offset: " ++ maybe "unknown" show (Position.end_offset_of pos)
+  "  Source position:\n" <>
+  "    Line: " <> maybe "unknown" pretty_print (Position.line_of pos) <> "\n" <>
+  "    Column: " <> maybe "unknown" pretty_print (Position.column_of pos) <> "\n" <>
+  "    Offset: " <> maybe "unknown" pretty_print (Position.offset_of pos) <> "\n" <>
+  "    End-Offset: " <> maybe "unknown" pretty_print (Position.end_offset_of pos)
 
 -- | Render the category code of a character lexeme.
-renderCatCode :: TEX.CatCode -> String
-renderCatCode catCode = "  Category Code: " ++ render catCode
+renderCatCode :: TEX.CatCode -> Bytes
+renderCatCode catCode = "  Category Code: " <> render catCode
   where
     render TEX.EscapeCharCat = "0 (escape character)"
     render TEX.BeginGroupCat = "1 (begin grouping)"

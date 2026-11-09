@@ -111,8 +111,8 @@ mainTerminal initInstrs mbFileArg = do
           Nothing -> do
             let dialect = getDialect initInstrs
             hSetBuffering stdout LineBuffering
-            putStrLn $ "Enter a ForTheL text (in the " ++ show dialect ++ " dialect)."
-              ++ " Type CTRL+D to finish your input.\n"
+            putStrLn (make_string $ "Enter a ForTheL text (in the " <> pretty_print dialect <> " dialect)."
+              <> " Type CTRL+D to finish your input.\n")
             inputText <- make_bytes <$> getContents'
             putStr "\n"
             return (dialect, inputText, Nothing)
@@ -137,11 +137,11 @@ mainTerminal initInstrs mbFileArg = do
           modeArg -> putStrLn ("Invalid mode: " ++ make_string modeArg) >> return 1)
         `catch` (\Exception.UserInterrupt -> do
           Program.exit_thread
-          Console.stderr ("Interrupt" :: String)
+          Console.stderr "Interrupt"
           return Process_Result.interrupt_rc)
         `catch` (\(err :: Exception.SomeException) -> do
           Program.exit_thread
-          Console.stderr (Exception.displayException err)
+          Console.stderr (make_bytes $ Exception.displayException err)
           return Process_Result.error_rc)
       Console.exit resultCode
 
@@ -215,9 +215,9 @@ lexInputText dialect bytes = do
   startTime <- getCurrentTime
   -- Lex the input text and print the result:
   case dialect of
-    Ftl -> FTL.lex Position.start bytes >>= putStrLn . FTL.renderLexemes
-    Tex -> TEX.lex Position.start bytes >>= putStrLn . TEX.renderLexemes
-    Stex -> STEX.lex Position.start bytes >>= putStrLn . STEX.renderLexemes
+    Ftl -> FTL.lex Position.start bytes >>= putStrLn . (make_string . FTL.renderLexemes)
+    Tex -> TEX.lex Position.start bytes >>= putStrLn . (make_string . TEX.renderLexemes)
+    Stex -> STEX.lex Position.start bytes >>= putStrLn . (make_string . STEX.renderLexemes)
   -- Get the finish time of the translation process:
   finishTime <- getCurrentTime
   -- Print the time it took to translate the input text:
@@ -234,7 +234,7 @@ tokenizeInputText dialect bytes = do
     Ftl -> FTL.lex Position.start bytes >>= FTL.tokenize
     Tex -> TEX.lex Position.start bytes >>= TEX.tokenize
     Stex -> STEX.lex Position.start bytes >>= STEX.tokenize
-  putStrLn $ renderTokens tokens
+  putStrLn $ make_string (renderTokens tokens)
   -- Get the finish time of the translation process:
   finishTime <- getCurrentTime
   -- Print the time it took to translate the input text:

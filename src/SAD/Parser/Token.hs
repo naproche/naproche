@@ -28,7 +28,6 @@ module SAD.Parser.Token (
 ) where
 
 import Data.Bifunctor (bimap)
-import Data.List
 import Data.List.NonEmpty qualified as NonEmpty
 import Data.Set (Set)
 import Data.Set qualified as Set
@@ -37,10 +36,11 @@ import Data.Text qualified as Text
 
 import Isabelle.Bytes (Bytes)
 import Isabelle.Bytes qualified as Bytes
-import Isabelle.Library (make_bytes)
+import Isabelle.Library (cat_lines, make_bytes)
 import Isabelle.Position qualified as Position
 
 import SAD.Core.Message qualified as Message
+import SAD.Export.Pretty
 
 import Text.Megaparsec hiding (Pos, State, Token)
 
@@ -56,19 +56,19 @@ data Token =
   | EOF { tokenPos :: Position.T }
 
 -- | Render a list of tokens.
-renderTokens :: [Token] -> String
-renderTokens tokens = intercalate "\n" $ map renderToken tokens
+renderTokens :: [Token] -> Bytes
+renderTokens tokens = cat_lines $ map renderToken tokens
 
 -- | Render a token.
-renderToken :: Token -> String
+renderToken :: Token -> Bytes
 renderToken (Token text pos) =
-  "Token:\n" ++
-  "  Text: " ++ show text ++ "\n" ++
-  "  Position:\n" ++
-  "    Line: " ++ maybe "unknown" show (Position.line_of pos) ++ "\n" ++
-  "    Column: " ++ maybe "unknown" show (Position.column_of pos) ++ "\n" ++
-  "    Offset: " ++ maybe "unknown" show (Position.offset_of pos) ++ "\n" ++
-  "    End-Offset: " ++ maybe "unknown" show (Position.end_offset_of pos)
+  "Token:\n" <>
+  "  Text: " <> pretty_print text <> "\n" <>
+  "  Position:\n" <>
+  "    Line: " <> maybe "unknown" pretty_print (Position.line_of pos) <> "\n" <>
+  "    Column: " <> maybe "unknown" pretty_print (Position.column_of pos) <> "\n" <>
+  "    Offset: " <> maybe "unknown" pretty_print (Position.offset_of pos) <> "\n" <>
+  "    End-Offset: " <> maybe "unknown" pretty_print (Position.end_offset_of pos)
 renderToken EOF{} = ""
 
 

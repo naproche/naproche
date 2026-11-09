@@ -14,13 +14,19 @@ import Data.Set qualified as Set
 import Data.Text (Text)
 
 import Isabelle.Bytes (Bytes)
-import Isabelle.Library (commas, make_bytes, quote)
+import Isabelle.Library (commas, make_bytes, quote, show_bytes)
 
 class Pretty a where
   pretty_print :: a -> Bytes
 
+instance Pretty Char where
+  pretty_print c = "'" <> make_bytes [c] <> "'"
+
 instance Pretty Text where
   pretty_print = quote . make_bytes
+
+instance Pretty Int where
+  pretty_print = show_bytes
 
 instance Pretty a => Pretty [a] where
   pretty_print as = "[" <> commas (map pretty_print as) <> "]"

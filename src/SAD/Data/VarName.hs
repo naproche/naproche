@@ -26,7 +26,7 @@ import Data.Text (Text)
 
 import GHC.Magic (oneShot)
 
-import Isabelle.Library (make_bytes, show_bytes)
+import Isabelle.Library (make_bytes)
 import Isabelle.Position qualified as Position
 
 import SAD.Core.Message (console_position)
@@ -58,9 +58,9 @@ instance Pretty VariableName where
   pretty_print (VarHole s) = "?" <> make_bytes s
   pretty_print VarSlot = "!"
   pretty_print (VarU s) = "u" <> make_bytes s
-  pretty_print (VarHidden n) = "h" <> show_bytes n
-  pretty_print (VarAssume n) = "i" <> show_bytes n
-  pretty_print (VarSkolem n) = "o" <> show_bytes n
+  pretty_print (VarHidden n) = "h" <> pretty_print n
+  pretty_print (VarAssume n) = "i" <> pretty_print n
+  pretty_print (VarSkolem n) = "o" <> pretty_print n
   pretty_print (VarTask s) = "c" <> pretty_print s
   pretty_print (VarZ s) = "z" <> make_bytes s
   pretty_print (VarGlobal s) = "w" <> make_bytes s
