@@ -21,7 +21,7 @@ import Data.Text qualified as Text
 
 import Isabelle.Bytes (Bytes)
 import Isabelle.Bytes qualified as Bytes
-import Isabelle.Library (implode_space, make_bytes, make_string)
+import Isabelle.Library (implode_space, make_string)
 import Isabelle.Position qualified as Position
 
 import Naproche.Program as Program
@@ -585,5 +585,5 @@ upperGreek = [
 
 -- | Print a variable (just for now).
 showVar :: VariableName -> Bytes
-showVar (VarConstant nm) = make_bytes nm
+showVar (VarConstant nm) = pretty_print nm
 showVar nm = pretty_print nm

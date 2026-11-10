@@ -25,7 +25,6 @@ module SAD.Data.Instr (
 import Data.Text (Text)
 
 import Isabelle.Bytes (Bytes)
-import Isabelle.Library
 
 import Naproche.Param qualified as Param
 import Naproche.Prover qualified as Prover
@@ -83,7 +82,7 @@ getInstr p = Param.get p . foldr instr Param.empty
     instr :: Instr -> Param.Env -> Param.Env
     instr (SetBool p x) = Param.put p x
     instr (SetInt p x) = Param.put p x
-    instr (SetBytes p x) = Param.put p (make_bytes x)
+    instr (SetBytes p x) = Param.put p x
     instr (Verbose b) = \env -> foldr (`Param.put` b) env verboseFlags
     instr _ = id
 

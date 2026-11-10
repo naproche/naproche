@@ -17,7 +17,7 @@ import Data.List.Extra (notNull)
 import Data.Maybe (isJust)
 
 import Isabelle.Bytes qualified as Bytes
-import Isabelle.Library (implode_space, make_bytes, trim_line)
+import Isabelle.Library (implode_space, trim_line)
 import Isabelle.Position qualified as Position
 
 import SAD.Core.Base
@@ -98,7 +98,7 @@ verifyThesis :: VerifyMonad ()
 verifyThesis = do
   thesis <- asks currentThesis
   let block = Context.head thesis
-  let text = make_bytes $ Block.text block
+  let text = Block.text block
   let pos = Block.position block
   whenInstruction printgoalParam $ reasonLog Message.TRACING pos $ "goal: " <> text
   if hasDEC (Context.formula thesis) --computational reasoning
@@ -134,7 +134,7 @@ verifyBlock block rest = do
   incrementCounter Sections
   whenInstruction printsectionParam $ justIO $
     Message.outputForTheL Message.WRITELN (Block.position block) $
-    make_bytes (trim_line (pretty_print block))
+    trim_line (pretty_print block)
   let newBranch = block : branch
   let contextBlock = Context f newBranch []
 

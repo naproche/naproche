@@ -21,6 +21,7 @@ module SAD.Parser.Token (
   tokensPos,
   tokensText,
   showToken,
+  showTokens,
   mergeTokens,
   composeTokens,
   isEOF,
@@ -42,7 +43,7 @@ import Isabelle.Position qualified as Position
 import SAD.Core.Message qualified as Message
 import SAD.Export.Pretty
 
-import Text.Megaparsec hiding (Pos, State, Token)
+import Text.Megaparsec hiding (Pos, State, Token, showTokens)
 
 
 -- * Tokens
@@ -75,7 +76,7 @@ renderToken EOF{} = ""
 -- * Warnings
 
 -- | A warning: A message equipped with a position that message refers to.
-data Warning = Warning Text Position.T
+data Warning = Warning Bytes Position.T
 
 -- | Concatenate a list of tokens/warnings-pairs.
 concatTokWarn :: [([Token], [Warning])] -> ([Token], [Warning])
@@ -86,35 +87,35 @@ concatTokWarn ((xs,ys) : rest) = bimap (xs ++) (ys ++) (concatTokWarn rest)
 -- * Error Handling
 
 -- | Report a tokenizing error.
-handleError :: (error -> (Text, Position.T)) -> ParseErrorBundle [a] error -> IO b
+handleError :: (error -> (Bytes, Position.T)) -> ParseErrorBundle [a] error -> IO b
 handleError errorHandler errors = do
   let (errorMsg, errorPos) = showError errors errorHandler
-  Message.errorTokenizer errorPos (make_bytes errorMsg)
+  Message.errorTokenizer errorPos errorMsg
 
 -- | Return an error message and the position of the first error that occured
 -- during tokenizing.
-showError :: ParseErrorBundle [a] error -> (error -> (Text, Position.T)) -> (Text, Position.T)
+showError :: ParseErrorBundle [a] error -> (error -> (Bytes, Position.T)) -> (Bytes, Position.T)
 showError (ParseErrorBundle parseErrors _) errorHandler = case NonEmpty.head parseErrors of
   TrivialError{} -> unknownError
   FancyError _ errs -> properError errorHandler errs
 
 -- | Located error message for an error that is not handled as a custom error
 -- of type "Error" during tokenizing.
-unknownError :: (Text, Position.T)
+unknownError :: (Bytes, Position.T)
 unknownError =
   let msg = "Unknown tokenizing error."
       pos = Position.none
   in (msg, pos)
 
 -- | Turn a set of tokenizing errors into an error message.
-properError :: (error -> (Text, Position.T)) -> Set (ErrorFancy error) -> (Text, Position.T)
+properError :: (error -> (Bytes, Position.T)) -> Set (ErrorFancy error) -> (Bytes, Position.T)
 properError errorHandler errs =
   case Set.elems errs of
     [] -> unknownError
     err : _ -> fancyError errorHandler err
 
 -- | Turn a tokenizing error into an error message.
-fancyError :: (error -> (Text, Position.T)) -> ErrorFancy error -> (Text, Position.T)
+fancyError :: (error -> (Bytes, Position.T)) -> ErrorFancy error -> (Bytes, Position.T)
 fancyError errorHandler err = case err of
   ErrorFail{} -> unknownError
   ErrorIndentation{} -> unknownError
@@ -150,6 +151,9 @@ mergeTokens tokens = Token (tokensText tokens) (tokensPos tokens)
 showToken :: Token -> Bytes
 showToken t@Token{} = make_bytes (tokenText t)
 showToken EOF{} = "end of input"
+
+showTokens :: [Token] -> Bytes
+showTokens ts = make_bytes (tokensText ts)
 
 -- | Append tokens separated by a single space if they were separated
 -- by whitespace before

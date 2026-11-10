@@ -47,21 +47,21 @@ prop_type = Isabelle.boolT
 
 free_name :: VariableName -> Isabelle.Name
 free_name (VarConstant s) = "x" <> make_bytes s
-free_name (VarHole s) = Isabelle.internal ("HOLE_" <> make_bytes s)
+free_name (VarHole s) = Isabelle.internal ("HOLE_" <> s)
 free_name VarSlot = Isabelle.internal "SLOT"
-free_name (VarU s) = "u" <> make_bytes s
+free_name (VarU s) = "u" <> s
 free_name (VarHidden n) = "h" <> Value.print_int n
 free_name (VarAssume n) = "i" <> Value.print_int n
 free_name (VarSkolem n) = "o" <> Value.print_int n
 free_name (VarTask s) = "c" <> free_name s
-free_name (VarZ s) = "z" <> make_bytes s
-free_name (VarGlobal s) = "w" <> make_bytes s
+free_name (VarZ s) = "z" <> s
+free_name (VarGlobal s) = "w" <> s
 free_name VarEmpty = Isabelle.uu_
-free_name (VarDefault s) = make_bytes s
+free_name (VarDefault s) = s
 
 bound_name :: VariableName -> Isabelle.Name
 bound_name (VarConstant s) = make_bytes s
-bound_name (VarHole s) = Isabelle.internal ("v" <> make_bytes s)
+bound_name (VarHole s) = Isabelle.internal ("v" <> s)
 bound_name VarSlot = Isabelle.uu
 bound_name (VarU s) = "u"
 bound_name (VarHidden _) = "h"
@@ -71,7 +71,7 @@ bound_name (VarTask s) = "c" <> bound_name s
 bound_name (VarZ s) = "z"
 bound_name (VarGlobal s) = "w"
 bound_name VarEmpty = Isabelle.uu
-bound_name (VarDefault s) = make_bytes s
+bound_name (VarDefault s) = s
 
 show_predicate_pattern :: PredicatePattern -> Bytes
 show_predicate_pattern = Bytes.concat . map show_predicate_pattern_comp

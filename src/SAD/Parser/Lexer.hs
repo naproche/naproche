@@ -17,8 +17,8 @@ import FTLex.Message qualified as Msg
 import FTLex.Position (noPos)
 import FTLex.Position qualified as Pos
 
-import Isabelle.Bytes qualified as Bytes
-import Isabelle.Library qualified as Library
+import Isabelle.Bytes
+import Isabelle.Library
 import Isabelle.Position qualified as Position
 import Isabelle.Symbol qualified as Symbol
 
@@ -40,12 +40,12 @@ instance Pos.Pos Position.T where
     in Position.range_position (pos, newPos)
 
   showPos :: Position.T -> Text
-  showPos = Library.make_text . Position.here
+  showPos = make_text . Position.here
 
 
 instance Msg.Msg Position.T IO where
   errorLexer :: Position.T -> Text -> IO a
-  errorLexer pos msg = Message.errorLexer pos (Library.make_bytes msg)
+  errorLexer pos msg = Message.errorLexer pos (make_bytes msg)
 
 
 -- * Misc
@@ -60,9 +60,9 @@ codeBlocks = Set.fromList [
   ]
 
 -- | Decode a "PIDE-encoded" byte string.
-pideDecode :: Bytes.Bytes -> IO Text
+pideDecode :: Bytes -> IO Text
 pideDecode bytes = do
-  let string = map Library.make_string . Symbol.explode $ bytes
+  let string = map make_string . Symbol.explode $ bytes
   decodedString <- mapM decode string
   return $ Text.pack decodedString
   where
@@ -508,4 +508,4 @@ pideDecode bytes = do
     decode "\\<^action>" = pure '\x00261b'
     decode [c] = pure c
     decode str = Message.errorLexer noPos $
-      "The input text contains an invalid character sequence \"" <> Library.make_bytes str <> "\"."
+      "The input text contains an invalid character sequence \"" <> make_bytes str <> "\"."

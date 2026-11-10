@@ -43,17 +43,17 @@ import SAD.Export.Pretty
 
 encodeVarName :: VariableName -> Bytes
 encodeVarName (VarConstant s) = "x" <> make_bytes s
-encodeVarName (VarHole s) = "?" <> make_bytes s
+encodeVarName (VarHole s) = "?" <> s
 encodeVarName VarSlot = "!"
-encodeVarName (VarU s) = "u" <> make_bytes s
+encodeVarName (VarU s) = "u" <> s
 encodeVarName (VarHidden n) = "h" <> show_bytes n
 encodeVarName (VarAssume n) = "i" <> show_bytes n
 encodeVarName (VarSkolem n) = "o" <> show_bytes n
 encodeVarName (VarTask s) = "c" <> encodeVarName s
-encodeVarName (VarZ s) = "z" <> make_bytes s
-encodeVarName (VarGlobal s) = "w" <> make_bytes s
+encodeVarName (VarZ s) = "z" <> s
+encodeVarName (VarGlobal s) = "w" <> s
 encodeVarName VarEmpty = ""
-encodeVarName (VarDefault s) = make_bytes s
+encodeVarName (VarDefault s) = s
 
 encodeTermName :: TermName -> Bytes
 encodeTermName (TermSymbolic patterns) = encodeSymbolPattern patterns

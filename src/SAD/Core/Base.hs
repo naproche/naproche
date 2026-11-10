@@ -49,7 +49,7 @@ import Data.Time (NominalDiffTime, diffUTCTime, getCurrentTime)
 
 import Isabelle.Bytes (Bytes)
 import Isabelle.Bytes qualified as Bytes
-import Isabelle.Library (implode_space, make_bytes, quote)
+import Isabelle.Library (implode_space, quote)
 import Isabelle.Position qualified as Position
 
 import Naproche.Param qualified as Param
@@ -258,7 +258,7 @@ reasonLog kind pos = justIO . Message.outputReasoner kind pos
 
 thesisLog :: Message.Kind -> Position.T -> Int -> Bytes -> VerifyMonad ()
 thesisLog kind pos indent msg =
-  justIO (Message.outputThesis kind pos (Bytes.spaces (3 * indent) <> make_bytes msg))
+  justIO (Message.outputThesis kind pos (Bytes.spaces (3 * indent) <> msg))
 
 simpLog :: Message.Kind -> Position.T -> Bytes -> VerifyMonad ()
 simpLog kind pos = justIO . Message.outputSimplifier kind pos

@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
@@ -21,15 +22,17 @@ import Data.Text qualified as Text
 
 import FTLex.Tex hiding (initState)
 
-import Isabelle.Library (make_bytes, show_text)
+import Isabelle.Bytes (Bytes)
+import Isabelle.Library (show_text)
 import Isabelle.Markup qualified as Markup
 import Isabelle.Position qualified as Position
 
 import SAD.Core.Message qualified as Message
+import SAD.Export.Pretty
 import SAD.Parser.TEX.Lexer qualified as TEX
 import SAD.Parser.Token
 
-import Text.Megaparsec hiding (State, Token, token)
+import Text.Megaparsec hiding (State, Token, showTokens, token)
 
 
 -- * Tokenizing a TEX document
@@ -62,18 +65,18 @@ filterTokens tokens warnings = do
   return tokens
   where
   reportWarnings = foldr ((>>) . reportWarning) (return ())
-  reportWarning (Warning text pos) = Message.outputTokenizer Message.WARNING pos (make_bytes text)
+  reportWarning (Warning text pos) = Message.outputTokenizer Message.WARNING pos text
 
 
 -- * Tokenizing Errors and Warnings
 
 data Error =
     NestedForthel Position.T
-  | Unexpected Position.T Text Text
+  | Unexpected Position.T Bytes Bytes
   deriving (Eq, Ord)
 
 -- | Turn an error into a located error
-makeErrMsg :: Error -> (Text, Position.T)
+makeErrMsg :: Error -> (Bytes, Position.T)
 makeErrMsg (NestedForthel pos) =
   let msg = "Illegal nesting of \"forthel\" groups."
   in (msg, pos)
@@ -271,7 +274,7 @@ urlCommand = do
   -- Fail if the next lexeme is not a begin-group character lexeme:
   nextLexeme <- lookAhead anySingle
   let nextLexemePos = sourcePos nextLexeme
-      nextLexemeKind = showLexemeKind nextLexeme
+      nextLexemeKind = pretty_print nextLexeme
   unless (isBeginGroupCharLexeme nextLexeme) $ customFailure $ Unexpected nextLexemePos nextLexemeKind "a begin-group character"
   -- Parse the next lexeme again, this time consuming it (where we can be sure
   -- that it is a begin-group character lexeme):
@@ -290,7 +293,7 @@ pathCommand = do
   -- Fail if the next lexeme is not a begin-group character lexeme:
   nextLexeme <- lookAhead anySingle
   let nextLexemePos = sourcePos nextLexeme
-      nextLexemeKind = showLexemeKind nextLexeme
+      nextLexemeKind = pretty_print nextLexeme
   unless (isBeginGroupCharLexeme nextLexeme) $ customFailure $ Unexpected nextLexemePos nextLexemeKind "a begin-group character"
   -- Parse the next lexeme again, this time consuming it (where we can be sure
   -- that it is a begin-group character lexeme):
@@ -310,7 +313,7 @@ verbCommand = do
   -- Fail if the next lexeme is not a character lexeme:
   nextLexeme <- lookAhead anySingle
   let nextLexemePos = sourcePos nextLexeme
-      nextLexemeKind = showLexemeKind nextLexeme
+      nextLexemeKind = pretty_print nextLexeme
   unless (isCharacterLexeme nextLexeme) $ customFailure $ Unexpected nextLexemePos nextLexemeKind "a character"
   -- Parse the next lexeme again, this time consuming it (where we can be sure
   -- that it is a character lexeme):
@@ -326,7 +329,7 @@ verbCommand = do
     ]
   -- Fail if the end of the input is reached before the closing delimiter
   -- character:
-  ifEofAddWarning $ Warning ("LaTeX: Missing \"" <> Text.singleton delimiterChar <> "\" character") beginDelimiterPos
+  ifEofAddWarning $ Warning ("LaTeX: Missing " <> pretty_print delimiterChar <> " character") beginDelimiterPos
   endDelimiter <- char' delimiterChar
   return $ concatTokWarn [macro, Maybe.fromMaybe ([], []) mbStar, beginDelimiter, content, endDelimiter]
 
@@ -394,7 +397,7 @@ environment p = do
   beginGroup <- catchUnexpected "a begin-group lexeme" $ singleToken isBeginGroupCharLexeme
   envName <- concatUnzip <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
   endGroup <- catchUnexpected "an end-group lexeme" $ singleToken isEndGroupCharLexeme
-  let envNameText = tokensText (fst envName)
+  let envNameText = showTokens (fst envName)
       beginEnvCommand = concatTokWarn [beginMacro, beginGroup, envName, endGroup]
       beginEnvPos = tokensPos (fst beginEnvCommand)
   -- Fail if the environment name is @forthel@ and the @insideForthel@ flag is
@@ -445,7 +448,7 @@ environment p = do
           beginGroup' <- catchUnexpected "a begin-group lexeme" $ singleToken isBeginGroupCharLexeme
           envName' <- concatUnzip <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
           endGroup' <- catchUnexpected "an end-group lexeme" $ singleToken isEndGroupCharLexeme
-          let envNameText' = tokensText (fst envName')
+          let envNameText' = showTokens (fst envName')
               endEnvCommand = concatTokWarn [endMacro, beginGroup', envName', endGroup']
           -- Check whether the environment of the @\\begin{...}@ and the @\\end{...}@
           -- commands match:
@@ -510,7 +513,7 @@ catchInvalidEnvEnd = do
   endGroup <- singleToken isEndGroupCharLexeme
   let command = concatTokWarn [endMacro, beginGroup, envName, endGroup]
       pos = tokensPos (fst command)
-      envNameText = tokensText (fst envName)
+      envNameText = showTokens (fst envName)
   let warning = Warning ("LaTeX: Missing \"\\begin{" <> envNameText <> "}\".") pos
   return ([], [warning])
 
@@ -809,15 +812,15 @@ ifEofAddWarning warning = do
 -- | Catch an unexpected lexeme. Trys a parser @p@; if @p@ fails, an error is
 -- thrown marking the current lexeme as unexpected and outputs which token was
 -- expected instead.
-catchUnexpected :: Text -> Tokenizer a -> Tokenizer a
+catchUnexpected :: Bytes -> Tokenizer a -> Tokenizer a
 catchUnexpected exp p = try p <|> do
   lexeme <- anySingle
   let pos = sourcePos lexeme
       unexp = case lexeme of
-        Character{sourceText = s} -> "character \"" <> s <> "\""
-        ControlWord{sourceText = s} -> "control word \"" <> s <> "\""
-        ControlSymbol{sourceText = s} -> "control symbol \"" <> s <> "\""
-        Parameter{sourceText = s} -> "parameter lexeme \"" <> s <> "\""
+        Character{sourceText = s} -> "character " <> pretty_print s
+        ControlWord{sourceText = s} -> "control word " <> pretty_print s
+        ControlSymbol{sourceText = s} -> "control symbol " <> pretty_print s
+        Parameter{sourceText = s} -> "parameter lexeme " <> pretty_print s
         _ -> error "Unexpected lexeme"
   customFailure $ Unexpected pos unexp exp
 
@@ -849,12 +852,11 @@ mkTokens Parameter{paramNumber = n, sourcePos = p} =
 mkTokens _ =
   []
 
-showLexemeKind :: Lexeme Position.T -> Text
-showLexemeKind lexeme = case lexeme of
-  Character{} -> "character lexeme"
-  ControlWord{} -> "control word lexeme"
-  ControlSymbol{} -> "control symbol lexeme"
-  ControlSpace{} -> "control space lexeme"
-  Parameter{} -> "parameter lexeme"
-  Skipped{} -> "skipped lexeme"
-  Comment{} -> "comment lexeme"
+instance Pretty (Lexeme Position.T) where
+  pretty_print Character{} = "character lexeme"
+  pretty_print ControlWord{} = "control word lexeme"
+  pretty_print ControlSymbol{} = "control symbol lexeme"
+  pretty_print ControlSpace{} = "control space lexeme"
+  pretty_print Parameter{} = "parameter lexeme"
+  pretty_print Skipped{} = "skipped lexeme"
+  pretty_print Comment{} = "comment lexeme"

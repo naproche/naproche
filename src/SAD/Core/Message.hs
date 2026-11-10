@@ -135,13 +135,13 @@ make_message context kind origin pos text =
 output :: Bytes -> Kind -> Position.T -> Bytes -> IO ()
 output origin kind pos text = do
   context <- Program.thread_context
-  let (command, msg) = make_message context kind origin pos (make_bytes text)
+  let (command, msg) = make_message context kind origin pos text
   Program.exchange_message0 context [command, msg]
 
 error :: Bytes -> Position.T -> Bytes -> IO b
 error origin pos text = do
   context <- Program.thread_context
-  Program.error $ snd $ make_message context ERROR origin pos (make_bytes text)
+  Program.error $ snd $ make_message context ERROR origin pos text
 
 
 -- common messages

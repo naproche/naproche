@@ -30,7 +30,7 @@ import Data.Set qualified as Set
 
 import Isabelle.Bytes (Bytes)
 import Isabelle.Bytes qualified as Bytes
-import Isabelle.Library (make_bytes, show_bytes)
+import Isabelle.Library (show_bytes)
 import Isabelle.Position qualified as Position
 
 import SAD.Data.Formula hiding (CaseHypothesis)
@@ -160,7 +160,7 @@ showBlock p block@Block{body = b, name = name, kind = kind}
   | otherwise = showForm p block <>
       indent p "Proof:\n" <> showProof (p + 1) (body block) <> indent p "Qed.\n"
   where
-    name' = make_bytes name
+    name' = name
     addName = if Bytes.null name' then "" else " (" <> name' <> ")"
 
 showForm :: Int -> Block -> Bytes

@@ -21,6 +21,7 @@ import Data.Text (Text)
 import Data.Text qualified as Text
 
 import Isabelle.Bytes (Bytes)
+import Isabelle.Bytes qualified as Bytes
 import Isabelle.Library
 import Isabelle.Position qualified as Position
 import Isabelle.Value qualified as Value
@@ -84,25 +85,19 @@ readInstr =
 
 readInt :: FTL Int
 readInt = try $ do
-  s <- readText
-  maybe mzero return (Value.parse_nat $ make_bytes s)
+  s <- readBytes
+  maybe mzero return (Value.parse_nat s)
 
 readBool :: FTL Bool
 readBool = try $ do
-  s <- readText
-  maybe mzero return (Param.parse_flag $ make_bytes s)
-
-readBytes :: FTL Bytes
-readBytes = make_bytes <$> readText
+  s <- readBytes
+  maybe mzero return (Param.parse_flag s)
 
 readPath :: FTL FilePath
-readPath = make_string <$> readText
+readPath = make_string <$> readBytes
 
-readText :: FTL Text
-readText = fmap Text.concat readTexts
-
-readTexts :: FTL [Text]
-readTexts = texCommandWithArg "path" (chainLL1 notClosingBrc) <|> chainLL1 notClosingBrk
+readBytes :: FTL Bytes
+readBytes = Bytes.concat . map make_bytes <$> (texCommandWithArg "path" (chainLL1 notClosingBrc) <|> chainLL1 notClosingBrk)
   where
     notClosingBrk = tokenPrim $ notCl "]"
     notClosingBrc = tokenPrim $ notCl "}"

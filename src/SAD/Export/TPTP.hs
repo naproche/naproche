@@ -50,7 +50,7 @@ exportContext _ _ = ""
 exportAssertion :: Bytes -> Role -> Formula -> Bytes
 exportAssertion name role formula =
   "fof(m"
-  <> (if Bytes.null name then "_" else make_bytes name)
+  <> (if Bytes.null name then "_" else name)
   <> ", " <> exportRole role <> ", "
   <> exportFormula formula
   <> ")."

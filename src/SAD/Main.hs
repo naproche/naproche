@@ -222,7 +222,7 @@ lexInputText dialect bytes = do
   finishTime <- getCurrentTime
   -- Print the time it took to translate the input text:
   let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
-  outputMain TRACING Position.none $ make_bytes $ "total " <> timeDifference finishTime
+  outputMain TRACING Position.none $ "total " <> timeDifference finishTime
   return 0
 
 tokenizeInputText :: Dialect -> Bytes -> IO Int
@@ -239,7 +239,7 @@ tokenizeInputText dialect bytes = do
   finishTime <- getCurrentTime
   -- Print the time it took to translate the input text:
   let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
-  outputMain TRACING Position.none $ make_bytes $ "total " <> timeDifference finishTime
+  outputMain TRACING Position.none $ "total " <> timeDifference finishTime
   return 0
 
 translateInputText :: Dialect -> [ProofText] -> IO Int
@@ -254,7 +254,7 @@ translateInputText dialect proofTexts = do
   finishTime <- getCurrentTime
   -- Print the time it took to translate the input text:
   let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
-  outputMain TRACING Position.none $ make_bytes $ "total " <> timeDifference finishTime
+  outputMain TRACING Position.none $ "total " <> timeDifference finishTime
   return 0
 
 verifyInputText :: Dialect -> MESON.Cache -> Prover.Cache -> [ProofText] -> IO Int
@@ -275,36 +275,36 @@ verifyInputText dialect mesonCache proverCache proofTexts = do
   finishTime <- getCurrentTime
   let accumulate = sumCounter trackers
   -- Print statistics:
-  (outputMain TRACING Position.none . make_bytes) $
-    "sections "       ++ show (accumulate Sections)
-    ++ " - goals "    ++ show (accumulate Goals)
-    ++ (case accumulate FailedGoals of
+  outputMain TRACING Position.none $
+    "sections "       <> show_bytes (accumulate Sections)
+    <> " - goals "    <> show_bytes (accumulate Goals)
+    <> (case accumulate FailedGoals of
         0 -> ""
-        n -> " - failed " ++ show n)
-    ++ " - trivial "   ++ show (accumulate TrivialGoals)
-    ++ " - proved "    ++ show (accumulate SuccessfulGoals)
-    ++ " - equations " ++ show (accumulate Equations)
-    ++ (case accumulate FailedEquations of
+        n -> " - failed " <> show_bytes n)
+    <> " - trivial "   <> show_bytes (accumulate TrivialGoals)
+    <> " - proved "    <> show_bytes (accumulate SuccessfulGoals)
+    <> " - equations " <> show_bytes (accumulate Equations)
+    <> (case accumulate FailedEquations of
         0 -> ""
-        n -> " - failed " ++ show n)
+        n -> " - failed " <> show_bytes n)
   let trivialChecks = accumulate TrivialChecks
-  (outputMain TRACING Position.none . make_bytes) $
-    "symbols "        ++ show (accumulate Symbols)
-    ++ " - checks "   ++ show (sumCounter trackers HardChecks + trivialChecks)
-    ++ " - trivial "  ++ show trivialChecks
-    ++ " - proved "   ++ show (accumulate SuccessfulChecks)
-    ++ " - unfolds "  ++ show (accumulate Unfolds)
+  outputMain TRACING Position.none $
+    "symbols "        <> show_bytes (accumulate Symbols)
+    <> " - checks "   <> show_bytes (sumCounter trackers HardChecks + trivialChecks)
+    <> " - trivial "  <> show_bytes trivialChecks
+    <> " - proved "   <> show_bytes (accumulate SuccessfulChecks)
+    <> " - unfolds "  <> show_bytes (accumulate Unfolds)
   let proverTime = sumTimer trackers ProofTimer
   let simplifyTime = sumTimer trackers SimplifyTimer
   let proveFinish = addUTCTime proverTime proveStart
   let simplifyFinish = addUTCTime simplifyTime proveFinish
-  (outputMain TRACING Position.none . make_bytes) $
+  outputMain TRACING Position.none $
     "parser "           <> showTimeDiff (diffUTCTime proveStart startTime)
     <> " - reasoner "   <> showTimeDiff (diffUTCTime finishTime simplifyFinish)
     <> " - simplifier " <> showTimeDiff simplifyTime
     <> " - prover "     <> showTimeDiff proverTime
     <> "/" <> showTimeDiff (maximalTimer trackers SuccessTimer)
-  (outputMain TRACING Position.none . make_bytes) $
+  outputMain TRACING Position.none $
     "total " <> showTimeDiff (diffUTCTime finishTime startTime)
   -- Prune MESON and prover chaches:
   MESON.prune_cache mesonCache
