@@ -14,8 +14,8 @@ module SAD.Prove.Normalize (
 ) where
 
 import Data.List
-import Data.Text qualified as Text
 
+import Isabelle.Library (show_bytes)
 import Isabelle.Position qualified as Position
 
 import SAD.Data.Formula
@@ -144,7 +144,7 @@ instSk skolemCnt dependencyCnt = dive 0
 -- specialization of formula: get rid of universal quantifiers
 
 specialize :: Formula -> Formula
-specialize = specCh (VarHole . Text.pack . show) 0
+specialize = specCh (VarHole . show_bytes) 0
 
 specCh :: (Int -> VariableName) -> Int -> Formula -> Formula
 specCh mkVar = dive

@@ -31,11 +31,10 @@ import Data.Map qualified as Map
 import Data.Maybe (fromJust, fromMaybe, maybeToList)
 import Data.Monoid (Sum, getSum)
 import Data.Set qualified as Set
-import Data.Text qualified as Text
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
-import Isabelle.Library (implode_space)
+import Isabelle.Library (implode_space, show_bytes)
 import Isabelle.Position qualified as Position
 
 import Naproche.Program qualified as Program
@@ -218,7 +217,7 @@ replaceHeadTerm c = Context.setFormula c $ dive 0 $ Context.formula c
       = And (subst t VarEmpty $ inst VarEmpty f) (All (newDecl VarEmpty) $ Imp f eq)
     dive n (All _ (Imp (Tag HeadTerm Trm{}) Top)) = Top
     dive n (All v f) =
-      bool $ All v $ bind (VarDefault $ Text.pack $ show n) $ dive (n + 1) $ inst (VarDefault $ Text.pack $ show n) f
+      bool $ All v $ bind (VarDefault $ show_bytes n) $ dive (n + 1) $ inst (VarDefault $ show_bytes n) f
     dive n (Imp f g) = bool $ Imp f $ dive n g
     dive _ f = f
 

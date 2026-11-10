@@ -13,9 +13,9 @@ import Control.Monad.Identity
 import Data.Map qualified as Map
 import Data.Maybe
 import Data.Monoid qualified as Monoid
-import Data.Text (Text)
-import Data.Text qualified as Text
 
+import Isabelle.Bytes (Bytes)
+import Isabelle.Library (show_bytes)
 import Isabelle.Position qualified as Position
 
 import SAD.Data.Tag (Tag)
@@ -103,18 +103,18 @@ mapFM _ f = pure f
 {- traverse the structure of a formula with a monadic action all while keeping
 track of local premises, polarity and quantification depth. A unique identifying
 char is provided to shape the instantiations.-}
-roundFM :: (Monad m) => (Text -> VariableName)
+roundFM :: (Monad m) => (Bytes -> VariableName)
   -> ([Formula] -> Maybe Bool -> Int -> Formula -> m Formula)
   -> [Formula] -> Maybe Bool -> Int -> Formula -> m Formula
 roundFM mkVar traversalAction localContext polarity n = dive
   where
     dive (All u f) = do
       let action = traversalAction localContext polarity (n + 1)
-          nn = mkVar $ Text.pack $ show n
+          nn = mkVar $ show_bytes n
       All u . bind nn <$> action (inst nn f)
     dive (Exi u f) = do
       let action = traversalAction localContext polarity (n + 1)
-          nn = mkVar $ Text.pack $ show n
+          nn = mkVar $ show_bytes n
       Exi u . bind nn <$> action (inst nn f)
     dive (Iff f g) = do
       nf <- traversalAction localContext Nothing n f

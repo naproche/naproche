@@ -26,6 +26,7 @@ import Data.Text (Text)
 
 import GHC.Magic (oneShot)
 
+import Isabelle.Bytes (Bytes)
 import Isabelle.Library (make_bytes)
 import Isabelle.Position qualified as Position
 
@@ -36,17 +37,17 @@ import SAD.Export.Pretty
 -- These names may not reflect what the constructors are used for..
 data VariableName
   = VarConstant Text     -- ^ previously starting with x
-  | VarHole Text         -- ^ previously starting with ?
+  | VarHole Bytes        -- ^ previously starting with ?
   | VarSlot              -- ^ previously !
-  | VarU Text            -- ^ previously starting with u
+  | VarU Bytes           -- ^ previously starting with u
   | VarHidden Int        -- ^ previously starting with h
   | VarAssume Int        -- ^ previously starting with i
   | VarSkolem Int        -- ^ previously starting with o
   | VarTask VariableName -- ^ previously starting with c
-  | VarZ Text            -- ^ previously starting with z
-  | VarGlobal Text       -- ^ previously starting with w
+  | VarZ Bytes           -- ^ previously starting with z
+  | VarGlobal Bytes      -- ^ previously starting with w
   | VarEmpty             -- ^ previously ""
-  | VarDefault Text      -- ^ everything else
+  | VarDefault Bytes     -- ^ everything else
   deriving (Eq, Ord)
 
 isVarHole :: VariableName -> Bool
@@ -55,17 +56,17 @@ isVarHole _ = False
 
 instance Pretty VariableName where
   pretty_print (VarConstant s) = "x" <> make_bytes s
-  pretty_print (VarHole s) = "?" <> make_bytes s
+  pretty_print (VarHole s) = "?" <> s
   pretty_print VarSlot = "!"
-  pretty_print (VarU s) = "u" <> make_bytes s
+  pretty_print (VarU s) = "u" <> s
   pretty_print (VarHidden n) = "h" <> pretty_print n
   pretty_print (VarAssume n) = "i" <> pretty_print n
   pretty_print (VarSkolem n) = "o" <> pretty_print n
   pretty_print (VarTask s) = "c" <> pretty_print s
-  pretty_print (VarZ s) = "z" <> make_bytes s
-  pretty_print (VarGlobal s) = "w" <> make_bytes s
+  pretty_print (VarZ s) = "z" <> s
+  pretty_print (VarGlobal s) = "w" <> s
   pretty_print VarEmpty = ""
-  pretty_print (VarDefault s) = make_bytes s
+  pretty_print (VarDefault s) = s
 
 data PosVar = PosVar
   { posVarName :: VariableName

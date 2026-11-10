@@ -18,7 +18,6 @@ module SAD.Data.Text.Context (
 ) where
 
 import Data.Set (Set)
-import Data.Text (Text)
 
 import Isabelle.Bytes (Bytes)
 

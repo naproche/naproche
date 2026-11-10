@@ -21,7 +21,7 @@ import Data.Text qualified as Text
 
 import FTLex.Tex hiding (initState)
 
-import Isabelle.Library (make_bytes)
+import Isabelle.Library (make_bytes, show_text)
 import Isabelle.Markup qualified as Markup
 import Isabelle.Position qualified as Position
 
@@ -845,7 +845,7 @@ mkTokens ControlWord{ctrlWordContent = w, sourcePos = p} =
 mkTokens ControlSymbol{ctrlSymbolContent = s, sourcePos = p} =
   [Token ("\\" <> Text.singleton s) p]
 mkTokens Parameter{paramNumber = n, sourcePos = p} =
-  [Token ("#" <> Text.pack (show n)) p]
+  [Token ("#" <> show_text n) p]
 mkTokens _ =
   []
 

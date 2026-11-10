@@ -9,9 +9,8 @@
 module SAD.Core.ProofTask (generateProofTask) where
 
 import Data.Set (Set)
-import Data.Text qualified as Text
 
-import Isabelle.Library (make_string)
+import Isabelle.Library (make_string, show_bytes)
 
 import SAD.Data.Formula
 import SAD.Data.Text.Block (Section(..))
@@ -95,7 +94,7 @@ existenceTask :: Formula -> Formula
 existenceTask = Tag ExistenceTask . dive 0
   where
     dive :: Int -> Formula -> Formula
-    dive n (All x f) = let nn = VarTask $ VarDefault $ Text.pack $ show n in
+    dive n (All x f) = let nn = VarTask $ VarDefault $ show_bytes n in
       mkAll nn $ dive (n + 1) $ inst nn f
     dive n (f `Imp` g) = f `blImp` dive n g
     dive _ f = let y = mkVar (VarDefault "y") in

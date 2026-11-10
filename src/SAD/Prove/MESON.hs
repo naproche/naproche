@@ -21,10 +21,9 @@ import Control.Monad
 import Data.List
 import Data.List.Extra (notNull)
 import Data.Maybe
-import Data.Text qualified as Text
 
 import Isabelle.Cache qualified as Cache
-import Isabelle.Library (fold_rev)
+import Isabelle.Library (fold_rev, make_string, show_bytes)
 import Isabelle.Time qualified as Time
 
 import SAD.Data.DisTree (DisTree)
@@ -122,11 +121,11 @@ rename :: [Formula] -> (Formula -> Formula)
 rename fs = insertU
   where
     -- find the maximal 'u'-index and convert the '?'-names to 'u'
-    insertU v@Var {varName = VarHole m} = v{varName = VarU $ Text.pack $ show (maxU + read (Text.unpack m) + 1)}
+    insertU v@Var {varName = VarHole m} = v{varName = VarU $ show_bytes (maxU + read (make_string m) + 1)}
     insertU f = mapF insertU f
 
     maxU = myMaximum $ concatMap (foldF getU) fs
-    getU Var {varName = VarU m} = [read $ Text.unpack m]; getU f = foldF getU f
+    getU Var {varName = VarU m} = [read $ make_string m]; getU f = foldF getU f
 
     myMaximum :: [Int] -> Int
     myMaximum [] = -1

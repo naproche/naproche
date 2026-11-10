@@ -19,7 +19,8 @@ import Data.Map qualified as Map
 import Data.Maybe
 import Data.Set (Set)
 import Data.Set qualified as Set
-import Data.Text qualified as Text
+
+import Isabelle.Library (show_bytes)
 
 import SAD.Core.Base
 import SAD.Core.Reason
@@ -81,9 +82,9 @@ equivalentTo = normalizedCheck 0
   where
     normalizedCheck :: Int -> Formula -> Formula -> Bool
     normalizedCheck n f g = check n (albet f) (albet g)
-    check n (All _ a) (All _ b) = let freshVariable = VarDefault $ Text.pack $ show n in
+    check n (All _ a) (All _ b) = let freshVariable = VarDefault $ show_bytes n in
       normalizedCheck (n + 1) (inst freshVariable a) (inst freshVariable b)
-    check n (Exi _ a) (Exi _ b) = let freshVariable = VarDefault $ Text.pack $ show n in
+    check n (Exi _ a) (Exi _ b) = let freshVariable = VarDefault $ show_bytes n in
       normalizedCheck (n + 1) (inst freshVariable a) (inst freshVariable b)
     check n (And a b) (And c d) = normalizedCheck n a c && normalizedCheck n b d
     check n (Or a b) (Or c d) = normalizedCheck n a c && normalizedCheck n b d
@@ -138,9 +139,9 @@ extendInstantiation sb f g = snd <$> runStateT (normalizedDive 0 f g) sb
     normalizedDive :: Int -> Formula -> Formula -> StateT (Map.Map VariableName Formula) [] ()
     normalizedDive n f g = dive n (albet f) (albet g)
     dive n (All _ f) (All _ g)
-      = let nn = VarDefault $ Text.pack $ show n in normalizedDive (n + 1) (inst nn f) (inst nn g)
+      = let nn = VarDefault $ show_bytes n in normalizedDive (n + 1) (inst nn f) (inst nn g)
     dive n (Exi _ f) (Exi _ g)
-      = let nn = VarDefault $ Text.pack $ show n in normalizedDive (n + 1) (inst nn f) (inst nn g)
+      = let nn = VarDefault $ show_bytes n in normalizedDive (n + 1) (inst nn f) (inst nn g)
     dive n (And f1 g1) (And f2 g2) =
       normalizedDive n f1 f2 >> normalizedDive n g1 g2
     dive n (Or  f1 g1) (Or  f2 g2) =

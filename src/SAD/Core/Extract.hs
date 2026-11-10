@@ -20,7 +20,8 @@ import Control.Monad.Reader
 import Data.List
 import Data.Map qualified as Map
 import Data.Maybe
-import Data.Text qualified as Text
+
+import Isabelle.Library (show_bytes)
 
 import SAD.Data.Definition
 import SAD.Data.DisTree (DisTree)
@@ -65,7 +66,7 @@ extractDefinition defs =
       = (guards, f, Signature,t)                  -- predicate sigext
 
     -- make a universal quant matchable
-    dive guards n (All _ f) = dive guards (succ n) $ inst (VarHole $ Text.pack $ show n) f
+    dive guards n (All _ f) = dive guards (succ n) $ inst (VarHole $ show_bytes n) f
     dive guards n (Imp g f) = dive (guards ++ splitConjuncts g) n f
     makeDefinition (guards, formula, kind, term) = DefEntry {
       defGuards = guards, defFormula = formula,
@@ -123,7 +124,7 @@ extractRewriteRule c =
     dive n gs (All _ (Imp (Tag HeadTerm Trm {trmName = TermEquality, trmArgs = [_, t]}) f)) =
       dive n gs $ subst t VarEmpty $ inst VarEmpty f
     -- make universal quantifier matchable
-    dive n gs (All _ f) = let nn = VarHole $ Text.pack $ show n in dive (succ n) gs $ inst nn f
+    dive n gs (All _ f) = let nn = VarHole $ show_bytes n in dive (succ n) gs $ inst nn f
     dive n gs (Imp f g) = dive n (splitConjuncts f ++ gs) g -- record conditions
     dive n gs (Tag _ f) = dive n gs f -- ignore tags
     dive n gs (And f g) = dive n gs f ++ dive n gs g
@@ -161,7 +162,7 @@ extractEv c gs f = extractMapEval c gs f `mplus` extractClassEval c gs f
 freshV :: (MonadReader (a, b1) m, Enum a, Show a) =>
           (Formula -> m b2) -> Formula -> m b2
 freshV fn f = do -- generate fresh variables
-  n <- asks fst; local (\(m,dt) -> (succ m, dt)) $ fn $ inst (VarHole $ Text.pack $ show n) f
+  n <- asks fst; local (\(m,dt) -> (succ m, dt)) $ fn $ inst (VarHole $ show_bytes n) f
 
 
 extractMapEval :: (Formula -> Formula) -> [Formula] -> Formula
@@ -192,7 +193,7 @@ extractClassEval c gs (And f g) =
 extractClassEval c gs (Tag _ f) = extractClassEval c gs f
 extractClassEval c gs (All _ (Iff g@Trm{trmArgs = [_,t]} f )) | isElem g = do
   (n, evals) <- ask
-  let nm = VarHole $ Text.pack $ show n; nf = simplifyElementCondition evals $ strip $ inst nm f
+  let nm = VarHole $ show_bytes n; nf = simplifyElementCondition evals $ strip $ inst nm f
   return $ EV (mkElem (mkVar nm) t) (mkPos $ c $ Tag Evaluation nf)(c nf) gs
 extractClassEval _ _ f = mzero
 

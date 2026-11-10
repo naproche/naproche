@@ -13,7 +13,7 @@ module SAD.Export.TPTP (
 
 import Isabelle.Bytes (Bytes)
 import Isabelle.Bytes qualified as Bytes
-import Isabelle.Library (cat_lines, commas, make_bytes, quote, show_bytes, show_text)
+import Isabelle.Library (cat_lines, commas, make_bytes, quote, show_bytes)
 import Isabelle.Position qualified as Position
 
 import Naproche.TPTP (atomic_word)
@@ -95,15 +95,15 @@ exportTermName = atomic_word . exportTermName'
 
 -- | Export a variable name to TPTP.
 exportVariableName :: VariableName -> Bytes
-exportVariableName = atomic_word . make_bytes . exportVariableName'
+exportVariableName = atomic_word . exportVariableName'
   where
-    exportVariableName' (VarConstant s) = "x" <> s
+    exportVariableName' (VarConstant s) = "x" <> make_bytes s
     exportVariableName' (VarHole s) = "?" <> s
     exportVariableName' VarSlot = "!"
     exportVariableName' (VarU s) = "u" <> s
-    exportVariableName' (VarHidden n) = "h" <> show_text n
-    exportVariableName' (VarAssume n) = "i" <> show_text n
-    exportVariableName' (VarSkolem n) = "o" <> show_text n
+    exportVariableName' (VarHidden n) = "h" <> show_bytes n
+    exportVariableName' (VarAssume n) = "i" <> show_bytes n
+    exportVariableName' (VarSkolem n) = "o" <> show_bytes n
     exportVariableName' (VarTask s) = "c" <> exportVariableName' s
     exportVariableName' (VarZ s) = "z" <> s
     exportVariableName' (VarGlobal s) = "w" <> s
