@@ -17,7 +17,7 @@ module SAD.Data.Instr (
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
   translationParam,
   helpParam, serverParam,
-  modeParam, dialectParam, proverParam, texExeParam, bibtexExeParam,
+  modeParam, dialectParam, proverParam,
   keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsText,
   keywordsPath, keywordsDropLimit, keywordsDropFlag
 ) where
@@ -148,13 +148,11 @@ textFlags@[proveParam, checkParam, checkconsistencyParam, symsignParam, infoPara
     Param.flag "translation" "print first-order translation of sentences" False]
 
 textArgs :: [Param.T Bytes]
-modeParam, dialectParam, proverParam, texExeParam, bibtexExeParam :: Param.T Bytes
-textArgs@[modeParam, dialectParam, proverParam, texExeParam, bibtexExeParam] =
+modeParam, dialectParam, proverParam :: Param.T Bytes
+textArgs@[modeParam, dialectParam, proverParam] =
    [Param.bytes "mode" "run Naproche in mode MODE" "verify",
     Param.bytes "dialect" "use the DIALECT dialect of ForTheL" "ftl",
-    Param.bytes "prover" "use prover NAME" (Prover.get_name Prover.eprover),
-    Param.bytes "tex-exe" "TeX executable EXE" "pdflatex",
-    Param.bytes "bibtex-exe" "BibTeX executable EXE" "bibtex"]
+    Param.bytes "prover" "use prover NAME" (Prover.get_name Prover.eprover)]
 
 verboseFlags :: [Param.T Bool]
 verboseFlags =

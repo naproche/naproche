@@ -36,7 +36,6 @@ import Isabelle.YXML qualified as YXML
 import Naproche.Console qualified as Console
 import Naproche.Param qualified as Param
 import Naproche.Program qualified as Program
-import Naproche.System (is_windows)
 
 import Network.Socket (Socket)
 
@@ -61,9 +60,7 @@ import SAD.Prove.MESON qualified as MESON
 import System.Console.GetOpt qualified as GetOpt
 import System.Directory
 import System.Environment qualified as Environment
-import System.FilePath.Posix
 import System.IO
-import System.Process (callCommand)
 
 
 main :: IO ()
@@ -97,8 +94,6 @@ mainTerminal initInstrs mbFileArg = do
       let locatedInitInstrs = reverse $ map (Position.none,) initInstrs
           initInstrProofTexts = map (uncurry ProofTextInstr) locatedInitInstrs
           mode = getInstr modeParam initInstrs
-          texExe = getInstr texExeParam initInstrs
-          bibtexExe = getInstr bibtexExeParam initInstrs
       -- Get the input text (either via a given file path or if no file path is
       -- provided via the stdin stream) as a proof text:
       (dialect, inputText, mbInputPath) <- do
@@ -128,12 +123,6 @@ mainTerminal initInstrs mbFileArg = do
           "tokenize" -> tokenizeInputText dialect inputText
           "translate" -> translateInputText dialect proofTexts
           "verify" -> verifyInputText dialect mesonCache proverCache proofTexts
-          "render" -> case mbInputPath of
-            Nothing -> putStrLn "Unable to render input text: No input file given." >> return 1
-            Just inputPath -> case dialect of
-              Ftl -> putStrLn "Unable to render input text: No \".ftl.tex\" file given." >> return 1
-              Tex -> renderInputFile inputPath (make_string texExe) (make_string bibtexExe)
-              Stex -> renderInputFile inputPath (make_string texExe) (make_string bibtexExe)
           modeArg -> putStrLn ("Invalid mode: " ++ make_string modeArg) >> return 1)
         `catch` (\Exception.UserInterrupt -> do
           Program.exit_thread
@@ -314,39 +303,6 @@ verifyInputText dialect mesonCache proverCache proofTexts = do
     then 0
     else 1
 
-renderInputFile :: FilePath -> FilePath -> FilePath -> IO Int
-renderInputFile inputPath texExe bibtexExe = do
-  if is_windows
-    then do
-      putStrLn "[Error] \"render\" mode is not supported on Windows."
-      return 1
-  else do
-    putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
-
-    mathhubVar <- make_string <$> getenv "NAPROCHE_MATHHUB"
-
-    putStrLn $ "[Info] PDFLaTeX binary:  " ++ texExe
-    putStrLn $ "[Info] BibTeX binary:    " ++ bibtexExe
-    putStrLn $ "[Info] MATHHUB variable: " ++ mathhubVar
-
-    putStr $ "\nReady to render \"" ++ inputPath ++ "\" to PDF. Continue? (Y/n) "
-    hFlush stdout
-    answer <- getLine
-    putStr "\n"
-
-    when (answer `elem` ["Y", "y", ""]) $ do
-      -- Render the input file as PDF:
-      let inputDir = takeDirectory inputPath
-          inputFile = takeFileName inputPath
-          inputFileBase = takeBaseName inputFile
-      setCurrentDirectory inputDir
-      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_WRITESMS=true " ++ texExe ++ " " ++ inputFile
-      callCommand $ bibtexExe ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
-      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_USESMS=true " ++ texExe ++ " " ++ inputFile
-      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" STEX_USESMS=true " ++ texExe ++ " " ++ inputFile
-
-    return 0
-
 
 -- * Arguments
 
@@ -421,8 +377,6 @@ options = [
   optFlag "" translationParam,
   optSwitch "" serverParam True "",
   optArgument "P" proverParam "NAME",
-  optArgument "" texExeParam "EXE",
-  optArgument "" bibtexExeParam "EXE",
   optNat "t" timelimitParam,
   optNat "m" memorylimitParam,
   optNat "" depthlimitParam,

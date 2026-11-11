@@ -66,6 +66,8 @@ Each change is tagged with one of the following keywords:
   X is not a member of X.
   ```
 
+* **Removed:** In the command line interface, the `render` mode was deprecated.
+
 
 ## Isabelle2026/Naproche
 
