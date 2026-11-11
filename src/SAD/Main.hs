@@ -7,15 +7,14 @@
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 --               (c) 2018, Makarius Wenzel
---               (c) 2024 - 2025, Marcel Schütz
+--               (c) 2024 - 2026, Marcel Schütz
 -- License     : GPL-3
 module SAD.Main where
 
-import Control.Exception (Exception, catch, handle, throwIO)
+import Control.Exception (catch)
 import Control.Exception qualified as Exception
 import Control.Monad (when)
 
-import Data.List (isSuffixOf)
 import Data.Maybe (mapMaybe)
 import Data.Time (addUTCTime, diffUTCTime, getCurrentTime)
 
@@ -71,7 +70,7 @@ main = do
   -- the user; when Naproche is run in a PIDE, they are a fixed set of
   -- arguments that are hard-coded into the PIDE integration.
   args <- Environment.getArgs
-  (initInstrs, mbFileArg) <- handle readArgsHandler $ readArgs args
+  (initInstrs, mbFileArg) <- readArgs args
   -- Run Naproche either in PIDE or terminal mode, depending on whether the
   -- server parameter is set to @True@ in the initial options. Note that unless
   -- Naproche is run in a PIDE, it is set to @False@.
@@ -85,7 +84,7 @@ main = do
 mainTerminal :: [Instr] -> Maybe FilePath -> IO ()
 mainTerminal initInstrs mbFileArg = do
   if getInstr helpParam initInstrs
-    then putStr $ GetOpt.usageInfo usageHeader options
+    then Console.stdout usageInfo
     else do
       -- Initialize MESON and prover cache:
       mesonCache <- MESON.init_cache
@@ -99,17 +98,17 @@ mainTerminal initInstrs mbFileArg = do
       (dialect, inputText, mbInputPath) <- do
         case mbFileArg of
           Just filePath -> do
-            let dialect = getDialect initInstrs
+            dialect <- getDialect initInstrs
             fileExists <- doesFileExist filePath
             inputText <- File.read filePath
             return (dialect, inputText, Just filePath)
           Nothing -> do
-            let dialect = getDialect initInstrs
+            dialect <- getDialect initInstrs
             hSetBuffering stdout LineBuffering
-            putStrLn (make_string $ "Enter a ForTheL text (in the " <> pretty_print dialect <> " dialect)."
-              <> " Type CTRL+D to finish your input.\n")
+            Console.stdout $ "Enter a ForTheL text (in the " <> pretty_print dialect <> " dialect)."
+              <> " Type CTRL+D to finish your input."
             inputText <- make_bytes <$> getContents'
-            putStr "\n"
+            Console.stdout ""
             return (dialect, inputText, Nothing)
       -- Append the input text proof text to the instruction proof texts:
       let inputTextProofTexts = [ProofTextInstr Position.none $ GetText inputText]
@@ -123,7 +122,7 @@ mainTerminal initInstrs mbFileArg = do
           "tokenize" -> tokenizeInputText dialect inputText
           "translate" -> translateInputText dialect proofTexts
           "verify" -> verifyInputText dialect mesonCache proverCache proofTexts
-          modeArg -> putStrLn ("Invalid mode: " ++ make_string modeArg) >> return 1)
+          modeArg -> Program.error $ "Invalid mode " <> quote modeArg)
         `catch` (\Exception.UserInterrupt -> do
           Program.exit_thread
           Console.stderr "Interrupt"
@@ -133,6 +132,10 @@ mainTerminal initInstrs mbFileArg = do
           Console.stderr (make_bytes $ Exception.displayException err)
           return Process_Result.error_rc)
       Console.exit resultCode
+
+
+usageInfo :: Bytes
+usageInfo = make_bytes $ GetOpt.usageInfo usageHeader options
 
 usageHeader :: String
 usageHeader =
@@ -178,9 +181,9 @@ pideServer mesonCache proverCache initInstrs socket =
               let instrs = initInstrs ++ moreInstrs
                   locatedInstrs = map (Position.none,) instrs
                   instrProofTexts = map (uncurry ProofTextInstr) locatedInstrs
-                  dialect = getDialect instrs
                   inputTextProofTexts = [ProofTextInstr Position.none (GetText text)]
-              let proofTexts = instrProofTexts ++ inputTextProofTexts
+                  proofTexts = instrProofTexts ++ inputTextProofTexts
+              dialect <- getDialect instrs
 
               rc <- do
                 verifyInputText dialect mesonCache proverCache proofTexts
@@ -204,9 +207,9 @@ lexInputText dialect bytes = do
   startTime <- getCurrentTime
   -- Lex the input text and print the result:
   case dialect of
-    Ftl -> FTL.lex Position.start bytes >>= putStrLn . (make_string . FTL.renderLexemes)
-    Tex -> TEX.lex Position.start bytes >>= putStrLn . (make_string . TEX.renderLexemes)
-    Stex -> STEX.lex Position.start bytes >>= putStrLn . (make_string . STEX.renderLexemes)
+    Ftl -> FTL.lex Position.start bytes >>= Console.stdout . FTL.renderLexemes
+    Tex -> TEX.lex Position.start bytes >>= Console.stdout . TEX.renderLexemes
+    Stex -> STEX.lex Position.start bytes >>= Console.stdout . STEX.renderLexemes
   -- Get the finish time of the translation process:
   finishTime <- getCurrentTime
   -- Print the time it took to translate the input text:
@@ -223,7 +226,7 @@ tokenizeInputText dialect bytes = do
     Ftl -> FTL.lex Position.start bytes >>= FTL.tokenize
     Tex -> TEX.lex Position.start bytes >>= TEX.tokenize
     Stex -> STEX.lex Position.start bytes >>= STEX.tokenize
-  putStrLn $ make_string (renderTokens tokens)
+  Console.stdout $ renderTokens tokens
   -- Get the finish time of the translation process:
   finishTime <- getCurrentTime
   -- Print the time it took to translate the input text:
@@ -238,7 +241,7 @@ translateInputText dialect proofTexts = do
   -- Parse the input text:
   txts <- readProofText dialect proofTexts
   -- Translate the input text and print the result:
-  mapM_ (\case ProofTextBlock bl -> putStrLn (make_string $ pretty_print bl); _ -> return ()) txts
+  mapM_ (\case ProofTextBlock bl -> Console.stdout $ pretty_print bl; _ -> return ()) txts
   -- Get the finish time of the translation process:
   finishTime <- getCurrentTime
   -- Print the time it took to translate the input text:
@@ -306,44 +309,31 @@ verifyInputText dialect mesonCache proverCache proofTexts = do
 
 -- * Arguments
 
-data ReadArgException =
-    GetOptFailure String
-  | TooManyFiles
-  | InvalidFileNameExt String
-  deriving (Show)
-
-readArgsHandler :: ReadArgException -> IO a
-readArgsHandler (GetOptFailure msg) = errorWithoutStackTrace msg
-readArgsHandler TooManyFiles = errorWithoutStackTrace "more than one file argument"
-readArgsHandler (InvalidFileNameExt ext) = errorWithoutStackTrace $ "invalid file name extension: " ++ quote ext
-
-instance Exception ReadArgException
-
 readArgs :: [String] -> IO ([Instr], Maybe FilePath)
 readArgs args = do
   let (instrs, nonInstrArgs, errors) = GetOpt.getOpt GetOpt.Permute options args
-  mapM_ (throwIO . GetOptFailure) errors
+  mapM_ (Program.error . make_bytes) errors
 
   case nonInstrArgs of
     [] -> return (instrs, Nothing)
     [fileArg] -> do
-      dialectArg <- getDialectArg fileArg
+      dialectArg <- getDialectArg (make_bytes fileArg)
       let dialectInstr = SetBytes dialectParam dialectArg
       return (dialectInstr : instrs, Just fileArg)
-    _ -> throwIO TooManyFiles
+    _ -> Program.error "More than one file argument"
     where
       getDialectArg fileName
-        | ".ftl.en.tex" `isSuffixOf` fileName = return "stex"
-        | ".ftl.tex" `isSuffixOf` fileName = return "tex"
-        | ".ftl" `isSuffixOf` fileName = return "ftl"
-        | otherwise = throwIO (InvalidFileNameExt fileName)
+        | ".ftl.en.tex" `Bytes.isSuffixOf` fileName = return "stex"
+        | ".ftl.tex" `Bytes.isSuffixOf` fileName = return "tex"
+        | ".ftl" `Bytes.isSuffixOf` fileName = return "ftl"
+        | otherwise = Program.error $ "Invalid file name extension " <> quote fileName
 
-getDialect :: [Instr] -> Dialect
+getDialect :: [Instr] -> IO Dialect
 getDialect instrs = case getInstr dialectParam instrs of
-  "ftl" -> Ftl
-  "tex" -> Tex
-  "stex" -> Stex
-  dialectArg -> error "Invalid dialect argument"
+  "ftl" -> return Ftl
+  "tex" -> return Tex
+  "stex" -> return Stex
+  arg -> Program.error $ "Invalid dialect argument " <> quote arg
 
 optParam :: [Char] -> Param.T a -> GetOpt.ArgDescr b -> String -> GetOpt.OptDescr b
 optParam chars p = GetOpt.Option chars [name | not (null name)]
