@@ -6,9 +6,11 @@
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich
 --               (c) 2017 - 2018, Steffen Frerix
 --               (c) 2018, 2022, Makarius Wenzel
+--               (c) 2026 Marcel Schütz
 -- License     : GPL-3
 module SAD.Data.Instr (
-  Dialect(..), Mode(..), Instr(..), Drop(..), Command(..),
+  Instr(..), Drop(..), Command(..),
+  Dialect(..), Mode(..),
   getInstr, addInstr, dropInstr,
   mode_args, dialect_args,
   flag_var, limit_var, mode_var, dialect_var, prover_var,
@@ -37,8 +39,8 @@ import SAD.Export.Pretty
 
 -- Instructions
 
-data Instr =
-    Command Command
+data Instr
+  = Command Command
   | Synonym [Text]
   | SetBool (Param.T Bool) Bool
   | SetInt (Param.T Int) Int
@@ -51,8 +53,8 @@ data Instr =
   | GetText Bytes
   deriving (Show)
 
-data Drop =
-    DropBool (Param.T Bool)
+data Drop
+  = DropBool (Param.T Bool)
   | DropInt (Param.T Int)
   | DropBytes (Param.T Bytes)
   deriving (Show)
@@ -60,8 +62,8 @@ data Drop =
 
 -- Commands
 
-data Command =
-    ResetPretyping
+data Command
+  = ResetPretyping
   | PrintRules
   | PrintThesis
   | PrintContext
@@ -109,7 +111,7 @@ dialect_args = [
   ]
 
 
--- instruction environment
+-- Instruction Environment
 
 getInstr :: Param.T a -> [Instr] -> a
 getInstr p = Param.get p . foldr instr Param.empty
@@ -160,12 +162,13 @@ prover_var = "PROVER"
 
 textLimits :: [Param.T Int]
 timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam :: Param.T Int
-textLimits@[timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam] =
-  [Param.nat "timelimit" (limit_var <> " seconds per prover call") 3,
-   Param.nat "memorylimit" ("maximum " <> limit_var <> " MiB of memory usage per prover call") 2048,
-   Param.nat "depthlimit" (limit_var <> " reasoner loops per goal") 7,
-   Param.nat "checktime" "timelimit for checker's tasks" 1,
-   Param.nat "checkdepth" "depthlimit for checker's tasks" 3]
+textLimits@[timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam] = [
+    Param.nat "timelimit" (limit_var <> " seconds per prover call") 3,
+    Param.nat "memorylimit" ("maximum " <> limit_var <> " MiB of memory usage per prover call") 2048,
+    Param.nat "depthlimit" (limit_var <> " reasoner loops per goal") 7,
+    Param.nat "checktime" "timelimit for checker's tasks" 1,
+    Param.nat "checkdepth" "depthlimit for checker's tasks" 3
+  ]
 
 textFlags :: [Param.T Bool]
 proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisParam,
@@ -177,8 +180,8 @@ textFlags@[proveParam, checkParam, checkconsistencyParam, symsignParam, infoPara
   filterParam, skipfailParam, flatParam, printgoalParam, printsectionParam, printcheckParam,
   printunfoldParam, printreasonParam, printproverParam, printfulltaskParam, dumpParam,
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
-  translationParam] =
-   [Param.flag "prove" "prove goals in the text" True,
+  translationParam] = [
+    Param.flag "prove" "prove goals in the text" True,
     Param.flag "check" "check symbols for definedness" True,
     Param.flag "checkconsistency" "check that no contradictory axioms occur" False,
     Param.flag "symsign" "prevent ill-typed unification" True,
@@ -201,7 +204,8 @@ textFlags@[proveParam, checkParam, checkconsistencyParam, symsignParam, infoPara
     Param.flag "unfoldsf" "enable unfolding of class conditions and map evaluations" True,
     Param.flag "unfoldlow" "enable unfolding of definitions in the whole low level context" True,
     Param.flag "unfoldlowsf" "enable unfolding of class and map conditions in general" False,
-    Param.flag "translation" "print first-order translation of sentences" False]
+    Param.flag "translation" "print first-order translation of sentences" False
+  ]
 
 modeParam :: Param.T Mode
 modeParam = Param.generic (get_arg_key mode_args) (get_arg_value mode_args)
@@ -216,16 +220,17 @@ proverParam = Param.generic Prover.get_name Prover.find
   "prover" ("use prover " <> prover_var) Prover.eprover
 
 verboseFlags :: [Param.T Bool]
-verboseFlags =
-  [printgoalParam,
-   printsectionParam,
-   printcheckParam,
-   printunfoldParam,
-   printreasonParam,
-   printproverParam,
-   printfulltaskParam,
-   printsimpParam,
-   printthesisParam]
+verboseFlags = [
+    printgoalParam,
+    printsectionParam,
+    printcheckParam,
+    printunfoldParam,
+    printreasonParam,
+    printproverParam,
+    printfulltaskParam,
+    printsimpParam,
+    printthesisParam
+  ]
 
 helpParam, serverParam, quietParam, verboseParam :: Param.T Bool
 helpParam = Param.flag "help" "show command-line help" False
