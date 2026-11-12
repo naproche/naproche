@@ -27,6 +27,8 @@ import Isabelle.Position qualified as Position
 import Isabelle.Value qualified as Value
 
 import Naproche.Param qualified as Param
+import Naproche.Prover (Prover)
+import Naproche.Prover qualified as Prover
 
 import SAD.Data.Instr
 import SAD.ForTheL.Base
@@ -74,13 +76,13 @@ instrDrop = instrPos addInstrReport (token' "/" >> readInstrDrop)
 
 readInstr :: FTL Instr
 readInstr =
-  readInstrCommand -|- readInstrLimit -|- readInstrBool -|- readInstrText -|- readInstrPath -|- readInstrSynonym
+  readInstrCommand -|- readInstrLimit -|- readInstrBool -|- readInstrProver -|- readInstrPath -|- readInstrSynonym
   where
     readInstrCommand = fmap Command (readKeywords keywordsCommand)
     readInstrSynonym = ap (readKeywords keywordsSynonym) readWords
     readInstrLimit = ap (readKeywords keywordsLimit) readInt
     readInstrBool = ap (readKeywords keywordsFlag) readBool
-    readInstrText = ap (readKeywords keywordsText) readBytes
+    readInstrProver = ap (readKeywords keywordsProver) readProver
     readInstrPath = ap (readKeywords keywordsPath) readPath
 
 readInt :: FTL Int
@@ -92,6 +94,11 @@ readBool :: FTL Bool
 readBool = try $ do
   s <- readBytes
   maybe mzero return (Param.parse_flag s)
+
+readProver :: FTL Prover
+readProver = try $ do
+  s <- readBytes
+  maybe mzero return (Prover.find s)
 
 readPath :: FTL FilePath
 readPath = make_string <$> readBytes

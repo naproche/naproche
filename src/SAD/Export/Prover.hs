@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 -- |
 -- Module      : SAD.Export.Prover
 -- Description : Prover interface: export a proof task to an external prover.
@@ -16,8 +14,6 @@ module SAD.Export.Prover (
 
 import Control.Exception (SomeException, throw, try)
 import Control.Monad (when)
-
-import Data.Maybe (fromJust, isNothing)
 
 import Isabelle.Bytes (Bytes)
 import Isabelle.Bytes qualified as Bytes
@@ -68,15 +64,10 @@ export cache pos iteration instrs context goal = do
 
   let
     proverName = getInstr proverParam instrs
-    prover = do
-      prover <- Prover.find proverName
-      return $
-        prover
-        |> Prover.timeout (Time.seconds $ fromIntegral timeLimit)
-        |> Prover.memory_limit memoryLimit
-        |> Prover.by_contradiction byContradiction
-
-  when (isNothing prover) $ Message.errorExport pos ("No prover named " <> quote proverName)
+    prover = proverName
+      |> Prover.timeout (Time.seconds $ fromIntegral timeLimit)
+      |> Prover.memory_limit memoryLimit
+      |> Prover.by_contradiction byContradiction
 
   let task = TPTP.exportProofTask context goal
   when (getInstr dumpParam instrs) $
@@ -84,12 +75,12 @@ export cache pos iteration instrs context goal = do
 
   reportBracketIO pos $ do
     result <-
-      Cache.apply cache (proverName, timeLimit, memoryLimit, byContradiction, task) $
-        Prover.run program_context (fromJust prover) task
+      Cache.apply cache (Prover.get_name proverName, timeLimit, memoryLimit, byContradiction, task) $
+        Prover.run program_context prover task
     when printProver $
       Message.output Bytes.empty Message.WRITELN pos (Process_Result.out result)
 
-    case Prover.status (fromJust prover) result of
+    case Prover.status prover result of
       Prover.Error msg -> Message.errorExport pos msg
       status -> return status
 

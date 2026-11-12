@@ -8,7 +8,7 @@
 --               (c) 2018, 2022, Makarius Wenzel
 -- License     : GPL-3
 module SAD.Data.Instr (
-  Dialect(..), Instr(..), Drop(..), Command(..),
+  Dialect(..), Mode(..), Instr(..), Drop(..), Command(..),
   getInstr, addInstr, dropInstr,
   timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam,
   proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisParam,
@@ -18,7 +18,7 @@ module SAD.Data.Instr (
   translationParam,
   helpParam, serverParam,
   modeParam, dialectParam, proverParam,
-  keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsText,
+  keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsProver,
   keywordsPath, keywordsDropLimit, keywordsDropFlag
 ) where
 
@@ -27,28 +27,22 @@ import Data.Text (Text)
 import Isabelle.Bytes (Bytes)
 
 import Naproche.Param qualified as Param
+import Naproche.Prover (Prover)
 import Naproche.Prover qualified as Prover
 
 import SAD.Export.Pretty
 
--- Instruction types
 
--- | Indicate which of the parsers is currently used. This is must be recorded in the State
--- for read instruction to work properly.
-data Dialect = Ftl | Tex | Stex deriving (Eq)
-
-instance Pretty Dialect where
-  pretty_print :: Dialect -> Bytes
-  pretty_print Ftl = "FTL"
-  pretty_print Tex = "TeX"
-  pretty_print Stex = "sTeX"
+-- Instructions
 
 data Instr =
     Command Command
   | Synonym [Text]
   | SetBool (Param.T Bool) Bool
   | SetInt (Param.T Int) Int
-  | SetBytes (Param.T Bytes) Bytes
+  | SetMode (Param.T Mode) Mode
+  | SetDialect (Param.T Dialect) Dialect
+  | SetProver (Param.T Prover) Prover
   | GetRelativeFilePath FilePath
   | GetAbsoluteFilePath FilePath
   | GetModule FilePath FilePath String
@@ -63,7 +57,7 @@ data Drop =
   deriving (Show)
 
 
--- Instructions
+-- Commands
 
 data Command =
     ResetPretyping
@@ -74,6 +68,46 @@ data Command =
   | Exit
   deriving (Show)
 
+
+-- Modes
+
+data Mode
+  = Lex_Mode
+  | Tokenize_Mode
+  | Translate_Mode
+  | Verify_Mode
+  deriving (Eq, Show)
+
+mode_args :: [(Bytes, Mode)]
+mode_args = [
+    ("lex", Lex_Mode),
+    ("tokenize", Tokenize_Mode),
+    ("translate", Translate_Mode),
+    ("verify", Verify_Mode)
+  ]
+
+
+-- Dialects
+
+data Dialect
+  = Ftl_Dialect
+  | Tex_Dialect
+  | Stex_Dialect
+  deriving (Eq, Show)
+
+instance Pretty Dialect where
+  pretty_print Ftl_Dialect = "FTL"
+  pretty_print Tex_Dialect = "TeX"
+  pretty_print Stex_Dialect = "sTeX"
+
+dialect_args :: [(Bytes, Dialect)]
+dialect_args = [
+    ("ftl", Ftl_Dialect),
+    ("tex", Tex_Dialect),
+    ("stex", Stex_Dialect)
+  ]
+
+
 -- instruction environment
 
 getInstr :: Param.T a -> [Instr] -> a
@@ -82,7 +116,9 @@ getInstr p = Param.get p . foldr instr Param.empty
     instr :: Instr -> Param.Env -> Param.Env
     instr (SetBool p x) = Param.put p x
     instr (SetInt p x) = Param.put p x
-    instr (SetBytes p x) = Param.put p x
+    instr (SetMode p x) = Param.put p x
+    instr (SetDialect p x) = Param.put p x
+    instr (SetProver p x) = Param.put p x
     instr (Verbose b) = \env -> foldr (`Param.put` b) env verboseFlags
     instr _ = id
 
@@ -95,7 +131,6 @@ addInstr i = (:) i
 dropInstr :: Drop -> [Instr] -> [Instr]
 dropInstr (DropBool p) (SetBool p' _ : rs) | p == p' = rs
 dropInstr (DropInt p) (SetInt p' _ : rs) | p == p' = rs
-dropInstr (DropBytes p) (SetBytes p' _ : rs) | p == p' = rs
 dropInstr i (r : rs) = r : dropInstr i rs
 dropInstr _ _ = []
 
@@ -147,12 +182,14 @@ textFlags@[proveParam, checkParam, checkconsistencyParam, symsignParam, infoPara
     Param.flag "unfoldlowsf" "enable unfolding of class and map conditions in general" False,
     Param.flag "translation" "print first-order translation of sentences" False]
 
-textArgs :: [Param.T Bytes]
-modeParam, dialectParam, proverParam :: Param.T Bytes
-textArgs@[modeParam, dialectParam, proverParam] =
-   [Param.bytes "mode" "run Naproche in mode MODE" "verify",
-    Param.bytes "dialect" "use the DIALECT dialect of ForTheL" "ftl",
-    Param.bytes "prover" "use prover NAME" (Prover.get_name Prover.eprover)]
+modeParam :: Param.T Mode
+modeParam = Param.generic (get_arg_key mode_args) (get_arg_value mode_args) "mode" "run Naproche in mode MODE" Verify_Mode
+
+dialectParam :: Param.T Dialect
+dialectParam = Param.generic (get_arg_key dialect_args) (get_arg_value dialect_args) "dialect" "use ForTheL dialect DIALECT" Ftl_Dialect
+
+proverParam :: Param.T Prover
+proverParam = Param.generic Prover.get_name Prover.find "prover" "use prover NAME" Prover.eprover
 
 verboseFlags :: [Param.T Bool]
 verboseFlags =
@@ -189,18 +226,34 @@ keywordsSynonym = [(Synonym, "synonym")]
 keywordsPath :: [(FilePath -> Instr, Bytes)]
 keywordsPath = [(GetRelativeFilePath, "read")]
 
-paramKeyword :: (Param.T a -> b) -> Param.T a -> (b, Bytes)
-paramKeyword f p = (f p, Param.name p)
-
 keywordsLimit :: [(Int -> Instr, Bytes)]
 keywordsLimit = map (paramKeyword SetInt) textLimits
 
 keywordsFlag :: [(Bool -> Instr, Bytes)]
 keywordsFlag = map (paramKeyword SetBool) textFlags
 
-keywordsText :: [(Bytes -> Instr, Bytes)]
-keywordsText = map (paramKeyword SetBytes) textArgs
+keywordsProver :: [(Prover -> Instr, Bytes)]
+keywordsProver = [paramKeyword SetProver proverParam]
 
 keywordsDropLimit, keywordsDropFlag :: [(Drop, Bytes)]
 keywordsDropLimit = map (paramKeyword DropInt) textLimits
 keywordsDropFlag = map (paramKeyword DropBool) textFlags
+
+
+-- Helpers
+
+get_arg_value :: [(Bytes, a)] -> Bytes -> Maybe a
+get_arg_value [] _ = Nothing
+get_arg_value ((key, value) : rest) k = if key == k
+  then Just value
+  else get_arg_value rest k
+
+get_arg_key :: Eq a => [(Bytes, a)] -> a -> Bytes
+get_arg_key [] _ = error "Invalid value"
+get_arg_key ((key, value) : rest) v = if value == v
+  then key
+  else get_arg_key rest v
+
+paramKeyword :: (Param.T a -> b) -> Param.T a -> (b, Bytes)
+paramKeyword f p = (f p, Param.name p)
+

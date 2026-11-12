@@ -94,9 +94,9 @@ reader depth dialect naprocheFormalizationsPath doneFiles stateList [ProofTextIn
         make_bytes relativeFilePath
   -- Catch invalid file name extension:
   | (takeExtensions relativeFilePath `notElem` [".ftl", ".ftl.tex", ".ftl.en.tex"])
-      || (takeExtensions relativeFilePath == ".ftl" && dialect /= Ftl)
-      || (takeExtensions relativeFilePath == ".ftl.tex" && dialect /= Tex)
-      || (takeExtensions relativeFilePath == ".ftl.en.tex" && dialect /= Stex)
+      || (takeExtensions relativeFilePath == ".ftl" && dialect /= Ftl_Dialect)
+      || (takeExtensions relativeFilePath == ".ftl.tex" && dialect /= Tex_Dialect)
+      || (takeExtensions relativeFilePath == ".ftl.en.tex" && dialect /= Stex_Dialect)
      = Message.errorReader pos $
         "Invalid file name extension \"" <> make_bytes (takeExtensions relativeFilePath) <>
         "\": " <> make_bytes relativeFilePath
@@ -165,14 +165,14 @@ reader _ _ _ _ _ _ = error "Invalid arguments"
 parse :: Dialect -> Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
 parse dialect pos bytes state = do
   tokens <- case dialect of
-    Ftl -> FTL.lex pos bytes >>= FTL.tokenize
-    Tex -> TEX.lex pos bytes >>= TEX.tokenize
-    Stex -> STEX.lex pos bytes >>= STEX.tokenize
+    Ftl_Dialect -> FTL.lex pos bytes >>= FTL.tokenize
+    Tex_Dialect -> TEX.lex pos bytes >>= TEX.tokenize
+    Stex_Dialect -> STEX.lex pos bytes >>= STEX.tokenize
   let
       addInits = case dialect of
-        Ftl -> FTL.addInits
-        Tex -> TEX.addInits
-        Stex -> STEX.addInits
+        Ftl_Dialect -> FTL.addInits
+        Tex_Dialect -> TEX.addInits
+        Stex_Dialect -> STEX.addInits
       newState = State {
         stUser = addInits $ (stUser state) {tvrExpr = []},
         stInput = tokens,
@@ -200,12 +200,12 @@ parseFile dialect filePath state = do
 parseState :: State FState -> IO ([ProofText], State FState)
 parseState state =
   let parser = case dialect state of
-        Ftl -> FTL.forthelText
-        Tex -> TEX.forthelText
-        Stex -> STEX.forthelText
+        Ftl_Dialect -> FTL.forthelText
+        Tex_Dialect -> TEX.forthelText
+        Stex_Dialect -> STEX.forthelText
   in launchParser parser state
 
 initState :: Program.Context -> [Token] -> State FState
-initState context tokens = State (initFState context) tokens Ftl Position.none
+initState context tokens = State (initFState context) tokens Ftl_Dialect Position.none
 
 

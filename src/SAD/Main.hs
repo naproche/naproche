@@ -35,6 +35,7 @@ import Isabelle.YXML qualified as YXML
 import Naproche.Console qualified as Console
 import Naproche.Param qualified as Param
 import Naproche.Program qualified as Program
+import Naproche.Prover (Prover)
 
 import Network.Socket (Socket)
 
@@ -96,14 +97,13 @@ mainTerminal initInstrs mbFileArg = do
       -- Get the input text (either via a given file path or if no file path is
       -- provided via the stdin stream) as a proof text:
       (dialect, inputText, mbInputPath) <- do
+        let dialect = getInstr dialectParam initInstrs
         case mbFileArg of
           Just filePath -> do
-            dialect <- getDialect initInstrs
             fileExists <- doesFileExist filePath
             inputText <- File.read filePath
             return (dialect, inputText, Just filePath)
           Nothing -> do
-            dialect <- getDialect initInstrs
             hSetBuffering stdout LineBuffering
             Console.stdout $ "Enter a ForTheL text (in the " <> pretty_print dialect <> " dialect)."
               <> " Type CTRL+D to finish your input."
@@ -118,11 +118,10 @@ mainTerminal initInstrs mbFileArg = do
       context <- Program.thread_context
       resultCode <- do
         (case mode of
-          "lex" -> lexInputText dialect inputText
-          "tokenize" -> tokenizeInputText dialect inputText
-          "translate" -> translateInputText dialect proofTexts
-          "verify" -> verifyInputText dialect mesonCache proverCache proofTexts
-          modeArg -> Program.error $ "Invalid mode " <> quote modeArg)
+          Lex_Mode -> lexInputText dialect inputText
+          Tokenize_Mode -> tokenizeInputText dialect inputText
+          Translate_Mode -> translateInputText dialect proofTexts
+          Verify_Mode -> verifyInputText dialect mesonCache proverCache proofTexts)
         `catch` (\Exception.UserInterrupt -> do
           Program.exit_thread
           Console.stderr "Interrupt"
@@ -183,7 +182,7 @@ pideServer mesonCache proverCache initInstrs socket =
                   instrProofTexts = map (uncurry ProofTextInstr) locatedInstrs
                   inputTextProofTexts = [ProofTextInstr Position.none (GetText text)]
                   proofTexts = instrProofTexts ++ inputTextProofTexts
-              dialect <- getDialect instrs
+                  dialect = getInstr dialectParam instrs
 
               rc <- do
                 verifyInputText dialect mesonCache proverCache proofTexts
@@ -207,9 +206,9 @@ lexInputText dialect bytes = do
   startTime <- getCurrentTime
   -- Lex the input text and print the result:
   case dialect of
-    Ftl -> FTL.lex Position.start bytes >>= Console.stdout . FTL.renderLexemes
-    Tex -> TEX.lex Position.start bytes >>= Console.stdout . TEX.renderLexemes
-    Stex -> STEX.lex Position.start bytes >>= Console.stdout . STEX.renderLexemes
+    Ftl_Dialect -> FTL.lex Position.start bytes >>= Console.stdout . FTL.renderLexemes
+    Tex_Dialect -> TEX.lex Position.start bytes >>= Console.stdout . TEX.renderLexemes
+    Stex_Dialect -> STEX.lex Position.start bytes >>= Console.stdout . STEX.renderLexemes
   -- Get the finish time of the translation process:
   finishTime <- getCurrentTime
   -- Print the time it took to translate the input text:
@@ -223,9 +222,9 @@ tokenizeInputText dialect bytes = do
   startTime <- getCurrentTime
   -- Lex and tokenize the input text and print the result:
   tokens <- case dialect of
-    Ftl -> FTL.lex Position.start bytes >>= FTL.tokenize
-    Tex -> TEX.lex Position.start bytes >>= TEX.tokenize
-    Stex -> STEX.lex Position.start bytes >>= STEX.tokenize
+    Ftl_Dialect -> FTL.lex Position.start bytes >>= FTL.tokenize
+    Tex_Dialect -> TEX.lex Position.start bytes >>= TEX.tokenize
+    Stex_Dialect -> STEX.lex Position.start bytes >>= STEX.tokenize
   Console.stdout $ renderTokens tokens
   -- Get the finish time of the translation process:
   finishTime <- getCurrentTime
@@ -318,22 +317,15 @@ readArgs args = do
     [] -> return (instrs, Nothing)
     [fileArg] -> do
       dialectArg <- getDialectArg (make_bytes fileArg)
-      let dialectInstr = SetBytes dialectParam dialectArg
+      let dialectInstr = SetDialect dialectParam dialectArg
       return (dialectInstr : instrs, Just fileArg)
     _ -> Program.error "More than one file argument"
     where
       getDialectArg fileName
-        | ".ftl.en.tex" `Bytes.isSuffixOf` fileName = return "stex"
-        | ".ftl.tex" `Bytes.isSuffixOf` fileName = return "tex"
-        | ".ftl" `Bytes.isSuffixOf` fileName = return "ftl"
+        | ".ftl.en.tex" `Bytes.isSuffixOf` fileName = return Stex_Dialect
+        | ".ftl.tex" `Bytes.isSuffixOf` fileName = return Tex_Dialect
+        | ".ftl" `Bytes.isSuffixOf` fileName = return Ftl_Dialect
         | otherwise = Program.error $ "Invalid file name extension " <> quote fileName
-
-getDialect :: [Instr] -> IO Dialect
-getDialect instrs = case getInstr dialectParam instrs of
-  "ftl" -> return Ftl
-  "tex" -> return Tex
-  "stex" -> return Stex
-  arg -> Program.error $ "Invalid dialect argument " <> quote arg
 
 optParam :: [Char] -> Param.T a -> GetOpt.ArgDescr b -> String -> GetOpt.OptDescr b
 optParam chars p = GetOpt.Option chars [name | not (null name)]
@@ -344,29 +336,34 @@ optSwitch chars p b s = optParam chars (if b then p else Param.unnamed p) arg s'
   where arg = GetOpt.NoArg (SetBool p b)
         s' = make_string (if Bytes.null s then Param.description p else s)
 
-optFlag :: [Char] -> Param.T Bool -> GetOpt.OptDescr Instr
-optFlag chars p = optParam chars p arg s
-  where arg = GetOpt.ReqArg (SetBool p . Param.parse p . make_bytes) "FLAG"
+optArgument :: (Param.T a -> a -> Instr) -> String -> [Char] -> Param.T a -> GetOpt.OptDescr Instr
+optArgument setter a chars p = optParam chars p arg s
+  where arg = GetOpt.ReqArg (setter p . Param.parse p . make_bytes) a
         s = make_string $ Param.description_default p
+
+optFlag :: [Char] -> Param.T Bool -> GetOpt.OptDescr Instr
+optFlag = optArgument SetBool "FLAG"
 
 optNat :: [Char] -> Param.T Int -> GetOpt.OptDescr Instr
-optNat chars p = optParam chars p arg s
-  where arg = GetOpt.ReqArg (SetInt p . Param.parse p . make_bytes) "N"
-        s = make_string $ Param.description_default p
+optNat = optArgument SetInt "N"
 
-optArgument :: [Char] -> Param.T Bytes -> String -> GetOpt.OptDescr Instr
-optArgument chars p a = optParam chars p arg s
-  where arg = GetOpt.ReqArg (SetBytes p . make_bytes) a
-        s = make_string $ Param.description_default p
+optMode :: [Char] -> Param.T Mode -> GetOpt.OptDescr Instr
+optMode = optArgument SetMode "MODE"
+
+optDialect :: [Char] -> Param.T Dialect -> GetOpt.OptDescr Instr
+optDialect = optArgument SetDialect "DIALECT"
+
+optProver :: [Char] -> Param.T Prover -> GetOpt.OptDescr Instr
+optProver = optArgument SetProver "NAME"
 
 options :: [GetOpt.OptDescr Instr]
 options = [
   optSwitch "h" helpParam True "",
-  optArgument "M" modeParam "MODE",
-  optArgument "" dialectParam "DIALECT",
+  optMode "M" modeParam,
+  optDialect "" dialectParam,
   optFlag "" translationParam,
   optSwitch "" serverParam True "",
-  optArgument "P" proverParam "NAME",
+  optProver "P" proverParam,
   optNat "t" timelimitParam,
   optNat "m" memorylimitParam,
   optNat "" depthlimitParam,

@@ -45,6 +45,9 @@ data Prover = Prover {
   _by_contradiction :: Bool
 }
 
+instance Show Prover where
+  show = make_string . get_name
+
 type Prover_Command = Prover -> Bytes -> IO Bash.Params
 type Prover_Status = Prover -> Process_Result.T -> Status
 

@@ -8,7 +8,7 @@
 module Naproche.Param (
   print_flag, parse_flag,
   T, name, unnamed, description, description_default,
-  bytes, bool, flag, nat, int, real,
+  bytes, bool, flag, nat, int, real, generic,
   Env, empty, parse, get, put
 ) where
 
@@ -75,6 +75,9 @@ int = Param Value.print_int Value.parse_int
 
 real :: Bytes -> Bytes -> Double -> T Double
 real = Param Value.print_real Value.parse_real
+
+generic :: (a -> Bytes) -> (Bytes -> Maybe a) -> Bytes -> Bytes -> a -> T a
+generic = Param
 
 
 {- untyped environment -}
