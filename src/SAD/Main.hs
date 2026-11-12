@@ -369,8 +369,6 @@ options = [
   optNat "" depthlimitParam,
   optNat "" checktimeParam,
   optNat "" checkdepthParam,
-  optSwitch "n" proveParam False "cursory mode (equivalent to --prove=off)",
-  optSwitch "r" checkParam False "raw mode (equivalent to --check=off)",
   optFlag "" proveParam,
   optFlag "" checkParam,
   optFlag "" symsignParam,

@@ -66,7 +66,11 @@ Each change is tagged with one of the following keywords:
   X is not a member of X.
   ```
 
-* **Removed:** In the command line interface, the `render` mode was deprecated.
+* **Removed:** In the command line interface, the `render` mode was
+  discontinued.
+
+* **Removed:** In the command line interface, the (redundant) options `-n`
+  (= `--prove=off`) and `-r` (= `--check=off`) were discontinued.
 
 
 ## Isabelle2026/Naproche
