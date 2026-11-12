@@ -134,15 +134,55 @@ mainTerminal initInstrs mbFileArg = do
       Console.exit resultCode
 
 
-usageInfo :: Bytes
-usageInfo = make_bytes $ GetOpt.usageInfo usageHeader options
+-- * Usage Info (Temrminal)
 
-usageHeader :: String
+choice :: [Bytes] -> Bytes
+choice = enclose "(" ")" . space_implode "|"
+
+option :: Bytes -> Bytes
+option = enclose "[" "]"
+
+
+file_var :: Bytes
+file_var = "FILE"
+
+options_var :: Bytes
+options_var = "OPTIONS"
+
+
+file_ext_values :: Bytes
+file_ext_values = choice [".ftl", ".ftl.tex", ".ftl.en.tex"]
+
+flag_values :: Bytes
+flag_values = choice [Param.print_flag True, Param.print_flag False]
+
+limit_values :: Bytes
+limit_values = "any non-zero integer"
+
+mode_values :: Bytes
+mode_values = choice $ map fst mode_args
+
+dialect_values :: Bytes
+dialect_values = choice $ map fst dialect_args
+
+prover_values :: Bytes
+prover_values = choice $ map Prover.get_name Prover.list
+
+
+usageHeader :: Bytes
 usageHeader =
-  "Usage: Naproche <options> <file>\n\n" ++
-  "  At most one file argument may be given; \"\" refers to stdin.\n\n" ++
-  "  FLAG may be {on|off}.\n\n" ++
-  "  Options are:\n"
+    "Usage: Naproche " <> options_var <> " " <> option file_var <> "\n\n" <>
+    "  " <> file_var <> " can be a file with extension " <> file_ext_values <> ";\n" <>
+    "  an absent " <> file_var <> " argument refers to stdin.\n\n" <>
+    "  - " <> flag_var <> " can be " <> flag_values <> ".\n" <>
+    "  - " <> limit_var <> " can be " <> limit_values <> ".\n" <>
+    "  - " <> mode_var <> " can be " <> mode_values <> ".\n" <>
+    "  - " <> dialect_var <> " can be " <> dialect_values <> ".\n" <>
+    "  - " <> prover_var <> " can be " <> prover_values <> ".\n\n" <>
+    "  " <> options_var <> " are:\n"
+
+usageInfo :: Bytes
+usageInfo = make_bytes $ GetOpt.usageInfo (make_string usageHeader) options
 
 
 -- * PIDE Mode
