@@ -331,10 +331,10 @@ optParam :: [Char] -> Param.T a -> GetOpt.ArgDescr b -> String -> GetOpt.OptDesc
 optParam chars p = GetOpt.Option chars [name | not (null name)]
   where name = make_string $ Param.name p
 
-optSwitch :: [Char] -> Param.T Bool -> Bool -> Bytes -> GetOpt.OptDescr Instr
-optSwitch chars p b s = optParam chars (if b then p else Param.unnamed p) arg s'
-  where arg = GetOpt.NoArg (SetBool p b)
-        s' = make_string (if Bytes.null s then Param.description p else s)
+optSwitch :: [Char] -> Param.T Bool -> GetOpt.OptDescr Instr
+optSwitch chars p = optParam chars p arg s
+  where arg = GetOpt.NoArg (SetBool p True)
+        s = make_string (Param.description p)
 
 optArgument :: (Param.T a -> a -> Instr) -> String -> [Char] -> Param.T a -> GetOpt.OptDescr Instr
 optArgument setter a chars p = optParam chars p arg s
@@ -358,11 +358,11 @@ optProver = optArgument SetProver "NAME"
 
 options :: [GetOpt.OptDescr Instr]
 options = [
-  optSwitch "h" helpParam True "",
+  optSwitch "h" helpParam,
   optMode "M" modeParam,
   optDialect "" dialectParam,
   optFlag "" translationParam,
-  optSwitch "" serverParam True "",
+  optSwitch "" serverParam,
   optProver "P" proverParam,
   optNat "t" timelimitParam,
   optNat "m" memorylimitParam,
@@ -377,8 +377,8 @@ options = [
   optFlag "" filterParam,
   optFlag "" skipfailParam,
   optFlag "" flatParam,
-  GetOpt.Option "q" [] (GetOpt.NoArg (Verbose False)) "print no details",
-  GetOpt.Option "v" [] (GetOpt.NoArg (Verbose True)) "print more details",
+  optSwitch "q" quietParam,
+  optSwitch "v" verboseParam,
   optFlag "" printgoalParam,
   optFlag "" printreasonParam,
   optFlag "" printsectionParam,

@@ -16,7 +16,7 @@ module SAD.Data.Instr (
   printunfoldParam, printreasonParam, printproverParam, printfulltaskParam, dumpParam,
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
   translationParam,
-  helpParam, serverParam,
+  helpParam, serverParam, quietParam, verboseParam,
   modeParam, dialectParam, proverParam,
   keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsProver,
   keywordsPath, keywordsDropLimit, keywordsDropFlag
@@ -47,7 +47,6 @@ data Instr =
   | GetAbsoluteFilePath FilePath
   | GetModule FilePath FilePath String
   | GetText Bytes
-  | Verbose Bool
   deriving (Show)
 
 data Drop =
@@ -114,12 +113,14 @@ getInstr :: Param.T a -> [Instr] -> a
 getInstr p = Param.get p . foldr instr Param.empty
   where
     instr :: Instr -> Param.Env -> Param.Env
-    instr (SetBool p x) = Param.put p x
+    instr (SetBool p x)
+      | p == quietParam && x = \env -> foldr (`Param.put` False) env verboseFlags
+      | p == verboseParam && x = \env -> foldr (`Param.put` True) env verboseFlags
+      | otherwise = Param.put p x
     instr (SetInt p x) = Param.put p x
     instr (SetMode p x) = Param.put p x
     instr (SetDialect p x) = Param.put p x
     instr (SetProver p x) = Param.put p x
-    instr (Verbose b) = \env -> foldr (`Param.put` b) env verboseFlags
     instr _ = id
 
 addInstr :: Instr -> [Instr] -> [Instr]
@@ -203,9 +204,11 @@ verboseFlags =
    printsimpParam,
    printthesisParam]
 
-helpParam, serverParam :: Param.T Bool
+helpParam, serverParam, quietParam, verboseParam :: Param.T Bool
 helpParam = Param.flag "help" "show command-line help" False
 serverParam = Param.flag "server" "run in server mode" False
+quietParam = Param.flag "quiet" "print no details" False
+verboseParam = Param.flag "verbose" "print more details" False
 
 
 -- Keywords
