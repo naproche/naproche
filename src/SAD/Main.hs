@@ -36,6 +36,7 @@ import Naproche.Console qualified as Console
 import Naproche.Param qualified as Param
 import Naproche.Program qualified as Program
 import Naproche.Prover (Prover)
+import Naproche.Prover qualified as Prover
 
 import Network.Socket (Socket)
 
@@ -336,25 +337,25 @@ optSwitch chars p = optParam chars p arg s
   where arg = GetOpt.NoArg (SetBool p True)
         s = make_string (Param.description p)
 
-optArgument :: (Param.T a -> a -> Instr) -> String -> [Char] -> Param.T a -> GetOpt.OptDescr Instr
-optArgument setter a chars p = optParam chars p arg s
-  where arg = GetOpt.ReqArg (setter p . Param.parse p . make_bytes) a
+optArgument :: (Param.T a -> a -> Instr) -> Bytes -> [Char] -> Param.T a -> GetOpt.OptDescr Instr
+optArgument setter var chars p = optParam chars p arg s
+  where arg = GetOpt.ReqArg (setter p . Param.parse p . make_bytes) (make_string var)
         s = make_string $ Param.description_default p
 
 optFlag :: [Char] -> Param.T Bool -> GetOpt.OptDescr Instr
-optFlag = optArgument SetBool "FLAG"
+optFlag = optArgument SetBool flag_var
 
 optNat :: [Char] -> Param.T Int -> GetOpt.OptDescr Instr
-optNat = optArgument SetInt "N"
+optNat = optArgument SetInt limit_var
 
 optMode :: [Char] -> Param.T Mode -> GetOpt.OptDescr Instr
-optMode = optArgument SetMode "MODE"
+optMode = optArgument SetMode mode_var
 
 optDialect :: [Char] -> Param.T Dialect -> GetOpt.OptDescr Instr
-optDialect = optArgument SetDialect "DIALECT"
+optDialect = optArgument SetDialect dialect_var
 
 optProver :: [Char] -> Param.T Prover -> GetOpt.OptDescr Instr
-optProver = optArgument SetProver "NAME"
+optProver = optArgument SetProver prover_var
 
 options :: [GetOpt.OptDescr Instr]
 options = [

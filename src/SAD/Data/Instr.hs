@@ -10,6 +10,8 @@
 module SAD.Data.Instr (
   Dialect(..), Mode(..), Instr(..), Drop(..), Command(..),
   getInstr, addInstr, dropInstr,
+  mode_args, dialect_args,
+  flag_var, limit_var, mode_var, dialect_var, prover_var,
   timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam,
   proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisParam,
   filterParam, skipfailParam, flatParam, printgoalParam, printsectionParam, printcheckParam,
@@ -136,14 +138,32 @@ dropInstr i (r : rs) = r : dropInstr i rs
 dropInstr _ _ = []
 
 
+-- Meta Variables
+
+flag_var :: Bytes
+flag_var = "FLAG"
+
+limit_var :: Bytes
+limit_var = "N"
+
+mode_var :: Bytes
+mode_var = "MODE"
+
+dialect_var :: Bytes
+dialect_var = "DIALECT"
+
+prover_var :: Bytes
+prover_var = "PROVER"
+
+
 -- Parameters
 
 textLimits :: [Param.T Int]
 timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam :: Param.T Int
 textLimits@[timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam] =
-  [Param.nat "timelimit" "N seconds per prover call" 3,
-   Param.nat "memorylimit" "maximum N MiB of memory usage per prover call" 2048,
-   Param.nat "depthlimit" "N reasoner loops per goal" 7,
+  [Param.nat "timelimit" (limit_var <> " seconds per prover call") 3,
+   Param.nat "memorylimit" ("maximum " <> limit_var <> " MiB of memory usage per prover call") 2048,
+   Param.nat "depthlimit" (limit_var <> " reasoner loops per goal") 7,
    Param.nat "checktime" "timelimit for checker's tasks" 1,
    Param.nat "checkdepth" "depthlimit for checker's tasks" 3]
 
@@ -184,13 +204,16 @@ textFlags@[proveParam, checkParam, checkconsistencyParam, symsignParam, infoPara
     Param.flag "translation" "print first-order translation of sentences" False]
 
 modeParam :: Param.T Mode
-modeParam = Param.generic (get_arg_key mode_args) (get_arg_value mode_args) "mode" "run Naproche in mode MODE" Verify_Mode
+modeParam = Param.generic (get_arg_key mode_args) (get_arg_value mode_args)
+  "mode" ("run Naproche in mode " <> mode_var) Verify_Mode
 
 dialectParam :: Param.T Dialect
-dialectParam = Param.generic (get_arg_key dialect_args) (get_arg_value dialect_args) "dialect" "use ForTheL dialect DIALECT" Ftl_Dialect
+dialectParam = Param.generic (get_arg_key dialect_args) (get_arg_value dialect_args)
+  "dialect" ("use ForTheL dialect " <> dialect_var) Ftl_Dialect
 
 proverParam :: Param.T Prover
-proverParam = Param.generic Prover.get_name Prover.find "prover" "use prover NAME" Prover.eprover
+proverParam = Param.generic Prover.get_name Prover.find
+  "prover" ("use prover " <> prover_var) Prover.eprover
 
 verboseFlags :: [Param.T Bool]
 verboseFlags =
